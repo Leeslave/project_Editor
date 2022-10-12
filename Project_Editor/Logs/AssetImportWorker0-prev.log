@@ -1,0 +1,369 @@
+Using pre-set license
+Built from '2021.3/staging' branch; Version is '2021.3.10f1 (1c7d0df0160b) revision 1867021'; Using compiler version '192829333'; Build Type 'Release'
+OS: 'Windows 10  (10.0.19043) 64bit Professional' Language: 'ko' Physical Memory: 16310 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1, IsPro: 1
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\2021.3.10f1\Editor\Unity.exe
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+C:/GitRepositories/project_Editor/Project_Editor
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+58215
+Successfully changed project path to: C:/GitRepositories/project_Editor/Project_Editor
+C:/GitRepositories/project_Editor/Project_Editor
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Refreshing native plugins compatible for Editor in 75.58 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2021.3.10f1 (1c7d0df0160b)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/2021.3.10f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/GitRepositories/project_Editor/Project_Editor/Assets
+GfxDevice: creating device client; threaded=0; jobified=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce GTX 1660 SUPER (ID=0x21c4)
+    Vendor:   NVIDIA
+    VRAM:     5991 MB
+    Driver:   31.0.15.1694
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/2021.3.10f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/2021.3.10f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/2021.3.10f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56252
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/2021.3.10f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.009951 seconds.
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 76.66 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.512 seconds
+Domain Reload Profiling:
+	ReloadAssembly (512ms)
+		BeginReloadAssembly (71ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (0ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (1ms)
+		EndReloadAssembly (345ms)
+			LoadAssemblies (68ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (67ms)
+			ReleaseScriptCaches (0ms)
+			RebuildScriptCaches (18ms)
+			SetupLoadedEditorAssemblies (216ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (8ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (77ms)
+				BeforeProcessingInitializeOnLoad (1ms)
+				ProcessInitializeOnLoadAttributes (92ms)
+				ProcessInitializeOnLoadMethodAttributes (38ms)
+				AfterProcessingInitializeOnLoad (0ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (0ms)
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.013210 seconds.
+Begin MonoManager ReloadAssembly
+Symbol file LoadedFromMemory doesn't match image C:\GitRepositories\project_Editor\Project_Editor\Library\PackageCache\com.unity.visualscripting@1.7.8\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll
+Symbol file LoadedFromMemory doesn't match image C:\GitRepositories\project_Editor\Project_Editor\Library\PackageCache\com.unity.visualscripting@1.7.8\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 73.08 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.952 seconds
+Domain Reload Profiling:
+	ReloadAssembly (952ms)
+		BeginReloadAssembly (107ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (4ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (17ms)
+		EndReloadAssembly (743ms)
+			LoadAssemblies (99ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (169ms)
+			ReleaseScriptCaches (1ms)
+			RebuildScriptCaches (38ms)
+			SetupLoadedEditorAssemblies (400ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (5ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (73ms)
+				BeforeProcessingInitializeOnLoad (103ms)
+				ProcessInitializeOnLoadAttributes (170ms)
+				ProcessInitializeOnLoadMethodAttributes (33ms)
+				AfterProcessingInitializeOnLoad (14ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (8ms)
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.04 seconds
+Refreshing native plugins compatible for Editor in 0.75 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 4122 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 43 unused Assets / (199.8 KB). Loaded Objects now: 4576.
+Memory consumption went from 159.3 MB to 159.1 MB.
+Total: 3.178700 ms (FindLiveObjects: 0.281800 ms CreateObjectMapping: 0.186700 ms MarkObjects: 2.566600 ms  DeleteObjects: 0.142700 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:framework-win-MediaFoundation: 216162199b28c13a410421893ffa2e32 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 2373211.626509 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6eb2a74e04d06a7532c6c0cc83bcc11f') in 0.360421 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.378935 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b937a37cd102dee295863afd455813ef') in 0.250289 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.610453 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b02719c56eef79f8c903ff0277b62c86') in 0.230676 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.584615 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e4a920a657eee35e92667389ca909f3b') in 0.229778 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 2.487187 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '093b3dc521db4cb695d522883d931448') in 0.237042 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 14.053268 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '82858b5544b49084016dcb54bda28a6c') in 0.233974 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 8.967643 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9e6a7e8b2af89eca160f8d391300dec9') in 0.229549 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.835325 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '60fac1c9fb850ea8211eefdb1ba5d574') in 0.229130 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.515467 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b757b741afbbbcaee762434effb781f8') in 0.230869 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.568890 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '45daf4b24e3fbec8158e7ee18d550e7b') in 0.228254 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 2.201415 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '79a86eb7dd83b62d46c44a55eccb2967') in 0.240711 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.598086 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4ab21eaaec43b37cd101594eec3d0c99') in 0.231009 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 3.105786 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd51237ab810e8dd0de0eb91ea805f5ee') in 0.231685 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.558747 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8f9b5a8abfb184df2fac5574f279ccdf') in 0.228963 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.473860 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '141992720bcdd5155d2585d1f326f782') in 0.229237 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.350897 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c7c778ca985cfa42a09b1fb345fd9a64') in 0.227971 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.313744 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3239e3eafad9bf271469218308d39516') in 0.232309 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.431473 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'cd8b437e5951eb71344fe9e513cbae32') in 0.230685 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.433664 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '208c2403c3fdd9b9b6dd8e0a7d81715c') in 0.239730 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 4.400600 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7d4bed189ab64a58b7bea806271c9f14') in 0.230461 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.301366 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0974d244312aabd9e2cf8f1c2c08fbc1') in 0.229613 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.386755 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ca1a5ce712e61937aa1c5e233f22a633') in 0.230971 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.444714 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8c23850f165e2dde3793c024aecb5b19') in 0.231266 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 2.824011 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e9fd33520bd238c7f1e0ca6ccbfa7866') in 0.234669 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.312846 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c87857592d7729554d729d1c8c86a9c9') in 0.230874 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.413918 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd879ae2c8774f439f01a3f3cc3eb2928') in 0.228778 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.584552 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2b493429667f1feaebd4545076749e50') in 0.233947 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.943868 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '03bd7dbae80cb02ce36ca6f9b1741fca') in 0.227767 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.228139 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b7ea1f5cea837edc7eded8d1d27a3052') in 0.228368 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.312290 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c247c7b4fc07c909fe3e9fa010c14ac1') in 0.231812 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 2.432441 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b29c33534162f5d2cc1999a6b0e947a1') in 0.230451 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 2.559595 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '229ce7b28b3bd8eb72000c885a560bc2') in 0.229906 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 1.606793 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '08308517d32935dec71a4c402944ec22') in 0.229733 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 2.566933 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e79912be792ad4caf8653a4c2b2add0f') in 0.230885 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 3.877211 seconds.
+  path: Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab
+  artifactKey: Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX.prefab using Guid(fbadd2337f7c48543a6e9b8951dc298d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1f2de19989712bb836b567439427c44c') in 0.228543 seconds 
