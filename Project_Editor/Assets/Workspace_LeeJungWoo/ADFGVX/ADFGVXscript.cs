@@ -6,98 +6,60 @@ using System.IO;
 public class ADFGVXscript : MonoBehaviour
 {
     private char[,] Array = new char[6, 6];
-    private enum Codemode//ADFGVX모드
-    { Encoding,Decoding};
-    private Codemode CurrentCodemode;//현재 ADFGVX모드
+    private int ArrayNum = 0;
 
-    private struct DecodeElemnt//복호화 엘레멘트
+    public enum Codemode//ADFGVX모드
+    { Encoding,Decoding};
+    public Codemode CurrentCodemode;//현재 ADFGVX모드
+
+    public struct DecodeElemnt//복호화 엘레멘트
     {
         public int row;
         public int line;
     }
-    private DecodeElemnt CurrentDecodeElement;//현재 복호화 엘레멘트
+    public DecodeElemnt CurrentDecodeElement;//현재 복호화 엘레멘트
 
-    public ElementButton[] Buttons = new ElementButton[36];
+
+    public ElementButton[] ElementButtons = new ElementButton[36];
+    public RowButton[] RowButtons = new RowButton[6];
+    public LineButton[] LineButtons = new LineButton[6];
+
+
     public Mode ModeBox;
     public InterChiper InterChiperBox;
     public Info InfoBox;
+    public ArrayInfo ArrayInfoBox;
+    public ArraySelect ArraySelectBox;
+   
 
     private void Start()
     {
-        UpdateArray("D");
+        ArrayNum = 0;
+        UpdateArray(ArrayNum.ToString());
+        CurrentDecodeElement.row = 6;
+        CurrentDecodeElement.line = 6;
         InterChiperBox.ClearText();
-        UpdateInfoBox("환영합니다!");
-        UpdateInfoBoxDelay(0.5f, "ADFGVX 테이블을 선택하십시오.");
+        UpdateInfoBox("ADFGVX 테이블을 선택하십시오.");
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if(Input.anyKeyDown)
         {
-            UpdateArray("0");
-            ClearInterChiperBox();
-            UpdateInfoBox("ADFGVX 테이블 1번, 적용되었습니다");
-            InformCurrentMode();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            UpdateArray("1");
-            ClearInterChiperBox();
-            UpdateInfoBox("ADFGVX 테이블 2번, 적용되었습니다");
-            InformCurrentMode();
-        }
-        if(Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            UpdateArray("2");
-            ClearInterChiperBox();
-            UpdateInfoBox("ADFGVX 테이블 3번, 적용되었습니다");
-            InformCurrentMode();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            UpdateArray("3");
-            ClearInterChiperBox();
-            UpdateInfoBox("ADFGVX 테이블 4번, 적용되었습니다");
-            InformCurrentMode();
-        }
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            UpdateInfoBox("중간 암호 용지 비움");
-            ClearInterChiperBox();
-            InformCurrentMode();
-        }
-        if(Input.GetKeyDown(KeyCode.M))//M키를 눌러서 복호화 모드, 암호화 모드 전환
-        {
-            if(CurrentCodemode == Codemode.Encoding)
-            {
-                CurrentCodemode = Codemode.Decoding;
-                CurrentDecodeElement.row = 6;
-                CurrentDecodeElement.line = 6;
-                UpdateInfoBox("모드 전환 : 복호화");
-                UpdateModeBox("D", "e");
-                ClearInterChiperBox();
-            }
-            else if(CurrentCodemode == Codemode.Decoding)
-            {
-                CurrentCodemode = Codemode.Encoding;
-                UpdateInfoBox("모드 전환 : 암호화");
-                UpdateModeBox("E", "n");
-                ClearInterChiperBox();
-            }
-            InformCurrentMode();
-        }
 
+        }
     }
-
-    private void UpdateArray(string ArrayNum)//새로운 ADFGVX표를 로딩해온다
+    
+    private void UpdateArray(string ArrayNum)//ArrayNum에 따라서 새로운 ADFGVX배열을 로딩해서 Array를 업데이트
     {
         string FilePath = "";
         FileInfo TxtFile = null;
         string TxtValue = "";
 
-        FilePath = "Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVX_Array_Num_" + ArrayNum + ".txt";
+        
+        FilePath = "Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVXArrayTxt/Array_" + ArrayNum + ".txt";              //ArrayNum에 따라서 각기 다른 표의 FilePath가 저장됩니다
         TxtFile = new FileInfo(FilePath);
-        if (TxtFile.Exists)
+        if (TxtFile.Exists)                                                                                 //FilePath가 유효하다면
         {
             StreamReader Reader = new StreamReader(FilePath);
             TxtValue = Reader.ReadToEnd();
@@ -105,18 +67,84 @@ public class ADFGVXscript : MonoBehaviour
         }
         else
             Debug.Log("Unexist Filename!");
-        char[] Txt = new char[36];
-        Txt = TxtValue.ToCharArray();
+        
+        
+        char[] Txt = new char[36];                                                                          
+        Txt = TxtValue.ToCharArray();                                                                       //36크기의 문자형 배열에 String형의 ADFGVX표를 전환해서 넣습니다
         for (int i = 0; i < 6; i++)
         {
             for (int j = 0; j < 6; j++)
             {
                 Array[i, j] = Txt[i * 6 + j];
-                Buttons[i * 6 + j].ChangeButtonText(Txt[i * 6 + j]);
+                ElementButtons[i * 6 + j].ChangeButtonText(Txt[i * 6 + j]);                                 //모든 public ElementButtons에 접근하면서 버튼의 텍스트를 ADFGVX표의 값대로 변경합니다
             }
         }
     }
 
+    public void OnModeDown()//모드 전환 버튼이 눌렸을 때
+    {
+        if (CurrentCodemode == Codemode.Encoding)
+        {
+            CurrentCodemode = Codemode.Decoding;
+            UpdateInfoBox("모드 전환 : 복호화");
+            UpdateModeBox("D", "e");
+            ClearInterChiperBox();
+            for (int i = 0; i < 6; i++)
+            {
+                for (int j = 0; j < 6; j++)
+                {
+                    ElementButtons[i * 6 + j].ShiftMode();
+                }
+            }
+        }
+        else if (CurrentCodemode == Codemode.Decoding)
+        {
+            if (CurrentDecodeElement.line != 6)
+            {
+                LineButtons[CurrentDecodeElement.line].DisableClickSprite();
+                LineButtons[CurrentDecodeElement.line].Selected = false;
+                CurrentDecodeElement.line = 6;
+            }
+            if (CurrentDecodeElement.row != 6)
+            {
+                RowButtons[CurrentDecodeElement.row].DisableClickSprite();
+                RowButtons[CurrentDecodeElement.row].Selected = false;
+                CurrentDecodeElement.row = 6;
+            }
+            CurrentCodemode = Codemode.Encoding;
+            UpdateInfoBox("모드 전환 : 암호화");
+            UpdateModeBox("E", "n");
+            ClearInterChiperBox();
+            for (int i = 0; i < 6; i++)
+            {
+                for (int j = 0; j < 6; j++)
+                {
+                    ElementButtons[i * 6 + j].ShiftMode();
+                }
+            }
+        }
+        InformCurrentMode();
+    }
+
+    public void OnArraySelectDown()//배열 버튼이 눌렸을 때
+    {
+        ArrayNum++;
+        ArrayNum%=4;
+        UpdateArray(ArrayNum.ToString());
+        ArrayInfoBox.UpdateText("암호배열\n* No." + ArrayNum.ToString() + " *");
+    }
+
+    public void OnClearDown()//Clear 버튼이 눌렸을 때
+    {
+        UpdateInfoBox("중간 암호 용지 비움");
+        ClearInterChiperBox();
+        InformCurrentMode();
+    }
+
+    public void OnDeleteDown()//Delete 버튼이 눌렸을 때
+    {
+        DeleteInterChiperBox();
+    }
 
     public void OnEncElementDown(int row, int line)//Encoding Mode에서 6x6표의 버튼이 눌렸을 때
     {
@@ -131,71 +159,106 @@ public class ADFGVXscript : MonoBehaviour
             InformCurrentMode();
         }
     }
+
     public void OnDecRowDown(int row)//Decoding Mode에서 row의 버튼이 눌렸을 때
     {
-        if (CurrentCodemode == Codemode.Decoding)
+        CurrentDecodeElement.row = row;
+
+        for (int i = 0; i < 6; i++)                                                                     //현재 선택된 RowButton 전에 선택되었던 RowButton을 찾아서 ClickSprite를 비활성화합니다
         {
-            CurrentDecodeElement.row = row;
+            if (RowButtons[i].Selected == true && i != row)
+            {
+                RowButtons[i].Selected = false;
+                RowButtons[i].DisableClickSprite();
+            }
+        }
+
+        if (CurrentDecodeElement.line != 6)                                                             //RowButton과 LineButton 둘 다 선택 되었으므로, Decoding 과정을 진행합니다
+        {
+            AddInterChiperBox(Array[CurrentDecodeElement.row, CurrentDecodeElement.line] + " ");
             if (CurrentDecodeElement.line != 6)
             {
-                AddInterChiperBox(Array[CurrentDecodeElement.row, CurrentDecodeElement.line] + " ");
-                CurrentDecodeElement.row = 6;
+                LineButtons[CurrentDecodeElement.line].DisableClickSprite();
+                LineButtons[CurrentDecodeElement.line].Selected = false;
                 CurrentDecodeElement.line = 6;
             }
-        }
-        else if (CurrentCodemode == Codemode.Encoding)
-        {
-            UpdateInfoBox("현재 암호화 모드, 모드 재확인 요망");
-            InformCurrentMode();
-        }
-    }
-    public void OnDecLineDown(int line)//Decodeing Mode에서 line의 버튼이 눌렸을 때
-    {
-        if (CurrentCodemode == Codemode.Decoding)
-        {
-            CurrentDecodeElement.line = line;
             if (CurrentDecodeElement.row != 6)
             {
-                AddInterChiperBox(Array[CurrentDecodeElement.row, CurrentDecodeElement.line] + " ");
+                RowButtons[CurrentDecodeElement.row].Selected = false;
                 CurrentDecodeElement.row = 6;
-                CurrentDecodeElement.line = 6;
             }
         }
-        else if (CurrentCodemode == Codemode.Encoding)
+    }
+
+    public void OnDecLineDown(int line)//Decodeing Mode에서 line의 버튼이 눌렸을 때
+    {
+        CurrentDecodeElement.line = line;
+
+        for (int i = 0; i < 6; i++)                                                                     //현재 선택된 LineButton 전에 선택되었던 LineButton을 찾아서 ClickSprite를 비활성화합니다
         {
-            UpdateInfoBox("현재 암호화 모드, 모드 재확인 요망");
-            InformCurrentMode();
+            if (LineButtons[i].Selected == true && i != line)
+            {
+                LineButtons[i].Selected = false;
+                LineButtons[i].DisableClickSprite();
+            }
+        }
+
+        if (CurrentDecodeElement.row != 6)                                                              //RowButton과 LineButton 둘 다 선택 되었으므로, Decoding 과정을 진행합니다
+        {
+            AddInterChiperBox(Array[CurrentDecodeElement.row, CurrentDecodeElement.line] + " ");
+            if (CurrentDecodeElement.line != 6)
+            {
+                LineButtons[CurrentDecodeElement.line].Selected = false;
+                CurrentDecodeElement.line = 6;
+            }
+            if (CurrentDecodeElement.row != 6)
+            {
+                RowButtons[CurrentDecodeElement.row].DisableClickSprite();
+                RowButtons[CurrentDecodeElement.row].Selected = false;
+                CurrentDecodeElement.row = 6;
+            }
         }
     }
 
 
-    private void UpdateModeBox(string Value1, string Value2)
+    private void UpdateModeBox(string Value1, string Value2)//ModeBox의 텍스트를 En 혹은 De로 바꿀 때 사용한다
     {
         ModeBox.UpdateText(Value1, Value2);
     }
+
+    public void UpdateInfoBox(string Value)//InfoBox의 텍스트를 Value로 바꾼다
+    {
+        InfoBox.UpdateText(Value);
+    }
+    
+    private void ClearInterChiperBox()//InterChipderBox를 비운다
+    {
+        InterChiperBox.ClearText();
+    }
+    
     private void AddInterChiperBox(string Value)//InterChiperBox의 텍스트에 추가
     {
         InterChiperBox.AddText(Value);
     }
-    private void ClearInterChiperBox()//InterChiperBox의 텍스트를 비움
+
+    private void DeleteInterChiperBox()//InterChiperBox의 텍스트 하나 삭제
     {
-        InterChiperBox.ClearText();
+        InterChiperBox.DeleteText();
     }
-    private void InformCurrentMode()//1초 후에 현재 모드 출력
+    
+    public void InformCurrentMode()//1초 후에 현재 모드 출력
     {
         if (CurrentCodemode == Codemode.Encoding)
             UpdateInfoBoxDelay(1, "암호화 과정 진행 중...");
         else if (CurrentCodemode == Codemode.Decoding)
             UpdateInfoBoxDelay(1, "복호화 과정 진행 중...");
     }
-    private void UpdateInfoBox(string Value)//InfoBox의 텍스트를 Value로 바꾼다
-    {
-        InfoBox.UpdateText(Value);
-    }
+    
     private void UpdateInfoBoxDelay(float Time, string Value)//InfoBox의 텍스트를 Timer초 후에 Value로 바꾼다
     {
         StartCoroutine(UpdateInfoBoxTimer(Time, Value));        
     }
+    
     private IEnumerator UpdateInfoBoxTimer(float Time, string Value)//UpdateInfoBoxDelay 코루틴
     {
         float currenttime = 0.0f;

@@ -4,17 +4,13 @@ using UnityEngine;
 using TMPro;
 public class InterChiper : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private ADFGVXscript ADFGVX;
+
+    private void Awake()
     {
-        
+        ADFGVX = GameObject.Find("ADFGVX_Script").GetComponent<ADFGVXscript>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void AddText(string value)
     {
         GetComponentInChildren<TextMeshPro>().text += value;
@@ -25,5 +21,19 @@ public class InterChiper : MonoBehaviour
     {
         GetComponentInChildren<TextMeshPro>().text = "";
         return;
+    }
+
+    public void DeleteText()
+    {
+        string text = GetComponentInChildren<TextMeshPro>().text;
+        int DeleteLength = ADFGVX.CurrentCodemode == ADFGVXscript.Codemode.Decoding ? 2 : 3;
+        if (text.Length >= DeleteLength)
+            GetComponentInChildren<TextMeshPro>().text = text.Substring(0, text.Length - DeleteLength);
+        else
+        {
+            ADFGVX.UpdateInfoBox("암호문 삭제 불가 재확인 요망");
+            ADFGVX.InformCurrentMode();
+        }
+            
     }
 }
