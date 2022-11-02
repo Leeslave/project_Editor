@@ -162,6 +162,13 @@ public class ADFGVXscript : MonoBehaviour
 
     public void OnDecRowDown(int row)//Decoding Mode에서 row의 버튼이 눌렸을 때
     {
+        if(CurrentCodemode==Codemode.Encoding)
+        {
+            UpdateInfoBox("현재 암호화 모드, 모드 재확인 요망");
+            InformCurrentMode();
+            return;
+        }
+
         CurrentDecodeElement.row = row;
 
         for (int i = 0; i < 6; i++)                                                                     //현재 선택된 RowButton 전에 선택되었던 RowButton을 찾아서 ClickSprite를 비활성화합니다
@@ -192,6 +199,13 @@ public class ADFGVXscript : MonoBehaviour
 
     public void OnDecLineDown(int line)//Decodeing Mode에서 line의 버튼이 눌렸을 때
     {
+        if (CurrentCodemode == Codemode.Encoding)
+        {
+            UpdateInfoBox("현재 암호화 모드, 모드 재확인 요망");
+            InformCurrentMode();
+            return;
+        }
+
         CurrentDecodeElement.line = line;
 
         for (int i = 0; i < 6; i++)                                                                     //현재 선택된 LineButton 전에 선택되었던 LineButton을 찾아서 ClickSprite를 비활성화합니다

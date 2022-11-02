@@ -7,6 +7,7 @@ public class ElementButton : Button
 {
     public int row;
     public int line;
+    public bool clicked;
 
     public void ChangeButtonText(char value)
     {
@@ -20,7 +21,6 @@ public class ElementButton : Button
 
     protected override void OnMouseDown()
     {
-        GetADFGVX().OnEncElementDown(row, line);
         if (GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Encoding)
             GetClickSprite().color = new Color(0, 0.5f, 0);
         else if (GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Decoding)
@@ -29,14 +29,21 @@ public class ElementButton : Button
 
     protected override void OnMouseUp()
     {
-        if (GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Encoding)
-            GetClickSprite().color = new Color(1, 1, 1);
-        else if (GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Decoding)
-            GetClickSprite().color = new Color(1, 0, 0);
+        if(IsOver)
+        {
+            GetADFGVX().OnEncElementDown(row, line);
+            if (GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Encoding)
+                GetClickSprite().color = new Color(1, 1, 1);
+            else if (GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Decoding)
+                GetClickSprite().color = new Color(1, 0, 0);
+        }
+        else
+            DisableClickSprite();
     }
 
     protected override void OnMouseEnter()
     {
+        IsOver = true;   
         if (GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Encoding)
             GetClickSprite().color = new Color(1, 1, 1);
         else if (GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Decoding)
@@ -45,6 +52,7 @@ public class ElementButton : Button
 
     protected override void OnMouseExit()
     {
+        IsOver = false;
         DisableClickSprite();
     }
 }

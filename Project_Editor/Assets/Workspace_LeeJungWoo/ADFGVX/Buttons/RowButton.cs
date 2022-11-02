@@ -16,23 +16,16 @@ public class RowButton : Button
     protected override void OnMouseDown()
     {
         if (GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Encoding)
+            GetClickSprite().color = new Color(0.5f, 0, 0);
+        if (Selected)
         {
-            GetADFGVX().UpdateInfoBox("현재 암호화 모드, 모드 재확인 요망");
-            GetADFGVX().InformCurrentMode();
-            return;
+            Selected = GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Decoding ? false : true;
+            GetADFGVX().OnDecRowDown(6);
         }
-        else if(GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Decoding)
+        else
         {
-            if (Selected)
-            {
-                Selected = false;
-                GetADFGVX().OnDecRowDown(6);
-            }
-            else
-            {
-                Selected = true;
-                GetADFGVX().OnDecRowDown(row);
-            }
+            Selected = GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Decoding ? true : false;
+            GetADFGVX().OnDecRowDown(row);
         }
     }
 
@@ -46,6 +39,7 @@ public class RowButton : Button
 
     protected override void OnMouseEnter()
     {
+        IsOver = true;
         if (GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Decoding)
             GetClickSprite().color = new Color(1, 1, 1);
         else if (GetADFGVX().CurrentCodemode == ADFGVXscript.Codemode.Encoding)
@@ -54,6 +48,7 @@ public class RowButton : Button
 
     protected override void OnMouseExit()
     {
+        IsOver = false;
         if (!Selected)
             DisableClickSprite();
     }

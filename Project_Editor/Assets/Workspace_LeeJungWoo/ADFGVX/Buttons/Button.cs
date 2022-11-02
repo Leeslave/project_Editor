@@ -6,6 +6,7 @@ public class Button : MonoBehaviour
 {
     private ADFGVXscript ADFGVX;
     private SpriteRenderer ClickSprite;
+    protected bool IsOver;
 
     protected virtual void Awake()
     {
@@ -26,11 +27,13 @@ public class Button : MonoBehaviour
 
     protected virtual void OnMouseEnter()
     {
+        IsOver = true;
         EnableClickSprite();
     }
 
     protected virtual void OnMouseExit()
     {
+        IsOver = false;
         DisableClickSprite();
     }
 
