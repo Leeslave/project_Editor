@@ -6,14 +6,13 @@ using System.IO;
 
 public class EncodedChipertext : MonoBehaviour
 {
-    public int ChiperNum;
     
     private void Awake()
     {
-        UpdateText(ChiperNum);
+        ClearText();
     }
 
-    private void UpdateText(int ChiperNum)
+    public void UpdateText(int ChiperNum)
     {
         string FilePath = "";
         FileInfo TxtFile = null;
@@ -34,5 +33,11 @@ public class EncodedChipertext : MonoBehaviour
             Debug.Log("Unexist Filename!");
         GetComponentsInChildren<TextMeshPro>()[0].text = TxtTitle;
         GetComponentsInChildren<TextMeshPro>()[1].text = TxtValue;
+    }
+
+    public void ClearText()
+    {
+        GetComponentsInChildren<TextMeshPro>()[0].text = "";
+        GetComponentsInChildren<TextMeshPro>()[1].text = "";
     }
 }

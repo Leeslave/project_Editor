@@ -19,17 +19,22 @@ public class ADFGVXscript : MonoBehaviour
     }
     public DecodeElemnt CurrentDecodeElement;//현재 복호화 엘레멘트
 
-
+    [Header("셀 버튼")]
     public ElementButton[] ElementButtons = new ElementButton[36];
+    [Header("행 버튼")]
     public RowButton[] RowButtons = new RowButton[6];
+    [Header("열 버튼")]
     public LineButton[] LineButtons = new LineButton[6];
-
-
+    [Header("모드 표시")]
     public Mode ModeBox;
+    [Header("중간 암호 표시")]
     public InterChiper InterChiperBox;
+    [Header("현재 상태 표시")]
     public Info InfoBox;
+    [Header("배열 정보 표시")]
     public ArrayInfo ArrayInfoBox;
-    public ArraySelect ArraySelectBox;
+    [Header("최초 암호문")]
+    public EncodedChipertext EncodedChipertextBox;
    
 
     private void Start()
@@ -42,20 +47,12 @@ public class ADFGVXscript : MonoBehaviour
         UpdateInfoBox("ADFGVX 테이블을 선택하십시오.");
     }
 
-    void Update()
-    {
-        if(Input.anyKeyDown)
-        {
-
-        }
-    }
     
     private void UpdateArray(string ArrayNum)//ArrayNum에 따라서 새로운 ADFGVX배열을 로딩해서 Array를 업데이트
     {
         string FilePath = "";
         FileInfo TxtFile = null;
         string TxtValue = "";
-
         
         FilePath = "Assets/Workspace_LeeJungWoo/ADFGVX/ADFGVXArrayTxt/Array_" + ArrayNum + ".txt";              //ArrayNum에 따라서 각기 다른 표의 FilePath가 저장됩니다
         TxtFile = new FileInfo(FilePath);
@@ -96,6 +93,7 @@ public class ADFGVXscript : MonoBehaviour
                     ElementButtons[i * 6 + j].ShiftMode();
                 }
             }
+            EncodedChipertextBox.UpdateText(1);
         }
         else if (CurrentCodemode == Codemode.Decoding)
         {
@@ -122,6 +120,7 @@ public class ADFGVXscript : MonoBehaviour
                     ElementButtons[i * 6 + j].ShiftMode();
                 }
             }
+            EncodedChipertextBox.ClearText();
         }
         InformCurrentMode();
     }
@@ -233,7 +232,6 @@ public class ADFGVXscript : MonoBehaviour
             }
         }
     }
-
 
     private void UpdateModeBox(string Value1, string Value2)//ModeBox의 텍스트를 En 혹은 De로 바꿀 때 사용한다
     {
