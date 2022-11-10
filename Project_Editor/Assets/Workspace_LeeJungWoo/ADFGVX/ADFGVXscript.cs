@@ -33,8 +33,8 @@ public class ADFGVXscript : MonoBehaviour
     public Info InfoBox;
     [Header("배열 정보 표시")]
     public ArrayInfo ArrayInfoBox;
-    [Header("최초 암호문")]
-    public EncodedChipertext EncodedChipertextBox;
+    [Header("암호문")]
+    public ChiperPart ChiperPart;
    
 
     private void Start()
@@ -93,7 +93,7 @@ public class ADFGVXscript : MonoBehaviour
                     ElementButtons[i * 6 + j].ShiftMode();
                 }
             }
-            EncodedChipertextBox.UpdateText(1);
+            ChiperPart.UpdateChiperTitleAndText(1);
         }
         else if (CurrentCodemode == Codemode.Decoding)
         {
@@ -120,7 +120,7 @@ public class ADFGVXscript : MonoBehaviour
                     ElementButtons[i * 6 + j].ShiftMode();
                 }
             }
-            EncodedChipertextBox.ClearText();
+            ChiperPart.ClearChiperTitleAndText();
         }
         InformCurrentMode();
     }
