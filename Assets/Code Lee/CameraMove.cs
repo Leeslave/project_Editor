@@ -27,6 +27,7 @@ public class CameraMove : MonoBehaviour
 
     public void moveBack()
     {
+        Debug.Log("qwerrt");
         cameraY -= 25;
         gameObject.transform.position = new Vector3(cameraX, cameraY, cameraZ);
     }
