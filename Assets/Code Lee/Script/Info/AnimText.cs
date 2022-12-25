@@ -2,6 +2,7 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class AnimText : AnimBase
 {
@@ -23,6 +24,7 @@ public class AnimText : AnimBase
 
     public override IEnumerator PlayAnim()
     {
+        Debug.Log("Play anim");
         yield return StartCoroutine(AnimTexts());
     }
 

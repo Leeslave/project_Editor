@@ -5,28 +5,32 @@ using UnityEngine.SceneManagement;
 
 public class buttonClick : MonoBehaviour
 {
+    public GameObject MainCamera;
+    public GameObject Screen;
+
     private void OnMouseDown()
     {
         if (gameObject.CompareTag("RightButton"))
         {
             Debug.Log("Click!");
-            GameObject.FindWithTag("MainCamera").GetComponent<CameraMove>().moveRight();
+            MainCamera.GetComponent<CameraMove>().moveRight();
         }
         if (gameObject.CompareTag("LeftButton"))
         {
-            GameObject.FindWithTag("MainCamera").GetComponent<CameraMove>().moveLeft();
+            MainCamera.GetComponent<CameraMove>().moveLeft();
         }
         if (gameObject.CompareTag("ForwardButton"))
         {
-            GameObject.FindWithTag("MainCamera").GetComponent<CameraMove>().moveForward();
+            MainCamera.GetComponent<CameraMove>().moveForward();
         }
         if (gameObject.CompareTag("BackButton"))
         {
-            GameObject.FindWithTag("MainCamera").GetComponent<CameraMove>().moveBack();
+            MainCamera.GetComponent<CameraMove>().moveBack();
         }
         if (gameObject.CompareTag("Screen"))
         {
-            SceneManager.LoadScene("Screen");
+            MainCamera.GetComponent<CameraMove>().moveToScreen();
+            Screen.GetComponent<UIObjectManagement>().ObjectOnOff();
         }
     }
 }

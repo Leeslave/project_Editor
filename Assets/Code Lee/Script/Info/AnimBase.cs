@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class AnimBase : MonoBehaviour {
     public UnityEngine.UI.Text GUITextCtrl;

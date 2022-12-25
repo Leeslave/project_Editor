@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using System.IO;
 
@@ -17,11 +18,15 @@ public class ChatUI : MonoBehaviour
 
     private string chatType;                    //채팅 타입
     private string chatSpeaker;                 //채팅 발화자
+    private string SpeakerNumber;
+    private int LastNumber;
     private string[] chatData;                  //채팅 내용
     private string[] choiceLine;                //선택지 내용
 
     private bool isOnFlowText;                  //흐름 출력 중
     private bool isAbleNext;                    //다음 채팅 출력 가능 여부
+
+    public Image[] chatSpeakerImage;
 
     [Header("출력 완료 후 대기 시간")]
     public float nextDelaytime;
@@ -32,7 +37,7 @@ public class ChatUI : MonoBehaviour
         choiceButton[0] = GameObject.Find("Choice_0");
         choiceButton[1] = GameObject.Find("Choice_1");
         choiceButton[2] = GameObject.Find("Choice_2");
-
+        LastNumber = 2;
         downSpeaker = GameObject.Find("DownSpeaker");
         downText = GameObject.Find("DownText");
         downShadow = GameObject.Find("DownShadow");
@@ -46,8 +51,8 @@ public class ChatUI : MonoBehaviour
         UnableMiddleAll();
         UnableDown();
         ClearDown();
-
-        GetChatTxtFile(0);
+        ImageInit();
+        GetChatTxtFile(1);
 
         Invoke("LoadNextChatData", 1);
     }
@@ -65,6 +70,17 @@ public class ChatUI : MonoBehaviour
             }
         }
     }
+
+    private void ImageInit()
+    {
+        for (int i = 0; i < chatSpeakerImage.Length; i++)
+        {
+            Debug.Log(chatSpeakerImage.Length);
+            chatSpeakerImage[i].enabled = false;
+        }
+    }
+
+
 
     private void EnableMiddleOne()//중간 선택지 하나 활성화
     {
@@ -143,12 +159,28 @@ public class ChatUI : MonoBehaviour
 
         if (chatType == "D")
         {
-            if (newLine.Contains(':'))
+            if (newLine.Contains(':')) // D
             {
                 chatSpeaker = newLine.Substring(0, newLine.IndexOf(':'));
                 newLine = newLine.Substring(newLine.IndexOf(':') + 1);
             }
-            if (newLine.Contains(':'))
+
+            if (newLine.Contains(':')) // 나
+            {
+                SpeakerNumber = newLine.Substring(0, newLine.IndexOf(':'));
+                newLine = newLine.Substring(newLine.IndexOf(':') + 1);
+                if (LastNumber != int.Parse(SpeakerNumber))
+                {
+                    if (LastNumber != 0)
+                    {
+                        chatSpeakerImage[LastNumber].enabled = false;
+                    }
+                    chatSpeakerImage[int.Parse(SpeakerNumber)].enabled = true;
+                }
+                LastNumber = int.Parse(SpeakerNumber);
+            }
+            
+            if (newLine.Contains(':')) // 채팅
             {
                 chatData[0] = newLine.Substring(0, newLine.IndexOf(':'));
                 newLine = newLine.Substring(newLine.IndexOf(':') + 1);
@@ -290,7 +322,7 @@ public class ChatUI : MonoBehaviour
 
     public void OnMoveChatLine(int lineNum)//오브젝트 선택에 따른 대화를 출력한다
     {
-        GetChatTxtFile(0);
+        GetChatTxtFile(1);
         currentChatTextLine = lineNum - 1;
         for(int i=1;i<lineNum;i++)
         {
