@@ -26,6 +26,7 @@ public class AnimText : AnimBase
     {
         Debug.Log("Play anim");
         yield return StartCoroutine(AnimTexts());
+        
     }
 
     IEnumerator AnimTexts()

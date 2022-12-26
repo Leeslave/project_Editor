@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class AnimOrderController : MonoBehaviour
 {
     public AnimBase[] anims;
+    public GameObject Power;
     // Use this for initialization
     void Start()
     {
@@ -13,7 +14,6 @@ public class AnimOrderController : MonoBehaviour
     public void realStart()
     {
         StartCoroutine(AnimInOrder());
-
     }
 
     // Update is called once per frame
@@ -27,8 +27,8 @@ public class AnimOrderController : MonoBehaviour
         foreach (AnimBase a in anims)
         {
             yield return StartCoroutine(a.PlayAnim());
-            Debug.Log("INFO PLAY");
         }
-        Debug.Log("INFO PLAY3");
+        Power.GetComponent<PowerOn>().TopInfoOff();
+
     }
 }

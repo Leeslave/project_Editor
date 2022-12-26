@@ -9,19 +9,24 @@ public class PowerOn : MonoBehaviour
     public GameObject Logo;
     public GameObject LogoTop;
     public GameObject Info;
+    public bool status;
+
     // Start is called before the first frame update
     void Start()
     {
         gameObject.SetActive(false);
-        
+        status = false;
     }
 
 
     public void ScreenPowerOn()
     {
-        gameObject.SetActive(true);
-        Debug.Log("Power On");
-        Invoke("MainLogoOnOff", 1);
+        if (status == false)        // 스크린 off에서 on으로 전환할 때 여러번 누르는 것 방지.
+        {
+            status = true;
+            gameObject.SetActive(true);
+            Invoke("MainLogoOnOff", 1);
+        }
     }
     void MainLogoOnOff()
     {
@@ -42,6 +47,12 @@ public class PowerOn : MonoBehaviour
         LogoTop.SetActive(true);
         Info.SetActive(true);
         Info.GetComponent<AnimOrderController>().realStart();
+    }
+
+    public void TopInfoOff()
+    {
+        LogoTop.SetActive(false);
+        Info.SetActive(false);
     }
 
     // Update is called once per frame

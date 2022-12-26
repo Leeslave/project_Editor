@@ -37,7 +37,7 @@ public class ChatUI : MonoBehaviour
         choiceButton[0] = GameObject.Find("Choice_0");
         choiceButton[1] = GameObject.Find("Choice_1");
         choiceButton[2] = GameObject.Find("Choice_2");
-        LastNumber = 2;
+        LastNumber = 5;
         downSpeaker = GameObject.Find("DownSpeaker");
         downText = GameObject.Find("DownText");
         downShadow = GameObject.Find("DownShadow");
@@ -54,8 +54,15 @@ public class ChatUI : MonoBehaviour
         ImageInit();
         GetChatTxtFile(1);
 
-        Invoke("LoadNextChatData", 1);
     }
+
+    public void Start0Day()
+    {
+        Invoke("LoadNextChatData", 1);
+
+    }
+
+
 
     private void Update()
     {
@@ -291,6 +298,7 @@ public class ChatUI : MonoBehaviour
         }
         else if(chatType == "End")
         {
+            ImageInit();
             UnableDown();
             UnableMiddleAll();
         }
