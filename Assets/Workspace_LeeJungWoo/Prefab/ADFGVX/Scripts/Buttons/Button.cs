@@ -9,7 +9,7 @@ public class Button : MonoBehaviour
     protected TextMeshPro buttonText;
     protected SpriteRenderer buttonGuideLine;
     private SpriteRenderer clickSprite;
-    protected bool IsOver;
+    private bool IsOver;
 
     protected virtual void Awake()
     {
@@ -56,5 +56,15 @@ public class Button : MonoBehaviour
     public void EnableClickSprite()
     {
         clickSprite.color = new Color(1, 1, 1, 1);
+    }
+
+    public bool GetIsOver()
+    {
+        return IsOver;
+    }
+
+    public void SetIsOver(bool value)
+    {
+        IsOver = value;
     }
 }

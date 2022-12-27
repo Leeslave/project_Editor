@@ -66,16 +66,6 @@ public class ChatUI : MonoBehaviour
         }
     }
 
-    public void EnableChatUI()//이 채팅UI를 활성화
-    {
-        gameObject.SetActive(true);
-    }
-
-    public void UnableChatUI()//이 채팅UI를 비활성화
-    {
-        gameObject.SetActive(false);
-    }
-
     private void EnableMiddleOne()//중간 선택지 하나 활성화
     {
         choiceButton[0].SetActive(true);
@@ -136,7 +126,7 @@ public class ChatUI : MonoBehaviour
         if (fileTxt.Exists)
         {
             chatTxt = new StreamReader(filePath, System.Text.Encoding.UTF8);
-            currentChatTextLine = 1;
+            currentChatTextLine = 0;
         }
         else
             Debug.Log("Unexist filepath!");
@@ -146,6 +136,7 @@ public class ChatUI : MonoBehaviour
     {
         string newLine = chatTxt.ReadLine();
         currentChatTextLine++;
+        Debug.Log(currentChatTextLine);
 
         chatType = newLine.Substring(0, newLine.IndexOf(':'));
         newLine = newLine.Substring(newLine.IndexOf(':') + 1);
@@ -209,8 +200,6 @@ public class ChatUI : MonoBehaviour
                 newLine = newLine.Substring(newLine.IndexOf(':') + 1);
             }
 
-            Debug.Log(choiceLine[0] + " + " + choiceLine[1]);
-
             EnableMiddleTwo();
             UnableDown();
             ClearMiddleAll();
@@ -255,8 +244,6 @@ public class ChatUI : MonoBehaviour
                 newLine = newLine.Substring(newLine.IndexOf(':') + 1);
             }
 
-            Debug.Log(choiceLine[0] + " + " + choiceLine[1] + " + " + choiceLine[2]);
-
             EnableMiddleThree();
             UnableDown();
             ClearMiddleAll();
@@ -272,7 +259,8 @@ public class ChatUI : MonoBehaviour
         }
         else if(chatType == "End")
         {
-            UnableChatUI();
+            UnableDown();
+            UnableMiddleAll();
         }
     }
 
@@ -297,15 +285,18 @@ public class ChatUI : MonoBehaviour
             return;
         }
 
-        int line = 0;
-        for (int i=0;i< int.Parse(choiceLine[choiceNum]) - currentChatTextLine;i++)//선택지 결과에 따라서 다음에 올 채팅데이터가 달라진다
+        OnMoveChatLine(int.Parse(choiceLine[choiceNum]));
+    }
+
+    public void OnMoveChatLine(int lineNum)//오브젝트 선택에 따른 대화를 출력한다
+    {
+        GetChatTxtFile(0);
+        currentChatTextLine = lineNum - 1;
+        for(int i=1;i<lineNum;i++)
         {
-            string newLine = chatTxt.ReadLine();
-            line++;
+            chatTxt.ReadLine();
         }
-        currentChatTextLine += line;
         LoadNextChatData();
-        UnableMiddleAll();
     }
     
     private void FlowTextInEndTime(TextMeshProUGUI target, string value, int idx, float endTime)//제한시간 흐름 출력

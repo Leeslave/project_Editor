@@ -296,8 +296,10 @@ public class UseDictionary : MonoBehaviour
                 adfgvx.transpositionpart.OnTransposeDown();
         }
 
-        if(adfgvx.chiperpart.isReadyForInput)
+        if (adfgvx.chiperpart.GetIsReadyForInput())
+        {
             adfgvx.chiperpart.UpdateChiperTitleAndText();
+        }
 
         if (adfgvx.intermediatepart.isReadyForInput)
             adfgvx.biliteralsubstitutionpart.ResponseUseDictionaryEnter();

@@ -36,6 +36,15 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         UpdateArray(currentArrayNum.ToString());
     }
 
+    public void SetLayer(int layer)//레이어 변경
+    {
+        this.gameObject.layer = layer;
+        GameObject.Find("ArrayKeyboard").layer = layer;
+        GameObject.Find("Delete").layer = layer;
+        GameObject.Find("ArrayMinus").layer = layer;
+        GameObject.Find("ArrayPlus").layer = layer;
+    }
+
     private void UpdateArray(string currentArrayNum)//currentArrayNum에 따라서 새로운 ADFGVX배열을 로딩해서 Array를 업데이트
     {
         string FilePath = "";
@@ -71,7 +80,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         }
         else if (adfgvx.currentmode == ADFGVX.mode.Decoding)
         {
-            adfgvx.UpdateInfoBox("버튼 사용 불가 : 현재 모드 재확인 요망");
+            adfgvx.InformUpdate("버튼 사용 불가 : 현재 모드 재확인 요망");
         }
     }
 
@@ -79,7 +88,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     {
         if (adfgvx.currentmode == ADFGVX.mode.Encoding)
         {
-            adfgvx.UpdateInfoBox("버튼 사용 불가 : 현재 모드 재확인 요망");
+            adfgvx.InformUpdate("버튼 사용 불가 : 현재 모드 재확인 요망");
             return;
         }
 
@@ -115,7 +124,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     {
         if (adfgvx.currentmode == ADFGVX.mode.Encoding)
         {
-            adfgvx.UpdateInfoBox("버튼 사용 불가 : 현재 모드 재확인 요망");
+            adfgvx.InformUpdate("버튼 사용 불가 : 현재 모드 재확인 요망");
             return;
         }
 
@@ -223,6 +232,8 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         else if (adfgvx.currentmode == ADFGVX.mode.Encoding)
             return;
         OnDecLineDown(decodeLine);
+        rowText.text = "-";
+        lineText.text = "-";
     }
 
     public void InitializeText()//모드 전환에 따른 이중 문자 치환 파트의 초기화
@@ -232,6 +243,4 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         lineText.text = "-";
         decodeLine = 6;
     }
-
-   
 }

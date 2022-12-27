@@ -16,8 +16,12 @@ public class Button_LoadOrSave : Button
     {
         base.OnMouseDown();
         if (adfgvx.currentmode == ADFGVX.mode.Decoding)
+        {
             adfgvx.chiperpart.UpdateChiperTitleAndText();
+        }
         else
+        {
             adfgvx.chiperpart.ReturnEncodingResult();
+        }
     }
 }

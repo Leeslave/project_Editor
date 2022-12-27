@@ -29,7 +29,7 @@ public class ElementButton : Button
 
     protected override void OnMouseUp()
     {
-        if(IsOver)
+        if(GetIsOver())
         {
             adfgvx.biliteralsubstitutionpart.OnEncElementDown(row, line);
             if (adfgvx.currentmode == ADFGVX.mode.Encoding)
@@ -43,7 +43,7 @@ public class ElementButton : Button
 
     protected override void OnMouseEnter()
     {
-        IsOver = true;   
+        SetIsOver(true);
         if (adfgvx.currentmode == ADFGVX.mode.Encoding)
             GetClickSprite().color = new Color(1, 1, 1, 1);
         else if (adfgvx.currentmode == ADFGVX.mode.Decoding)
@@ -52,7 +52,7 @@ public class ElementButton : Button
 
     protected override void OnMouseExit()
     {
-        IsOver = false;
+        SetIsOver(false);
         DisableClickSprite();
     }
 }

@@ -45,7 +45,7 @@ public class IntermediatePart : MonoBehaviour
         ClearIntermediateChiper();
         ClearIntermediateChiperAll();
         InitializeIntermediateChiperAll();
-        StartCoroutine("FlashInputField");
+        StartCoroutine(FlashInputField());
     }
 
     private void Update()
@@ -90,6 +90,13 @@ public class IntermediatePart : MonoBehaviour
         isCursorOverInputField = false;
     }
 
+
+    public void SetLayer(int layer)//모든 입력 차단
+    {
+        this.gameObject.layer = layer;
+        GameObject.Find("Save").layer = layer;
+    }
+
     IEnumerator FlashInputField()//검색창을 깜박이게 만든다
     {
         if (inputString.Length <= 192 && isReadyForInput && !skipOneFlash)//입력창 길이를 넘기거나, 입력 중이 아니거나, 스킵 명령이 있다면 건너뛴다
@@ -111,7 +118,7 @@ public class IntermediatePart : MonoBehaviour
         //이번 턴에 스킵했으니 다음 번에는 깜박여야 한다
         skipOneFlash = !skipOneFlash ? false : false;                               
         yield return new WaitForSeconds(0.5f);
-        StartCoroutine("FlashInputField");
+        StartCoroutine(FlashInputField());
     }
 
     private void DelayFlashInputField()//깜박임을 0.5초 막는다

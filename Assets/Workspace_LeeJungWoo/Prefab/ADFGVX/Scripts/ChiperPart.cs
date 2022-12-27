@@ -8,27 +8,30 @@ public class ChiperPart : MonoBehaviour
 {
     private ADFGVX adfgvx;
 
-    private TextMeshPro partTitle;              //파트 타이틀
+    private TextMeshPro partTitle;                  //파트 타이틀
     private TextMeshPro chiperUI;
-    private TextMeshPro chiperTitle;            //암호문 제목
-    private TextMeshPro chiper;                 //암호문 내용
-    private TextMeshPro inputField;             //암호문 검색창
-    private TextMeshPro dateUI;                 //날짜 제목
-    private TextMeshPro date;                   //날짜
-    private TextMeshPro senderUI;               //작성자 제목
-    private TextMeshPro sender;                 //작성자
+    private TextMeshPro chiperTitle;                //암호문 제목
+    private TextMeshPro chiper;                     //암호문 내용
+    private TextMeshPro inputField;                 //암호문 검색창
+    private TextMeshPro dateUI;                     //날짜 제목
+    private TextMeshPro date;                       //날짜
+    private TextMeshPro senderUI;                   //작성자 제목
+    private TextMeshPro sender;                     //작성자
 
-    private SpriteRenderer inputFieldColor;     //검색창 배경 스프라이트
-    private string inputString;                 //플레이어가 검색창에 입력한 내용
-    public bool isReadyForInput;                //검색 준비가 되어 있는가?
-    private bool iaCursorOverInputField;        //검색창에 커서가 올라갔는가?
-    private bool isOnPrintFlow;
-    private const int InpuField_MAX = 18;
+    [Header("로드 or 저장 버튼")]
+    public Button_LoadOrSave button_LoadOrSave;    
 
-    private bool isFlash;                       //깜박임
-    private bool skipOneFlash;                  //true면 깜박임 한번 건너뛴다
+    private SpriteRenderer inputFieldColor;         //검색창 배경 스프라이트
+    private string inputString;                     //플레이어가 검색창에 입력한 내용
+    private bool isReadyForInput;                    //검색 준비가 되어 있는가?
+    private bool isCursorOverInputField;            //검색창에 커서가 올라갔는가?
+    private bool isOnPrintFlow;                     //흐름 출력 작업 중 여부
+    private const int InpuField_MAX = 18;           //검색창 최대 입력
 
-    private void Awake()
+    private bool isFlash;                           //깜박임
+    private bool skipOneFlash;                      //true면 깜박임 한번 건너뛴다
+
+    private void Start()
     {
         adfgvx = GameObject.Find("ADFGVX").GetComponent<ADFGVX>();
 
@@ -48,22 +51,22 @@ public class ChiperPart : MonoBehaviour
         isFlash = false;
 
         ClearChiperAll();
-        InitializeChiperAll();
-        StartCoroutine("FlashinputField");
+        InitializeChiperPartAll();
+        StartCoroutine(FlashinputField());
     }
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (iaCursorOverInputField && !isReadyForInput)
+            if (isCursorOverInputField && !isReadyForInput)
             {
                 inputFieldColor.color = new Color(0, 1, 0, 0);
                 inputField.text = inputString;
                 isReadyForInput = true;
                 isFlash = true;
             }
-            else if (iaCursorOverInputField && isReadyForInput)
+            else if (isCursorOverInputField && isReadyForInput)
             {
 
             }
@@ -81,13 +84,24 @@ public class ChiperPart : MonoBehaviour
     {
         if(!isReadyForInput)
             inputFieldColor.color = new Color(0, 1, 0, 0.15f);
-        iaCursorOverInputField = true;
+        isCursorOverInputField = true;
     }
 
     private void OnMouseExit()
     {
         inputFieldColor.color = new Color(0, 1, 0, 0);
-        iaCursorOverInputField = false;
+        isCursorOverInputField = false;
+    }
+
+    public bool GetIsReadyForInput()//입력 준비 상태
+    {
+        return isReadyForInput;
+    }
+
+    public void SetLayer(int layer)//모든 입력 차단
+    {
+        this.gameObject.layer = layer;
+        GameObject.Find("LoadOrSave").layer = layer;
     }
 
     IEnumerator FlashinputField()//검색창을 깜박이게 만든다
@@ -110,7 +124,7 @@ public class ChiperPart : MonoBehaviour
 
         skipOneFlash = false;//이번 턴에 스킵했으니 다음 번에는 깜박여야 한다
         yield return new WaitForSeconds(0.5f);
-        StartCoroutine("FlashinputField");
+        StartCoroutine(FlashinputField());
     }
 
     private void DelayFlashinputField()//깜박임을 0.5초 막는다
@@ -146,9 +160,9 @@ public class ChiperPart : MonoBehaviour
         inputField.text = inputString;
     }
 
-    public void UpdateChiperTitleAndText()
+    public void UpdateChiperTitleAndText()//inputstring에 따라서 암호문을 불러온다
     {
-        if (isOnPrintFlow)          //아직 전에 명령받은 파일 불러오기 작업이 끝나지 않음
+        if (isOnPrintFlow)//아직 전에 명령받은 파일 불러오기 작업이 끝나지 않음
         {
             adfgvx.InformError("파일 불러오기 불가 : 작업 진행 중");
             return;
@@ -172,6 +186,7 @@ public class ChiperPart : MonoBehaviour
         string Txtdate = "";
         string TxtsenderUI = "";
         string Txtsender = "";
+        string TxtDecodedChiper = "";
 
         //ArrayNum에 따라서 각기 다른 표의 FilePath가 저장된다
         FilePath = "Assets/Workspace_LeeJungWoo/Prefab/ADFGVX/ChipersTxt/" + inputString + ".txt";                  
@@ -187,6 +202,7 @@ public class ChiperPart : MonoBehaviour
             Txtdate = Reader.ReadLine();
             TxtsenderUI = Reader.ReadLine();
             Txtsender = Reader.ReadLine();
+            TxtDecodedChiper = Reader.ReadLine();
             Reader.Close();
         }
         else//Filepath가 유효하지 않다면
@@ -196,34 +212,38 @@ public class ChiperPart : MonoBehaviour
             return;
         }
 
-        adfgvx.UpdateInfoBox("'" + inputString + "' " + "접근 성공 : 도달 시간 1ms 이하");
+        //모든 파트 입력 차단
+        adfgvx.SetPartLayer(2, 2, 2, 2);
 
-        //새로운 암호문을 불러오기에 앞서 이미 불러와져 있던 것을 비운다
+        adfgvx.InformUpdate("'" + inputString + "' " + "접근 성공 : 도달 시간 1ms 이하");
+
+        //흐름 출력 시작
         ClearChiperAll();
-
-        //1차원 흐름 출력 시작
-        StartCoroutine(printFlow(chiperUI, TxtchiperUI, 0, 3.0f));
-        StartCoroutine(printFlow(chiperTitle, TxtchiperTitle, 0, 3.0f));
-        StartCoroutine(printFlow(chiper, Txtchiper, 0, 3.0f));
-        StartCoroutine(printFlow(dateUI, TxtdateUI, 0, 3.0f));
-        StartCoroutine(printFlow(date, Txtdate, 0, 3.0f));
-        StartCoroutine(printFlow(senderUI, TxtsenderUI, 0, 3.0f));
-        StartCoroutine(printFlow(sender, Txtsender, 0, 3.0f));
+        chiperUI.text = TxtchiperUI;
+        FlowPrint(chiperTitle, TxtchiperTitle, 3.0f);
+        FlowPrint(chiper, Txtchiper, 3.0f);
+        dateUI.text = TxtdateUI;
+        FlowPrint(date, Txtdate, 3.0f);
+        senderUI.text = TxtsenderUI;
+        FlowPrint(sender, Txtsender, 3.0f);
 
         //작업 종료 시까지 깜박임, 새로운 작업 차단
         isOnPrintFlow = true;
         Invoke("SetisOnPrintFlowFalse", 3.0f);
 
-        adfgvx.intermediatepart.ClearIntermediateChiperAll();
-
         //intermediatechiper에도 흐름 출력 시작
-        StartCoroutine(printFlow(adfgvx.intermediatepart.chiperUI, TxtchiperUI, 0, 3.0f));
-        StartCoroutine(printFlow(adfgvx.intermediatepart.chiperTitle, TxtchiperTitle, 0, 3.0f));
-        StartCoroutine(printFlow(adfgvx.intermediatepart.dateUI, TxtdateUI, 0, 3.0f));
-        StartCoroutine(printFlow(adfgvx.intermediatepart.date, Txtdate, 0, 3.0f));
-        StartCoroutine(printFlow(adfgvx.intermediatepart.senderUI, TxtsenderUI, 0, 3.0f));
-        StartCoroutine(printFlow(adfgvx.intermediatepart.sender, Txtsender, 0, 3.0f));
+        adfgvx.intermediatepart.ClearIntermediateChiperAll();
+        adfgvx.intermediatepart.chiperUI.text = TxtchiperUI;
+        FlowPrint(adfgvx.intermediatepart.chiperTitle, TxtchiperTitle, 3.0f);
+        adfgvx.intermediatepart.dateUI.text = TxtdateUI;
+        FlowPrint(adfgvx.intermediatepart.date, Txtdate, 3.0f);
+        adfgvx.intermediatepart.senderUI.text = TxtsenderUI;
+        FlowPrint(adfgvx.intermediatepart.sender, Txtsender, 3.0f);
 
+        //adfgvx에 해독된 데이터 저장
+        adfgvx.SetDecodedChiper(TxtDecodedChiper);
+
+        //사운드 재생
         adfgvx.soundFlow(30, 0, 3.0f);
     }
 
@@ -251,7 +271,7 @@ public class ChiperPart : MonoBehaviour
         return chiper.text;
     }
 
-    public void InitializeChiperAll()
+    public void InitializeChiperPartAll()//ChiperPart의 각종 수치를 초기화한다
     {
         if (adfgvx.currentmode == ADFGVX.mode.Encoding)
         {
@@ -291,13 +311,25 @@ public class ChiperPart : MonoBehaviour
         }
     }
 
-    private IEnumerator printFlow(TextMeshPro target, string value, int idx, float endTime)//tartget에 value를 endTime안에 순차적으로 채워 넣는다
+    private void FlowPrint(TextMeshPro target, string value, float endTime)//tartget에 value를 endTime안에 순차적으로 채워 넣는다
+    {
+        StartCoroutine(FlowPrintIEnumerator(target, value, 0, endTime));
+    }
+
+    private IEnumerator FlowPrintIEnumerator(TextMeshPro target, string value, int idx, float endTime)//FlowPrint 재귀
     {
         if (idx >= value.Length)
+        {
+            adfgvx.SetPartLayer(0, 0, 0, 0);
+            if (button_LoadOrSave.GetIsOver())
+                button_LoadOrSave.EnableClickSprite();
+            else
+                button_LoadOrSave.DisableClickSprite();
             yield break;
+        }
         target.text += value.Substring(idx,1);
         yield return new WaitForSeconds(endTime/value.Length);
-        StartCoroutine(printFlow(target,value,idx+1,endTime));
+        StartCoroutine(FlowPrintIEnumerator(target,value,idx+1,endTime));
     }
 
     private void SetisOnPrintFlowFalse()//isOnPrintFlow변수를 거짓으로 한다_Invoke용

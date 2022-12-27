@@ -51,7 +51,7 @@ public class TranspositionPart : MonoBehaviour
 
         ClearKeyWord();
         ClearPriority();
-        StartCoroutine(FlashText());
+        FlashText();
     }
 
     private void Update()
@@ -92,7 +92,17 @@ public class TranspositionPart : MonoBehaviour
         isCursorOverInputField = false;
     }
 
-    IEnumerator FlashText()//키워드 창을 깜박이게 만든다
+    public void SetLayer(int layer)//모든 입력 차단
+    {
+        this.gameObject.layer = layer;
+    }
+
+    private void FlashText()//키워드 창을 깜박이게 만든다
+    {
+        StartCoroutine(FlashTextIEnumerator());
+    }
+
+    private IEnumerator FlashTextIEnumerator()//FlashText 재귀
     {
         if (keyword.Length <= 16 && isReadyForInput && !isOnPrintFlow && !skipOneFlash)
         {
@@ -271,7 +281,7 @@ public class TranspositionPart : MonoBehaviour
             }
         }
 
-        adfgvx.UpdateInfoBox("작업 중 : 프로그램을 강제 종료하지 마십시오");
+        adfgvx.InformUpdate("작업 중 : 프로그램을 강제 종료하지 마십시오");
         ResizeAndRePositionEdge();
         printFlow();
         isFlash = false;
@@ -340,9 +350,12 @@ public class TranspositionPart : MonoBehaviour
 
     private void printFlow()//2차원 평면 흐름 출력
     {
+        adfgvx.SetPartLayer(2, 2, 2, 2);
+
         //흐름 출력 개시
         flowLine = 0;
         InvokeRepeating("printflowLine", 0.0f, 0.1f);
+
         //깜박임 차단, 적절한 시간 후에 깜박임 회복
         keyWordFieldText.text = keyword;
         isOnPrintFlow = true;
@@ -363,7 +376,8 @@ public class TranspositionPart : MonoBehaviour
     {
         if(flowLine == lineLength - 1 && FlowRow == rowLength)//흐름 출력 최종 종료 시
         {
-            adfgvx.UpdateInfoBox("전치 작업 종료 : 총 작업 시간 " + (0.1f * (rowLength + lineLength)).ToString() + "s");
+            adfgvx.SetPartLayer(0, 0, 0, 0);
+            adfgvx.InformUpdate("전치 작업 종료 : 총 작업 시간 " + (0.1f * (rowLength + lineLength)).ToString() + "s");
             yield break;
         }
         else if (FlowRow == rowLength)
