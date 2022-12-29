@@ -9,6 +9,7 @@ public class PowerOn : MonoBehaviour
     public GameObject Logo;
     public GameObject LogoTop;
     public GameObject Info;
+    public GameObject CMD;
     public bool status;
 
     // Start is called before the first frame update
@@ -28,6 +29,16 @@ public class PowerOn : MonoBehaviour
             Invoke("MainLogoOnOff", 1);
         }
     }
+
+    public void ScreenPowerOff()
+    {
+        if (status == true)
+        {
+            CMD.SetActive(false);
+            status = false;
+        }
+    }
+
     void MainLogoOnOff()
     {
         if (Logo.activeSelf == false)
@@ -53,7 +64,14 @@ public class PowerOn : MonoBehaviour
     {
         LogoTop.SetActive(false);
         Info.SetActive(false);
+        Invoke("TurnOnCMD", 1.0f);
     }
+
+    void TurnOnCMD()
+    {
+        CMD.GetComponent<CMDManager>().CMDStart();
+    }
+
 
     // Update is called once per frame
     void Update()
