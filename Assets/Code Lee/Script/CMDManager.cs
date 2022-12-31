@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 
 public class CMDManager : MonoBehaviour
 {
+    public GameObject MainUI;
     public GameObject Power;
     public TMP_InputField CMDText;
     private string InputString;
@@ -50,7 +52,13 @@ public class CMDManager : MonoBehaviour
         
         if (number == 1) { Debug.Log("임무를 확인합니다."); }
         else if (number == 2) { Debug.Log("메일을 확인합니다."); }
-        else if (number == 3) { Debug.Log("임무를 수행합니다."); }
+        else if (number == 3) 
+        { 
+            Debug.Log("임무를 수행합니다.");
+            MainUI.SetActive(false);
+            Debug.Log("UI를 숨깁니다.");
+            SceneManager.LoadSceneAsync("TempScene", LoadSceneMode.Additive);
+        }
         else if (number == 4) 
         { 
             Debug.Log("스크린을 종료합니다.");

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class AnimText : AnimBase
 {
+    public Text text;
     public float DefaultStringTime = 0.05f;
     public float DefaultTextTime = 0.2f;
     public TextAsset ta;
@@ -14,6 +15,7 @@ public class AnimText : AnimBase
     void Start()
     {
         ti = JsonUtility.FromJson<TextInfo>(ta.text);
+        
     }
 
     // Update is called once per frame
@@ -25,6 +27,7 @@ public class AnimText : AnimBase
     public override IEnumerator PlayAnim()
     {
         Debug.Log("Play anim");
+        text.text = "";
         yield return StartCoroutine(AnimTexts());
         
     }

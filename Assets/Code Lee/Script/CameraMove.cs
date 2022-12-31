@@ -15,8 +15,8 @@ public class CameraMove : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameObject.transform.position = new Vector3(cameraX, cameraY, cameraZ);
-        DontDestroyOnLoad(this);
+        //gameObject.transform.position = new Vector3(cameraX, cameraY, cameraZ);
+        //DontDestroyOnLoad(this);
     }
 
     // Update is called once per frame
@@ -61,5 +61,10 @@ public class CameraMove : MonoBehaviour
     public void moveToMain()
     {
         gameObject.transform.position = new Vector3(saveX, saveY, cameraZ);
+    }
+
+    public void moveScene()
+    {
+        gameObject.SetActive(false);
     }
 }
