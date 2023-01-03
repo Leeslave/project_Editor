@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 
 public class CMDManager : MonoBehaviour
 {
+    public GameObject MainSceneCamera;
+    public GameObject EventSystem;
     public GameObject MainUI;
     public GameObject Power;
     public TMP_InputField CMDText;
@@ -57,6 +59,8 @@ public class CMDManager : MonoBehaviour
             Debug.Log("임무를 수행합니다.");
             MainUI.SetActive(false);
             Debug.Log("UI를 숨깁니다.");
+            MainSceneCamera.SetActive(false);
+            EventSystem.SetActive(false);
             SceneManager.LoadSceneAsync("TempScene", LoadSceneMode.Additive);
         }
         else if (number == 4) 

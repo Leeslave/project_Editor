@@ -20,7 +20,7 @@ public class BackToMain : MonoBehaviour
     public void backToMain()
     {
         gameObject.SetActive(false);
-        GameObject.FindWithTag("Screen").GetComponent<MainSceneManager>().MainUIOn();
+        //GameObject.FindWithTag("Screen").GetComponent<MainSceneManager>().MainUIOn();
         MainCamera.GetComponent<CameraMove>().moveToMain();
     }
 }

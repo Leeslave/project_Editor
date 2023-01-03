@@ -63,8 +63,13 @@ public class CameraMove : MonoBehaviour
         gameObject.transform.position = new Vector3(saveX, saveY, cameraZ);
     }
 
-    public void moveScene()
+    public void moveToGameScene()
     {
         gameObject.SetActive(false);
+    }
+
+    public void moveToMainScene()
+    {
+        gameObject.SetActive(true);
     }
 }
