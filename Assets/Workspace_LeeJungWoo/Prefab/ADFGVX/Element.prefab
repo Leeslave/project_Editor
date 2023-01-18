@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 919122177315101859}
   - component: {fileID: 1956810282898273718}
   m_Layer: 0
-  m_Name: Text
+  m_Name: MarkText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109,8 +109,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278255398
-  m_fontColor: {r: 0.14901961, g: 1, b: 0, a: 1}
+    rgba: 4278255385
+  m_fontColor: {r: 0.098039225, g: 1, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -246,6 +246,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bf6e7de4b97dbf478c3585537640d2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Enter: {r: 0, g: 0, b: 0, a: 0}
+  Exit: {r: 0, g: 0, b: 0, a: 0}
+  Down: {r: 0, g: 0, b: 0, a: 0}
+  Up: {r: 0, g: 0, b: 0, a: 0}
   row: 0
   line: 0
   clicked: 0
@@ -260,7 +264,7 @@ GameObject:
   - component: {fileID: 8171687855942332279}
   - component: {fileID: 5820866966100825965}
   m_Layer: 0
-  m_Name: GreenBox
+  m_Name: GuideSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -344,7 +348,7 @@ GameObject:
   - component: {fileID: 148903869238265511}
   - component: {fileID: 1472489376183536077}
   m_Layer: 0
-  m_Name: WhiteBox
+  m_Name: ClickSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

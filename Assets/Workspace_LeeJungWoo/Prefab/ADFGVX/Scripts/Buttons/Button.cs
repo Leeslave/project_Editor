@@ -6,65 +6,127 @@ using TMPro;
 public class Button : MonoBehaviour
 {
     protected ADFGVX adfgvx;
-    protected TextMeshPro buttonText;
-    protected SpriteRenderer buttonGuideLine;
-    private SpriteRenderer clickSprite;
-    private bool IsOver;
 
-    protected virtual void Awake()
+    private TextMeshPro markText;
+    private SpriteRenderer markSprite;
+    private SpriteRenderer guideSprite;
+    private SpriteRenderer clickSprite;
+    
+    [Header("Enter 색")]
+    public Color Enter;
+    [Header("Exit 색")]
+    public Color Exit;
+    [Header("Down 색")]
+    public Color Down;
+    [Header("Up 색")]
+    public Color Up;
+
+    private bool isCursorOver;
+
+    //색을 변경하는 코루틴 관리
+    private Coroutine colorConvertCoroutine;
+
+    protected virtual void Start()
     {
         adfgvx = GameObject.Find("ADFGVX").GetComponent<ADFGVX>();
-        buttonText = GetComponentInChildren<TextMeshPro>();
-        buttonGuideLine = GetComponentsInChildren<SpriteRenderer>()[0];
-        clickSprite = GetComponentsInChildren<SpriteRenderer>()[1];
 
-        DisableClickSprite();
+        if (transform.Find("MarkText") != null)
+            markText = transform.Find("MarkText").GetComponent<TextMeshPro>();
+
+        if (transform.Find("MarkSprite") != null)
+            markSprite = transform.Find("MarkSprite").GetComponent<SpriteRenderer>();
+
+        if (transform.Find("GuideSprite") != null)
+            guideSprite = transform.Find("GuideSprite").GetComponent<SpriteRenderer>();
+
+        if (transform.Find("ClickSprite") != null)
+            clickSprite = transform.Find("ClickSprite").GetComponent<SpriteRenderer>();
+
+        SetClickSprite(Exit);
+
+        SetIsCursorOver(false);
     }
 
     protected virtual void OnMouseDown()
     {
-        GetClickSprite().color = new Color(0, 0.5f, 0, 1);
+        if (GetIsCursorOver())
+            ConvertClickSprite(Down);
+        else
+            ConvertClickSprite(Exit);
     }
 
     protected virtual void OnMouseUp()
     {
-        GetClickSprite().color = new Color(1, 1, 1, 1);
+        if (GetIsCursorOver())
+            ConvertClickSprite(Up);
+        else
+            ConvertClickSprite(Exit);
     }
 
     protected virtual void OnMouseEnter()
     {
-        IsOver = true;
-        EnableClickSprite();
+        SetIsCursorOver(true);
+        SetClickSprite(Enter);
     }
 
     protected virtual void OnMouseExit()
     {
-        IsOver = false;
-        DisableClickSprite();
+        SetIsCursorOver(false);
+        ConvertColorSprite(clickSprite, 1, Exit);
     }
 
-    protected SpriteRenderer GetClickSprite()
+    public void ConvertClickSprite(Color value)
     {
-        return clickSprite;
+        ConvertColorSprite(clickSprite, 1, value);
     }
 
-    public void DisableClickSprite()
+    public void SetMarkText(string value)
     {
-        clickSprite.color = new Color(0, 0, 0, 0);
+        markText.text = value;
     }
 
-    public void EnableClickSprite()
+    public string GetMarkText()
     {
-        clickSprite.color = new Color(1, 1, 1, 1);
+        return markText.text;
     }
 
-    public bool GetIsOver()
+    public void SetClickSprite(Color value)
     {
-        return IsOver;
+        if (colorConvertCoroutine != null)
+            StopCoroutine(colorConvertCoroutine);
+        clickSprite.color = value;
     }
 
-    public void SetIsOver(bool value)
+    public bool GetIsCursorOver()
     {
-        IsOver = value;
+        return isCursorOver;
+    }
+
+    public void SetIsCursorOver(bool value)
+    {
+        isCursorOver = value;
+    }
+
+    private void ConvertColorSprite(SpriteRenderer target, float time, Color targetValue)//스프라이트 색 변환
+    {
+        if(colorConvertCoroutine!=null)
+           StopCoroutine(colorConvertCoroutine);
+        colorConvertCoroutine =  StartCoroutine(ConvertColorSpriteIEnumerator(target, time, 0, targetValue));
+    }
+
+    private IEnumerator ConvertColorSpriteIEnumerator(SpriteRenderer target, float time, float currentTime, Color targetValue)//스프라이트 색 변환 재귀
+    {
+        currentTime += time / 100;
+        if (currentTime > time)
+            yield break;
+
+        float target_r = target.color.r + (targetValue.r - target.color.r) * (currentTime / time);
+        float target_g = target.color.g + (targetValue.g - target.color.g) * (currentTime / time);
+        float target_b = target.color.b + (targetValue.b - target.color.b) * (currentTime / time);
+        float target_a = target.color.a + (targetValue.a - target.color.a) * (currentTime / time);
+        target.color = new Color(target_r, target_g, target_b, target_a);
+
+        yield return new WaitForSeconds(time / 100);
+        colorConvertCoroutine = StartCoroutine(ConvertColorSpriteIEnumerator(target, time, currentTime, targetValue));
     }
 }

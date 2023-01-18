@@ -74,6 +74,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 977dd9bed4bbf3347a868a82d54b548c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Enter: {r: 0, g: 0, b: 0, a: 0}
+  Exit: {r: 0, g: 0, b: 0, a: 0}
+  Down: {r: 0, g: 0, b: 0, a: 0}
+  Up: {r: 0, g: 0, b: 0, a: 0}
   line: 0
   Selected: 0
 --- !u!1 &2167778939491051774
@@ -87,7 +91,7 @@ GameObject:
   - component: {fileID: 4141004658890059008}
   - component: {fileID: 7791919808955492648}
   m_Layer: 0
-  m_Name: GreenBox
+  m_Name: GuideSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -171,7 +175,7 @@ GameObject:
   - component: {fileID: 7777599631321500593}
   - component: {fileID: 2387181859934422524}
   m_Layer: 0
-  m_Name: WhiteBox
+  m_Name: ClickSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -256,7 +260,7 @@ GameObject:
   - component: {fileID: 170770944769847395}
   - component: {fileID: 5467207750293959691}
   m_Layer: 0
-  m_Name: Text
+  m_Name: MarkText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

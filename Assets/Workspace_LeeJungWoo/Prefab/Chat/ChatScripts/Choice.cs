@@ -1,0 +1,19 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Choice : MonoBehaviour
+{
+    private Chat chat;
+    public int choice;
+
+    private void Start()
+    {
+        chat = GameObject.FindObjectOfType<Chat>();
+    }
+
+    public void OnChoiceDown()
+    {
+        chat.OnChoiceDown(choice);
+    }
+}
