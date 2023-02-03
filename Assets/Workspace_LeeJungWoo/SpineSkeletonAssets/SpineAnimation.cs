@@ -5,7 +5,7 @@ using Spine.Unity;
 
 public class SpineAnimation : MonoBehaviour
 {
-    protected enum AnimState
+    public enum AnimState
     {
         Idle
     }
@@ -18,12 +18,12 @@ public class SpineAnimation : MonoBehaviour
     [Header("애니메이션 에셋배열")]
     public AnimationReferenceAsset[] animClip;
 
-    protected void SetCurrentAnimation(AnimState state, bool loop, float timeScale)//주어진 애니메이션 상태 상태에 따라 애니메이션 재생
+    protected virtual void SetCurrentAnimation(AnimState state, bool loop, float timeScale)//주어진 애니메이션 상태 상태에 따라 애니메이션 재생
     {
         AsyncAnimation(animClip[(int)state], loop, timeScale);
     }
 
-    protected void AsyncAnimation(AnimationReferenceAsset animClip, bool loop, float timeScale)//주어진 조건에 맞춰 애니메이션 동기화
+    protected virtual void AsyncAnimation(AnimationReferenceAsset animClip, bool loop, float timeScale)//주어진 조건에 맞춰 애니메이션 동기화
     {
         if (animClip.name.Equals(currentAnimation))
             return;
