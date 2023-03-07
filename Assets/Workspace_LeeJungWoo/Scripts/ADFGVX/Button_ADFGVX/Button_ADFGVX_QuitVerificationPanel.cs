@@ -8,6 +8,6 @@ public class Button_ADFGVX_QuitVerificationPanel : Button_ADFGVX
     {
         base.OnMouseDown();
         GameManager.verificationpart.UnvisiblePart();
-        GameManager.SetPartLayer(0, 0, 0, 0, 0, 0, 0, 0);
+        GameManager.SetPartLayer(0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 }

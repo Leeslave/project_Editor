@@ -94,11 +94,8 @@ public class InputField_ADFGVX : Button_ADFGVX
         isFlash = value;
     }
 
-    public void AddInputFieldByKeyboard(string value)//입력창에 키보드로 입력
+    public void AddInputField(string value)//입력창에 키보드로 입력
     {
-        if (!GetIsReadyForInput())
-            return;
-
         if(inputString.Length > InputFieldMaxLength)
         {
             GameManager.InformError(InputFieldName + " 최대 입력 : 입력 불가");
@@ -112,40 +109,7 @@ public class InputField_ADFGVX : Button_ADFGVX
         GameManager.PlayAudioSource(ADFGVX.Audio.AddChar);
     }
 
-    public void AddInputFieldByButton(string value)//입력창에 버튼으로 입력
-    {
-        if (inputString.Length > InputFieldMaxLength)
-        {
-            GameManager.InformError(InputFieldName + " 최대 입력 : 입력 불가");
-            return;
-        }
-
-        inputString += value;
-        SetMarkText(inputString);
-        skipOneFlash = true;
-
-        GameManager.PlayAudioSource(ADFGVX.Audio.AddChar);
-    }
-
-    public void DeleteInputFieldByKeyboard(int length)//입력창에 키보드로 삭제
-    {
-        if (!GetIsReadyForInput())
-            return;
-
-        if (inputString.Length == 0)
-        {
-            GameManager.InformError(InputFieldName + " 최소 입력 : 삭제 불가");
-            return;
-        }
-
-        inputString = inputString.Substring(0, inputString.Length - length);
-        SetMarkText(inputString);
-        skipOneFlash = true;
-
-        GameManager.PlayAudioSource(ADFGVX.Audio.DeleteChar);
-    }
-
-    public void DeleteInputFieldByButton(int length)//입력창에 버튼으로 삭제
+    public void DeleteInputField(int length)//입력창에 키보드로 삭제
     {
         if (inputString.Length == 0)
         {
@@ -160,17 +124,14 @@ public class InputField_ADFGVX : Button_ADFGVX
         GameManager.PlayAudioSource(ADFGVX.Audio.DeleteChar);
     }
 
-    public void ClearInputFieldByButton()//입력창에 버튼으로 비움
+    public void ClearInputField()//입력창에 버튼으로 비움
     {
         inputString = "";
         SetMarkText("");
     }
 
-    public void ReturnInputFieldByKeyboard()//검색창에 키보드로 엔터
+    public void ReturnInputField()//검색창에 키보드로 엔터
     {
-        if (!GetIsReadyForInput())
-            return;
-
         StopFlashInputField();
         InitInputField();
     }

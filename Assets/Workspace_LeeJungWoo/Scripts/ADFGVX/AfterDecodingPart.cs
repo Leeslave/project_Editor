@@ -29,11 +29,10 @@ public class AfterDecodingPart : MonoBehaviour
         button_DecodeSave = GameObject.Find("DecodeSave");
     }
 
-    public void SetLayer(int layer)//입력 제어
+    public void SetLayer(int layer)//이 게임오브젝트 하위 요소의 레이어 제어
     {
-        this.gameObject.layer = layer;
-        button_DecodeSave.layer = layer;
-        data.gameObject.layer = layer;
+        transform.Find("DecodeSave").gameObject.layer = layer;
+        transform.Find("Data").gameObject.layer = layer;
     }
 
     public void UnvisiblePart()//파트 비가시 모드
@@ -51,11 +50,8 @@ public class AfterDecodingPart : MonoBehaviour
         return data;
     }
 
-    public void AddInputFieldByKeyboard(string value)//키보드 입력
+    public void AddInputField(string value)//키보드 입력
     {
-        if (!data.GetIsReadyForInput())
-            return;
-
         if (value.ToCharArray()[0] >= '0' && value.ToCharArray()[0] <= '9')
         {
             adfgvx.InformError("유효하지 않은 입력 : 입력 불가");
@@ -67,7 +63,6 @@ public class AfterDecodingPart : MonoBehaviour
 
         if (value == "A" || value == "D" || value == "F" || value == "G" || value == "V" || value == "X")
         {
-
             if (row.text == "-")
                 row.text = value;
             else if (line.text == "-")
@@ -85,13 +80,31 @@ public class AfterDecodingPart : MonoBehaviour
         }
     }
 
-    public void ReturnInputFieldByKeyboard()//키보드 엔터
+    public void ReturnInputField()//키보드 엔터
     {
-        if (!data.GetIsReadyForInput())
-            return;
-
         TextMeshPro row = adfgvx.biliteralsubstitutionpart.GetRowText();
         TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetLineText();
+
+        //튜토리얼 관련 코드
+        if(adfgvx.GetCurrentTutorialPhase() == 8)
+        {
+            if (row.text == "F" && line.text == "G" && adfgvx.biliteralsubstitutionpart.GetCurrentArrayNum() == 0)
+                adfgvx.MoveToNextTutorialPhase(2.0f);
+            else if(adfgvx.biliteralsubstitutionpart.GetCurrentArrayNum() != 0)
+            {
+                adfgvx.DisplayTutorialDialog(100, 0f);
+                row.text = "-";
+                line.text = "-";
+                return;
+            }
+            else
+            {
+                adfgvx.DisplayTutorialDialog(94, 0f);
+                row.text = "-";
+                line.text = "-";
+                return;
+            }
+        }
 
         if (row.text == "-" || line.text == "-")
             return;
@@ -109,7 +122,8 @@ public class AfterDecodingPart : MonoBehaviour
             if (line.text == array[idx_line].ToString())
                 break;
         }
-        adfgvx.afterDecodingPart.GetInputField_Data().AddInputFieldByKeyboard(adfgvx.biliteralsubstitutionpart.elementButtons[idx_row * 6 + idx_line].GetButtonText() + " ");
+        if(adfgvx.afterDecodingPart.GetInputField_Data().GetIsReadyForInput())
+            adfgvx.afterDecodingPart.GetInputField_Data().AddInputField(adfgvx.biliteralsubstitutionpart.elementButtons[idx_row * 6 + idx_line].GetButtonText() + " ");
         row.text = "-";
         line.text = "-";
     }

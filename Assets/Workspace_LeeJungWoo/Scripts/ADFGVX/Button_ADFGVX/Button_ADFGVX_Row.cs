@@ -9,7 +9,7 @@ public class Button_ADFGVX_Row : Button_ADFGVX
 
     protected override void OnMouseDown()
     {
-        if (GameManager.currentmode == ADFGVX.mode.Encoding)
+        if (GameManager.CurrentMode == ADFGVX.mode.Encoding)
             ConvertClickSpriteColor(new Color(0.5f, 0, 0, 1));
     }
 
@@ -17,12 +17,12 @@ public class Button_ADFGVX_Row : Button_ADFGVX
     {
         if (GetIsCursorOver())
         {
-            if (GameManager.currentmode == ADFGVX.mode.Encoding)
+            if (GameManager.CurrentMode == ADFGVX.mode.Encoding)
             {
                 GameManager.InformError("버튼 사용 불가 : 현재 모드 재확인 요망");
                 ConvertClickSpriteColor(Color.red);
             }
-            else if (GameManager.currentmode == ADFGVX.mode.Decoding)
+            else if (GameManager.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (Selected)
                 {
@@ -45,9 +45,9 @@ public class Button_ADFGVX_Row : Button_ADFGVX
     protected override void OnMouseEnter()
     {
         SetIsCursorOver(true);
-        if (GameManager.currentmode == ADFGVX.mode.Decoding)
+        if (GameManager.CurrentMode == ADFGVX.mode.Decoding)
             SetClickSpriteColor(Color.white);
-        else if (GameManager.currentmode == ADFGVX.mode.Encoding)
+        else if (GameManager.CurrentMode == ADFGVX.mode.Encoding)
             SetClickSpriteColor(Color.red);
     }
 

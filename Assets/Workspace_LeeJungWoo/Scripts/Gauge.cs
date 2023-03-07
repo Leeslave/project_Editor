@@ -33,22 +33,22 @@ public class Gauge : MonoBehaviour
         StartCoroutine(FillGaugeBarIEnumerator(time, 0));
     }
 
-    private IEnumerator FillGaugeBarIEnumerator(float time, float currentTime)//게이지 바 채움 재귀
+    private IEnumerator FillGaugeBarIEnumerator(float endTime, float currentendTime)//게이지 바 채움 재귀
     {
-        currentTime += time / 100;
-        if (currentTime > time)
+        currentendTime += endTime / 100;
+        if (currentendTime > endTime)
             yield break;
 
-        barSprite.size = new Vector2(47.6f * (currentTime / time), barSprite.size.y);
+        barSprite.size = new Vector2(47.6f * (currentendTime / endTime), barSprite.size.y);
 
-        yield return new WaitForSeconds(time / 100);
-        StartCoroutine(FillGaugeBarIEnumerator(time, currentTime));
+        yield return new WaitForSeconds(endTime / 100);
+        StartCoroutine(FillGaugeBarIEnumerator(endTime, currentendTime));
     }
 
-    public void UnvisibleGauge(float time)//게이지 바 비가시 모드
+    public void UnvisibleGauge(float endTime)//게이지 바 비가시 모드
     {
-        ConvertColorSprite(barSprite, time, Color.clear);
-        ConvertColorSprite(guideSprite, time, Color.clear);
+        ConvertColorSprite(barSprite, endTime, Color.clear);
+        ConvertColorSprite(guideSprite, endTime, Color.clear);
     }
 
     public void VisibleGaugeImediately()//게이지 바 가시 모드
@@ -57,24 +57,24 @@ public class Gauge : MonoBehaviour
         guideSprite.color = Color.white;
     }
 
-    private void ConvertColorSprite(SpriteRenderer target, float time, Color targetValue)//스프라이트 색 변환
+    private void ConvertColorSprite(SpriteRenderer target, float endTime, Color targetValue)//스프라이트 색 변환
     {
-        StartCoroutine(ConvertColorSpriteIEnumerator(target, time, 0, targetValue));
+        StartCoroutine(ConvertColorSpriteIEnumerator(target, endTime, 0, targetValue));
     }
 
-    private IEnumerator ConvertColorSpriteIEnumerator(SpriteRenderer target, float time, float currentTime, Color targetValue)//스프라이트 색 변환 재귀
+    private IEnumerator ConvertColorSpriteIEnumerator(SpriteRenderer target, float endTime, float currentTime, Color targetValue)//스프라이트 색 변환 재귀
     {
-        currentTime += time / 100;
-        if (currentTime > time)
+        currentTime += endTime / 100;
+        if (currentTime > endTime)
             yield break;
 
-        float target_r = target.color.r + (targetValue.r - target.color.r) * (currentTime / time);
-        float target_g = target.color.g + (targetValue.g - target.color.g) * (currentTime / time);
-        float target_b = target.color.b + (targetValue.b - target.color.b) * (currentTime / time);
-        float target_a = target.color.a + (targetValue.a - target.color.a) * (currentTime / time);
+        float target_r = target.color.r + (targetValue.r - target.color.r) * (currentTime / endTime);
+        float target_g = target.color.g + (targetValue.g - target.color.g) * (currentTime / endTime);
+        float target_b = target.color.b + (targetValue.b - target.color.b) * (currentTime / endTime);
+        float target_a = target.color.a + (targetValue.a - target.color.a) * (currentTime / endTime);
         target.color = new Color(target_r, target_g, target_b, target_a);
 
-        yield return new WaitForSeconds(time / 100);
-        StartCoroutine(ConvertColorSpriteIEnumerator(target, time, currentTime, targetValue));
+        yield return new WaitForSeconds(endTime / 100);
+        StartCoroutine(ConvertColorSpriteIEnumerator(target, endTime, currentTime, targetValue));
     }
 }

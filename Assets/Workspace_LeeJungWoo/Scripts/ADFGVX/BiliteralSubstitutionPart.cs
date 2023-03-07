@@ -11,9 +11,13 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     private int decodeRow;
     private int decodeLine;
 
+    [Header("ADFGVX 엘레멘트 버튼")]
     public Button_ADFGVX_Element[] elementButtons = new Button_ADFGVX_Element[36];
+    [Header("ADFGVX 행 버튼")]
     public Button_ADFGVX_Row[] rowButtons = new Button_ADFGVX_Row[6];
+    [Header("ADFGVX 열 버튼")]
     public Button_ADFGVX_Line[] lineButtons = new Button_ADFGVX_Line[6];
+
     private TextMeshPro rowText;
     private TextMeshPro lineText;
     private TextMeshPro arrayNumText;
@@ -33,16 +37,25 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         decodeLine = 6;
 
         currentArrayNum = 0;
-        UpdateArray(currentArrayNum.ToString());
+        UpdateADFGVXArray();
     }
 
-    public void SetLayer(int layer)//레이어 변경
+    public void SetLayer(int layer)//이 게임오브젝트 하위 요소의 레이어 제어
     {
-        this.gameObject.layer = layer;
-        GameObject.Find("ArrayKeyboard").layer = layer;
-        GameObject.Find("Delete").layer = layer;
-        GameObject.Find("ArrayMinus").layer = layer;
-        GameObject.Find("ArrayPlus").layer = layer;
+        GameObject arrayKeyboard = transform.Find("ArrayKeyboard").gameObject;
+        for(int i=0;i<6;i++)
+        {
+            arrayKeyboard.transform.Find("Line (" + i.ToString() + ")").gameObject.layer = layer;
+            arrayKeyboard.transform.Find("Row (" + i.ToString() + ")").gameObject.layer = layer;
+        }
+        for(int i=0;i<36;i++)
+        {
+            arrayKeyboard.transform.Find("Element (" + i.ToString() + ")").gameObject.layer = layer;
+        }
+        transform.Find("Delete").gameObject.layer = layer;
+        transform.Find("Clear").gameObject.layer = layer;
+        transform.Find("ArrayMinus").gameObject.layer = layer;
+        transform.Find("ArrayPlus").gameObject.layer = layer;
     }
 
     public TextMeshPro GetRowText()//입력 대기 중인 오 문자
@@ -55,29 +68,9 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         return lineText;
     }
 
-    private void UpdateArray(string currentArrayNum)//currentArrayNum에 따라서 새로운 ADFGVX배열을 로딩해서 Array를 업데이트
+    public int GetCurrentArrayNum()//현재 ADFGVX 배열 번호 반환
     {
-        string FilePath = "Assets/Workspace_LeeJungWoo/Prefab/ADFGVX/ArrayTxt/Array_" + currentArrayNum + ".txt";
-        FileInfo TxtFile = new FileInfo(FilePath);
-        string value = "";
-
-        if (TxtFile.Exists)//FilePath가 유효하다면
-        {
-            StreamReader Reader = new StreamReader(FilePath);
-            value = Reader.ReadToEnd();
-            Reader.Close();
-        }
-        else
-            Debug.Log("Unexist Filename!");
-
-        //모든 public elementButtons에 접근하면서 버튼의 텍스트를 ADFGVX표의 값대로 변경합니다
-        for (int i = 0; i < 6; i++)
-        {
-            for (int j = 0; j < 6; j++)
-            {
-                elementButtons[i * 6 + j].ChangeButtonText(value[i * 6 + j]);                              
-            }
-        }
+        return currentArrayNum;
     }
     
     public void OnEncElementDown(int row, int line)//Encoding Mode에서 6x6표의 버튼이 눌렸을 때
@@ -101,18 +94,79 @@ public class BiliteralSubstitutionPart : MonoBehaviour
 
         if (decodeLine != 6)//RowButton과 LineButton 둘 다 선택 되었으므로, Decoding 과정을 진행합니다
         {
-            adfgvx.afterDecodingPart.GetInputField_Data().AddInputFieldByButton(elementButtons[decodeRow * 6 + decodeLine].GetButtonText() + " ");
-            if (decodeLine != 6)
+            rowButtons[decodeRow].Selected = false;
+            lineButtons[decodeLine].Selected = false;
+            lineButtons[decodeLine].ConvertClickSpriteColor(lineButtons[decodeLine].Exit);
+
+            //튜토리얼 관련 코드
+            if (adfgvx.GetCurrentTutorialPhase() == 8)
             {
-                lineButtons[decodeLine].ConvertClickSpriteColor(lineButtons[decodeLine].Exit);
-                lineButtons[decodeLine].Selected = false;
-                decodeLine = 6;
-            }
-            if (decodeRow != 6)
-            {
-                rowButtons[decodeRow].Selected = false;
+                adfgvx.DisplayTutorialDialog(97, 0f);
                 decodeRow = 6;
+                decodeLine = 6;
+                return;
             }
+            if (adfgvx.GetCurrentTutorialPhase() == 7)
+            {
+                if (decodeRow == 0 && decodeLine == 1 && currentArrayNum == 0)
+                    adfgvx.MoveToNextTutorialPhase(2.0f);
+                else if (currentArrayNum != 0)
+                {
+                    adfgvx.DisplayTutorialDialog(100, 0f);
+                    decodeRow = 6;
+                    decodeLine = 6;
+                    return;
+                }
+                else
+                {
+                    adfgvx.DisplayTutorialDialog(87, 0f);
+                    decodeRow = 6;
+                    decodeLine = 6;
+                    return;
+                }
+            }
+            if (adfgvx.GetCurrentTutorialPhase() == 6)
+            {
+                if (decodeRow == 0 && decodeLine == 2 && currentArrayNum == 0)
+                    adfgvx.MoveToNextTutorialPhase(2.0f);
+                else if (currentArrayNum != 0)
+                {
+                    adfgvx.DisplayTutorialDialog(100, 0f);
+                    decodeRow = 6;
+                    decodeLine = 6;
+                    return;
+                }
+                else
+                {
+                    adfgvx.DisplayTutorialDialog(81, 0f);
+                    decodeRow = 6;
+                    decodeLine = 6;
+                    return;
+                }
+            }
+            if (adfgvx.GetCurrentTutorialPhase() == 5)
+            {
+                if (decodeRow == 5 && decodeLine == 4 && currentArrayNum == 0)
+                    adfgvx.MoveToNextTutorialPhase(2.0f);
+                else if (currentArrayNum != 0)
+                {
+                    adfgvx.DisplayTutorialDialog(100, 0f);
+                    decodeRow = 6;
+                    decodeLine = 6;
+                    return;
+                }
+                else
+                {
+                    adfgvx.DisplayTutorialDialog(75, 0f);
+                    decodeRow = 6;
+                    decodeLine = 6;
+                    return;
+                }
+            }
+
+            adfgvx.afterDecodingPart.GetInputField_Data().AddInputField(elementButtons[decodeRow * 6 + decodeLine].GetButtonText() + " ");
+            decodeRow = 6;
+            decodeLine = 6;
         }
     }
 
@@ -128,37 +182,136 @@ public class BiliteralSubstitutionPart : MonoBehaviour
                 lineButtons[i].ConvertClickSpriteColor(lineButtons[i].Exit);
             }
         }
+
         if (decodeRow != 6)//RowButton과 LineButton 둘 다 선택 되었으므로, Decoding 과정을 진행합니다
         {
-            adfgvx.afterDecodingPart.GetInputField_Data().AddInputFieldByButton(elementButtons[decodeRow * 6 + decodeLine].GetButtonText() + " ");
-            if (decodeLine != 6)
+            lineButtons[decodeLine].Selected = false;
+            rowButtons[decodeRow].Selected = false;
+            rowButtons[decodeRow].ConvertClickSpriteColor(rowButtons[decodeRow].Exit);
+
+            //튜토리얼 관련 코드
+            if (adfgvx.GetCurrentTutorialPhase() == 8)
             {
-                lineButtons[decodeLine].Selected = false;
-                decodeLine = 6;
-            }
-            if (decodeRow != 6)
-            {
-                rowButtons[decodeRow].ConvertClickSpriteColor(rowButtons[decodeRow].Exit);
-                rowButtons[decodeRow].Selected = false;
+                adfgvx.DisplayTutorialDialog(97, 0f);
                 decodeRow = 6;
+                decodeLine = 6;
+                return;
+            }
+            if (adfgvx.GetCurrentTutorialPhase() == 7)
+            {
+                if (decodeRow == 0 && decodeLine == 1 && currentArrayNum == 0)
+                    adfgvx.MoveToNextTutorialPhase(2.0f);
+                else if (currentArrayNum != 0)
+                {
+                    adfgvx.DisplayTutorialDialog(100, 0f);
+                    decodeRow = 6;
+                    decodeLine = 6;
+                    return;
+                }
+                else
+                {
+                    adfgvx.DisplayTutorialDialog(87, 0f);
+                    decodeRow = 6;
+                    decodeLine = 6;
+                    return;
+                }
+            }
+            if (adfgvx.GetCurrentTutorialPhase() == 6)
+            {
+                if (decodeRow == 0 && decodeLine == 2 && currentArrayNum == 0)
+                    adfgvx.MoveToNextTutorialPhase(2.0f);
+                else if (currentArrayNum != 0)
+                {
+                    adfgvx.DisplayTutorialDialog(100, 0f);
+                    decodeRow = 6;
+                    decodeLine = 6;
+                    return;
+                }
+                else
+                {
+                    adfgvx.DisplayTutorialDialog(81, 0f);
+                    decodeRow = 6;
+                    decodeLine = 6;
+                    return;
+                }
+            }
+            if (adfgvx.GetCurrentTutorialPhase() == 5)
+            {
+                if (decodeRow == 5 && decodeLine == 4 && currentArrayNum == 0)
+                    adfgvx.MoveToNextTutorialPhase(2.0f);
+                else if (currentArrayNum != 0)
+                {
+                    adfgvx.DisplayTutorialDialog(100, 0f);
+                    decodeRow = 6;
+                    decodeLine = 6;
+                    return;
+                }
+                else
+                {
+                    adfgvx.DisplayTutorialDialog(75, 0f);
+                    decodeRow = 6;
+                    decodeLine = 6;
+                    return;
+                }
+            }
+
+            adfgvx.afterDecodingPart.GetInputField_Data().AddInputField(elementButtons[decodeRow * 6 + decodeLine].GetButtonText() + " ");
+            decodeLine = 6;
+            decodeRow = 6;
+        }
+    }
+
+    private void UpdateADFGVXArray()//currentArrayNum에 따라서 새로운 ADFGVX 배열을 로딩해서 Array를 업데이트
+    {
+        string FilePath = "Assets/Workspace_LeeJungWoo/TxtFile/Array_" + currentArrayNum + ".txt";
+        FileInfo TxtFile = new FileInfo(FilePath);
+        string value = "";
+
+        if (TxtFile.Exists)//FilePath가 유효하다면
+        {
+            StreamReader Reader = new StreamReader(FilePath);
+            value = Reader.ReadToEnd();
+            Reader.Close();
+        }
+        else
+            Debug.Log("Unexist Filename!");
+
+        //모든 public elementButtons에 접근하면서 버튼의 텍스트를 ADFGVX표의 값대로 변경합니다
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < 6; j++)
+            {
+                elementButtons[i * 6 + j].ChangeButtonText(value[i * 6 + j]);
             }
         }
     }
 
     public void ArrayPlus()//ADFGVX배열 +1로 전환
     {
+        //튜토리얼 관련 코드
+        if (adfgvx.GetCurrentTutorialPhase()==4)
+        {
+            adfgvx.MoveToNextTutorialPhase(3.0f);
+        }
+
         currentArrayNum++;
         currentArrayNum %= ArrayNum_MAX;
         arrayNumText.text = "ADFGVX\nARRAY\nNo." + currentArrayNum.ToString();
-        UpdateArray(currentArrayNum.ToString());
+        UpdateADFGVXArray();
     }
 
     public void ArrayMinus()//ADFGVX배열 -1로 전환
     {
+        //튜토리얼 관련 코드
+        if (adfgvx.GetCurrentTutorialPhase() == 4)
+        {
+            adfgvx.MoveToNextTutorialPhase(3.0f);
+        }
+
         currentArrayNum--;
         if (currentArrayNum < 0)
             currentArrayNum = ArrayNum_MAX - 1;
         arrayNumText.text = "ADFGVX\nARRAY\nNo." + currentArrayNum.ToString();
-        UpdateArray(currentArrayNum.ToString());
+        UpdateADFGVXArray();
     }
 }

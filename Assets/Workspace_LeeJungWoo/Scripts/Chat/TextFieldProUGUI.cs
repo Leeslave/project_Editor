@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class TextFieldProUGUI : MonoBehaviour
 {
     private TextMeshProUGUI markText;
     private SpriteRenderer guideSprite;
+
+    private float width;
 
     private Coroutine flowTextWithEndTimeCoroutine;
     private Coroutine flowTextWithDelayCoroutine;
@@ -29,6 +32,13 @@ public class TextFieldProUGUI : MonoBehaviour
     public void SetText(string value)//markText를 value로 설정한다
     {
         markText.text = value;
+        Canvas.ForceUpdateCanvases();
+        width = this.GetComponentInChildren<RectTransform>().rect.width;
+    }
+
+    public float GetWidth()//RectTransform의 Width 반환
+    {
+        return width;
     }
 
     public bool GetIsNowFlowText()//흐름 출력 진행 여부 반환

@@ -5,20 +5,23 @@ using UnityEngine;
 public class KeyboardInput : MonoBehaviour
 {
     private ADFGVX adfgvx;
-    
-    
+   
     Dictionary<KeyCode, Action> keyDictionary;
-    private string lastKeyCode;
-    private bool holdingDown;
-    private int count;
-    private int down;
+    private string lastInputKeyCode;                //저번에 입력된 키코드 값 저장
+    private bool isKeyHoldingDown;                  //키다운 유지 여부
+    private int holdingDownCounter;                 //키다운 이후로 얼마나 많은 FixedFrame이 지나갔는지 카운트
+    private int ContinuousInputCounter;             //연속 입력의 횟수 - 일정 횟수를 넘기면 연속 입력 속도가 빨라진다
 
+    [Header("오디오 소스 컴포넌트")]
     public AudioSource audioSource;
-
-    [Header("키보드 클릭 시 오디오")]
-    public AudioClip[] keyboardClickAudioClips;
-    [Header("마우스 클릭 시 오디오")]
-    public AudioClip[] mouseClickAudioClips;
+    [Header("키보드 클릭 시 오디오 재생 여부")]
+    public bool PlayKeyboardAudio;
+    [Header("키보드 클릭 시 오디오 클립 - 랜덤 재생")]
+    public AudioClip[] KeyboardClickAudioClips;
+    [Header("마우스 클릭 시 오디오 재생 여부")]
+    public bool PlayMouseAudio;
+    [Header("마우스 클릭 시 오디오 클립 - 랜덤 재생")]
+    public AudioClip[] MouseClickAudioClips;
 
     private void Start()
     {
@@ -64,93 +67,96 @@ public class KeyboardInput : MonoBehaviour
             { KeyCode.Z, KeyDown_Z },
             { KeyCode.Slash, KeyDown_Slash },
             { KeyCode.Minus, KeyDown_Minus },
-            { KeyCode.Space, KeyDown_Space },
             { KeyCode.Backspace, KeyDown_Backspace },
             { KeyCode.Return, KeyDown_Return }
         };
 
-        lastKeyCode = null;
-        count = 0;
-        down = 0;
+        //연속 입력 관련 변수 초기화
+        lastInputKeyCode = "";
+        ContinuousInputCounter = 0;
+        holdingDownCounter = 0;
     }
 
     void Update()
     {
-        if(Input.anyKeyDown)
+        foreach (var dic in keyDictionary)
         {
-            foreach (var dic in keyDictionary)
+            //딕셔너리에 있는 키코드 값이 키다운된 순간
+            if (Input.GetKeyDown(dic.Key))
             {
-                if (Input.GetKeyDown(dic.Key))
+                if(PlayKeyboardAudio)
                 {
-                    audioSource.clip = keyboardClickAudioClips[UnityEngine.Random.Range(0, keyboardClickAudioClips.Length - 1)];
+                    //키보드 입력 사운드를 랜덤으로 재생한다
+                    audioSource.clip = KeyboardClickAudioClips[UnityEngine.Random.Range(0, KeyboardClickAudioClips.Length - 1)];
                     audioSource.Play();
-
-                    dic.Value();
-                    if (dic.Key.ToString() != lastKeyCode)
-                    {
-                        down = 0;
-                        count = 0;
-                    }
-                    lastKeyCode = dic.Key.ToString();
                 }
+
+                //입력값을 키로 딕셔너리에서 액션을 실행한다
+                dic.Value();
+
+                //이번에 입력한 키코드가 저번에 입력한 키코드와 다르다면
+                if (dic.Key.ToString() != lastInputKeyCode)
+                {
+                    holdingDownCounter = 0;
+                    ContinuousInputCounter = 0;
+                }
+
+                //lastInputKeyCode의 값을 이번에 입력한 키코드의 값으로 덮어씌운다
+                lastInputKeyCode = dic.Key.ToString();
+            }
+
+            //딕셔너리에 있는 키코드 값이 키다운되고 있는 동안
+            if(Input.GetKey(dic.Key))
+            {
+                //키다운 중인 상태임을 알림
+                isKeyHoldingDown = true;
             }
         }
 
-        if (Input.GetMouseButtonDown(0))
+        //어떤 키코드든 키다운이 끊긴 순간
+        if (!Input.anyKey && isKeyHoldingDown)
         {
-            audioSource.clip = mouseClickAudioClips[UnityEngine.Random.Range(0, mouseClickAudioClips.Length - 1)];
+            //연속 입력 관련 변수의 값 초기화
+            holdingDownCounter = 0;
+            ContinuousInputCounter = 0;
+            isKeyHoldingDown = false;
+        }
+
+        //마우스 버튼다운된 순간
+        if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && PlayMouseAudio)
+        {
+            //마우스 클릭 사운드를 랜덤으로 재생
+            audioSource.clip = MouseClickAudioClips[UnityEngine.Random.Range(0, MouseClickAudioClips.Length - 1)];
             audioSource.Play();
         }
     }
 
     private void FixedUpdate()
     {
-        if(Input.anyKey)
+        foreach (var dic in keyDictionary)
         {
-            foreach(var dic in keyDictionary)
+            //딕셔너리에 있는 키코드 값이 키다운인 동안
+            if (Input.GetKey(dic.Key))
             {
-                if(Input.GetKey(dic.Key))
+                //동일 입력이 몇 FixedFrame동안 유지되었는지 holdingDownCounter은 계산
+                if (dic.Key.ToString() == lastInputKeyCode)
+                    holdingDownCounter++;
+
+                //연속 입력이 일어난 횟수가 3회 이상이면 연속 입력 딜레이가 10 FixedFrame에서 2 FixedFrame으로 전환
+                float countinuousInputDelay = (ContinuousInputCounter > 3) ? 2 : 10;
+
+                //동일 입력이 연속 입력 딜레이를 상회하면 
+                if (holdingDownCounter > countinuousInputDelay)
                 {
-                    if (dic.Key.ToString() == lastKeyCode)
-                    {
-                        down++;
-                    }
+                    //동일 입력 카운터를 초기화하고, 연속 입력이 일어난 횟수를 늘린다 
+                    holdingDownCounter = 0;
+                    ContinuousInputCounter++;
 
-                    float delay = (count > 3) ? 3 : 15 ;
-
-                    if (down > delay)
-                    {
-                        down = 0;
-                        count++;
-
-                        dic.Value();
-                    }
+                    //입력값을 키로 딕셔너리에서 액션을 실행한다
+                    dic.Value();
                 }
             }
-            holdingDown = true;
         }
-
-        if(!Input.anyKey && holdingDown)
-        {
-            down = 0;
-            count = 0;
-            holdingDown = false;
-        }
-    }
-
-
-    private void AddInputField(string value)
-    {
-        adfgvx.transpositionpart.AddKeyword(value);
-
-        adfgvx.afterDecodingPart.AddInputFieldByKeyboard(value);
-
-        adfgvx.beforeEncodingPart.AddInputFieldByKeyboard(value);
-
-        adfgvx.encodeDataLoadPart.GetInputField_filePath().AddInputFieldByKeyboard(value);
-
-        adfgvx.encodeDataSavePart.GetInputField_Title().AddInputFieldByKeyboard(value);
-        adfgvx.encodeDataSavePart.AddInputField_DataByKeyboard(value);
     }
 
     private void KeyDown_0()
@@ -304,37 +310,85 @@ public class KeyboardInput : MonoBehaviour
     {
         AddInputField("-");
     }
-    private void KeyDown_Space()
+
+    private void AddInputField(string value)
     {
-        AddInputField(" ");
+        if (adfgvx.transpositionpart.GetInputField_keyword().GetIsReadyForInput())
+            adfgvx.transpositionpart.AddKeyword(value);
+
+        if (adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        {
+            if (adfgvx.encodeDataLoadPart.GetInputField_filePath().GetIsReadyForInput())
+                adfgvx.encodeDataLoadPart.GetInputField_filePath().AddInputField(value);
+
+            if (adfgvx.afterDecodingPart.GetInputField_Data().GetIsReadyForInput())
+                adfgvx.afterDecodingPart.AddInputField(value);
+        }
+        else
+        {
+            if (adfgvx.beforeEncodingPart.GetInputField_Data().GetIsReadyForInput())
+                adfgvx.beforeEncodingPart.AddInputField(value);
+
+            if (adfgvx.encodeDataSavePart.GetInputField_Title().GetIsReadyForInput())
+                adfgvx.encodeDataSavePart.GetInputField_Title().AddInputField(value);
+
+            if (adfgvx.encodeDataSavePart.GetInputField_Data().GetIsReadyForInput())
+                adfgvx.encodeDataSavePart.GetInputField_Data().AddInputField(value + " ");
+        }
     }
+
     private void KeyDown_Backspace()
     {
-        adfgvx.transpositionpart.DeleteKeyword();
-        adfgvx.encodeDataLoadPart.GetInputField_filePath().DeleteInputFieldByKeyboard(1);
+        if (adfgvx.transpositionpart.GetInputField_keyword().GetIsReadyForInput())
+            adfgvx.transpositionpart.DeleteKeyword();
 
-        adfgvx.afterDecodingPart.GetInputField_Data().DeleteInputFieldByKeyboard(2);
+        if (adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        {
+            if (adfgvx.encodeDataLoadPart.GetInputField_filePath().GetIsReadyForInput())
+                adfgvx.encodeDataLoadPart.GetInputField_filePath().DeleteInputField(1);
 
-        adfgvx.beforeEncodingPart.DeleteInputField_DataByKeyboard();
+            if (adfgvx.afterDecodingPart.GetInputField_Data().GetIsReadyForInput())
+                adfgvx.afterDecodingPart.GetInputField_Data().DeleteInputField(2);
+        }
+        else
+        {
+            if (adfgvx.beforeEncodingPart.GetInputField_Data().GetIsReadyForInput())
+                adfgvx.beforeEncodingPart.DeleteInputField_Data();
 
-        adfgvx.encodeDataSavePart.GetInputField_Title().DeleteInputFieldByKeyboard(1);
-        adfgvx.encodeDataSavePart.GetInputField_Data().DeleteInputFieldByKeyboard(2);
+            if (adfgvx.encodeDataSavePart.GetInputField_Title().GetIsReadyForInput())
+                adfgvx.encodeDataSavePart.GetInputField_Title().DeleteInputField(1);
+
+            if (adfgvx.encodeDataSavePart.GetInputField_Data().GetIsReadyForInput())
+                adfgvx.encodeDataSavePart.GetInputField_Data().DeleteInputField(2);
+        }
     }
+
     private void KeyDown_Return()
     {
-        if (adfgvx.currentmode == ADFGVX.mode.Decoding)
+        if (adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            adfgvx.transpositionpart.OnTransposeDownByKeyboard();
-            adfgvx.encodeDataLoadPart.LoadEncodeDataByKeyboard();
-            adfgvx.afterDecodingPart.ReturnInputFieldByKeyboard();
-        }
-        else if(adfgvx.currentmode == ADFGVX.mode.Encoding)
-        {
-            adfgvx.transpositionpart.OnTransposeReverseDownByKeyboard();
-            adfgvx.beforeEncodingPart.GetInputField_Data().ReturnInputFieldByKeyboard();
-        }
+            if(adfgvx.transpositionpart.GetInputField_keyword().GetIsReadyForInput())
+                adfgvx.transpositionpart.OnTransposeDown();
 
-        adfgvx.encodeDataSavePart.GetInputField_Title().ReturnInputFieldByKeyboard();
-        adfgvx.encodeDataSavePart.GetInputField_Data().ReturnInputFieldByKeyboard();
+            if (adfgvx.encodeDataLoadPart.GetInputField_filePath().GetIsReadyForInput())
+                adfgvx.encodeDataLoadPart.LoadEncodeData();
+    
+            if(adfgvx.afterDecodingPart.GetInputField_Data().GetIsReadyForInput())
+                adfgvx.afterDecodingPart.ReturnInputField();
+        }
+        else if(adfgvx.CurrentMode == ADFGVX.mode.Encoding)
+        {
+            if (adfgvx.transpositionpart.GetInputField_keyword().GetIsReadyForInput())
+                adfgvx.transpositionpart.OnTransposeReverseDown();
+         
+            if(adfgvx.beforeEncodingPart.GetInputField_Data().GetIsReadyForInput())
+                adfgvx.beforeEncodingPart.GetInputField_Data().ReturnInputField();
+
+            if (adfgvx.encodeDataSavePart.GetInputField_Title().GetIsReadyForInput())
+                adfgvx.encodeDataSavePart.GetInputField_Title().ReturnInputField();
+
+            if (adfgvx.encodeDataSavePart.GetInputField_Data().GetIsReadyForInput())
+                adfgvx.encodeDataSavePart.GetInputField_Data().ReturnInputField();
+        }
     }
 }

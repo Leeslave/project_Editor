@@ -19,15 +19,20 @@ public class Button : MonoBehaviour
     [Header("Up 색")]
     public Color Up;
 
-    //커서 오버 확인
+    //커서 오버 확인 변수
     private bool isCursorOver;
 
-    //색을 변경하는 코루틴 관리
+    //색을 변경하는 코루틴, 중도 파기 및 추가에 대응
     private Coroutine colorConvertCoroutine;
 
     protected virtual void Start()
     {
         InitButton();
+    }
+
+    protected void SetLayer(int layer)//입력 제어
+    {
+        this.gameObject.layer = layer;
     }
 
     protected void InitButton()//버튼 초기화

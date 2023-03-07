@@ -7,6 +7,6 @@ public class Button_ADFGVX_Load : Button_ADFGVX
     protected override void OnMouseDown()
     {
         base.OnMouseDown();
-        GameManager.encodeDataLoadPart.LoadEncodeDataByButton();
+        GameManager.encodeDataLoadPart.LoadEncodeData();
     }
 }

@@ -10,7 +10,6 @@ public class EncodeDataLoadPart : MonoBehaviour
 
     private TextMeshPro partTitle;                  //파트 타이틀
 
-    private GameObject button_Load;
     private InputField_ADFGVX filePath;
 
     private TextField securityLevel;
@@ -29,7 +28,6 @@ public class EncodeDataLoadPart : MonoBehaviour
 
         partTitle = GetComponentsInChildren<TextMeshPro>()[0];
 
-        button_Load = GameObject.Find("Load");
         filePath = transform.Find("FilePath").GetComponent<InputField_ADFGVX>();
 
         securityLevel = transform.Find("SecurityLevel").GetComponent<TextField>();
@@ -39,14 +37,12 @@ public class EncodeDataLoadPart : MonoBehaviour
         senderUI = transform.Find("SenderUI").GetComponent<TextField>();
         date = transform.Find("Date").GetComponent<TextField>();
         dateUI = transform.Find("DateUI").GetComponent<TextField>();
-
     }
 
-    public void SetLayer(int layer)//모든 입력 제어
+    public void SetLayer(int layer)//이 게임오브젝트 하위 요소의 레이어 제어
     {
-        this.gameObject.layer = layer;
-        filePath.gameObject.layer = layer;
-        button_Load.layer = layer;
+        transform.Find("FilePath").gameObject.layer = layer;
+        transform.Find("Load").gameObject.layer = layer;
     }
 
     public void UnvisiblePart()//암호 파트 가시
@@ -69,97 +65,7 @@ public class EncodeDataLoadPart : MonoBehaviour
         return securityLevel;
     }
 
-    public void LoadEncodeDataByKeyboard()//inputstring에 따라서 암호문을 불러온다
-    {
-        if (!filePath.GetIsReadyForInput())
-            return;
-
-        if (date.GetIsNowFlowText() || sender.GetIsNowFlowText())//아직 전에 명령받은 파일 불러오기 작업이 끝나지 않음
-        {
-            adfgvx.InformError("파일 불러오기 불가 : 작업 진행 중");
-            return;
-        }
-
-        //return 키를 눌렀으니 검색창 선택과 깜박임을 비활성화한다
-        filePath.StopFlashInputField();
-
-        string FilePath = "";
-        FileInfo TxtFile = null;
-        string SecurityLevel = "";
-        string Title = "";
-        string Data = "";
-        string SendingDateUI = "";
-        string SendingDate = "";
-        string SenderUI = "";
-        string Sender = "";
-        string ReceptionDateUI = "";
-        string ReceptionDate = "";
-        string ReceiverUI = "";
-        string Receiver = "";
-
-        //ArrayNum에 따라서 각기 다른 표의 FilePath가 저장된다
-        FilePath = "Assets/Workspace_LeeJungWoo/Prefab/ADFGVX/ChipersTxt/" + filePath.GetInputString() + ".txt";
-        TxtFile = new FileInfo(FilePath);
-
-        if (TxtFile.Exists)//Filepath가 유효하다면
-        {
-            StreamReader Reader = new StreamReader(FilePath, System.Text.Encoding.UTF8);
-            SecurityLevel = Reader.ReadLine();
-            Title = Reader.ReadLine();
-            Data = Reader.ReadLine();
-            SendingDateUI = Reader.ReadLine();
-            SendingDate = Reader.ReadLine();
-            SenderUI = Reader.ReadLine();
-            Sender = Reader.ReadLine();
-            ReceptionDateUI = Reader.ReadLine();
-            ReceptionDate = Reader.ReadLine();
-            ReceiverUI = Reader.ReadLine();
-            Receiver = Reader.ReadLine();
-            DecodedChiper = Reader.ReadLine();
-            Reader.Close();
-        }
-        else//Filepath가 유효하지 않다면
-        {
-            adfgvx.InformError("'" + filePath.GetInputString() + "' " + "엑세스 실패 : 유효하지 않은 경로");
-            filePath.DisplayErrorInInputField("파일 접근 불가!");
-            Debug.Log("Unexist FilePath Error!");
-            return;
-        }
-
-        //모든 파트 입력 차단
-        adfgvx.SetPartLayer(2, 2, 2, 2, 2, 2, 2, 2);
-        //모든 파트 입력 회복 예약
-        adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0);
-
-        adfgvx.InformUpdate("'" + filePath.GetInputString() + "' " + "엑세스 성공 : 도달 시간 1ms 이하");
-
-        //흐름 출력 시작
-        ClearChiperAll();
-
-        securityLevel.SetText(SecurityLevel);
-        title.FlowText(Title, 3.0f);
-        data.FlowText(Data, 3.0f);
-        dateUI.SetText(SendingDateUI);
-        date.FlowText(SendingDate, 3.0f);
-        senderUI.SetText(SenderUI);
-        sender.FlowText(Sender, 3.0f);
-
-        //intermediatechiper에도 흐름 출력 시작
-        adfgvx.afterDecodingPart.GetSecurityLevel().SetText(SecurityLevel);
-        adfgvx.afterDecodingPart.GetTitle().FlowText(Title, 3.0f);
-        adfgvx.afterDecodingPart.GetDateUI().SetText(ReceptionDateUI);
-        adfgvx.afterDecodingPart.GetDate().FlowText(ReceptionDate, 3.0f);
-        adfgvx.afterDecodingPart.GetSenderUI().SetText(ReceiverUI);
-        adfgvx.afterDecodingPart.GetSender().FlowText(Receiver, 3.0f);
-
-        //사운드 재생
-        adfgvx.soundFlow(30, 3f);
-
-        //스탑워치 시작
-        adfgvx.StartStopWatch();
-    }
-
-    public void LoadEncodeDataByButton()
+    public void LoadEncodeData()//inputstring에 따라서 암호문을 불러온다
     {
         if (date.GetIsNowFlowText() || sender.GetIsNowFlowText())//아직 전에 명령받은 파일 불러오기 작업이 끝나지 않음
         {
@@ -185,44 +91,56 @@ public class EncodeDataLoadPart : MonoBehaviour
         string Receiver = "";
 
         //ArrayNum에 따라서 각기 다른 표의 FilePath가 저장된다
-        FilePath = "Assets/Workspace_LeeJungWoo/Prefab/ADFGVX/ChipersTxt/" + filePath.GetInputString() + ".txt";
+        FilePath = "Assets/Workspace_LeeJungWoo/TxtFile/" + filePath.GetInputString() + ".txt";
         TxtFile = new FileInfo(FilePath);
 
-        if (TxtFile.Exists)//Filepath가 유효하다면
+        if (!TxtFile.Exists)//Filepath가 유효하지 않다면
         {
-            StreamReader Reader = new StreamReader(FilePath, System.Text.Encoding.UTF8);
-            SecurityLevel = Reader.ReadLine();
-            Title = Reader.ReadLine();
-            Data = Reader.ReadLine();
-            SendingDateUI = Reader.ReadLine();
-            SendingDate = Reader.ReadLine();
-            SenderUI = Reader.ReadLine();
-            Sender = Reader.ReadLine();
-            ReceptionDateUI = Reader.ReadLine();
-            ReceptionDate = Reader.ReadLine();
-            ReceiverUI = Reader.ReadLine();
-            Receiver = Reader.ReadLine();
-            DecodedChiper = Reader.ReadLine();
-            Reader.Close();
-        }
-        else//Filepath가 유효하지 않다면
-        {
+            //현재 튜토리얼 단계에 따른 이벤트 발생
+            if (adfgvx.GetCurrentTutorialPhase() == 0)
+                adfgvx.DisplayTutorialDialog(7, 0f);
+
             adfgvx.InformError("'" + filePath.GetInputString() + "' " + "엑세스 실패 : 유효하지 않은 경로");
             filePath.DisplayErrorInInputField("파일 접근 불가!");
-            Debug.Log("Unexist FilePath Error!");
             return;
         }
 
+        if (filePath.GetInputString() == "SI-XI-I")//튜토리얼의 명령을 따랐음
+        {
+            //다음 튜토리얼 단계로 넘어간다
+            adfgvx.MoveToNextTutorialPhase(3.2f);
+        }
+        else//튜토리얼의 명령을 따르지 않고 다른 암호를 불러왔음
+        {
+            //현재 튜토리얼 단계에 따른 이벤트 발생
+            if (adfgvx.GetCurrentTutorialPhase() == 0)
+                adfgvx.DisplayTutorialDialog(10, 0f);
+        }
+
+        StreamReader Reader = new StreamReader(FilePath, System.Text.Encoding.UTF8);
+        SecurityLevel = Reader.ReadLine();
+        Title = Reader.ReadLine();
+        Data = Reader.ReadLine();
+        SendingDateUI = Reader.ReadLine();
+        SendingDate = Reader.ReadLine();
+        SenderUI = Reader.ReadLine();
+        Sender = Reader.ReadLine();
+        ReceptionDateUI = Reader.ReadLine();
+        ReceptionDate = Reader.ReadLine();
+        ReceiverUI = Reader.ReadLine();
+        Receiver = Reader.ReadLine();
+        DecodedChiper = Reader.ReadLine();
+        Reader.Close();
+
         //모든 파트 입력 차단
-        adfgvx.SetPartLayer(2, 2, 2, 2, 2, 2, 2, 2);
+        adfgvx.SetPartLayer(2, 2, 2, 2, 2, 2, 2, 2, 2);
         //모든 파트 입력 회복 예약
-        adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0);
+        adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         adfgvx.InformUpdate("'" + filePath.GetInputString() + "' " + "엑세스 성공 : 도달 시간 1ms 이하");
 
         //흐름 출력 시작
         ClearChiperAll();
-
         securityLevel.SetText(SecurityLevel);
         title.FlowText(Title, 3.0f);
         data.FlowText(Data, 3.0f);
@@ -244,8 +162,6 @@ public class EncodeDataLoadPart : MonoBehaviour
 
         //스탑워치 시작
         adfgvx.StartStopWatch();
-
-        //모든 파트 입력 회복
     }
 
     public void ClearChiperAll()//불러와져 있던 암호문을 비운다

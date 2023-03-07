@@ -14,7 +14,6 @@ public class TranspositionPart : MonoBehaviour
 
     private SpriteRenderer transposedLineGuideBox;
 
-
     //전치, 역전치 때 사용하는 변수들
     private int[] place;                                //키워드 문자의 순위
     int rowLength;                                      //전치 행렬의 행 길이
@@ -42,10 +41,9 @@ public class TranspositionPart : MonoBehaviour
         tempLine = new string[9];
     }
 
-    public void SetLayer(int layer)//모든 입력 차단
+    public void SetLayer(int layer)//이 게임오브젝트 하위 요소의 레이어 제어
     {
-        this.gameObject.layer = layer;
-        keyword.gameObject.layer = layer;
+        transform.Find("Keyword").gameObject.layer = layer;
     }
 
     public InputField_ADFGVX GetInputField_keyword()
@@ -58,27 +56,21 @@ public class TranspositionPart : MonoBehaviour
         return place;
     }
 
-    public void AddKeyword(string value)
+    public void AddKeyword(string value)//Keyword에 한 글자 입력
     {
-        if (!keyword.GetIsReadyForInput())
-            return;
-
         if (value.ToCharArray()[0] < 'A' || value.ToCharArray()[0] > 'Z')
         {
             adfgvx.InformError("유효하지 않은 전치 키 입력 : 입력 불가");
             return;
         }
 
-        keyword.AddInputFieldByKeyboard(value + " ");
+        keyword.AddInputField(value + " ");
         UpdatePriority();
     }
 
-    public void DeleteKeyword()
+    public void DeleteKeyword()//Keyword에서 한 글자 삭제
     {
-        if (!keyword.GetIsReadyForInput())
-            return;
-
-        keyword.DeleteInputFieldByKeyboard(2);
+        keyword.DeleteInputField(2);
         UpdatePriority();
     }
   
@@ -150,33 +142,75 @@ public class TranspositionPart : MonoBehaviour
         return array.ArrayToString();
     }
 
-    public void OnTransposeDownByKeyboard()//Keyboard 입력에 의해 EncodeData를 키 순서에 따라서 Transposition에 전치
+    public void OnTransposeDown()//EncodeData를 키 순서에 따라서 Transposition에 전치
     {
-        if (!keyword.GetIsReadyForInput())
-            return;
-
         //에러 발생
         if (keyword.GetInputString().Length == 0)
         {
-            adfgvx.InformError("전치 실패 : 암호 키 공백");
+            adfgvx.InformError("전치 실패 : 전치 키 공백");
+            keyword.SetIsReadyForInput(false);
+            keyword.SetIsFlash(false);
             return;
         }
         else if (adfgvx.encodeDataLoadPart.GetData() == "암호화 데이터를 로드하여 시작…")
         {
             adfgvx.InformError("전치 실패 : 전치 대상 공백");
+            keyword.SetIsReadyForInput(false);
+            keyword.SetIsFlash(false);
             return;
         }
         else if (CollectEnglishAlphabet(adfgvx.encodeDataLoadPart.GetData()).Length / place.Length > 12)
         {
             adfgvx.InformError("전치 실패 : 메모리 용량 초과");
+            keyword.SetIsReadyForInput(false);
+            keyword.SetIsFlash(false);
+
+            //튜토리얼 관련 코드
+            if (adfgvx.GetCurrentTutorialPhase() == 1)
+            {
+                if (CollectEnglishAlphabet(keyword.GetInputString()) != "HI")
+                    adfgvx.DisplayTutorialDialog(25, 0f);
+                else
+                    adfgvx.MoveToNextTutorialPhase(2.0f);
+            }
             return;
         }
         else if (CollectEnglishAlphabet(adfgvx.encodeDataLoadPart.GetData()).Length % place.Length != 0)
         {
             adfgvx.InformError("전치 실패 : 메모리 누수 발생");
+            keyword.SetIsReadyForInput(false);
+            keyword.SetIsFlash(false);
+
+            //튜토리얼 관련 코드
+            if (adfgvx.GetCurrentTutorialPhase() == 2)
+            {
+                if (CollectEnglishAlphabet(keyword.GetInputString()).Length != 7)
+                    adfgvx.DisplayTutorialDialog(40, 0f);
+                else
+                    adfgvx.MoveToNextTutorialPhase(2.0f);
+            }
             return;
         }
 
+        //튜토리얼 관련 코드
+        if (adfgvx.GetCurrentTutorialPhase() == 2)
+        {
+            if (CollectEnglishAlphabet(keyword.GetInputString()).Length != 7)
+            {
+                adfgvx.DisplayTutorialDialog(40, 0f);
+                return;
+            }
+        }
+        if (adfgvx.GetCurrentTutorialPhase() == 1)
+        {
+            if (CollectEnglishAlphabet(keyword.GetInputString()) != "HI")
+            {
+                adfgvx.DisplayTutorialDialog(25, 0f);
+                return;
+            }
+        }
+
+        //키 순위 초기화
         ClearTransposition();
 
         string Chiper = CollectEnglishAlphabet(adfgvx.encodeDataLoadPart.GetData());
@@ -196,110 +230,7 @@ public class TranspositionPart : MonoBehaviour
             }
         }
 
-        adfgvx.InformUpdate("작업 중 : 프로그램을 강제 종료하지 마십시오");
-        ResizeAndRePositionEdge();
-        printFlow();
-
-        keyword.SetIsReadyForInput(false);
-        keyword.SetIsFlash(false);
-
-        adfgvx.soundFlow(rowLength + lineLength, 0.1f * (rowLength + lineLength));
-    }
-
-    public void OnTransposeDownByButton()//Button 입력에 의해 EncodeData를 키 순서에 따라서 Transposition에 전치
-    {
-        //에러 발생
-        if (keyword.GetInputString().Length == 0)
-        {
-            adfgvx.InformError("전치 실패 : 암호 키 공백");
-            return;
-        }
-        else if (adfgvx.encodeDataLoadPart.GetData() == "암호화 데이터를 로드하여 시작…")
-        {
-            adfgvx.InformError("전치 실패 : 전치 대상 공백");
-            return;
-        }
-        else if (CollectEnglishAlphabet(adfgvx.encodeDataLoadPart.GetData()).Length / place.Length > 12)
-        {
-            adfgvx.InformError("전치 실패 : 메모리 용량 초과");
-            return;
-        }
-        else if (CollectEnglishAlphabet(adfgvx.encodeDataLoadPart.GetData()).Length % place.Length != 0)
-        {
-            adfgvx.InformError("전치 실패 : 메모리 누수 발생");
-            return;
-        }
-
-        ClearTransposition();
-
-        string Chiper = CollectEnglishAlphabet(adfgvx.encodeDataLoadPart.GetData());
-        int InputPriority = 1;
-        lineLength = place.Length;
-        rowLength = Chiper.Length / place.Length;
-        for (int i = 0; i < place.Length; i++)
-        {
-            for (int j = 0; j < place.Length; j++)
-            {
-                if (place[j] == InputPriority)
-                {
-                    InputPriority++;
-                    tempLine[j] = Chiper.Substring(0, rowLength);
-                    Chiper = Chiper.Substring(rowLength);
-                }
-            }
-        }
-
-        adfgvx.InformUpdate("작업 중 : 프로그램을 강제 종료하지 마십시오");
-        ResizeAndRePositionEdge();
-        printFlow();
-
-        keyword.SetIsReadyForInput(false);
-        keyword.SetIsFlash(false);
-
-        adfgvx.soundFlow(rowLength + lineLength, 0.1f * (rowLength + lineLength));
-    }
-
-    public void OnTransposeReverseDownByKeyboard()//Keyboard 입력에 의해 OriginalData를 키 순서에 따라서 Transposition에 역전치
-    {
-        if (!keyword.GetIsReadyForInput())
-            return;
-
-        //에러 발생
-        if (keyword.GetInputString().Length == 0)
-        {
-            adfgvx.InformError("역전치 실패 : 암호 키 공백");
-            return;
-        }
-        else if (adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString() == "")
-        {
-            adfgvx.InformError("역전치 실패 : 역전치 대상 공백");
-            return;
-        }
-        else if (CollectEnglishAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString()).Length / place.Length > 12)
-        {
-            adfgvx.InformError("역전치 실패 : 메모리 용량 초과");
-            return;
-        }
-        else if (CollectEnglishAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString()).Length % place.Length != 0)
-        {
-            adfgvx.InformError("역전치 실패 : 메모리 누수 발생");
-            return;
-        }
-
-        ClearTransposition();
-
-        string Chiper = CollectEnglishAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString());
-        lineLength = place.Length;
-        rowLength = Chiper.Length / place.Length;
-
-        //한 글자 씩 돌아가면서 채운다
-        int length = Chiper.Length;
-        for (int i = 0; i < length; i++)
-        {
-            tempLine[i % place.Length] += Chiper.Substring(0, 1);
-            Chiper = Chiper.Substring(1);
-        }
-
+        adfgvx.InformUpdate("전치 작업 중… 프로그램을 강제 종료하지 마십시오");
         ResizeAndRePositionEdge();
         printFlow();
 
@@ -308,29 +239,46 @@ public class TranspositionPart : MonoBehaviour
 
         //사운드 재생
         adfgvx.soundFlow(rowLength + lineLength, 0.1f * (rowLength + lineLength));
+
+        //튜토리얼 관련 코드
+        if (adfgvx.GetCurrentTutorialPhase() == 3)
+        {
+            if (CollectEnglishAlphabet(keyword.GetInputString()) != "SUKHOI")
+                adfgvx.DisplayTutorialDialog(47, 0f);
+            else
+                adfgvx.MoveToNextTutorialPhase(0.1f * (rowLength + lineLength));
+        }
     }
 
-    public void OnTransposeReverseDownByButton()//Button 입력에 의해 OriginalData를 키 순서에 따라서 Transposition에 역전치
+    public void OnTransposeReverseDown()//OriginalData를 키 순서에 따라서 Transposition에 역전치
     {
         //에러 발생
         if (keyword.GetInputString().Length == 0)
         {
-            adfgvx.InformError("역전치 실패 : 암호 키 공백");
+            adfgvx.InformError("역전치 실패 : 전치 키 공백");
+            keyword.SetIsReadyForInput(false);
+            keyword.SetIsFlash(false);
             return;
         }
         else if (adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString() == "")
         {
             adfgvx.InformError("역전치 실패 : 역전치 대상 공백");
+            keyword.SetIsReadyForInput(false);
+            keyword.SetIsFlash(false);
             return;
         }
         else if (CollectEnglishAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString()).Length / place.Length > 12)
         {
             adfgvx.InformError("역전치 실패 : 메모리 용량 초과");
+            keyword.SetIsReadyForInput(false);
+            keyword.SetIsFlash(false);
             return;
         }
         else if (CollectEnglishAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString()).Length % place.Length != 0)
         {
             adfgvx.InformError("역전치 실패 : 메모리 누수 발생");
+            keyword.SetIsReadyForInput(false);
+            keyword.SetIsFlash(false);
             return;
         }
 
@@ -348,6 +296,7 @@ public class TranspositionPart : MonoBehaviour
             Chiper = Chiper.Substring(1);
         }
 
+        adfgvx.InformUpdate("역전치 작업 중… 프로그램을 강제 종료하지 마십시오");
         ResizeAndRePositionEdge();
         printFlow();
 
@@ -378,7 +327,7 @@ public class TranspositionPart : MonoBehaviour
 
     private void printFlow()//2차원 평면 흐름 출력
     {
-        adfgvx.SetPartLayer(2, 2, 2, 2, 2, 2, 2, 2);
+        adfgvx.SetPartLayer(2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         //흐름 출력 개시
         flowLine = 0;
@@ -400,7 +349,7 @@ public class TranspositionPart : MonoBehaviour
     {
         if(flowLine == lineLength - 1 && FlowRow == rowLength)//흐름 출력 최종 종료 시
         {
-            adfgvx.SetPartLayer(0, 0, 0, 0, 0, 0, 0, 0);
+            adfgvx.SetPartLayer(0, 0, 0, 0, 0, 0, 0, 0, 0);
             adfgvx.InformUpdate("전치 작업 종료 : 총 작업 시간 " + (0.1f * (rowLength + lineLength)).ToString() + "s");
             yield break;
         }

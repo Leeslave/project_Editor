@@ -19,12 +19,11 @@ public class EncodeDataSavePart : MonoBehaviour
         level = transform.Find("SecurityLevel").GetComponent<Button_ADFGVX_ChangeSecurityLevel>();
     }
 
-    public void SetLayer(int layer)//모든 입력 제어
+    public void SetLayer(int layer)//이 게임오브젝트 하위 요소의 레이어 제어
     {
-        this.gameObject.layer = layer;
-        title.gameObject.layer = layer;
-        data.gameObject.layer = layer;
-        level.gameObject.layer = layer;
+        transform.Find("Title").gameObject.layer = layer;
+        transform.Find("Data").gameObject.layer = layer;
+        transform.Find("SecurityLevel").gameObject.layer = layer;
     }
 
     public void UnvisiblePart()//파트 비가시
@@ -50,10 +49,5 @@ public class EncodeDataSavePart : MonoBehaviour
     public string GetSecurityLevel()//보안 등급 레벨 반환
     {
         return level.GetMarkText();
-    }
-
-    public void AddInputField_DataByKeyboard(string value)
-    {
-        data.AddInputFieldByKeyboard(value + " ");
     }
 }

@@ -19,10 +19,9 @@ public class BeforeEncodingPart : MonoBehaviour
         primeFactor = transform.Find("PrimeFactor").GetComponent<TextField>();
     }
 
-    public void SetLayer(int layer)//입력 제어
+    public void SetLayer(int layer)//이 게임오브젝트 하위 요소의 레이어 제어
     {
-        this.gameObject.layer = layer;
-        data.gameObject.layer = layer;
+        transform.Find("Data").gameObject.layer = layer;
     }
 
     public void VisiblePart()//파트 가시 모드
@@ -40,11 +39,8 @@ public class BeforeEncodingPart : MonoBehaviour
         return data;
     }
 
-    public void AddInputFieldByKeyboard(string value)//keyboard 입력에 의해 data에 value에 대응하는 값을 입력
+    public void AddInputField(string value)//keyboard 입력에 의해 data에 value에 대응하는 값을 입력
     {
-        if (!data.GetIsReadyForInput())
-            return;
-
         char[] array = new char[6] { 'A', 'D', 'F', 'G', 'V', 'X' };
         int idx_row = 6;
         int idx_line = 6;
@@ -62,29 +58,20 @@ public class BeforeEncodingPart : MonoBehaviour
             adfgvx.InformError("ADFGVX배열에 대응하지 않는 입력 : 입력 불가");
             return;
         }
-        
-        data.AddInputFieldByKeyboard(array[idx_row].ToString() + array[idx_line].ToString() + " ");
+
+        data.AddInputField(array[idx_row].ToString() + array[idx_line].ToString() + " ");
         UpdateRecommendKeyword();
     }
 
     public void AddInputField_DataByButton(string value)//button 입력에 의해 data에 value에 대응하는 값을 입력
     {
-        data.AddInputFieldByButton(value);
+        data.AddInputField(value);
         UpdateRecommendKeyword();
     }
 
-    public void DeleteInputField_DataByKeyboard()//keyboard 입력의 의해 data에 블록을 삭제
-    {
-        if (!data.GetIsReadyForInput())
-            return;
-
-        data.DeleteInputFieldByKeyboard(3);
-        UpdateRecommendKeyword();
-    }
-
-    public void DeleteInputField_DataByButton()//button 입력에 의해 data에 블록을 삭제
-    {
-        data.DeleteInputFieldByButton(3);
+    public void DeleteInputField_Data()//keyboard 입력의 의해 data에 블록을 삭제
+    {        
+        data.DeleteInputField(3);
         UpdateRecommendKeyword();
     }
 

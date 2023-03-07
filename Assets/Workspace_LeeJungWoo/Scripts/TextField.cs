@@ -58,7 +58,7 @@ public class TextField : MonoBehaviour
 
 
 
-    public void SetColorText(Color targetValue)//martText 색 설정
+    public void SetTextColor(Color targetValue)//martText 색 설정
     {
         markText.color = targetValue;
     }
@@ -91,9 +91,9 @@ public class TextField : MonoBehaviour
 
 
 
-    public void ConvertSizeTextOnly(Vector2 targetSize, float time)//markText 사이즈 전환
+    public void ConvertSizeTextOnly(Vector2 targetSize, float endTime)//markText 사이즈 전환
     {
-        ConvertSizeText(markText, targetSize, time);
+        ConvertSizeText(markText, targetSize, endTime);
     }
 
     public void SetSizeTextOnly(Vector2 targetSize)
@@ -120,22 +120,20 @@ public class TextField : MonoBehaviour
         StartCoroutine(ConvertSizeTextIEnumerator(currentSize, target, targetSize, endTime, currentTime));
     }
 
-
-
-    public void FillPercentage(float time)
+    public void FillPercentage(float endTime)
     {
-        StartCoroutine(FillPercentageIEnumerator(time, 0));
+        StartCoroutine(FillPercentageIEnumerator(endTime, 0));
     }
 
-    private IEnumerator FillPercentageIEnumerator(float time, float currentTime)
+    private IEnumerator FillPercentageIEnumerator(float endTime, float currentendTime)
     {
-        currentTime += time / 100;
-        if (currentTime >= time)
+        currentendTime += endTime / 100;
+        if (currentendTime > endTime)
             yield break;
 
-        markText.text = Mathf.CeilToInt(currentTime / time * 100).ToString() + "%";
+        markText.text = Mathf.CeilToInt(currentendTime / endTime * 100).ToString() + "%";
 
-        yield return new WaitForSeconds(time / 100);
-        StartCoroutine(FillPercentageIEnumerator(time, currentTime));
+        yield return new WaitForSeconds(endTime / 100);
+        StartCoroutine(FillPercentageIEnumerator(endTime, currentendTime));
     }
 }
