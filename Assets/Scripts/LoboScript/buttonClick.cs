@@ -2,34 +2,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
-public class buttonClick : MonoBehaviour
+public class buttonClick : MonoBehaviour, IPointerClickHandler
 {
     public GameObject MainCamera;
     public GameObject Screen;
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log(gameObject.ToString() + "Clicked!");
+    }
+
+    /// <summary>
+    /// 버튼 클릭시 반응
+    /// </summary>
+
     private void OnMouseDown()
     {
-        if (gameObject.CompareTag("RightButton"))
-        {
-            Debug.Log("Click!");
-            MainCamera.GetComponent<CameraMove>().moveRight();
-        }
-        if (gameObject.CompareTag("LeftButton"))
-        {
-            MainCamera.GetComponent<CameraMove>().moveLeft();
-        }
-        if (gameObject.CompareTag("ForwardButton"))
-        {
-            MainCamera.GetComponent<CameraMove>().moveForward();
-        }
-        if (gameObject.CompareTag("BackButton"))
-        {
-            MainCamera.GetComponent<CameraMove>().moveBack();
-        }
+        // 스크린 활성화 및 이동, 스크린 활성화/비활성화 전환
         if (gameObject.CompareTag("Screen"))
         {
-            MainCamera.GetComponent<CameraMove>().moveToScreen();
+            //MainCamera.GetComponent<CameraMove>().MoveToScreen();
             Screen.GetComponent<UIObjectManagement>().ObjectOnOff();
         }
     }

@@ -5,22 +5,15 @@ using UnityEngine;
 public class BackToMain : MonoBehaviour
 {
     public GameObject MainCamera;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    /// <summary>
+    /// 메인 화면으로 돌아가기
+    /// - 스크린 비활성화, 카메라 위치 돌려놓기
+    /// </summary>
     public void backToMain()
     {
         gameObject.SetActive(false);
         //GameObject.FindWithTag("Screen").GetComponent<MainSceneManager>().MainUIOn();
-        MainCamera.GetComponent<CameraMove>().moveToMain();
+        MainCamera.GetComponent<CameraMove>().MoveToMain();
     }
 }

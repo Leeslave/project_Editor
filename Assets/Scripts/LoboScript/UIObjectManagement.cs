@@ -10,21 +10,11 @@ public class UIObjectManagement : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    /// <summary>
+    /// 오브젝트의 활성화/비활성화 전환
+    /// </summary>
     public void ObjectOnOff()
     {
-        if (gameObject.activeSelf == false)
-        {
-            gameObject.SetActive(true);
-        }
-        else
-        {
-            gameObject.SetActive(false);
-        }
+        gameObject.SetActive(!gameObject.activeSelf);
     }
 }

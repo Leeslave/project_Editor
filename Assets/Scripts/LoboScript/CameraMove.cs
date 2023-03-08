@@ -4,74 +4,72 @@ using UnityEngine;
 
 public class CameraMove : MonoBehaviour
 {
-    float cameraX = 0;
-    float cameraY = 0;
-    float cameraZ = -1;
+    public List<GameObject> sceneList = new List<GameObject>();
+    private int currentPosition;
 
-    float saveX = 0;
-    float saveY = 0;
-
-    /// 카메라 위치 옮기기 (왼오위아래) 25 단위 이동
-    public void moveForward()
-    {
-        cameraY += 25;
-        gameObject.transform.position = new Vector3(cameraX, cameraY, cameraZ);
+    private void Start() {
+        currentPosition = 0;
+        ActiveCurrentScene();
     }
 
-    public void moveBack()
+    private void ActiveCurrentScene()
     {
-        Debug.Log("qwerrt");
-        cameraY -= 25;
-        gameObject.transform.position = new Vector3(cameraX, cameraY, cameraZ);
+        foreach(var idx in sceneList)
+            idx.SetActive(false);
+        sceneList[currentPosition].SetActive(true);
     }
 
-    public void moveRight()
-    {
-        cameraX += 25;
-        gameObject.transform.position = new Vector3(cameraX, cameraY, cameraZ);
-    }
-
-    public void moveLeft()
-    {
-        cameraX -= 25;
-        gameObject.transform.position = new Vector3(cameraX, cameraY, cameraZ);
-    }
-
+    // TODO
     /// <summary>
     /// 스크린 위치로 카메라 이동
     /// save 좌표로 이전 좌표 기억
     /// </summary>
-    public void moveToScreen()
+    public void MoveToScreen()
     {
-        saveX = gameObject.transform.position.x;
-        saveY = gameObject.transform.position.y;
 
-        gameObject.transform.position = new Vector3(1000, 1000, cameraZ);
+    }
+
+    // TODO:
+    /// <summary>
+    /// 스크린 종료 시 최근 위치로 돌아가기
+    /// </summary>
+    public void MoveToMain()
+    {
+        ActiveCurrentScene();
     }
 
     /// <summary>
-    /// 저장된 이전 위치로 카메라 이동
-    /// save 좌표로 이전 좌표 불러오기
-    /// </summary>
-    public void moveToMain()
+    /// 카메라 위치 옮기기
+    /// - 좌우 : 옆 화면으로 이동하기(리스트로 관리)
+    /// - 아래 : 이전 화면으로 이동 (축소 ,,,)
+    /// - 위 : 미정
+    /// </summary> 
+    public void MoveCamera(string direction)
     {
-        gameObject.transform.position = new Vector3(saveX, saveY, cameraZ);
-    }
-
-    /// <summary>
-    /// 카메라 비활성화
-    /// </summary>
-    public void moveToGameScene()
-    {
-        gameObject.SetActive(false);
-    }
-
-    /// <summary>
-    /// 저장된 이전 위치로 카메라 이동
-    /// save 좌표로 이전 좌표 불러오기
-    /// </summary>
-    public void moveToMainScene()
-    {
-        gameObject.SetActive(true);
+        if (direction == "UP")
+        {
+            
+        }
+        if (direction == "DOWN")
+        {
+            
+        }
+        if (direction == "LEFT")
+        {
+            currentPosition -= 1;
+            if (currentPosition <= -1)
+                currentPosition = sceneList.Count - 1;      // 끝일때 맞은편으로 이동 TODO:
+            ActiveCurrentScene();
+            return;
+        }
+        if (direction == "RIGHT")
+        {
+            currentPosition += 1;
+            if (currentPosition >= sceneList.Count)
+                currentPosition = 0;                        // 끝일때 맞은편으로 이동 TODO:
+            ActiveCurrentScene();
+            return;
+        }
+        
     }
 }

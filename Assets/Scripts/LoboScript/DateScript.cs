@@ -8,7 +8,7 @@ public class DateScript : MonoBehaviour
 
     void ScreenSwitch()
     {
-        GameObject.FindWithTag("MainCamera").GetComponent<CameraMove>().moveRight();
+        GameObject.FindWithTag("MainCamera").GetComponent<CameraMove>().MoveCamera("RIGHT");
     }
 
     void SetTrueMessage()
@@ -27,11 +27,5 @@ public class DateScript : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         Invoke("SetTrueMessage", 2);
         Debug.Log("Play");
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

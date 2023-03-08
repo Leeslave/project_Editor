@@ -12,6 +12,9 @@ public class ChoiceUI : MonoBehaviour
         chatUI = GameObject.FindObjectOfType<ChatUI>();
     }
 
+    /// <summary>
+    /// 선택지 클릭 시 선택지 번호 반환
+    /// </summary>
     public void OnChoiceDown()
     {
         chatUI.OnChoiceDown(this.choiceNum);
