@@ -19,17 +19,17 @@ public class PowerOn : MonoBehaviour
         status = false;
     }
 
-
+    // ìŠ¤í¬ë¦° ì „ì› í‚¤ê¸°
     public void ScreenPowerOn()
     {
-        if (status == false)        // ½ºÅ©¸° off¿¡¼­ onÀ¸·Î ÀüÈ¯ÇÒ ¶§ ¿©·¯¹ø ´©¸£´Â °Í ¹æÁö.
+        if (status == false)        // ï¿½ï¿½Å©ï¿½ï¿½ offï¿½ï¿½ï¿½ï¿½ onï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         {
             status = true;
             gameObject.SetActive(true);
             Invoke("MainLogoOnOff", 1);
         }
     }
-
+    // ìŠ¤í¬ë¦° ì „ì› ë„ê¸°
     public void ScreenPowerOff()
     {
         if (status == true)
@@ -39,6 +39,7 @@ public class PowerOn : MonoBehaviour
         }
     }
 
+    // ë¶€íŒ… ê³¼ì • ë©”ì¸ ë¡œê³  í™œì„±í™” (1ì´ˆê°„ í™œì„±í™”)
     void MainLogoOnOff()
     {
         if (Logo.activeSelf == false)
@@ -53,6 +54,7 @@ public class PowerOn : MonoBehaviour
         }
     }
 
+    // ë¶€íŒ… ì •ë³´ ì¶œë ¥ ì‹œì‘ (Animation ì‹¤í–‰)
     void TopInfoOn()
     {
         LogoTop.SetActive(true);
