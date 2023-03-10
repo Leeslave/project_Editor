@@ -4,29 +4,23 @@ using UnityEngine.UI;
 
 public class AnimOrderController : MonoBehaviour
 {
+    /**
+    *   애니메이션을 배열 순서대로 실행
+    */
     public AnimBase[] anims;
     public GameObject Power;
     // Use this for initialization
-    void Start()
+
+    public void AnimStart()
     {
+        StartCoroutine(PlayAnimInOrder());
     }
 
-    public void realStart()
+    IEnumerator PlayAnimInOrder()
     {
-        StartCoroutine(AnimInOrder());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    IEnumerator AnimInOrder()
-    {
-        foreach (AnimBase a in anims)
+        foreach (AnimBase iter in anims)
         {
-            yield return StartCoroutine(a.PlayAnim());
+            yield return StartCoroutine(iter.PlayAnim());
         }
         Power.GetComponent<PowerOn>().TopInfoOff();
 

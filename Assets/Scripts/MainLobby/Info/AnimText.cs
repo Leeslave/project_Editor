@@ -14,16 +14,11 @@ public class AnimText : AnimBase
     // Use this for initialization
     void Start()
     {
+        // json 텍스트 불러오기
         ti = JsonUtility.FromJson<TextInfo>(ta.text);
-        
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    // 텍스트 코루틴 실행
     public override IEnumerator PlayAnim()
     {
         Debug.Log("Play anim");
@@ -32,10 +27,12 @@ public class AnimText : AnimBase
         
     }
 
+    // TextInfo 내부의 텍스트들의 애니메이션 코루틴 실행
     IEnumerator AnimTexts()
     {
         foreach (AnimString a in ti.ass)
         {
+            // info 타입으로 애니메이션 타입 구분 (0 : string, 1 : int)
             switch (a.infoType)
             {
                 case 0:
@@ -50,18 +47,22 @@ public class AnimText : AnimBase
         }
     }
 
+    // int 타입 text 애니메이션
     IEnumerator AnimInt(string text, float time)
     {
-        if (time != 0)
+        if (time != 0)  //딜레이가 0이 아닐때
         {
-            long tmp = Convert.ToInt64(text);
-            int lens = text.Length + 2;
-            string fm = "{0," + lens.ToString() + ":d}";
-            int count = (int)(time / 0.01);
-            GUITextCtrl.text += string.Format(fm, tmp * 0 / count);
+            long tmp = Convert.ToInt64(text);   //텍스트 전환
+            int lens = text.Length + 2;         //길이 저장
+            string fm = "{0," + lens.ToString() + ":d}";    // {0, ?:d}    
+            int count = (int)(time / 0.01);                 // time (100배)
+            GUITextCtrl.text += string.Format(fm, tmp * 0 / count); // GUIText(상속됨)에 형식 텍스트 추가    
+            //.text + "{0, 길이+2:d}" <= tmp * 0 / count
             for (int i = 0; i < count; i++)
             {
+                // idx = 0~길이 - lens 만큼 자르기 (뒤에서 lens만큼 잘라내기)
                 GUITextCtrl.text = GUITextCtrl.text.Substring(0, GUITextCtrl.text.Length - lens);
+                // 뒤에 {tmp * i /count} 글자 추가 글자 뒤에 공백도 추가 (fm 포맷)
                 GUITextCtrl.text += string.Format(fm, tmp * i / count);
                 yield return new WaitForSeconds(0.01f);
             }
@@ -73,15 +74,16 @@ public class AnimText : AnimBase
         }
     }
 
+    // string 타입 text 애니메이션
     IEnumerator AnimString(string text, float time)
     {
         if (time != 0)
             foreach (char c in text.ToCharArray())
             {
                 GUITextCtrl.text += c;
-                yield return new WaitForSeconds(time);
+                yield return new WaitForSeconds(time);  //1글자씩 time 간격으로 출력
             }
-        else
+        else                                            //딜레이 없이 일괄 출력
         {
             GUITextCtrl.text += text;
             yield return 0;

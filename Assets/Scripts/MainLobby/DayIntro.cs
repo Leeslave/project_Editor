@@ -5,6 +5,10 @@ using TMPro;
 
 public class DayIntro : MonoBehaviour
 {
+    /**
+    *   하루 시작 인트로 스크립트
+    *   - 날짜 인트로
+    */
     private AudioSource awakeSFX;
     private CameraMove cameraManager;
 

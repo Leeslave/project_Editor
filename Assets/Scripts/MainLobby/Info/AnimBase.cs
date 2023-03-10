@@ -3,17 +3,11 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class AnimBase : MonoBehaviour {
+    /**
+    *   코루틴 애니메이션 부모클래스
+    *   - 애니메이션 실행용 코루틴함수
+    */
     public UnityEngine.UI.Text GUITextCtrl;
-
-    // Use this for initialization
-    void Start () {
-
-	}
-
-	// Update is called once per frame
-	void Update () {
-
-	}
 
     public virtual IEnumerator PlayAnim() { yield return 0; }
 }

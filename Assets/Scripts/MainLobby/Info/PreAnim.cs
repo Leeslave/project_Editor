@@ -6,18 +6,6 @@ public class PreAnim : AnimBase
 {
     public float WaitSecond = 0.5f;
 
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public override IEnumerator PlayAnim()
     {
        
