@@ -4,25 +4,27 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class AnimText : AnimBase
+public class TextAnimation : AnimBase
 {
-    public Text text;
-    public float DefaultStringTime = 0.05f;
-    public float DefaultTextTime = 0.2f;
-    public TextAsset ta;
-    public TextInfo ti;
-    // Use this for initialization
+    /**
+    *   json 텍스트코드를 불러와 딜레이 애니메이션 기능 구현
+    *   - 글자/숫자 애니메이션 구현
+    */
+    public TextAsset textAsset;
+    public TextInfo textInfo;
+    public float defaultStringTime = 0.05f;
+    public float defaultTextTime = 0.2f;
+
     void Start()
     {
         // json 텍스트 불러오기
-        ti = JsonUtility.FromJson<TextInfo>(ta.text);
+        textInfo = JsonUtility.FromJson<TextInfo>(textAsset.text);
     }
 
     // 텍스트 코루틴 실행
-    public override IEnumerator PlayAnim()
+    public override IEnumerator Play()
     {
-        Debug.Log("Play anim");
-        text.text = "";
+        Debug.Log($"{gameObject.ToString()}Play Animation");
         yield return StartCoroutine(AnimTexts());
         
     }
@@ -30,18 +32,18 @@ public class AnimText : AnimBase
     // TextInfo 내부의 텍스트들의 애니메이션 코루틴 실행
     IEnumerator AnimTexts()
     {
-        foreach (AnimString a in ti.ass)
+        foreach (AnimString iter in textInfo.textStrings)
         {
             // info 타입으로 애니메이션 타입 구분 (0 : string, 1 : int)
-            switch (a.infoType)
+            switch (iter.infoType)
             {
                 case 0:
-                    yield return StartCoroutine(AnimString(a.info, a.stringTime < 0 ? DefaultStringTime : a.stringTime));
-                    yield return new WaitForSeconds(a.textTime < 0 ? DefaultTextTime : a.textTime);
+                    yield return StartCoroutine(AnimString(iter.info, iter.stringTime < 0 ? defaultStringTime : iter.stringTime));
+                    yield return new WaitForSeconds(iter.textTime < 0 ? defaultTextTime : iter.textTime);
                     break;
                 case 1:
-                    yield return StartCoroutine(AnimInt(a.info, a.stringTime < 0 ? DefaultStringTime : a.stringTime));
-                    yield return new WaitForSeconds(a.textTime < 0 ? DefaultTextTime : a.textTime);
+                    yield return StartCoroutine(AnimInt(iter.info, iter.stringTime < 0 ? defaultStringTime : iter.stringTime));
+                    yield return new WaitForSeconds(iter.textTime < 0 ? defaultTextTime : iter.textTime);
                     break;
             }
         }
@@ -94,7 +96,7 @@ public class AnimText : AnimBase
 [Serializable]
 public class TextInfo
 {
-    public List<AnimString> ass;
+    public List<AnimString> textStrings;
 }
 
 [Serializable]

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEngine.UI;
 
 public class AnimBase : MonoBehaviour {
     /**
@@ -9,5 +8,5 @@ public class AnimBase : MonoBehaviour {
     */
     public UnityEngine.UI.Text GUITextCtrl;
 
-    public virtual IEnumerator PlayAnim() { yield return 0; }
+    public virtual IEnumerator Play() { yield return 0; }
 }

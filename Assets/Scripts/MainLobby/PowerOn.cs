@@ -59,7 +59,7 @@ public class PowerOn : MonoBehaviour
     {
         LogoTop.SetActive(true);
         Info.SetActive(true);
-        Info.GetComponent<AnimOrderController>().AnimStart();
+        Info.GetComponent<AnimationController>().Play();
     }
 
     public void TopInfoOff()

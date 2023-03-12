@@ -6,7 +6,7 @@ public class PreAnim : AnimBase
 {
     public float WaitSecond = 0.5f;
 
-    public override IEnumerator PlayAnim()
+    public override IEnumerator Play()
     {
        
         var c = GUITextCtrl.color;
