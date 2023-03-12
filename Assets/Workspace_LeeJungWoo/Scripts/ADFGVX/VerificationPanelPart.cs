@@ -6,7 +6,7 @@ using System.IO;
 
 public class VerificationPanelPart : MonoBehaviour
 {
-    private ADFGVX GameManager;
+    private ADFGVX adfgvx;
 
     private SpriteRenderer screenBlurSprite;
     private SpriteRenderer panelBackgroundSprite_U;
@@ -22,7 +22,7 @@ public class VerificationPanelPart : MonoBehaviour
 
     private void Start()
     {
-        GameManager = GameObject.Find("GameManager").GetComponent<ADFGVX>();
+        adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 
         title = transform.Find("Title").GetComponent<TextField>();
         result = transform.Find("Result").GetComponent<TextField>();
@@ -62,23 +62,23 @@ public class VerificationPanelPart : MonoBehaviour
 
     private IEnumerator StartDecodeVerificationIEnumerator()//복호화 확인 시작하기
     {
-        if (GameManager.encodeDataLoadPart.GetData() == "암호화 데이터를 로드하여 시작…")
+        if (adfgvx.encodeDataLoadPart.GetData() == "암호화 데이터를 로드하여 시작…")
         {
-            GameManager.InformError("암호화 데이터 빈 칸 : 복호화 시퀀스 진행 불가");
+            adfgvx.InformError("암호화 데이터 빈 칸 : 복호화 시퀀스 진행 불가");
             yield break;
         }
-        else if(GameManager.afterDecodingPart.GetInputField_Data().GetInputString() == "")
+        else if(adfgvx.afterDecodingPart.GetInputField_Data().GetInputString() == "")
         {
-            GameManager.InformError("복호화 데이터 빈 칸 : 복호화 시퀀스 진행 불가");
+            adfgvx.InformError("복호화 데이터 빈 칸 : 복호화 시퀀스 진행 불가");
             yield break;
         }
-        else if(GameManager.transpositionpart.GetInputField_keyword().GetInputString() == "")
+        else if(adfgvx.transpositionpart.GetInputField_keyword().GetInputString() == "")
         {
-            GameManager.InformError("복호화 키 빈 칸 : 복호화 시퀀스 진행 불가");
+            adfgvx.InformError("복호화 키 빈 칸 : 복호화 시퀀스 진행 불가");
             yield break;
         }
 
-        GameManager.InformUpdate("복호화 데이터 저장 시퀀스 개시");
+        adfgvx.InformUpdate("복호화 데이터 저장 시퀀스 개시");
 
         //결과 창 제목 초기화
         title.SetSizeTextOnly(new Vector2(1,1));
@@ -97,10 +97,10 @@ public class VerificationPanelPart : MonoBehaviour
         consoleLog.SetColorText(Color.white);
 
         //플레이 시간 저장
-        float totalElaspedTime = GameManager.GetTotalElapsedTime();
+        float totalElaspedTime = adfgvx.GetTotalElapsedTime();
 
         //모든 입력 차단
-        GameManager.SetPartLayer(2, 2, 2, 2, 2, 2, 2, 2, 2);
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         //확인 패널 가시 모드
         VisiblePart();
@@ -110,11 +110,11 @@ public class VerificationPanelPart : MonoBehaviour
         percentage.FillPercentage(3.0f);
 
         //로딩 로그
-        string filePath = GameManager.ReturnDecodeScore() ? "DecodeSuccess" : "DecodeFail";
+        string filePath = adfgvx.ReturnDecodeScore() ? "DecodeSuccess" : "DecodeFail";
         consoleLog.FillLoadingLog(3.0f, filePath);
 
         //작업 중인 것 같은 사운드 재생
-        GameManager.PlayAudioSource(ADFGVX.Audio.DataProcessing);
+        adfgvx.PlayAudioSource(ADFGVX.Audio.DataProcessing);
 
         //확인 창 작업 종료 연출
         yield return new WaitForSeconds(4f);
@@ -128,21 +128,21 @@ public class VerificationPanelPart : MonoBehaviour
         string info;
         string keword;
         string time;
-        if (GameManager.ReturnDecodeScore())
+        if (adfgvx.ReturnDecodeScore())
         {
             title.SetText("최종 복호화 시퀀스 완료");
             title.ConvertColorTextOnly(3f, new Color(0.1f, 0.35f, 0.85f, 1f));
 
-            info = "알림 : " + GameManager.encodeDataLoadPart.GetTextField_SecurityLevel().GetText() + " '" + GameManager.encodeDataLoadPart.GetInputField_filePath().GetInputString() + "'를\n";
-            keword = "암호 키 : " + EditStirng.CollectEnglishUpperAlphabet(GameManager.transpositionpart.GetInputField_keyword().GetInputString()) + "로 복호화 성공\n";
+            info = "알림 : " + adfgvx.encodeDataLoadPart.GetTextField_SecurityLevel().GetText() + " '" + adfgvx.encodeDataLoadPart.GetInputField_filePath().GetInputString() + "'를\n";
+            keword = "암호 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 복호화 성공\n";
         }
         else
         {
             title.SetText("최종 복호화 시퀀스 실패");
             title.ConvertColorTextOnly(3f, new Color(0.76f, 0.28f, 0.28f, 1f));
 
-            info = "경고 : " + GameManager.encodeDataLoadPart.GetTextField_SecurityLevel().GetText() + " '" + GameManager.encodeDataLoadPart.GetInputField_filePath().GetInputString() + "'를\n";
-            keword = "암호 키 : " + EditStirng.CollectEnglishUpperAlphabet(GameManager.transpositionpart.GetInputField_keyword().GetInputString()) + "로 복호화 실패\n";
+            info = "경고 : " + adfgvx.encodeDataLoadPart.GetTextField_SecurityLevel().GetText() + " '" + adfgvx.encodeDataLoadPart.GetInputField_filePath().GetInputString() + "'를\n";
+            keword = "암호 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 복호화 실패\n";
         }
         time = "총 작업 시간: " + Mathf.FloorToInt(totalElaspedTime / 60).ToString("D2") + ":" + Mathf.FloorToInt(totalElaspedTime % 60).ToString("D2");
 
@@ -156,21 +156,21 @@ public class VerificationPanelPart : MonoBehaviour
         result.FlowText(info + keword + time, 3f);
 
         //소리 재생
-        GameManager.soundFlow(30, 3f);
+        adfgvx.soundFlow(30, 3f);
 
         //확인 창 입력 회복
         yield return new WaitForSeconds(4f);
-        GameManager.SetPartLayer(2, 2, 2, 2, 2, 2, 2, 0 ,2);
-        GameManager.InformUpdate(GameManager.ReturnDecodeScore() ? "복호화 데이터 저장 시퀀스 성공" : "복호화 데이터 저장 시퀀스 실패");
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 0 ,2);
+        adfgvx.InformUpdate(adfgvx.ReturnDecodeScore() ? "복호화 데이터 저장 시퀀스 성공" : "복호화 데이터 저장 시퀀스 실패");
 
         //튜토리얼 관련 코드
-        if (GameManager.GetCurrentTutorialPhase() == 9)
+        if (adfgvx.GetCurrentTutorialPhase() == 9 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            Debug.Log(GameManager.ReturnDecodeScore());
-            if (GameManager.ReturnDecodeScore())
-                GameManager.MoveToNextTutorialPhase(0f);
+            Debug.Log(adfgvx.ReturnDecodeScore());
+            if (adfgvx.ReturnDecodeScore())
+                adfgvx.MoveToNextTutorialPhase(0f);
             else
-                GameManager.DisplayTutorialDialog(118, 0f);
+                adfgvx.DisplayTutorialDialog(166, 0f);
         }
     }
 
@@ -181,23 +181,23 @@ public class VerificationPanelPart : MonoBehaviour
 
     private IEnumerator StartEncodeVerificationIEnumerator()//암호화 확인 시작하기
     {
-        if(GameManager.encodeDataSavePart.GetInputField_Data().GetInputString() == "")
+        if(adfgvx.encodeDataSavePart.GetInputField_Data().GetInputString() == "")
         {
-            GameManager.InformError("암호화 내용 빈 칸 : 암호화 시퀀스 진행 불가");
+            adfgvx.InformError("암호화 내용 빈 칸 : 암호화 시퀀스 진행 불가");
             yield break;
         }
-        if(GameManager.encodeDataSavePart.GetInputField_Title().GetInputString() == "")
+        if(adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() == "")
         {
-            GameManager.InformError("암호화 제목 빈 칸 : 암호화 시퀀스 진행 불가");
+            adfgvx.InformError("암호화 제목 빈 칸 : 암호화 시퀀스 진행 불가");
             yield break;
         }
-        if(GameManager.transpositionpart.GetInputField_keyword().GetInputString() == "")
+        if(adfgvx.transpositionpart.GetInputField_keyword().GetInputString() == "")
         {
-            GameManager.InformError("암호화 키 빈 칸 : 암호화 시퀀스 진행 불가");
+            adfgvx.InformError("암호화 키 빈 칸 : 암호화 시퀀스 진행 불가");
             yield break;
         }
 
-        GameManager.InformUpdate("암호화 데이터 저장 시퀀스 개시");
+        adfgvx.InformUpdate("암호화 데이터 저장 시퀀스 개시");
 
         //결과 창 제목 초기화
         title.SetSizeTextOnly(new Vector2(1, 1));
@@ -217,10 +217,10 @@ public class VerificationPanelPart : MonoBehaviour
         consoleLog.SetColorText(Color.white);
 
         //플레이 시간 저장
-        float totalElaspedTime = GameManager.GetTotalElapsedTime();
+        float totalElaspedTime = adfgvx.GetTotalElapsedTime();
 
         //모든 입력 차단
-        GameManager.SetPartLayer(2, 2, 2, 2, 2, 2, 2, 2, 2);
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         //확인 패널 가시 모드
         VisiblePart();
@@ -234,7 +234,7 @@ public class VerificationPanelPart : MonoBehaviour
         consoleLog.FillLoadingLog(3f, filePath);
 
         //작업 중인 것 같은 사운드 재생
-        GameManager.PlayAudioSource(ADFGVX.Audio.DataProcessing);
+        adfgvx.PlayAudioSource(ADFGVX.Audio.DataProcessing);
 
         //확인 창 작업 종료 연출
         yield return new WaitForSeconds(4f);
@@ -248,21 +248,21 @@ public class VerificationPanelPart : MonoBehaviour
         string info;
         string keyword;
         string time;
-        if (GameManager.ReturnEncodeScore())
+        if (adfgvx.ReturnEncodeScore())
         {
             title.SetText("최종 암호화 시퀀스 성공");
             title.ConvertColorTextOnly(3f, new Color(0.1f, 0.35f, 0.85f, 1f));
 
-            info = "알림 : " + GameManager.encodeDataSavePart.GetSecurityLevel() + " '" + GameManager.encodeDataSavePart.GetInputField_Title().GetInputString() + "'를\n";
-            keyword = "암호 키 : " + EditStirng.CollectEnglishUpperAlphabet(GameManager.transpositionpart.GetInputField_keyword().GetInputString()) + "로 암호화 성공\n";
+            info = "알림 : " + adfgvx.encodeDataSavePart.GetSecurityLevel() + " '" + adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() + "'를\n";
+            keyword = "암호 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 암호화 성공\n";
         }
         else
         {
             title.SetText("최종 암호화 시퀀스 실패");
             title.ConvertColorTextOnly(3f, new Color(0.76f, 0.28f, 0.28f, 1f));
 
-            info = "경고 : " + GameManager.encodeDataSavePart.GetSecurityLevel() + " '" + GameManager.encodeDataSavePart.GetInputField_Title().GetInputString() + "'를\n";
-            keyword = "암호 키 : " + EditStirng.CollectEnglishUpperAlphabet(GameManager.transpositionpart.GetInputField_keyword().GetInputString()) + "로 암호화 실패\n";
+            info = "경고 : " + adfgvx.encodeDataSavePart.GetSecurityLevel() + " '" + adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() + "'를\n";
+            keyword = "암호 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 암호화 실패\n";
         }
 
         time = "총 작업 시간: " + Mathf.FloorToInt(totalElaspedTime / 60).ToString("D2") + ":" + Mathf.FloorToInt(totalElaspedTime % 60).ToString("D2");
@@ -277,23 +277,32 @@ public class VerificationPanelPart : MonoBehaviour
         result.FlowText(info + keyword + time, 3f);
 
         //소리 재생
-        GameManager.soundFlow(30, 3f);
+        adfgvx.soundFlow(30, 3f);
 
         //확인 창 입력 회복
         yield return new WaitForSeconds(4f);
-        GameManager.SetPartLayer(2, 2, 2, 2, 2, 2, 2, 0, 2);
-        GameManager.InformUpdate(GameManager.ReturnDecodeScore() ? "암호화 데이터 저장 시퀀스 성공" : "암호화 데이터 저장 시퀀스 실패");
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 0, 2);
+        adfgvx.InformUpdate(adfgvx.ReturnDecodeScore() ? "암호화 데이터 저장 시퀀스 성공" : "암호화 데이터 저장 시퀀스 실패");
+
+        //튜토리얼 관련 코드
+        if(adfgvx.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
+        {
+            if (adfgvx.ReturnEncodeScore())
+                adfgvx.MoveToNextTutorialPhase(0f);
+            else
+                adfgvx.DisplayTutorialDialog(67, 0f);
+        }
     }
 
     private void ConvertSpriteSize(Vector2 targetSize, SpriteRenderer target, float endTime)
     {
-        StartCoroutine(ConvertSpriteSizeIEnumerator(target.size, target, targetSize, endTime, 0));
+        StartCoroutine(ConvertSpriteSize_IE(target.size, target, targetSize, endTime, 0));
     }
 
-    private IEnumerator ConvertSpriteSizeIEnumerator(Vector2 currentSize, SpriteRenderer target, Vector2 targetSize, float endTime, float currentTime)
+    private IEnumerator ConvertSpriteSize_IE(Vector2 currentSize, SpriteRenderer target, Vector2 targetSize, float endTime, float currentTime)
     {
         currentTime += endTime / 100;
-        if (currentTime >= endTime)
+        if (currentTime > endTime)
             yield break;
 
         float targetSizeX = currentSize.x + (targetSize.x - currentSize.x) * (currentTime / endTime);
@@ -301,6 +310,6 @@ public class VerificationPanelPart : MonoBehaviour
         target.size = new Vector2(targetSizeX, targetSizeY);
 
         yield return new WaitForSeconds(endTime / 100);
-        StartCoroutine(ConvertSpriteSizeIEnumerator(target.size, target, targetSize, endTime, currentTime));
+        StartCoroutine(ConvertSpriteSize_IE(target.size, target, targetSize, endTime, currentTime));
     }
 }

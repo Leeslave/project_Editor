@@ -160,54 +160,36 @@ public class TranspositionPart : MonoBehaviour
             return;
         }
         else if (CollectEnglishAlphabet(adfgvx.encodeDataLoadPart.GetData()).Length / place.Length > 12)
-        {
-            adfgvx.InformError("전치 실패 : 메모리 용량 초과");
-            keyword.SetIsReadyForInput(false);
-            keyword.SetIsFlash(false);
-
+        {            
             //튜토리얼 관련 코드
-            if (adfgvx.GetCurrentTutorialPhase() == 1)
+            if (adfgvx.GetCurrentTutorialPhase() == 1 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                if (CollectEnglishAlphabet(keyword.GetInputString()) != "HI")
-                    adfgvx.DisplayTutorialDialog(25, 0f);
+                if (CollectEnglishAlphabet(keyword.GetInputString()) != "HELLO")
+                    adfgvx.DisplayTutorialDialog(41, 0f);
                 else
                     adfgvx.MoveToNextTutorialPhase(2.0f);
             }
+
+            adfgvx.InformError("전치 실패 : 메모리 용량 초과");
+            keyword.SetIsReadyForInput(false);
+            keyword.SetIsFlash(false);
             return;
         }
         else if (CollectEnglishAlphabet(adfgvx.encodeDataLoadPart.GetData()).Length % place.Length != 0)
         {
-            adfgvx.InformError("전치 실패 : 메모리 누수 발생");
-            keyword.SetIsReadyForInput(false);
-            keyword.SetIsFlash(false);
-
             //튜토리얼 관련 코드
-            if (adfgvx.GetCurrentTutorialPhase() == 2)
+            if (adfgvx.GetCurrentTutorialPhase() == 2 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (CollectEnglishAlphabet(keyword.GetInputString()).Length != 7)
-                    adfgvx.DisplayTutorialDialog(40, 0f);
+                    adfgvx.DisplayTutorialDialog(73, 0f);
                 else
                     adfgvx.MoveToNextTutorialPhase(2.0f);
             }
-            return;
-        }
 
-        //튜토리얼 관련 코드
-        if (adfgvx.GetCurrentTutorialPhase() == 2)
-        {
-            if (CollectEnglishAlphabet(keyword.GetInputString()).Length != 7)
-            {
-                adfgvx.DisplayTutorialDialog(40, 0f);
-                return;
-            }
-        }
-        if (adfgvx.GetCurrentTutorialPhase() == 1)
-        {
-            if (CollectEnglishAlphabet(keyword.GetInputString()) != "HI")
-            {
-                adfgvx.DisplayTutorialDialog(25, 0f);
-                return;
-            }
+            adfgvx.InformError("전치 실패 : 메모리 누수 발생");
+            keyword.SetIsReadyForInput(false);
+            keyword.SetIsFlash(false);
+            return;
         }
 
         //키 순위 초기화
@@ -241,10 +223,10 @@ public class TranspositionPart : MonoBehaviour
         adfgvx.soundFlow(rowLength + lineLength, 0.1f * (rowLength + lineLength));
 
         //튜토리얼 관련 코드
-        if (adfgvx.GetCurrentTutorialPhase() == 3)
+        if (adfgvx.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             if (CollectEnglishAlphabet(keyword.GetInputString()) != "SUKHOI")
-                adfgvx.DisplayTutorialDialog(47, 0f);
+                adfgvx.DisplayTutorialDialog(85, 0f);
             else
                 adfgvx.MoveToNextTutorialPhase(0.1f * (rowLength + lineLength));
         }
@@ -305,6 +287,12 @@ public class TranspositionPart : MonoBehaviour
 
         //사운드 재생
         adfgvx.soundFlow(rowLength + lineLength, 0.1f * (rowLength + lineLength));
+
+        //튜토리얼 관련 코드
+        if(adfgvx.GetCurrentTutorialPhase() == 2 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
+        {
+            adfgvx.MoveToNextTutorialPhase(0.1f * (rowLength + lineLength));
+        }
     }
 
     public void ClearTransposition()//Transposition을 비운다
@@ -327,7 +315,7 @@ public class TranspositionPart : MonoBehaviour
 
     private void printFlow()//2차원 평면 흐름 출력
     {
-        adfgvx.SetPartLayer(2, 2, 2, 2, 2, 2, 2, 2, 2);
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         //흐름 출력 개시
         flowLine = 0;
@@ -349,7 +337,7 @@ public class TranspositionPart : MonoBehaviour
     {
         if(flowLine == lineLength - 1 && FlowRow == rowLength)//흐름 출력 최종 종료 시
         {
-            adfgvx.SetPartLayer(0, 0, 0, 0, 0, 0, 0, 0, 0);
+            adfgvx.SetPartLayerWaitForSec(0f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
             adfgvx.InformUpdate("전치 작업 종료 : 총 작업 시간 " + (0.1f * (rowLength + lineLength)).ToString() + "s");
             yield break;
         }

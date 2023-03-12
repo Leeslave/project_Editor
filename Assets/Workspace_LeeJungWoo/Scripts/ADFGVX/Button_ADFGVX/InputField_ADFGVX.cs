@@ -94,7 +94,7 @@ public class InputField_ADFGVX : Button_ADFGVX
         isFlash = value;
     }
 
-    public void AddInputField(string value)//입력창에 키보드로 입력
+    public void AddInputField(string value)//입력창에 추가
     {
         if(inputString.Length > InputFieldMaxLength)
         {
@@ -109,7 +109,7 @@ public class InputField_ADFGVX : Button_ADFGVX
         GameManager.PlayAudioSource(ADFGVX.Audio.AddChar);
     }
 
-    public void DeleteInputField(int length)//입력창에 키보드로 삭제
+    public void DeleteInputField(int length)//입력창에 삭제
     {
         if (inputString.Length == 0)
         {
@@ -124,13 +124,13 @@ public class InputField_ADFGVX : Button_ADFGVX
         GameManager.PlayAudioSource(ADFGVX.Audio.DeleteChar);
     }
 
-    public void ClearInputField()//입력창에 버튼으로 비움
+    public void ClearInputField()//입력창 비움
     {
         inputString = "";
         SetMarkText("");
     }
 
-    public void ReturnInputField()//검색창에 키보드로 엔터
+    public void ReturnInputField()//검색창에 엔터
     {
         StopFlashInputField();
         InitInputField();
@@ -153,10 +153,10 @@ public class InputField_ADFGVX : Button_ADFGVX
 
     private void StartFlashInputField()//검색창을 깜박이게 만든다
     {
-        StartCoroutine(FlashInputFieldIEnumerator());
+        StartCoroutine(FlashInputField_IE());
     }
 
-    private IEnumerator FlashInputFieldIEnumerator()
+    private IEnumerator FlashInputField_IE()
     {
         if (inputString.Length <= InputFieldMaxLength && isReadyForInput && !skipOneFlash)//입력창 길이를 넘기거나, 입력 중이 아니거나, 스킵 명령이 있다면 건너뛴다
         {
@@ -177,7 +177,7 @@ public class InputField_ADFGVX : Button_ADFGVX
         //이번 턴에 스킵했으니 다음 번에는 깜박여야 한다
         skipOneFlash = !skipOneFlash ? false : false;
         yield return new WaitForSeconds(0.5f);
-        StartCoroutine(FlashInputFieldIEnumerator());
+        StartCoroutine(FlashInputField_IE());
     }
 
     private void InitInputField()//검색창을 초기화한다

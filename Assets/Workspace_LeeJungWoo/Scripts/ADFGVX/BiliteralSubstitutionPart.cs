@@ -75,8 +75,20 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     
     public void OnEncElementDown(int row, int line)//Encoding Mode에서 6x6표의 버튼이 눌렸을 때
     {
+        //튜토리얼 관련 코드
+        if(adfgvx.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
+        {
+            if (adfgvx.biliteralsubstitutionpart.currentArrayNum != 0)
+            {
+                adfgvx.DisplayTutorialDialog(44, 0f);
+                return;
+            }
+            else
+                adfgvx.MoveToNextTutorialPhase(2.0f);
+        }
+
         char[] array = new char[6] { 'A', 'D', 'F', 'G', 'V', 'X' };
-        adfgvx.beforeEncodingPart.AddInputField_DataByButton(array[row] + "" + array[line] + " ");
+        adfgvx.beforeEncodingPart.GetInputField_Data().AddInputField(array[row].ToString() + array[line].ToString() + " ");
     }
 
     public void OnDecRowDown(int row)//Decoding Mode에서 row의 버튼이 눌렸을 때
@@ -99,65 +111,65 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             lineButtons[decodeLine].ConvertClickSpriteColor(lineButtons[decodeLine].Exit);
 
             //튜토리얼 관련 코드
-            if (adfgvx.GetCurrentTutorialPhase() == 8)
+            if (adfgvx.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                adfgvx.DisplayTutorialDialog(97, 0f);
+                adfgvx.DisplayTutorialDialog(144, 0f);
                 decodeRow = 6;
                 decodeLine = 6;
                 return;
             }
-            if (adfgvx.GetCurrentTutorialPhase() == 7)
+            if (adfgvx.GetCurrentTutorialPhase() == 7 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (decodeRow == 0 && decodeLine == 1 && currentArrayNum == 0)
                     adfgvx.MoveToNextTutorialPhase(2.0f);
                 else if (currentArrayNum != 0)
                 {
-                    adfgvx.DisplayTutorialDialog(100, 0f);
+                    adfgvx.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
                 else
                 {
-                    adfgvx.DisplayTutorialDialog(87, 0f);
+                    adfgvx.DisplayTutorialDialog(133, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
             }
-            if (adfgvx.GetCurrentTutorialPhase() == 6)
+            if (adfgvx.GetCurrentTutorialPhase() == 6 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (decodeRow == 0 && decodeLine == 2 && currentArrayNum == 0)
                     adfgvx.MoveToNextTutorialPhase(2.0f);
                 else if (currentArrayNum != 0)
                 {
-                    adfgvx.DisplayTutorialDialog(100, 0f);
+                    adfgvx.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
                 else
                 {
-                    adfgvx.DisplayTutorialDialog(81, 0f);
+                    adfgvx.DisplayTutorialDialog(127, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
             }
-            if (adfgvx.GetCurrentTutorialPhase() == 5)
+            if (adfgvx.GetCurrentTutorialPhase() == 5 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (decodeRow == 5 && decodeLine == 4 && currentArrayNum == 0)
                     adfgvx.MoveToNextTutorialPhase(2.0f);
                 else if (currentArrayNum != 0)
                 {
-                    adfgvx.DisplayTutorialDialog(100, 0f);
+                    adfgvx.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
                 else
                 {
-                    adfgvx.DisplayTutorialDialog(75, 0f);
+                    adfgvx.DisplayTutorialDialog(121, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
@@ -190,65 +202,65 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             rowButtons[decodeRow].ConvertClickSpriteColor(rowButtons[decodeRow].Exit);
 
             //튜토리얼 관련 코드
-            if (adfgvx.GetCurrentTutorialPhase() == 8)
+            if (adfgvx.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                adfgvx.DisplayTutorialDialog(97, 0f);
+                adfgvx.DisplayTutorialDialog(144, 0f);
                 decodeRow = 6;
                 decodeLine = 6;
                 return;
             }
-            if (adfgvx.GetCurrentTutorialPhase() == 7)
+            if (adfgvx.GetCurrentTutorialPhase() == 7 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (decodeRow == 0 && decodeLine == 1 && currentArrayNum == 0)
                     adfgvx.MoveToNextTutorialPhase(2.0f);
                 else if (currentArrayNum != 0)
                 {
-                    adfgvx.DisplayTutorialDialog(100, 0f);
+                    adfgvx.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
                 else
                 {
-                    adfgvx.DisplayTutorialDialog(87, 0f);
+                    adfgvx.DisplayTutorialDialog(133, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
             }
-            if (adfgvx.GetCurrentTutorialPhase() == 6)
+            if (adfgvx.GetCurrentTutorialPhase() == 6 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (decodeRow == 0 && decodeLine == 2 && currentArrayNum == 0)
                     adfgvx.MoveToNextTutorialPhase(2.0f);
                 else if (currentArrayNum != 0)
                 {
-                    adfgvx.DisplayTutorialDialog(100, 0f);
+                    adfgvx.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
                 else
                 {
-                    adfgvx.DisplayTutorialDialog(81, 0f);
+                    adfgvx.DisplayTutorialDialog(127, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
             }
-            if (adfgvx.GetCurrentTutorialPhase() == 5)
+            if (adfgvx.GetCurrentTutorialPhase() == 5 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (decodeRow == 5 && decodeLine == 4 && currentArrayNum == 0)
                     adfgvx.MoveToNextTutorialPhase(2.0f);
                 else if (currentArrayNum != 0)
                 {
-                    adfgvx.DisplayTutorialDialog(100, 0f);
+                    adfgvx.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
                 else
                 {
-                    adfgvx.DisplayTutorialDialog(75, 0f);
+                    adfgvx.DisplayTutorialDialog(121, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
@@ -289,7 +301,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     public void ArrayPlus()//ADFGVX배열 +1로 전환
     {
         //튜토리얼 관련 코드
-        if (adfgvx.GetCurrentTutorialPhase()==4)
+        if (adfgvx.GetCurrentTutorialPhase()==4 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             adfgvx.MoveToNextTutorialPhase(3.0f);
         }
@@ -303,7 +315,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     public void ArrayMinus()//ADFGVX배열 -1로 전환
     {
         //튜토리얼 관련 코드
-        if (adfgvx.GetCurrentTutorialPhase() == 4)
+        if (adfgvx.GetCurrentTutorialPhase() == 4 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             adfgvx.MoveToNextTutorialPhase(3.0f);
         }

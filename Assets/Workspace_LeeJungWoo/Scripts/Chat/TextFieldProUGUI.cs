@@ -96,7 +96,8 @@ public class TextFieldProUGUI : MonoBehaviour
 
     public void StopCoroutineFlowTextWithDelay()//delay 흐름 출력 코루틴 정지
     {
-        StopCoroutine(flowTextWithDelayCoroutine);
+        if(flowTextWithDelayCoroutine!=null)
+           StopCoroutine(flowTextWithDelayCoroutine);
         isNowFlowText = false;
     }
 

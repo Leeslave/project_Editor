@@ -50,7 +50,7 @@ public class AfterDecodingPart : MonoBehaviour
         return data;
     }
 
-    public void AddInputField(string value)//키보드 입력
+    public void AddInputField_Data(string value)//키보드 입력
     {
         if (value.ToCharArray()[0] >= '0' && value.ToCharArray()[0] <= '9')
         {
@@ -86,20 +86,20 @@ public class AfterDecodingPart : MonoBehaviour
         TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetLineText();
 
         //튜토리얼 관련 코드
-        if(adfgvx.GetCurrentTutorialPhase() == 8)
+        if(adfgvx.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             if (row.text == "F" && line.text == "G" && adfgvx.biliteralsubstitutionpart.GetCurrentArrayNum() == 0)
                 adfgvx.MoveToNextTutorialPhase(2.0f);
             else if(adfgvx.biliteralsubstitutionpart.GetCurrentArrayNum() != 0)
             {
-                adfgvx.DisplayTutorialDialog(100, 0f);
+                adfgvx.DisplayTutorialDialog(147, 0f);
                 row.text = "-";
                 line.text = "-";
                 return;
             }
             else
             {
-                adfgvx.DisplayTutorialDialog(94, 0f);
+                adfgvx.DisplayTutorialDialog(141, 0f);
                 row.text = "-";
                 line.text = "-";
                 return;

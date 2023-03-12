@@ -39,8 +39,20 @@ public class BeforeEncodingPart : MonoBehaviour
         return data;
     }
 
-    public void AddInputField(string value)//keyboard 입력에 의해 data에 value에 대응하는 값을 입력
+    public void AddInputField_Data(string value)//data에 value에 대응하는 값을 입력
     {
+        //튜토리얼 관련 코드
+        if(adfgvx.GetCurrentTutorialPhase() == 1 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
+        {
+            if (adfgvx.biliteralsubstitutionpart.GetCurrentArrayNum() != 0)
+            {
+                adfgvx.DisplayTutorialDialog(44, 0f);
+                return;
+            }
+            else
+                adfgvx.MoveToNextTutorialPhase(2.0f);
+        }
+
         char[] array = new char[6] { 'A', 'D', 'F', 'G', 'V', 'X' };
         int idx_row = 6;
         int idx_line = 6;
@@ -60,12 +72,6 @@ public class BeforeEncodingPart : MonoBehaviour
         }
 
         data.AddInputField(array[idx_row].ToString() + array[idx_line].ToString() + " ");
-        UpdateRecommendKeyword();
-    }
-
-    public void AddInputField_DataByButton(string value)//button 입력에 의해 data에 value에 대응하는 값을 입력
-    {
-        data.AddInputField(value);
         UpdateRecommendKeyword();
     }
 

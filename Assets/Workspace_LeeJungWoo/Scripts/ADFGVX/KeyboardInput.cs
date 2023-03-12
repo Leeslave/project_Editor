@@ -322,12 +322,12 @@ public class KeyboardInput : MonoBehaviour
                 adfgvx.encodeDataLoadPart.GetInputField_filePath().AddInputField(value);
 
             if (adfgvx.afterDecodingPart.GetInputField_Data().GetIsReadyForInput())
-                adfgvx.afterDecodingPart.AddInputField(value);
+                adfgvx.afterDecodingPart.AddInputField_Data(value);
         }
         else
         {
             if (adfgvx.beforeEncodingPart.GetInputField_Data().GetIsReadyForInput())
-                adfgvx.beforeEncodingPart.AddInputField(value);
+                adfgvx.beforeEncodingPart.AddInputField_Data(value);
 
             if (adfgvx.encodeDataSavePart.GetInputField_Title().GetIsReadyForInput())
                 adfgvx.encodeDataSavePart.GetInputField_Title().AddInputField(value);

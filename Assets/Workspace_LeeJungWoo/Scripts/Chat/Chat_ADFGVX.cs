@@ -9,6 +9,6 @@ public class Chat_ADFGVX : Chat
 
     protected override void SetLayerDefault()
     {
-        GameManager.SetPartLayer(0, 0, 0, 0, 0, 0, 0, 0, 0);
+        GameManager.SetPartLayerWaitForSec(0f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 }

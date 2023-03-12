@@ -96,27 +96,30 @@ public class EncodeDataLoadPart : MonoBehaviour
 
         if (!TxtFile.Exists)//Filepath가 유효하지 않다면
         {
-            //현재 튜토리얼 단계에 따른 이벤트 발생
-            if (adfgvx.GetCurrentTutorialPhase() == 0)
-                adfgvx.DisplayTutorialDialog(7, 0f);
+            //튜토리얼 관련 코드
+            if (adfgvx.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+            {
+                adfgvx.DisplayTutorialDialog(11, 0f);
+            }
 
             adfgvx.InformError("'" + filePath.GetInputString() + "' " + "엑세스 실패 : 유효하지 않은 경로");
             filePath.DisplayErrorInInputField("파일 접근 불가!");
             return;
         }
 
-        if (filePath.GetInputString() == "SI-XI-I")//튜토리얼의 명령을 따랐음
+        //튜토리얼 관련 코드
+        if (adfgvx.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            //다음 튜토리얼 단계로 넘어간다
-            adfgvx.MoveToNextTutorialPhase(3.2f);
+            if (filePath.GetInputString() == "SI-XI-I")//튜토리얼의 명령을 따랐음
+                adfgvx.MoveToNextTutorialPhase(3f);
+            else
+                adfgvx.DisplayTutorialDialog(14, 3f);
         }
-        else//튜토리얼의 명령을 따르지 않고 다른 암호를 불러왔음
+        else
         {
-            //현재 튜토리얼 단계에 따른 이벤트 발생
-            if (adfgvx.GetCurrentTutorialPhase() == 0)
-                adfgvx.DisplayTutorialDialog(10, 0f);
+            adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
-
+            
         StreamReader Reader = new StreamReader(FilePath, System.Text.Encoding.UTF8);
         SecurityLevel = Reader.ReadLine();
         Title = Reader.ReadLine();
@@ -133,9 +136,7 @@ public class EncodeDataLoadPart : MonoBehaviour
         Reader.Close();
 
         //모든 파트 입력 차단
-        adfgvx.SetPartLayer(2, 2, 2, 2, 2, 2, 2, 2, 2);
-        //모든 파트 입력 회복 예약
-        adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         adfgvx.InformUpdate("'" + filePath.GetInputString() + "' " + "엑세스 성공 : 도달 시간 1ms 이하");
 

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class Chat : MonoBehaviour
 {
@@ -33,9 +34,9 @@ public class Chat : MonoBehaviour
     private GameObject button_Choice0;
     private GameObject button_Choice1;
     private GameObject button_Choice2;
-    private GameObject button_System;
     private GameObject button_Skip;
     private GameObject button_Remind;
+    private GameObject panel_Choice;
     private GameObject panel_Dialog;
     private GameObject panel_Remind;
     private GameObject panel_Skip;
@@ -55,9 +56,9 @@ public class Chat : MonoBehaviour
         button_Choice0 = GameObject.Find("Button_Choice0");
         button_Choice1 = GameObject.Find("Button_Choice1");
         button_Choice2 = GameObject.Find("Button_Choice2");
-        button_System = GameObject.Find("Button_System");
         button_Remind = GameObject.Find("Button_Remind");
         button_Skip = GameObject.Find("Button_Skip");
+        panel_Choice = GameObject.Find("Panel_Choice");
         panel_Dialog = GameObject.Find("Panel_Dialog");
         panel_Remind = GameObject.Find("Panel_Remind");
         panel_Skip = GameObject.Find("Panel_Skip");
@@ -75,7 +76,7 @@ public class Chat : MonoBehaviour
         else
         {
             UnvisibleDialogPanel();
-            UnvisibleMiddleAll();
+            UnvisibleChoiceAll();
         }
     }
 
@@ -90,7 +91,7 @@ public class Chat : MonoBehaviour
             Invoke("SetTrueIsAbleToNextLine", Delay);
         isLastNowFlowText = dialog.GetIsNowFlowText();
 
-        if (Input.GetKeyDown(KeyCode.Space))//스페이스가 눌렸을 때
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) && (!isRemindOpened && !isSkipOpened && !EventSystem.current.IsPointerOverGameObject()))
         {
             switch (dialog.GetIsNowFlowText())
             {
@@ -104,53 +105,41 @@ public class Chat : MonoBehaviour
                 case false://흐름 출력 중이 아니었음
                     bool condition_0 = (data[currentLine - 1]["ChatType"].ToString() == "TD") || (data[currentLine - 1]["ChatType"].ToString() == "TE");
                     bool condition_1 = isAbleToMoveNextLine;
-                    bool condition_2 = !isRemindOpened && !isSkipOpened;
-                    if (condition_0 && condition_1 && condition_2)
+                    if (condition_0 && condition_1)
                         LoadLine(++currentLine);
                     break;
             }
         }
     }
 
-    private void VisibleSystemButton()//시스템 버튼 활성화
-    {
-        button_System.transform.localPosition = new Vector3(850, 450);
-    }
-
-    private void UnvisibleSystemButton()//시스템 버튼 비활성화
-    {
-        button_System.transform.localPosition = new Vector3(2000, 450);
-    }
-
     private void VisibleSkipButton()//스킵 버튼 활성화
     {
-        button_Skip.transform.localPosition = new Vector3(850, 325);
+        button_Skip.transform.localPosition = new Vector3(810, 375);
     }
 
     private void UnvisibleSkipButton()//스킵 버튼 비활성화
     {
-        button_Skip.transform.localPosition = new Vector3(2000, 325);
+        button_Skip.transform.localPosition = new Vector3(2000, 375);
     }
 
     private void VisibleRemindButton()//다시보기 버튼 활성화
     {
-        button_Remind.transform.localPosition = new Vector3(850, 200);
+        button_Remind.transform.localPosition = new Vector3(810, 460);
     }
 
     private void UnvisibleRemindButton()//다시보기 버튼 비활성화
     {
-        button_Remind.transform.localPosition = new Vector3(2000, 200);
+        button_Remind.transform.localPosition = new Vector3(2000, 460);
     }
 
     private void VisibleRemindPanel()//다시보기 패널 활성화
     {
-        UnvisibleDialogPanel();
-        UnvisibleSystemButton();
-        UnvisibleSkipButton();
-        UnvisibleRemindButton();
-
         panel_Remind.transform.localPosition = new Vector3(0, 0);
         isRemindOpened = true;
+
+        UnvisibleDialogPanel();
+        UnvisibleSkipButton();
+        UnvisibleRemindButton();
 
         if (panel_Remind.transform.Find("ScrollbarVertical") != null)//스크롤바에 Content가 부족해 스크롤바가 존재하지 않을 가능성
             panel_Remind.transform.Find("ScrollbarVertical").GetComponent<Scrollbar>().value = 0f;  //가장 최근의 대화로 바로 이동
@@ -158,21 +147,16 @@ public class Chat : MonoBehaviour
 
     private void UnvisibleRemindPanel()//다시보기 패널 비활성화
     {
-        if (data[currentLine - 1]["ChatType"].ToString() == "E")
-        {
-            VisibleSystemButton();
-            button_Remind.transform.localPosition = new Vector3(850, 325);
-        }
-        else
-        {
-            VisibleDialogPanel();
-            VisibleSystemButton();
-            VisibleSkipButton();
-            VisibleRemindButton();
-        }
-
         panel_Remind.transform.localPosition = new Vector3(2000, 0);
         isRemindOpened = false;
+
+        if (data[currentLine - 1]["ChatType"].ToString() != "E")
+        {
+            VisibleDialogPanel();
+            VisibleSkipButton();
+        }
+
+        VisibleRemindButton();
     }
 
     private void VisibleSkipPanel()//스킵 패널 활성화
@@ -187,17 +171,23 @@ public class Chat : MonoBehaviour
         isSkipOpened = false;
     }
 
-    private void AddLineToRemindPanel(string speaker, string belong, string dialog)//다시보기에 줄 추가
+    private void AddLineToRemindPanel(string text_speaker, string text_belong, string text_dialog)//다시보기에 줄 추가
     {
         GameObject one;
         one = Instantiate(pastLine, panel_Remind.transform.Find("Viewport").transform.Find("Content"));
-        one.transform.Find("Speaker").GetComponent<TextMeshProUGUI>().text = speaker;
-        one.transform.Find("Belong").GetComponent<TextMeshProUGUI>().text = belong;
-        one.transform.Find("Dialog").GetComponent<TextMeshProUGUI>().text = dialog;
+        GameObject speaker = one.transform.Find("Speaker").gameObject;
+        GameObject belong = one.transform.Find("Belong").gameObject;
+        GameObject dialog = one.transform.Find("Dialog").gameObject;
+        speaker.GetComponent<TextMeshProUGUI>().text = text_speaker;
+        belong.GetComponent<TextMeshProUGUI>().text = text_belong;
+        dialog.GetComponent<TextMeshProUGUI>().text = text_dialog;
+
         Canvas.ForceUpdateCanvases();
-        float newPosX = one.transform.Find("Speaker").transform.localPosition.x + one.transform.Find("Speaker").GetComponent<RectTransform>().rect.width + 20;
-        float newPosY = one.transform.Find("Belong").transform.localPosition.y;
-        one.transform.Find("Belong").transform.localPosition = new Vector3(newPosX, newPosY, 0);
+
+        //Speaker의 길이를 고려해 Belong의 위치 조정
+        float newPosX = speaker.transform.localPosition.x + speaker.GetComponent<RectTransform>().rect.width + 20;
+        float newPosY = belong.transform.localPosition.y;
+        belong.transform.localPosition = new Vector3(newPosX, newPosY, 0);
     }
 
     private void AddParagraphToRemindPanel(string paragraph)//다시보기에 단락 추가
@@ -207,29 +197,33 @@ public class Chat : MonoBehaviour
         one.transform.Find("Paragraph").GetComponent<TextMeshProUGUI>().text = paragraph;
     }
 
-    private void VisibleMiddleOne()//중간 선택지 하나 활성화
+    private void VisibleChoiceOne()//중간 선택지 하나 활성화
     {
-        button_Choice0.transform.localPosition = new Vector3(0, 150);
+        panel_Choice.transform.localPosition = new Vector3(0, 0);
+        button_Choice0.transform.localPosition = new Vector3(0, 0);
     }
 
-    private void VisibleMiddleTwo()//중간 선택지 2개 활성화
+    private void VisibleChoiceTwo()//중간 선택지 2개 활성화
     {
+        panel_Choice.transform.localPosition = new Vector3(0, 0);
         button_Choice0.transform.localPosition = new Vector3(0, 75);
         button_Choice1.transform.localPosition = new Vector3(0, -75);
     }
 
-    private void VisibleMiddleThree()//중간 선택지 3개 활성화
+    private void VisibleChoiceThree()//중간 선택지 3개 활성화
     {
+        panel_Choice.transform.localPosition = new Vector3(0, 0);
         button_Choice0.transform.localPosition = new Vector3(0, 150);
         button_Choice1.transform.localPosition = new Vector3(0, 0);
         button_Choice2.transform.localPosition = new Vector3(0, -150);
     }
 
-    private void UnvisibleMiddleAll()//중간 선택지 전부 비활성화
+    private void UnvisibleChoiceAll()//중간 선택지 전부 비활성화
     {
-        button_Choice0.transform.localPosition = new Vector3(2000, 150);
-        button_Choice1.transform.localPosition = new Vector3(2000, 0);
-        button_Choice2.transform.localPosition = new Vector3(2000, -150);
+        panel_Choice.transform.localPosition = new Vector3(-2000, 0);
+        button_Choice0.transform.localPosition = new Vector3(-2000, 150);
+        button_Choice1.transform.localPosition = new Vector3(-2000, 0);
+        button_Choice2.transform.localPosition = new Vector3(-2000, -150);
     }
 
     private void VisibleDialogPanel()//밑 활성화
@@ -249,8 +243,20 @@ public class Chat : MonoBehaviour
 
     public void OnChoiceDown(int choice)//선택지가 클릭
     {
-        AddLineToRemindPanel(data[currentLine - 1]["Speaker"].ToString(), data[currentLine - 1]["Belong"].ToString(), data[currentLine - 1]["Choice_" + choice.ToString()].ToString());
-        currentLine = int.Parse(data[currentLine - 1]["Jump_" + choice.ToString()].ToString());
+        Dictionary<string, object> currentLineData = data[currentLine - 1];
+        switch (data[currentLine - 1]["ChatType"].ToString())
+        {
+            case "A":
+                currentLine++;
+                break;
+            case "C2":
+                currentLine = int.Parse(currentLineData["Jump_" + choice.ToString()].ToString());
+                break;
+            case "C3":
+                currentLine = int.Parse(currentLineData["Jump_" + choice.ToString()].ToString());
+                break;
+        }
+        AddLineToRemindPanel(currentLineData["Speaker"].ToString(), currentLineData["Belong"].ToString(), currentLineData["Choice_" + choice.ToString()].ToString());
         LoadLine(currentLine);
     }
 
@@ -267,7 +273,6 @@ public class Chat : MonoBehaviour
         if (isSkipOpened)
         {
             VisibleDialogPanel();
-            VisibleSystemButton();
             VisibleSkipButton();
             VisibleRemindButton();
             UnvisibleSkipPanel();
@@ -275,7 +280,6 @@ public class Chat : MonoBehaviour
         else
         {
             UnvisibleDialogPanel();
-            UnvisibleSystemButton();
             UnvisibleSkipButton();
             UnvisibleRemindButton();
             VisibleSkipPanel();
@@ -287,16 +291,21 @@ public class Chat : MonoBehaviour
         Debug.Log("ExecuteSkipOrder");
 
         UnvisibleSkipPanel();
+        UnvisibleSkipButton();
+        VisibleRemindButton();
 
-        for(currentLine += 1; ;currentLine++)
+        SetLayerDefault();
+
+        dialog.StopCoroutineFlowTextWithDelay();
+
+        for (currentLine += 1; ;currentLine++)
         {
             Dictionary<string, object> currentLineData = data[currentLine - 1];
             Dictionary<string, object> nextChatLineData = data[currentLine] != null ? data[currentLine] : null;
             
-            bool condition0 = nextChatLineData["ChatType"].ToString() == "C1";
-            bool condition1 = nextChatLineData["ChatType"].ToString() == "C2";
-            bool condition2 = nextChatLineData["ChatType"].ToString() == "C3";
-            bool isBeforeChoiceLine = condition0 || condition1 || condition2;
+            bool condition0 = nextChatLineData["ChatType"].ToString() == "C2";
+            bool condition1 = nextChatLineData["ChatType"].ToString() == "C3";
+            bool isBeforeChoiceLine = condition0 || condition1;
 
             if (currentLineData["RemindInstruction"].ToString() != "")
                 AddParagraphToRemindPanel(currentLineData["RemindInstruction"].ToString());
@@ -321,17 +330,13 @@ public class Chat : MonoBehaviour
                     else
                         AddLineToRemindPanel(currentLineData["Speaker"].ToString(), currentLineData["Belong"].ToString(), currentLineData["Dialog"].ToString());
                     break;
+                case "A":
+                    AddLineToRemindPanel(currentLineData["Speaker"].ToString(), currentLineData["Belong"].ToString(), currentLineData["Choice_0"].ToString());
+                    break;
                 case "J":
                     currentLine = int.Parse(currentLineData["Jump_0"].ToString());                     
                     break;
                 case "E":
-                    UnvisibleDialogPanel();
-                    UnvisibleMiddleAll();
-                    UnvisibleSkipButton();
-                    UnvisibleSkipPanel();
-                    VisibleSystemButton();
-                    button_Remind.transform.localPosition = new Vector3(850, 325);
-                    SetLayerDefault();
                     return;
             }
         } 
@@ -339,8 +344,6 @@ public class Chat : MonoBehaviour
 
     public virtual void LoadLine(int line)//지정된 라인을 로드
     {
-        Debug.Log("LoadLine : " + line);
-
         //현재 줄 업데이트
         currentLine = line;
 
@@ -361,9 +364,8 @@ public class Chat : MonoBehaviour
         {
             case "TD":
                 //Delay에 따른 텍스트 출력
-                UnvisibleMiddleAll();
+                UnvisibleChoiceAll();
                 VisibleDialogPanel();
-                VisibleSystemButton();
                 VisibleSkipButton();
                 VisibleRemindButton();
 
@@ -383,9 +385,8 @@ public class Chat : MonoBehaviour
                 break;
             case "TE":
                 //EndTime에 따른 텍스트 출력
-                UnvisibleMiddleAll();
+                UnvisibleChoiceAll();
                 VisibleDialogPanel();
-                VisibleSystemButton();
                 VisibleSkipButton();
                 VisibleRemindButton();
 
@@ -403,23 +404,21 @@ public class Chat : MonoBehaviour
                 //다시보기에 줄 추가
                 AddLineToRemindPanel(currentLineData["Speaker"].ToString(), currentLineData["Belong"].ToString(), currentLineData["Dialog"].ToString());
                 break;
-            case "C1":
+            case "A":
                 //선택지 3개
                 UnvisibleDialogPanel();
-                UnvisibleSystemButton();
                 UnvisibleSkipButton();
                 UnvisibleRemindButton();
-                VisibleMiddleOne();
+                VisibleChoiceOne();
 
                 button_Choice0.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_0"].ToString();
                 break;
             case "C2":
                 //선택지 3개
                 UnvisibleDialogPanel();
-                UnvisibleSystemButton();
                 UnvisibleSkipButton();
                 UnvisibleRemindButton();
-                VisibleMiddleTwo();
+                VisibleChoiceTwo();
 
                 button_Choice0.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_0"].ToString();
                 button_Choice1.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_1"].ToString();
@@ -427,10 +426,9 @@ public class Chat : MonoBehaviour
             case "C3":
                 //선택지 3개
                 UnvisibleDialogPanel();
-                UnvisibleSystemButton();
                 UnvisibleSkipButton();
                 UnvisibleRemindButton();
-                VisibleMiddleThree();
+                VisibleChoiceThree();
 
                 button_Choice0.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_0"].ToString();
                 button_Choice1.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_1"].ToString();
@@ -443,13 +441,28 @@ public class Chat : MonoBehaviour
                 break;
             case "E":
                 //종료
+                VisibleRemindButton();
                 UnvisibleDialogPanel();
-                UnvisibleMiddleAll();
+                UnvisibleChoiceAll();
                 UnvisibleSkipButton();
-                button_Remind.transform.localPosition = new Vector3(850, 325);
                 SetLayerDefault();
                 break;
         }
+    }
+
+    public List<int> GetListOfTutorialPhase()//튜토리얼 페이즈의 라인이 저장된 리스트 반환
+    {
+        List<int> tutorialPhaseList = new List<int>();
+
+        int line = 1;
+        foreach(Dictionary<string, object> currentLineData in data)
+        {
+            if (currentLineData["TutorialPhase"].ToString() != "")
+                tutorialPhaseList.Add(line);
+            line++;
+        }
+
+        return tutorialPhaseList;
     }
 
     protected virtual void SetLayerDefault()//레이어를 보통으로 회귀
