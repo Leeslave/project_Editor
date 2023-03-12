@@ -14,6 +14,7 @@ public class MakeReport_Proof : MonoBehaviour
     public string Name;
     public TMP_Text ReportTop;
     public TMP_Text TextSample;
+    public GameObject CardText;
     public GameObject Report;
     public GameObject CardProcess;
 
@@ -38,6 +39,7 @@ public class MakeReport_Proof : MonoBehaviour
         foreach(var a in Data)
         {
             MakingText(a);
+            MakingProof(a);
         }
 
     }
@@ -68,14 +70,14 @@ public class MakeReport_Proof : MonoBehaviour
 
     void Making_Card(Dictionary<string, object> Data)
     {
-        TMP_Text CntText = Instantiate(TextSample);
+        GameObject CntText = Instantiate(CardText);
         CntText.transform.SetParent(CardProcess.transform);
+        CntText.transform.position = new Vector3(CntText.transform.position.x + MyUi.UISize(CntText).x,CntText.transform.position.y,CntText.transform.position.z);
         CntText.name = "";
-        ReportText tmp = CntText.GetComponent<ReportText>();
-        tmp.Time = Data["Time"].ToString();
-        tmp.Place = Data["Place"].ToString();
-        tmp.Action = Data["Action"].ToString();
-        tmp.ChangeCard();
+        CntText.transform.GetChild(0).GetComponent<TMP_Text>().text = Data["Time"].ToString();
+        CntText.transform.GetChild(1).GetComponent<TMP_Text>().text = Data["Place"].ToString();
+        CntText.transform.GetChild(2).GetComponent<TMP_Text>().text = Data["Bill"].ToString();
+        CntText.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
     }
 
     public class CSVReader

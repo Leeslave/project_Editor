@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 
 //Making Dot Line Between Two Object
@@ -33,7 +34,13 @@ public class MakeLine : MonoBehaviour
     {
         Vector3 Position1 = ParentPointCorrect(a1);
         Vector3 Position2 = ParentPointCorrect(a2);
-        Vector3 mid = (Position1 + Position2) / 2;
+        Vector3 mid = Vector3.zero;
+        if (Position1.x > Position2.x) 
+        mid = (new Vector3(Position1.x - MyUi.UISize(a1).x * 0.5f, Position1.y, Position1.z) + 
+               new Vector3(Position2.x + MyUi.UISize(a2).x * 0.5f, Position2.y, Position2.z)) / 2;
+        else
+        mid = (new Vector3(Position2.x - MyUi.UISize(a2).x * 0.5f, Position2.y, Position2.z) + 
+               new Vector3(Position1.x + MyUi.UISize(a1).x * 0.5f, Position1.y, Position1.z)) / 2;
         DrawDot(Position1, mid, MyUi.UISize(a1));
         DrawDot(Position2, mid, MyUi.UISize(a2));
     }
@@ -41,10 +48,9 @@ public class MakeLine : MonoBehaviour
     void DrawDot(Vector3 Start, Vector3 End, Vector2 SizeOfStart)
     {
         float IntervalX = MyUi.UISize(Dot).x;
-        if (Start.x > End.x) StartCoroutine(DrawDotLineX(Start, IntervalX * (-2) , End));
-        else StartCoroutine(DrawDotLineX(Start, IntervalX * 2, End));
+        if (Start.x > End.x) StartCoroutine(DrawDotLineX(new Vector3(Start.x - SizeOfStart.x * 0.5f, Start.y, Start.z), IntervalX * (-2) , End));
+        else StartCoroutine(DrawDotLineX(new Vector3(Start.x + SizeOfStart.x * 0.5f, Start.y, Start.z), IntervalX * 2, End));
     }
-
     IEnumerator DrawLineY(Vector3 Pos, float Ch, Vector3 Goal)      // Draw Line of Y;
     {
         if (Ch > 0) 
