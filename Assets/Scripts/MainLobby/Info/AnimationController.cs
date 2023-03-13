@@ -9,17 +9,15 @@ public class AnimationController : MonoBehaviour
     *   - 각각의 애니메이션들을 리스트 순서대로 실행
     */
     public AnimBase[] anims;
-    public GameObject Power;
-    // Use this for initialization
 
     public void Play()
     {
-        StartCoroutine(PlayAnimInOrder());
+        StartCoroutine("PlayAnimInOrder");
     }
     
     public void Pause()
     {
-
+        StopCoroutine("PlayAnimInOrder");
     }
 
     IEnumerator PlayAnimInOrder()
@@ -28,7 +26,5 @@ public class AnimationController : MonoBehaviour
         {
             yield return StartCoroutine(iter.Play());
         }
-        Power.GetComponent<PowerOn>().TopInfoOff();
-
     }
 }

@@ -15,7 +15,7 @@ public class TextAnimation : AnimBase
     public float defaultStringTime = 0.05f;
     public float defaultTextTime = 0.2f;
 
-    void Start()
+    void Awake()
     {
         // json 텍스트 불러오기
         textInfo = JsonUtility.FromJson<TextInfo>(textAsset.text);
@@ -23,7 +23,7 @@ public class TextAnimation : AnimBase
 
     // 텍스트 코루틴 실행
     public override IEnumerator Play()
-    {
+    {   
         Debug.Log($"{gameObject.ToString()}Play Animation");
         yield return StartCoroutine(AnimTexts());
         
