@@ -51,7 +51,7 @@ public class Chat : MonoBehaviour
     private void Start()
     {
         //CSV 데이터 로드
-        data = CSVReader.Read("Assets/Workspace_LeeJungWoo/ChatCSV/" + FileName + ".csv");
+        data = CSVReader.Read("Assets/Resources/Chats/" + FileName + ".csv");
 
         button_Choice0 = GameObject.Find("Button_Choice0");
         button_Choice1 = GameObject.Find("Button_Choice1");

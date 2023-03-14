@@ -60,7 +60,7 @@ public class Log : MonoBehaviour
 
     private void GetLogTxtFile(string fileName)//이번 로딩 텍스트 파일을 불러온다
     {
-        string filePath = "Assets/Workspace_LeeJungWoo/TxtFile/Log_" + fileName + ".txt";
+        string filePath = "Assets/Resources/Log/Log_" + fileName + ".txt";
         fileTxt = new FileInfo(filePath);
 
         if (fileTxt.Exists)

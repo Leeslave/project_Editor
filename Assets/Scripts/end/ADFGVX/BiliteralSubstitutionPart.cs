@@ -275,7 +275,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
 
     private void UpdateADFGVXArray()//currentArrayNum에 따라서 새로운 ADFGVX 배열을 로딩해서 Array를 업데이트
     {
-        string FilePath = "Assets/Workspace_LeeJungWoo/TxtFile/Array_" + currentArrayNum + ".txt";
+        string FilePath = "Assets/Resources/Text/Array_" + currentArrayNum + ".txt";
         FileInfo TxtFile = new FileInfo(FilePath);
         string value = "";
 

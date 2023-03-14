@@ -91,7 +91,7 @@ public class EncodeDataLoadPart : MonoBehaviour
         string Receiver = "";
 
         //ArrayNum에 따라서 각기 다른 표의 FilePath가 저장된다
-        FilePath = "Assets/Workspace_LeeJungWoo/TxtFile/" + filePath.GetInputString() + ".txt";
+        FilePath = "Assets/Resources/Chiper/" + filePath.GetInputString() + ".txt";
         TxtFile = new FileInfo(FilePath);
 
         if (!TxtFile.Exists)//Filepath가 유효하지 않다면
