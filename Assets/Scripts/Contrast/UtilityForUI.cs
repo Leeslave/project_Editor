@@ -22,4 +22,5 @@ public static class MyUi
         return results[0].gameObject;
     }
     public static void DragUI(GameObject DragingObject, Vector3 AnchorGap) { Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition); mousePos.z = 0; DragingObject.transform.position = mousePos - AnchorGap; }
+    public static int StringToInt(string cnt) { int a = 0; foreach (char b in cnt) a = a * 10 + (b - '0'); return a; }
 }
