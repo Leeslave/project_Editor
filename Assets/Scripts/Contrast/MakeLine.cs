@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using TMPro;
 
 
 //Making Dot Line Between Two Object
@@ -13,6 +14,10 @@ public class MakeLine : MonoBehaviour
 {
     public GameObject Dot;
     public GameObject Res;
+    public GameObject Submit;
+
+    GameObject Line1;
+    GameObject Line2;
 
     List<GameObject> DotList = new List<GameObject>();
     float LineTime = 0.05f;
@@ -20,6 +25,20 @@ public class MakeLine : MonoBehaviour
     public void EndLine()
     {
         foreach (var a in DotList) Destroy(a);
+        ChangeColor(Line1);
+        ChangeColor(Line2);
+    }
+    void ChangeColor(GameObject a)
+    {
+        switch (a.tag)
+        {
+            case "ReportText":
+                a.GetComponent<TMP_Text>().color = Color.black;
+                break;
+            default:
+                for (int i = 0; i < a.transform.childCount; i++) a.transform.GetChild(i).GetComponent<TMP_Text>().color = Color.black;
+                break;
+        }
     }
    
     public Vector3 ParentPointCorrect(GameObject cnt)       // Correct Position Betweeen GameObject and Canvas
@@ -32,6 +51,7 @@ public class MakeLine : MonoBehaviour
 
     public void DrawDotLine(GameObject a1, GameObject a2)
     {
+        Line1 = a1; Line2 = a2;
         Vector3 Position1 = ParentPointCorrect(a1);
         Vector3 Position2 = ParentPointCorrect(a2);
         Vector3 mid = Vector3.zero;
@@ -48,8 +68,8 @@ public class MakeLine : MonoBehaviour
     void DrawDot(Vector3 Start, Vector3 End, Vector2 SizeOfStart)
     {
         float IntervalX = MyUi.UISize(Dot).x;
-        if (Start.x > End.x) StartCoroutine(DrawDotLineX(new Vector3(Start.x - SizeOfStart.x * 0.5f, Start.y, Start.z), IntervalX * (-2) , End));
-        else StartCoroutine(DrawDotLineX(new Vector3(Start.x + SizeOfStart.x * 0.5f, Start.y, Start.z), IntervalX * 2, End));
+        if (Start.x > End.x) StartCoroutine(DrawDotLineX(new Vector3(Start.x - SizeOfStart.x * 0.5f - 50, Start.y, Start.z), IntervalX * (-2) , End));
+        else StartCoroutine(DrawDotLineX(new Vector3(Start.x + SizeOfStart.x * 0.5f + 50, Start.y, Start.z), IntervalX * 2, End));
     }
     IEnumerator DrawLineY(Vector3 Pos, float Ch, Vector3 Goal)      // Draw Line of Y;
     {
@@ -60,6 +80,8 @@ public class MakeLine : MonoBehaviour
                 yield return new WaitForSeconds(LineTime);
                 GameObject tmp = Instantiate(Res, gameObject.transform); DotList.Add(tmp);
                 MyUi.ChangeUIPosition(ref tmp, new Vector3(Goal.x, Goal.y + Ch, Goal.z));
+                Submit.SetActive(true);
+                Debug.Log(Submit.name);
                 yield break;
             }
         }

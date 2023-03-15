@@ -22,12 +22,12 @@ public class Contrast_Touch : MonoBehaviour
     GraphicRaycaster gr;
     GameObject CurText = null;
     GameObject CurCardText = null;
+    GameObject CurWorkText = null;
     GameObject CurBar = null;
     Vector3 AnchorGap;
 
     //ForTest
     GameObject a1 = null;
-    GameObject a2 = null;
     void LineTest(GameObject cnt)
     {
         if (a1 == null) a1 = cnt;
@@ -45,12 +45,18 @@ public class Contrast_Touch : MonoBehaviour
     //ETC
     const float DoubleLag = 0.5f;
     bool Draging = false;
-    bool TouchAble = true;
+    public bool TouchAble = true;
     bool JGError = false;
     bool JGDouble = false;
 
     //Func
 
+    public void ChangeJGError()
+    {
+        Fog.SetActive(!JGError);
+        JGError = !JGError;
+    }
+    public void ChangeTouchAble() { TouchAble = TouchAble == false; }
     void DoubleCheck() { JGDouble = false; }
     void DragSetting(GameObject cnt) { Draging = true; CurBar = cnt; AnchorGap = Camera.main.ScreenToWorldPoint(Input.mousePosition) - cnt.transform.position; }
     //-------------------------------------------------------------
@@ -68,18 +74,11 @@ public class Contrast_Touch : MonoBehaviour
 
     private void Update()
     {
-        if (!TouchAble)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                GetComponent<MakeLine>().EndLine();
-                TouchAble = true;
-            }
-        }
+        if (!TouchAble) return;
         if (Input.GetMouseButtonDown(0))
         {
             GameObject ClickedObject = MyUi.GRay(gr); if (ClickedObject == null) return;
-            Debug.Log(ClickedObject.tag);
+            /*LineTest(ClickedObject);*/
 
             if (JGError) JudgeTouchOption(ClickedObject);
             else EtcTouchOption(ClickedObject);
@@ -103,15 +102,21 @@ public class Contrast_Touch : MonoBehaviour
                 LineTest(CurText);
                 break;
             case "CardText":
-                if (CurCardText != null) CardColorChange(CurCardText.transform, Color.black);
+                if (CurCardText != null) ChangeAllChild(CurCardText.transform, Color.black);
                 CurCardText = _ClickedObject.transform.parent.gameObject;
-                CardColorChange(CurCardText.transform, Color.red);
+                ChangeAllChild(CurCardText.transform, Color.red);
                 LineTest(CurCardText);
+                break;
+            case "WorkText":
+                if (CurWorkText != null) ChangeAllChild(CurWorkText.transform, Color.black);
+                CurWorkText = _ClickedObject.transform.parent.gameObject;
+                ChangeAllChild(CurWorkText.transform, Color.red);
+                LineTest(CurWorkText);
                 break;
         }
     }
 
-    void CardColorChange(Transform cnt, Color ChangeColor)
+    void ChangeAllChild(Transform cnt, Color ChangeColor)
     {
         for (int i = 0; i < cnt.childCount; i++) cnt.GetChild(i).GetComponent<TMP_Text>().color = ChangeColor;
     }
@@ -128,10 +133,6 @@ public class Contrast_Touch : MonoBehaviour
                 break;
             case "ExitButton":
                 _ClickedObject.transform.parent.gameObject.SetActive(false);
-                break;
-            case "ErrorButton":
-                Fog.SetActive(true);
-                JGError = true;
                 break;
         }
     }
