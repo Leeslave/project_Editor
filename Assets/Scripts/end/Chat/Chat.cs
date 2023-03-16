@@ -6,25 +6,25 @@ using UnityEngine.EventSystems;
 
 public class Chat : MonoBehaviour
 {
-    [Header("CSV ÆÄÀÏ ÀÌ¸§")]
+    [Header("CSV ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½")]
     public string FileName;
 
-    [Header("´ÙÀ½ ¶óÀÎ È£Ãâ ´ë±â ½Ã°£")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½")]
     public float Delay;
 
-    [Header("¹Ù·Î ½ÃÀÛ ¿©ºÎ")]
+    [Header("ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     public bool PlayOnAwake;
 
-    [Header("´Ù½Ãº¸±â ÁÙ")]
+    [Header("ï¿½Ù½Ãºï¿½ï¿½ï¿½ ï¿½ï¿½")]
     public GameObject pastLine;
 
-    [Header("´Ù½Ãº¸±â ´Ü¶ô")]
+    [Header("ï¿½Ù½Ãºï¿½ï¿½ï¿½ ï¿½Ü¶ï¿½")]
     public GameObject pastParagraph;
 
-    //¿Àµð¿À ¼Ò½º
+    //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½
     private AudioSource audioSource;
 
-    //CSV µ¥ÀÌÅÍ
+    //CSV ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     protected List<Dictionary<string, object>> data;
 
     private bool isLastNowFlowText;
@@ -50,8 +50,9 @@ public class Chat : MonoBehaviour
 
     private void Start()
     {
-        //CSV µ¥ÀÌÅÍ ·Îµå
+        //CSV ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½
         data = CSVReader.Read("Assets/Resources/Chats/" + FileName + ".csv");
+        Debug.Log(data.ToString());
 
         button_Choice0 = GameObject.Find("Button_Choice0");
         button_Choice1 = GameObject.Find("Button_Choice1");
@@ -68,7 +69,7 @@ public class Chat : MonoBehaviour
         speaker = GameObject.Find("Speaker").GetComponent<TextFieldProUGUI>();
         dialog = GameObject.Find("Dialog").GetComponent<TextFieldProUGUI>();
 
-        if (PlayOnAwake)//¹Ù·Î ´ëÈ­Ã¢À» ¿­°í Ã¹ ¶óÀÎÀ» ·Îµå
+        if (PlayOnAwake)//ï¿½Ù·ï¿½ ï¿½ï¿½È­Ã¢ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½
         {
             currentLine = 1;
             LoadLine(currentLine);
@@ -85,9 +86,9 @@ public class Chat : MonoBehaviour
         ControlInput();
     }
 
-    private void ControlInput()//ÀÔ·Â °¨Áö
+    private void ControlInput()//ï¿½Ô·ï¿½ ï¿½ï¿½ï¿½ï¿½
     {
-        if (isLastNowFlowText == true && dialog.GetIsNowFlowText() == false)//Èå¸§ Ãâ·ÂÀÌ Á¾·áµÇ¾ú´Ù¸é delay ½Ã°£ ÈÄ¿¡ ¸·ÇôÀÖ´ø ´ÙÀ½ ¶óÀÎ Ãâ·ÂÀÌ °¡´ÉÇØÁø´Ù
+        if (isLastNowFlowText == true && dialog.GetIsNowFlowText() == false)//ï¿½å¸§ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¾ï¿½ï¿½Ù¸ï¿½ delay ï¿½Ã°ï¿½ ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             Invoke("SetTrueIsAbleToNextLine", Delay);
         isLastNowFlowText = dialog.GetIsNowFlowText();
 
@@ -95,14 +96,14 @@ public class Chat : MonoBehaviour
         {
             switch (dialog.GetIsNowFlowText())
             {
-                case true://Èå¸§ Ãâ·Â ÁßÀÌ¾úÀ½
+                case true://ï¿½å¸§ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½
                     if (data[currentLine - 1]["ChatType"].ToString() == "TD")
                     {
                         dialog.StopCoroutineFlowTextWithDelay();
                         dialog.SetText(data[currentLine - 1]["Dialog"].ToString());
                     }
                     break;
-                case false://Èå¸§ Ãâ·Â ÁßÀÌ ¾Æ´Ï¾úÀ½
+                case false://ï¿½å¸§ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï¾ï¿½ï¿½ï¿½
                     bool condition_0 = (data[currentLine - 1]["ChatType"].ToString() == "TD") || (data[currentLine - 1]["ChatType"].ToString() == "TE");
                     bool condition_1 = isAbleToMoveNextLine;
                     if (condition_0 && condition_1)
@@ -112,27 +113,27 @@ public class Chat : MonoBehaviour
         }
     }
 
-    private void VisibleSkipButton()//½ºÅµ ¹öÆ° È°¼ºÈ­
+    private void VisibleSkipButton()//ï¿½ï¿½Åµ ï¿½ï¿½Æ° È°ï¿½ï¿½È­
     {
         button_Skip.transform.localPosition = new Vector3(810, 375);
     }
 
-    private void UnvisibleSkipButton()//½ºÅµ ¹öÆ° ºñÈ°¼ºÈ­
+    private void UnvisibleSkipButton()//ï¿½ï¿½Åµ ï¿½ï¿½Æ° ï¿½ï¿½È°ï¿½ï¿½È­
     {
         button_Skip.transform.localPosition = new Vector3(2000, 375);
     }
 
-    private void VisibleRemindButton()//´Ù½Ãº¸±â ¹öÆ° È°¼ºÈ­
+    private void VisibleRemindButton()//ï¿½Ù½Ãºï¿½ï¿½ï¿½ ï¿½ï¿½Æ° È°ï¿½ï¿½È­
     {
         button_Remind.transform.localPosition = new Vector3(810, 460);
     }
 
-    private void UnvisibleRemindButton()//´Ù½Ãº¸±â ¹öÆ° ºñÈ°¼ºÈ­
+    private void UnvisibleRemindButton()//ï¿½Ù½Ãºï¿½ï¿½ï¿½ ï¿½ï¿½Æ° ï¿½ï¿½È°ï¿½ï¿½È­
     {
         button_Remind.transform.localPosition = new Vector3(2000, 460);
     }
 
-    private void VisibleRemindPanel()//´Ù½Ãº¸±â ÆÐ³Î È°¼ºÈ­
+    private void VisibleRemindPanel()//ï¿½Ù½Ãºï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ È°ï¿½ï¿½È­
     {
         panel_Remind.transform.localPosition = new Vector3(0, 0);
         isRemindOpened = true;
@@ -141,11 +142,11 @@ public class Chat : MonoBehaviour
         UnvisibleSkipButton();
         UnvisibleRemindButton();
 
-        if (panel_Remind.transform.Find("ScrollbarVertical") != null)//½ºÅ©·Ñ¹Ù¿¡ Content°¡ ºÎÁ·ÇØ ½ºÅ©·Ñ¹Ù°¡ Á¸ÀçÇÏÁö ¾ÊÀ» °¡´É¼º
-            panel_Remind.transform.Find("ScrollbarVertical").GetComponent<Scrollbar>().value = 0f;  //°¡Àå ÃÖ±ÙÀÇ ´ëÈ­·Î ¹Ù·Î ÀÌµ¿
+        if (panel_Remind.transform.Find("ScrollbarVertical") != null)//ï¿½ï¿½Å©ï¿½Ñ¹Ù¿ï¿½ Contentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½Ñ¹Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½É¼ï¿½
+            panel_Remind.transform.Find("ScrollbarVertical").GetComponent<Scrollbar>().value = 0f;  //ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½Ìµï¿½
     }
 
-    private void UnvisibleRemindPanel()//´Ù½Ãº¸±â ÆÐ³Î ºñÈ°¼ºÈ­
+    private void UnvisibleRemindPanel()//ï¿½Ù½Ãºï¿½ï¿½ï¿½ ï¿½Ð³ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
     {
         panel_Remind.transform.localPosition = new Vector3(2000, 0);
         isRemindOpened = false;
@@ -159,19 +160,19 @@ public class Chat : MonoBehaviour
         VisibleRemindButton();
     }
 
-    private void VisibleSkipPanel()//½ºÅµ ÆÐ³Î È°¼ºÈ­
+    private void VisibleSkipPanel()//ï¿½ï¿½Åµ ï¿½Ð³ï¿½ È°ï¿½ï¿½È­
     {
         panel_Skip.transform.localPosition = new Vector3(0, 0);
         isSkipOpened = true;
     }
 
-    private void UnvisibleSkipPanel()//½ºÅµ ÆÐ³Î ºñÈ°¼ºÈ­
+    private void UnvisibleSkipPanel()//ï¿½ï¿½Åµ ï¿½Ð³ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
     {
         panel_Skip.transform.localPosition = new Vector3(4000, 0);
         isSkipOpened = false;
     }
 
-    private void AddLineToRemindPanel(string text_speaker, string text_belong, string text_dialog)//´Ù½Ãº¸±â¿¡ ÁÙ Ãß°¡
+    private void AddLineToRemindPanel(string text_speaker, string text_belong, string text_dialog)//ï¿½Ù½Ãºï¿½ï¿½â¿¡ ï¿½ï¿½ ï¿½ß°ï¿½
     {
         GameObject one;
         one = Instantiate(pastLine, panel_Remind.transform.Find("Viewport").transform.Find("Content"));
@@ -184,33 +185,33 @@ public class Chat : MonoBehaviour
 
         Canvas.ForceUpdateCanvases();
 
-        //SpeakerÀÇ ±æÀÌ¸¦ °í·ÁÇØ BelongÀÇ À§Ä¡ Á¶Á¤
+        //Speakerï¿½ï¿½ ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Belongï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
         float newPosX = speaker.transform.localPosition.x + speaker.GetComponent<RectTransform>().rect.width + 20;
         float newPosY = belong.transform.localPosition.y;
         belong.transform.localPosition = new Vector3(newPosX, newPosY, 0);
     }
 
-    private void AddParagraphToRemindPanel(string paragraph)//´Ù½Ãº¸±â¿¡ ´Ü¶ô Ãß°¡
+    private void AddParagraphToRemindPanel(string paragraph)//ï¿½Ù½Ãºï¿½ï¿½â¿¡ ï¿½Ü¶ï¿½ ï¿½ß°ï¿½
     {
         GameObject one;
         one = Instantiate(pastParagraph, panel_Remind.transform.Find("Viewport").transform.Find("Content"));
         one.transform.Find("Paragraph").GetComponent<TextMeshProUGUI>().text = paragraph;
     }
 
-    private void VisibleChoiceOne()//Áß°£ ¼±ÅÃÁö ÇÏ³ª È°¼ºÈ­
+    private void VisibleChoiceOne()//ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ È°ï¿½ï¿½È­
     {
         panel_Choice.transform.localPosition = new Vector3(0, 0);
         button_Choice0.transform.localPosition = new Vector3(0, 0);
     }
 
-    private void VisibleChoiceTwo()//Áß°£ ¼±ÅÃÁö 2°³ È°¼ºÈ­
+    private void VisibleChoiceTwo()//ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ È°ï¿½ï¿½È­
     {
         panel_Choice.transform.localPosition = new Vector3(0, 0);
         button_Choice0.transform.localPosition = new Vector3(0, 75);
         button_Choice1.transform.localPosition = new Vector3(0, -75);
     }
 
-    private void VisibleChoiceThree()//Áß°£ ¼±ÅÃÁö 3°³ È°¼ºÈ­
+    private void VisibleChoiceThree()//ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½ È°ï¿½ï¿½È­
     {
         panel_Choice.transform.localPosition = new Vector3(0, 0);
         button_Choice0.transform.localPosition = new Vector3(0, 150);
@@ -218,7 +219,7 @@ public class Chat : MonoBehaviour
         button_Choice2.transform.localPosition = new Vector3(0, -150);
     }
 
-    private void UnvisibleChoiceAll()//Áß°£ ¼±ÅÃÁö ÀüºÎ ºñÈ°¼ºÈ­
+    private void UnvisibleChoiceAll()//ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
     {
         panel_Choice.transform.localPosition = new Vector3(-2000, 0);
         button_Choice0.transform.localPosition = new Vector3(-2000, 150);
@@ -226,22 +227,22 @@ public class Chat : MonoBehaviour
         button_Choice2.transform.localPosition = new Vector3(-2000, -150);
     }
 
-    private void VisibleDialogPanel()//¹Ø È°¼ºÈ­
+    private void VisibleDialogPanel()//ï¿½ï¿½ È°ï¿½ï¿½È­
     {
         panel_Dialog.transform.localPosition = new Vector3(0, 0);
     }
 
-    private void UnvisibleDialogPanel()//¹Ø ºñÈ°¼ºÈ­
+    private void UnvisibleDialogPanel()//ï¿½ï¿½ ï¿½ï¿½È°ï¿½ï¿½È­
     {
         panel_Dialog.transform.localPosition = new Vector3(2000, 0);
     }
 
-    private void SetTrueIsAbleToNextLine()//´ÙÀ½ ¶óÀÎ Ãâ·Â °¡´É, Invoke¿ë
+    private void SetTrueIsAbleToNextLine()//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, Invokeï¿½ï¿½
     {
         isAbleToMoveNextLine = true;
     }
 
-    public void OnChoiceDown(int choice)//¼±ÅÃÁö°¡ Å¬¸¯
+    public void OnChoiceDown(int choice)//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½
     {
         Dictionary<string, object> currentLineData = data[currentLine - 1];
         switch (data[currentLine - 1]["ChatType"].ToString())
@@ -260,7 +261,7 @@ public class Chat : MonoBehaviour
         LoadLine(currentLine);
     }
 
-    public void OnRemindDown()//´Ù½Ãº¸±â Å¬¸¯
+    public void OnRemindDown()//ï¿½Ù½Ãºï¿½ï¿½ï¿½ Å¬ï¿½ï¿½
     {
         if (isRemindOpened)
             UnvisibleRemindPanel();
@@ -268,7 +269,7 @@ public class Chat : MonoBehaviour
             VisibleRemindPanel();
     }
 
-    public void OnSkipDown()//½ºÅµ Å¬¸¯
+    public void OnSkipDown()//ï¿½ï¿½Åµ Å¬ï¿½ï¿½
     {
         if (isSkipOpened)
         {
@@ -286,7 +287,7 @@ public class Chat : MonoBehaviour
         }
     }
 
-    public void ExecuteSkip()//½ºÅµ ½ÇÇà
+    public void ExecuteSkip()//ï¿½ï¿½Åµ ï¿½ï¿½ï¿½ï¿½
     {
         Debug.Log("ExecuteSkipOrder");
 
@@ -342,70 +343,70 @@ public class Chat : MonoBehaviour
         } 
     }
 
-    public virtual void LoadLine(int line)//ÁöÁ¤µÈ ¶óÀÎÀ» ·Îµå
+    public virtual void LoadLine(int line)//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½
     {
-        //ÇöÀç ÁÙ ¾÷µ¥ÀÌÆ®
+        //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
         currentLine = line;
 
-        //»ç¿îµå Àç»ý
+        //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         audioSource.Play();
 
-        //¿¬¼ÓÀ¸·Î ³Ñ¾î°¡Áö ¾Êµµ·Ï Â÷´Ü
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾î°¡ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         isAbleToMoveNextLine = false;
 
-        //ÇöÀç ÁÙÀÇ µ¥ÀÌÅÍ ·Îµå
+        //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½
         Dictionary<string, object> currentLineData = data[line - 1];
 
-        //´Ü¶ô ³»¿ëÀ» ´Ù½Ãº¸±â¿¡ Ãß°¡
+        //ï¿½Ü¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½Ãºï¿½ï¿½â¿¡ ï¿½ß°ï¿½
         if (currentLineData["RemindInstruction"].ToString() != "")
             AddParagraphToRemindPanel(currentLineData["RemindInstruction"].ToString());
 
         switch (currentLineData["ChatType"].ToString())
         {
             case "TD":
-                //Delay¿¡ µû¸¥ ÅØ½ºÆ® Ãâ·Â
+                //Delayï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½
                 UnvisibleChoiceAll();
                 VisibleDialogPanel();
                 VisibleSkipButton();
                 VisibleRemindButton();
 
-                //speaker¿Í belongÀÇ ÅØ½ºÆ®¸¦ ¼³Á¤ÇÑ´Ù
+                //speakerï¿½ï¿½ belongï¿½ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½
                 speaker.SetText(currentLineData["Speaker"].ToString());
                 belong.SetText(currentLineData["Belong"].ToString());
                 
-                //delay¸¦ È®ÀÎÇÏ°í Èå¸§ Ãâ·ÂÇÑ´Ù
+                //delayï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½å¸§ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½
                 float delay = currentLineData["Time"].ToString() != "" ? float.Parse(currentLineData["Time"].ToString()) : 0.03f;
                 dialog.FlowTextWithDelay(currentLineData["Dialog"].ToString(), delay);
                 
-                //belongÀ» speakerÀÇ 20 µÚ¿¡ ÀÖµµ·Ï Àç¹èÄ¡
+                //belongï¿½ï¿½ speakerï¿½ï¿½ 20 ï¿½Ú¿ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¡
                 belong.transform.localPosition = new Vector3(speaker.transform.localPosition.x + speaker.GetWidth() + 20, belong.transform.localPosition.y, 0);
 
-                //´Ù½Ãº¸±â¿¡ ÁÙ Ãß°¡
+                //ï¿½Ù½Ãºï¿½ï¿½â¿¡ ï¿½ï¿½ ï¿½ß°ï¿½
                 AddLineToRemindPanel(currentLineData["Speaker"].ToString(), currentLineData["Belong"].ToString(), currentLineData["Dialog"].ToString());
                 break;
             case "TE":
-                //EndTime¿¡ µû¸¥ ÅØ½ºÆ® Ãâ·Â
+                //EndTimeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½
                 UnvisibleChoiceAll();
                 VisibleDialogPanel();
                 VisibleSkipButton();
                 VisibleRemindButton();
 
-                //speaker¿Í belongÀÇ ÅØ½ºÆ®¸¦ ¼³Á¤ÇÑ´Ù
+                //speakerï¿½ï¿½ belongï¿½ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½
                 speaker.SetText(currentLineData["Speaker"].ToString());
                 belong.SetText(currentLineData["Belong"].ToString());
 
-                //endTimeÀ» È®ÀÎÇÏ°í Èå¸§ Ãâ·ÂÇÑ´Ù
+                //endTimeï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½å¸§ ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½
                 float endTime = currentLineData["Time"].ToString() != "" ? float.Parse(currentLineData["Time"].ToString()) : 2.0f;
                 dialog.FlowTextWithEndTime(currentLineData["Dialog"].ToString(), endTime);
 
-                //belongÀ» speakerÀÇ 10 µÚ¿¡ ÀÖµµ·Ï Àç¹èÄ¡
+                //belongï¿½ï¿½ speakerï¿½ï¿½ 10 ï¿½Ú¿ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ä¡
                 belong.transform.localPosition = new Vector3(speaker.transform.localPosition.x + speaker.GetWidth() + 20, belong.transform.localPosition.y, 0);
 
-                //´Ù½Ãº¸±â¿¡ ÁÙ Ãß°¡
+                //ï¿½Ù½Ãºï¿½ï¿½â¿¡ ï¿½ï¿½ ï¿½ß°ï¿½
                 AddLineToRemindPanel(currentLineData["Speaker"].ToString(), currentLineData["Belong"].ToString(), currentLineData["Dialog"].ToString());
                 break;
             case "A":
-                //¼±ÅÃÁö 3°³
+                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½
                 UnvisibleDialogPanel();
                 UnvisibleSkipButton();
                 UnvisibleRemindButton();
@@ -414,7 +415,7 @@ public class Chat : MonoBehaviour
                 button_Choice0.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_0"].ToString();
                 break;
             case "C2":
-                //¼±ÅÃÁö 3°³
+                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½
                 UnvisibleDialogPanel();
                 UnvisibleSkipButton();
                 UnvisibleRemindButton();
@@ -424,7 +425,7 @@ public class Chat : MonoBehaviour
                 button_Choice1.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_1"].ToString();
                 break;
             case "C3":
-                //¼±ÅÃÁö 3°³
+                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½
                 UnvisibleDialogPanel();
                 UnvisibleSkipButton();
                 UnvisibleRemindButton();
@@ -435,12 +436,12 @@ public class Chat : MonoBehaviour
                 button_Choice2.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_2"].ToString();
                 break;
             case "J":
-                //ÁÙ Á¡ÇÁ
+                //ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 currentLine = int.Parse(currentLineData["Jump_0"].ToString());
                 LoadLine(int.Parse(currentLineData["Jump_0"].ToString()));
                 break;
             case "E":
-                //Á¾·á
+                //ï¿½ï¿½ï¿½ï¿½
                 VisibleRemindButton();
                 UnvisibleDialogPanel();
                 UnvisibleChoiceAll();
@@ -450,7 +451,7 @@ public class Chat : MonoBehaviour
         }
     }
 
-    public List<int> GetListOfTutorialPhase()//Æ©Åä¸®¾ó ÆäÀÌÁîÀÇ ¶óÀÎÀÌ ÀúÀåµÈ ¸®½ºÆ® ¹ÝÈ¯
+    public List<int> GetListOfTutorialPhase()//Æ©ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È¯
     {
         List<int> tutorialPhaseList = new List<int>();
 
@@ -465,7 +466,7 @@ public class Chat : MonoBehaviour
         return tutorialPhaseList;
     }
 
-    protected virtual void SetLayerDefault()//·¹ÀÌ¾î¸¦ º¸ÅëÀ¸·Î È¸±Í
+    protected virtual void SetLayerDefault()//ï¿½ï¿½ï¿½Ì¾î¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½
     {
 
     }

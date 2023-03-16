@@ -63,6 +63,7 @@ public class ActivateScreen : MonoBehaviour
 
             RectTransform rectTransform = GetComponent<RectTransform>();
             rectTransform.localScale = rectTransform.localScale / screenZoomMultiplier;
+            isScreenActive = false;
         }
     }
 }

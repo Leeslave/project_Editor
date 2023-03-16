@@ -4,37 +4,37 @@ using UnityEngine;
 
 public class ADFGVX : MonoBehaviour
 {
-    public enum mode//ADFGVX¸ðµå
+    public enum mode//ADFGVXï¿½ï¿½ï¿½
     { Encoding, Decoding };
 
-    [Header("ÇöÀç ADFGVX ¸ðµå")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ADFGVX ï¿½ï¿½ï¿½")]
     public mode CurrentMode;
 
-    [Header("Æ©Åä¸®¾ó·Î ½ÇÇà")]
+    [Header("Æ©ï¿½ä¸®ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½")]
     public bool PlayAsTutorial;
     private int[] DecodeTutorialPhaseArray;
     private int[] EncodeTutorialPhaseArray;
     private int currentTutorialPhase;
 
-    [Header("µÚ·Î°¡±â ¹öÆ°")]
+    [Header("ï¿½Ú·Î°ï¿½ï¿½ï¿½ ï¿½ï¿½Æ°")]
     public Button_ADFGVX_Quit quitButton;
-    [Header("Á¤º¸ ·Î±× ÆÄÆ®")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½Î±ï¿½ ï¿½ï¿½Æ®")]
     public DebugLog debugLog;
-    [Header("È­»ìÇ¥ ÆÄÆ®")]
+    [Header("È­ï¿½ï¿½Ç¥ ï¿½ï¿½Æ®")]
     public GuideArrowPart guidearrowpart;
-    [Header("ÀÌÁß ¹®ÀÚ Ä¡È¯ ÆÄÆ®")]
+    [Header("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä¡È¯ ï¿½ï¿½Æ®")]
     public BiliteralSubstitutionPart biliteralsubstitutionpart;
-    [Header("Å° ¼øÀ§ ÀüÄ¡ ÆÄÆ®")]
+    [Header("Å° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½Æ®")]
     public TranspositionPart transpositionpart;
-    [Header("º¹È£È­ ÈÄ ÆÄÆ®")]
+    [Header("ï¿½ï¿½È£È­ ï¿½ï¿½ ï¿½ï¿½Æ®")]
     public AfterDecodingPart afterDecodingPart;
-    [Header("¾ÏÈ£È­ Àü ÆÄÆ®")]
+    [Header("ï¿½ï¿½È£È­ ï¿½ï¿½ ï¿½ï¿½Æ®")]
     public BeforeEncodingPart beforeEncodingPart;
-    [Header("¾ÏÈ£È­ µ¥ÀÌÅÍ ·Îµå ÆÄÆ®")]
+    [Header("ï¿½ï¿½È£È­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ ï¿½ï¿½Æ®")]
     public EncodeDataLoadPart encodeDataLoadPart;
-    [Header("¾ÏÈ£È­ µ¥ÀÌÅÍ ÀúÀå ÆÄÆ®")]
+    [Header("ï¿½ï¿½È£È­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®")]
     public EncodeDataSavePart encodeDataSavePart;
-    [Header("È®ÀÎ Ã¢ ÆÄÆ®")]
+    [Header("È®ï¿½ï¿½ Ã¢ ï¿½ï¿½Æ®")]
     public VerificationPanelPart verificationpart;
     [Header("Chat_ADFGVX")]
     public Chat_ADFGVX chat_ADFGVX;
@@ -50,10 +50,10 @@ public class ADFGVX : MonoBehaviour
 
     private void Start()
     {
-        //Á¤º¸ ¾Ë¸²
-        InformUpdate("¾ÆÃ÷ÅäÃ÷Ä« Ç¥ÁØ ¾ÏÈ£ ½Ã½ºÅÛ V7 °¡µ¿ Á¤»ó");
+        //ï¿½ï¿½ï¿½ï¿½ ï¿½Ë¸ï¿½
+        InformUpdate("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä« Ç¥ï¿½ï¿½ ï¿½ï¿½È£ ï¿½Ã½ï¿½ï¿½ï¿½ V7 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 
-        //ÇöÀç ¸ðµå¿¡ µû¶ó¼­
+        //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½å¿¡ ï¿½ï¿½ï¿½ï¿½
         if (CurrentMode == mode.Decoding)
         {
             afterDecodingPart.VisiblePart();
@@ -66,7 +66,20 @@ public class ADFGVX : MonoBehaviour
             encodeDataSavePart.VisiblePart();
         }
 
-        //Æ©Åä¸®¾ó ½ÇÇàÀÇ °æ¿ì
+        Invoke("SetTutorial", 1f);
+
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® È®ï¿½ï¿½
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    private void Update()
+    {
+        StopWatch();
+    }
+
+    private void SetTutorial()
+    {
+        //Æ©ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         if (PlayAsTutorial)
         {
             if(CurrentMode == mode.Decoding)
@@ -76,24 +89,16 @@ public class ADFGVX : MonoBehaviour
             currentTutorialPhase = -1;
             MoveToNextTutorialPhase(0f);
         }
-
-        //¿Àµð¿À ¼Ò½º ÄÄÆ÷³ÍÆ® È®º¸
-        audioSource = GetComponent<AudioSource>();
-    }
-
-    private void Update()
-    {
-        StopWatch();
     }
 
     public void SetPartLayerWaitForSec(float endTime, int layer_quit, int layer_BiliteralSubstitution, int layer_Transposition, int layer_AfterDecode, 
-        int layer_BeforeEncode, int layer_EncodeDataSave, int layer_EncodeDataLoad, int layer_Verification, int layer_DebugLog)//¸ðµç ÆÄÆ® ·¹ÀÌ¾î ¼³Á¤
+        int layer_BeforeEncode, int layer_EncodeDataSave, int layer_EncodeDataLoad, int layer_Verification, int layer_DebugLog)//ï¿½ï¿½ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½
     {
         StartCoroutine(SetPartLayerWaitForSec_IE(endTime, 0, layer_quit, layer_BiliteralSubstitution, layer_Transposition, layer_AfterDecode, layer_BeforeEncode, layer_EncodeDataSave, layer_EncodeDataLoad, layer_Verification, layer_DebugLog));
     }
 
     private IEnumerator<WaitForSeconds> SetPartLayerWaitForSec_IE(float endTime, float currentTime, int layer_quit, int layer_BiliteralSubstitution, int layer_Transposition, 
-        int layer_AfterDecode, int layer_BeforeEncode, int layer_EncodeDataSave, int layer_EncodeDataLoad, int layer_Verification, int layer_DebugLog)//¸ðµç ÆÄÆ® ·¹ÀÌ¾î ¼³Á¤
+        int layer_AfterDecode, int layer_BeforeEncode, int layer_EncodeDataSave, int layer_EncodeDataLoad, int layer_Verification, int layer_DebugLog)//ï¿½ï¿½ï¿½ ï¿½ï¿½Æ® ï¿½ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½
     {
         if(endTime == 0f)
         {
@@ -128,28 +133,28 @@ public class ADFGVX : MonoBehaviour
         StartCoroutine(SetPartLayerWaitForSec_IE(endTime, currentTime, layer_quit, layer_BiliteralSubstitution, layer_Transposition, layer_AfterDecode, layer_BeforeEncode, layer_EncodeDataSave, layer_EncodeDataLoad, layer_Verification, layer_DebugLog));
     }
 
-    public void StartStopWatch()//½ºÅ¾¿öÄ¡ Àç½ÃÀÛ
+    public void StartStopWatch()//ï¿½ï¿½Å¾ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ï¿½
     {
         totalElapsedTime = 0;
     }
 
-    private void StopWatch()//½ºÅ¾¿öÄ¡
+    private void StopWatch()//ï¿½ï¿½Å¾ï¿½ï¿½Ä¡
     {
         totalElapsedTime += Time.deltaTime;
     }
 
-    public float GetTotalElapsedTime()//totalElapsedTimeÀ» ¹ÝÈ¯ÇÕ´Ï´Ù
+    public float GetTotalElapsedTime()//totalElapsedTimeï¿½ï¿½ ï¿½ï¿½È¯ï¿½Õ´Ï´ï¿½
     {
         return totalElapsedTime;
     }
 
-    public bool ReturnDecodeScore()//º¹È£È­ °á°ú¸¦ ¹ÝÈ¯ÇÕ´Ï´Ù
+    public bool ReturnDecodeScore()//ï¿½ï¿½È£È­ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Õ´Ï´ï¿½
     {
 
         return EditStirng.CollectEnglishUpperAlphabet(encodeDataLoadPart.GetDecodedChiper()) == EditStirng.CollectEnglishUpperAlphabet(afterDecodingPart.GetInputField_Data().GetInputString());
     }
 
-    public bool ReturnEncodeScore()//¾ÏÈ£È­ °á°ú¸¦ ¹ÝÈ¯ÇÕ´Ï´Ù
+    public bool ReturnEncodeScore()//ï¿½ï¿½È£È­ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½Õ´Ï´ï¿½
     {
         string original = EditStirng.CollectEnglishUpperAlphabet(beforeEncodingPart.GetInputField_Data().GetInputString());
         string keyword = EditStirng.CollectEnglishUpperAlphabet(transpositionpart.GetInputField_keyword().GetInputString());
@@ -171,28 +176,28 @@ public class ADFGVX : MonoBehaviour
         return answer.ArrayToString() == encode;
     }
 
-    public void InformUpdate(string value)//InfoBox¿¡ ¾÷µ¥ÀÌÆ®ÇÑ »çÇ×À» ¶ç¿î´Ù
+    public void InformUpdate(string value)//InfoBoxï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     {
         debugLog.DebugInfo(value);
     }
 
-    public void InformError(string value)//InfoBox¿¡ ¿¡·¯ ¹ß»ý »çÇ×À» ¶ç¿î´Ù
+    public void InformError(string value)//InfoBoxï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     {
         debugLog.DebugError(value);
     }
 
-    public void PlayAudioSource(Audio value)//¼±ÅÃÇÑ »ç¿îµå Àç»ý
+    public void PlayAudioSource(Audio value)//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
     {
         audioSource.clip = audioClips[((int)value)];
         audioSource.Play();
     }
 
-    public void soundFlow(int length, float endTime)//»ç¿îµå Èå¸§ Àç»ý
+    public void soundFlow(int length, float endTime)//ï¿½ï¿½ï¿½ï¿½ ï¿½å¸§ ï¿½ï¿½ï¿½
     {
         StartCoroutine(soundFlowIEnumerator(length, 0, endTime));
     }
 
-    private IEnumerator<WaitForSeconds> soundFlowIEnumerator(int length, int idx, float endTime)//»ç¿îµå Èå¸§ Àç»ý Àç±Í
+    private IEnumerator<WaitForSeconds> soundFlowIEnumerator(int length, int idx, float endTime)//ï¿½ï¿½ï¿½ï¿½ ï¿½å¸§ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
     {
         if (idx >= length)
             yield break;
@@ -210,14 +215,14 @@ public class ADFGVX : MonoBehaviour
 
 
 
-    //Æ©Åä¸®¾ó °ü·Ã
+    //Æ©ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-    public int GetCurrentTutorialPhase()//ÇöÀç Æ©Åä¸®¾ó ´Ü°è¸¦ ¹ÝÈ¯ÇÑ´Ù
+    public int GetCurrentTutorialPhase()//ï¿½ï¿½ï¿½ï¿½ Æ©ï¿½ä¸®ï¿½ï¿½ ï¿½Ü°è¸¦ ï¿½ï¿½È¯ï¿½Ñ´ï¿½
     {
         return currentTutorialPhase;
     }
 
-    public void MoveToNextTutorialPhase(float endTime)//endTime ÀÌÈÄ¿¡ ´ÙÀ½ Æ©Åä¸®¾ó ´Ü°è·Î ³Ñ¾î°£´Ù
+    public void MoveToNextTutorialPhase(float endTime)//endTime ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½ Æ©ï¿½ä¸®ï¿½ï¿½ ï¿½Ü°ï¿½ï¿½ ï¿½Ñ¾î°£ï¿½ï¿½
     {
         if (!PlayAsTutorial)
             return;
@@ -247,7 +252,7 @@ public class ADFGVX : MonoBehaviour
         StartCoroutine(MoveToNextTutorialPhase_IE(currentTime, endTime));
     }
 
-    public void DisplayTutorialDialog(int line, float endTime)//Æ©Åä¸®¾ó ½Ã Æ¯Á¤ ÀÌº¥Æ®¿¡¼­ ¹ßµ¿, ÁöÁ¤ÇÑ ÁÙÀÇ ´ëÈ­¸¦ ¶ç¿î´Ù
+    public void DisplayTutorialDialog(int line, float endTime)//Æ©ï¿½ä¸®ï¿½ï¿½ ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ßµï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     {
         if (!PlayAsTutorial)
             return;
