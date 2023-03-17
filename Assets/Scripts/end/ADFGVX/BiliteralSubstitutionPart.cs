@@ -11,18 +11,18 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     private int decodeRow;
     private int decodeLine;
 
-    [Header("ADFGVX ¿¤·¹¸àÆ® ¹öÆ°")]
+    [Header("ADFGVX í…Œì´ë¸” ì›ì†Œ")]
     public Button_ADFGVX_Element[] elementButtons = new Button_ADFGVX_Element[36];
-    [Header("ADFGVX Çà ¹öÆ°")]
+    [Header("ADFGVX í…Œì´ë¸” í–‰")]
     public Button_ADFGVX_Row[] rowButtons = new Button_ADFGVX_Row[6];
-    [Header("ADFGVX ¿­ ¹öÆ°")]
+    [Header("ADFGVX í…Œì´ë¸” ì—´")]
     public Button_ADFGVX_Line[] lineButtons = new Button_ADFGVX_Line[6];
 
     private TextMeshPro rowText;
     private TextMeshPro lineText;
     private TextMeshPro arrayNumText;
 
-    private int currentArrayNum;
+    private int currentADFGVXArrayNum;
     private const int ArrayNum_MAX = 4;
 
     private void Start()
@@ -36,11 +36,11 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         decodeRow = 6;
         decodeLine = 6;
 
-        currentArrayNum = 0;
+        currentADFGVXArrayNum = 0;
         UpdateADFGVXArray();
     }
 
-    public void SetLayer(int layer)//ÀÌ °ÔÀÓ¿ÀºêÁ§Æ® ÇÏÀ§ ¿ä¼ÒÀÇ ·¹ÀÌ¾î Á¦¾î
+    public void SetLayer(int layer)//í•˜ìœ„ ìš”ì†Œì˜ ì…ë ¥ ì œì–´
     {
         GameObject arrayKeyboard = transform.Find("ArrayKeyboard").gameObject;
         for(int i=0;i<6;i++)
@@ -58,27 +58,27 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         transform.Find("ArrayPlus").gameObject.layer = layer;
     }
 
-    public TextMeshPro GetRowText()//ÀÔ·Â ´ë±â ÁßÀÎ ¿À ¹®ÀÚ
+    public TextMeshPro GetRowText()//í–‰ì˜ ì…ë ¥ê°’ì„ ë°˜í™˜
     {
         return rowText;
     }
 
-    public TextMeshPro GetLineText()//ÀÔ·Â ´ë±â ÁßÀÎ ¿­ ¹®ÀÚ
+    public TextMeshPro GetLineText()//ì—´ì˜ ì…ë ¥ê°’ì„ ë°˜í™˜
     {
         return lineText;
     }
 
-    public int GetCurrentArrayNum()//ÇöÀç ADFGVX ¹è¿­ ¹øÈ£ ¹İÈ¯
+    public int GetCurrentADFGVXArrayNum()//í˜„ì¬ ADFGVX í…Œì´ë¸” ë²ˆí˜¸ ë°˜í™˜
     {
-        return currentArrayNum;
+        return currentADFGVXArrayNum;
     }
     
-    public void OnEncElementDown(int row, int line)//Encoding Mode¿¡¼­ 6x6Ç¥ÀÇ ¹öÆ°ÀÌ ´­·ÈÀ» ¶§
+    public void OnEncElementDown(int row, int line)//ë³µí˜¸í™” ëª¨ë“œì—ì„œ í…Œì´ë¸” ì›ì†Œ í´ë¦­
     {
-        //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
+        //íŠœí† ë¦¬ì–¼ ê´€ë ¨ ì½”ë“œ
         if(adfgvx.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
         {
-            if (adfgvx.biliteralsubstitutionpart.currentArrayNum != 0)
+            if (adfgvx.biliteralsubstitutionpart.currentADFGVXArrayNum != 0)
             {
                 adfgvx.DisplayTutorialDialog(44, 0f);
                 return;
@@ -91,11 +91,11 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         adfgvx.beforeEncodingPart.GetInputField_Data().AddInputField(array[row].ToString() + array[line].ToString() + " ");
     }
 
-    public void OnDecRowDown(int row)//Decoding Mode¿¡¼­ rowÀÇ ¹öÆ°ÀÌ ´­·ÈÀ» ¶§
+    public void OnDecRowDown(int row)//ë³µí˜¸í™” ëª¨ë“œì—ì„œ í–‰ ë²„íŠ¼ í´ë¦­
     {
         decodeRow = row;
 
-        for (int i = 0; i < 6; i++)//ÇöÀç ¼±ÅÃµÈ RowButton Àü¿¡ ¼±ÅÃµÇ¾ú´ø RowButtonÀ» Ã£¾Æ¼­ ClickSprite¸¦ ºñÈ°¼ºÈ­ÇÕ´Ï´Ù
+        for (int i = 0; i < 6; i++)//ìƒˆë¡­ê²Œ ëˆŒë¦° í–‰ ë²„íŠ¼ì„ ì œì™¸í•œ ë‚˜ë¨¸ì§€ í–‰ ë²„íŠ¼ì˜ ì„ íƒ ìƒíƒœë¥¼ í•´ì œí•œë‹¤
         {
             if (rowButtons[i].Selected == true && i != row)
             {
@@ -104,13 +104,13 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             }
         }
 
-        if (decodeLine != 6)//RowButton°ú LineButton µÑ ´Ù ¼±ÅÃ µÇ¾úÀ¸¹Ç·Î, Decoding °úÁ¤À» ÁøÇàÇÕ´Ï´Ù
+        if (decodeLine != 6)//ì´ë¯¸ ì—´ ë²„íŠ¼ì´ ì„ íƒëœ ìƒíƒœ, ë‘ ë²„íŠ¼ì´ ì „íˆ¬ ì„ íƒë˜ì—ˆë‹¤
         {
             rowButtons[decodeRow].Selected = false;
             lineButtons[decodeLine].Selected = false;
             lineButtons[decodeLine].ConvertClickSpriteColor(lineButtons[decodeLine].Exit);
 
-            //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
+            //íŠœí† ë¦¬ì–¼ ê´€ë ¨ ì½”ë“œ
             if (adfgvx.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 adfgvx.DisplayTutorialDialog(144, 0f);
@@ -120,9 +120,9 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             }
             if (adfgvx.GetCurrentTutorialPhase() == 7 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                if (decodeRow == 0 && decodeLine == 1 && currentArrayNum == 0)
+                if (decodeRow == 0 && decodeLine == 1 && currentADFGVXArrayNum == 0)
                     adfgvx.MoveToNextTutorialPhase(2.0f);
-                else if (currentArrayNum != 0)
+                else if (currentADFGVXArrayNum != 0)
                 {
                     adfgvx.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
@@ -139,9 +139,9 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             }
             if (adfgvx.GetCurrentTutorialPhase() == 6 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                if (decodeRow == 0 && decodeLine == 2 && currentArrayNum == 0)
+                if (decodeRow == 0 && decodeLine == 2 && currentADFGVXArrayNum == 0)
                     adfgvx.MoveToNextTutorialPhase(2.0f);
-                else if (currentArrayNum != 0)
+                else if (currentADFGVXArrayNum != 0)
                 {
                     adfgvx.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
@@ -158,9 +158,9 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             }
             if (adfgvx.GetCurrentTutorialPhase() == 5 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                if (decodeRow == 5 && decodeLine == 4 && currentArrayNum == 0)
+                if (decodeRow == 5 && decodeLine == 4 && currentADFGVXArrayNum == 0)
                     adfgvx.MoveToNextTutorialPhase(2.0f);
-                else if (currentArrayNum != 0)
+                else if (currentADFGVXArrayNum != 0)
                 {
                     adfgvx.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
@@ -182,11 +182,11 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         }
     }
 
-    public void OnDecLineDown(int line)//Decodeing Mode¿¡¼­ lineÀÇ ¹öÆ°ÀÌ ´­·ÈÀ» ¶§
+    public void OnDecLineDown(int line)//ë³µí˜¸í™” ëª¨ë“œì—ì„œ ì—´ ë²„íŠ¼ í´ë¦­
     {
         decodeLine = line;
 
-        for (int i = 0; i < 6; i++)//ÇöÀç ¼±ÅÃµÈ LineButton Àü¿¡ ¼±ÅÃµÇ¾ú´ø LineButtonÀ» Ã£¾Æ¼­ ClickSprite¸¦ ºñÈ°¼ºÈ­ÇÕ´Ï´Ù
+        for (int i = 0; i < 6; i++)//ìƒˆë¡­ê²Œ ëˆŒë¦° ì—´ ë²„íŠ¼ì„ ì œì™¸í•œ ë‚˜ë¨¸ì§€ ì—´ ë²„íŠ¼ì˜ ì„ íƒ ìƒíƒœë¥¼ í•´ì œí•œë‹¤
         {
             if (lineButtons[i].Selected == true && i != line)
             {
@@ -195,13 +195,13 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             }
         }
 
-        if (decodeRow != 6)//RowButton°ú LineButton µÑ ´Ù ¼±ÅÃ µÇ¾úÀ¸¹Ç·Î, Decoding °úÁ¤À» ÁøÇàÇÕ´Ï´Ù
+        if (decodeRow != 6)//ì´ë¯¸ í–‰ ë²„íŠ¼ì´ ì„ íƒëœ ìƒíƒœ, ë‘ ë²„íŠ¼ì´ ì „íˆ¬ ì„ íƒë˜ì—ˆë‹¤
         {
             lineButtons[decodeLine].Selected = false;
             rowButtons[decodeRow].Selected = false;
             rowButtons[decodeRow].ConvertClickSpriteColor(rowButtons[decodeRow].Exit);
 
-            //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
+            //íŠœí† ë¦¬ì–¼ ê´€ë ¨ ì½”ë“œ
             if (adfgvx.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 adfgvx.DisplayTutorialDialog(144, 0f);
@@ -211,9 +211,9 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             }
             if (adfgvx.GetCurrentTutorialPhase() == 7 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                if (decodeRow == 0 && decodeLine == 1 && currentArrayNum == 0)
+                if (decodeRow == 0 && decodeLine == 1 && currentADFGVXArrayNum == 0)
                     adfgvx.MoveToNextTutorialPhase(2.0f);
-                else if (currentArrayNum != 0)
+                else if (currentADFGVXArrayNum != 0)
                 {
                     adfgvx.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
@@ -230,9 +230,9 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             }
             if (adfgvx.GetCurrentTutorialPhase() == 6 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                if (decodeRow == 0 && decodeLine == 2 && currentArrayNum == 0)
+                if (decodeRow == 0 && decodeLine == 2 && currentADFGVXArrayNum == 0)
                     adfgvx.MoveToNextTutorialPhase(2.0f);
-                else if (currentArrayNum != 0)
+                else if (currentADFGVXArrayNum != 0)
                 {
                     adfgvx.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
@@ -249,9 +249,9 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             }
             if (adfgvx.GetCurrentTutorialPhase() == 5 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                if (decodeRow == 5 && decodeLine == 4 && currentArrayNum == 0)
+                if (decodeRow == 5 && decodeLine == 4 && currentADFGVXArrayNum == 0)
                     adfgvx.MoveToNextTutorialPhase(2.0f);
-                else if (currentArrayNum != 0)
+                else if (currentADFGVXArrayNum != 0)
                 {
                     adfgvx.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
@@ -273,13 +273,13 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         }
     }
 
-    private void UpdateADFGVXArray()//currentArrayNum¿¡ µû¶ó¼­ »õ·Î¿î ADFGVX ¹è¿­À» ·ÎµùÇØ¼­ Array¸¦ ¾÷µ¥ÀÌÆ®
+    private void UpdateADFGVXArray()//currentADFGVXArrayNumì— ë”°ë¼ì„œ ADFGVX í…Œì´ë¸” ì›ì†Œì˜ í…ìŠ¤íŠ¸ë¥¼ ë³€ê²½í•œë‹¤
     {
-        string FilePath = "Assets/Resources/Text/Array_" + currentArrayNum + ".txt";
+        string FilePath = "Assets/Resources/Text/Array_" + currentADFGVXArrayNum + ".txt";
         FileInfo TxtFile = new FileInfo(FilePath);
         string value = "";
 
-        if (TxtFile.Exists)//FilePath°¡ À¯È¿ÇÏ´Ù¸é
+        if (TxtFile.Exists)
         {
             StreamReader Reader = new StreamReader(FilePath);
             value = Reader.ReadToEnd();
@@ -288,42 +288,40 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         else
             Debug.Log("Unexist Filename!");
 
-        //¸ğµç public elementButtons¿¡ Á¢±ÙÇÏ¸é¼­ ¹öÆ°ÀÇ ÅØ½ºÆ®¸¦ ADFGVXÇ¥ÀÇ °ª´ë·Î º¯°æÇÕ´Ï´Ù
+        //ADFGVX í…Œì´ë¸” ì›ì†Œë“¤ì„ ìˆœíšŒí•˜ë©´ì„œ í…ìŠ¤íŠ¸ ê°’ì„ ë³€ê²½í•œë‹¤
         for (int i = 0; i < 6; i++)
         {
             for (int j = 0; j < 6; j++)
             {
-                elementButtons[i * 6 + j].ChangeButtonText(value[i * 6 + j]);
+                elementButtons[i * 6 + j].SetMarkText(value[i * 6 + j].ToString());
             }
         }
     }
 
-    public void ArrayPlus()//ADFGVX¹è¿­ +1·Î ÀüÈ¯
+    public void ArrayPlus()//ADFGVX í…Œì´ë¸” ë²ˆí˜¸ +1
     {
-        //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
         if (adfgvx.GetCurrentTutorialPhase()==4 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             adfgvx.MoveToNextTutorialPhase(3.0f);
         }
 
-        currentArrayNum++;
-        currentArrayNum %= ArrayNum_MAX;
-        arrayNumText.text = "ADFGVX\nARRAY\nNo." + currentArrayNum.ToString();
+        currentADFGVXArrayNum++;
+        currentADFGVXArrayNum %= ArrayNum_MAX;
+        arrayNumText.text = "ADFGVX\nARRAY\nNo." + currentADFGVXArrayNum.ToString();
         UpdateADFGVXArray();
     }
 
-    public void ArrayMinus()//ADFGVX¹è¿­ -1·Î ÀüÈ¯
+    public void ArrayMinus()//ADFGVX í…Œì´ë¸” ë²ˆí˜¸ -1
     {
-        //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
         if (adfgvx.GetCurrentTutorialPhase() == 4 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             adfgvx.MoveToNextTutorialPhase(3.0f);
         }
 
-        currentArrayNum--;
-        if (currentArrayNum < 0)
-            currentArrayNum = ArrayNum_MAX - 1;
-        arrayNumText.text = "ADFGVX\nARRAY\nNo." + currentArrayNum.ToString();
+        currentADFGVXArrayNum--;
+        if (currentADFGVXArrayNum < 0)
+            currentADFGVXArrayNum = ArrayNum_MAX - 1;
+        arrayNumText.text = "ADFGVX\nARRAY\nNo." + currentADFGVXArrayNum.ToString();
         UpdateADFGVXArray();
     }
 }

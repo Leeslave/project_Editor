@@ -24,14 +24,14 @@ public class Log : MonoBehaviour
         markText.color = value;
     }
 
-    public void FillLoadingLog(float time, string fileName)//지정한 파일을 로드해서 로그를 채움
+    public void FillLoadingLog(float time, string fileName)
     {
         GetLogTxtFile(fileName);
         markText.text = "";
-        StartCoroutine(FillLoadingLogIEnumerator(time, 0, 0));
+        StartCoroutine(FillLoadingLog_IE(time, 0, 0));
     }
 
-    private IEnumerator FillLoadingLogIEnumerator(float time, float currentTime, int idx)//로그를 채움 재귀
+    private IEnumerator FillLoadingLog_IE(float time, float currentTime, int idx)
     {
         if (Mathf.CeilToInt(currentTime / time * logs.Length) == idx + 1)
         {
@@ -55,10 +55,10 @@ public class Log : MonoBehaviour
         if (currentTime > time)
             yield break;
         yield return new WaitForSeconds(time / 100);
-        StartCoroutine(FillLoadingLogIEnumerator(time, currentTime, idx));
+        StartCoroutine(FillLoadingLog_IE(time, currentTime, idx));
     }
 
-    private void GetLogTxtFile(string fileName)//이번 로딩 텍스트 파일을 불러온다
+    private void GetLogTxtFile(string fileName)
     {
         string filePath = "Assets/Resources/Log/Log_" + fileName + ".txt";
         fileTxt = new FileInfo(filePath);
@@ -90,12 +90,12 @@ public class Log : MonoBehaviour
         ConvertColorText(markText, time, Color.clear);
     }
 
-    private void ConvertColorText(TextMeshPro target, float time, Color targetValue)//텍스트 색 변환
+    private void ConvertColorText(TextMeshPro target, float time, Color targetValue)
     {
-        StartCoroutine(ConvertColorTextIEnumerator(target, time, 0, targetValue));
+        StartCoroutine(ConvertColorText_IE(target, time, 0, targetValue));
     }
 
-    private IEnumerator ConvertColorTextIEnumerator(TextMeshPro target, float time, float currentTime, Color targetValue)//텍스트 색 변환 재귀
+    private IEnumerator ConvertColorText_IE(TextMeshPro target, float time, float currentTime, Color targetValue)
     {
         currentTime += time / 100;
         if (currentTime > time)
@@ -108,6 +108,6 @@ public class Log : MonoBehaviour
         target.color = new Color(target_r, target_g, target_b, target_a);
 
         yield return new WaitForSeconds(time / 100);
-        StartCoroutine(ConvertColorTextIEnumerator(target, time, currentTime, targetValue));
+        StartCoroutine(ConvertColorText_IE(target, time, currentTime, targetValue));
     }
 }

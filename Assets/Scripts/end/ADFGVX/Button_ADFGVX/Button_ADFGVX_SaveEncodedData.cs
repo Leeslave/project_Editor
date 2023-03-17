@@ -7,6 +7,6 @@ public class Button_ADFGVX_SaveEncodedData : Button_ADFGVX
     protected override void OnMouseDown()
     {
         base.OnMouseDown();
-        GameManager.verificationpart.StartEncodeVerifiaction();
+        GameManager.verificationPart.StartEncodeVerifiaction();
     }
 }

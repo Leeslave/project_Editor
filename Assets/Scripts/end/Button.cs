@@ -6,52 +6,48 @@ using TMPro;
 public class Button : MonoBehaviour
 {
     private TextMeshPro markText;
-    private SpriteRenderer markSprite;
     private SpriteRenderer guideSprite;
     private SpriteRenderer clickSprite;
     
-    [Header("Enter »ö")]
+    [Header("Enter Color")]
     public Color Enter;
-    [Header("Exit »ö")]
+    [Header("Exit Color")]
     public Color Exit;
-    [Header("Down »ö")]
+    [Header("Down Color")]
     public Color Down;
-    [Header("Up »ö")]
+    [Header("Up Color")]
     public Color Up;
 
-    //Ä¿¼­ ¿À¹ö È®ÀÎ º¯¼ö
+    //ì»¤ì„œ ì˜¤ë²„ ì—¬ë¶€
     private bool isCursorOver;
 
-    //»öÀ» º¯°æÇÏ´Â ÄÚ·çÆ¾, Áßµµ ÆÄ±â ¹× Ãß°¡¿¡ ´ëÀÀ
+    //ë²„íŠ¼ ìƒ‰ ì „í™˜ ì½”ë£¨í‹´ - ìƒ‰ ì „í™˜ ì¤‘ë‹¨ ìš©
     private Coroutine colorConvertCoroutine;
 
     protected virtual void Start()
     {
-        InitButton();
+        Init();
     }
 
-    protected void SetLayer(int layer)//ÀÔ·Â Á¦¾î
-    {
-        this.gameObject.layer = layer;
-    }
-
-    protected void InitButton()//¹öÆ° ÃÊ±âÈ­
+    protected void Init()
     {
         if (transform.Find("MarkText") != null)
             markText = transform.Find("MarkText").GetComponent<TextMeshPro>();
-        if (transform.Find("MarkSprite") != null)
-            markSprite = transform.Find("MarkSprite").GetComponent<SpriteRenderer>();
         if (transform.Find("GuideSprite") != null)
             guideSprite = transform.Find("GuideSprite").GetComponent<SpriteRenderer>();
         if (transform.Find("ClickSprite") != null)
             clickSprite = transform.Find("ClickSprite").GetComponent<SpriteRenderer>();
 
         SetClickSpriteColor(Exit);
-
         SetIsCursorOver(false);
     }
 
-    protected virtual void OnMouseDown()//¹öÆ° ´Ù¿î
+    protected void SetLayer(int layer)//ìž…ë ¥ ì œì–´
+    {
+        this.gameObject.layer = layer;
+    }
+
+    protected virtual void OnMouseDown()//ë²„íŠ¼ ë‹¤ìš´
     {
         if (GetIsCursorOver())
             ConvertClickSpriteColor(Down);
@@ -59,7 +55,7 @@ public class Button : MonoBehaviour
             ConvertClickSpriteColor(Exit);
     }
 
-    protected virtual void OnMouseUp()//¹öÆ° ¾÷
+    protected virtual void OnMouseUp()//ë²„íŠ¼ ì—…
     {
         if (GetIsCursorOver())
             ConvertClickSpriteColor(Up);
@@ -67,13 +63,13 @@ public class Button : MonoBehaviour
             ConvertClickSpriteColor(Exit);
     }
 
-    protected virtual void OnMouseEnter()//¹öÆ° ¿£ÅÍ
+    protected virtual void OnMouseEnter()//ë§ˆìš°ìŠ¤ ì—”í„°
     {
         SetIsCursorOver(true);
         SetClickSpriteColor(Enter);
     }
 
-    protected virtual void OnMouseExit()//¹öÆ° ¿¢½ÃÆ®
+    protected virtual void OnMouseExit()//ë§ˆìš°ìŠ¤ ì—‘ì‹œíŠ¸
     {
         SetIsCursorOver(false);
         ConvertColorSprite(clickSprite, 1, Exit);
@@ -84,41 +80,41 @@ public class Button : MonoBehaviour
         ConvertColorSprite(clickSprite, 1, value);
     }
 
-    public void SetMarkText(string value)//MarkText °ª ¼³Á¤
+    public void SetMarkText(string value)//MarkTextê°’ ì„¤ì •
     {
         markText.text = value;
     }
 
-    public string GetMarkText()//MarkText °ª ¹ÝÈ¯
+    public string GetMarkText()//MarkTextê°’ ë°˜í™˜
     {
         return markText.text;
     }
 
-    public void SetClickSpriteColor(Color value)//Å¬¸¯ ½ºÇÁ¶óÀÌÆ® »ö ¼³Á¤
+    public void SetClickSpriteColor(Color value)//
     {
         if (colorConvertCoroutine != null)
             StopCoroutine(colorConvertCoroutine);
         clickSprite.color = value;
     }
 
-    public bool GetIsCursorOver()//IsCursorOver ¹ÝÈ¯
+    public bool GetIsCursorOver()//IsCursorOverê°’ ë°˜í™˜
     {
         return isCursorOver;
     }
 
-    public void SetIsCursorOver(bool value)//IsCursorOver ¼³Á¤
+    public void SetIsCursorOver(bool value)//IsCursorOverê°’ ì„¤ì •
     {
         isCursorOver = value;
     }
 
-    private void ConvertColorSprite(SpriteRenderer target, float endTime, Color targetValue)//½ºÇÁ¶óÀÌÆ® »ö º¯È¯
+    private void ConvertColorSprite(SpriteRenderer target, float endTime, Color targetValue)
     {
         if(colorConvertCoroutine!=null)
            StopCoroutine(colorConvertCoroutine);
-        colorConvertCoroutine =  StartCoroutine(ConvertColorSpriteIEnumerator(target, endTime, 0, targetValue));
+        colorConvertCoroutine =  StartCoroutine(ConvertColorSprite_IE(target, endTime, 0, targetValue));
     }
 
-    private IEnumerator ConvertColorSpriteIEnumerator(SpriteRenderer target, float endTime, float currentTime, Color targetValue)//½ºÇÁ¶óÀÌÆ® »ö º¯È¯ Àç±Í
+    private IEnumerator ConvertColorSprite_IE(SpriteRenderer target, float endTime, float currentTime, Color targetValue)
     {
         currentTime += endTime / 100;
         if (currentTime > endTime)
@@ -131,6 +127,6 @@ public class Button : MonoBehaviour
         target.color = new Color(target_r, target_g, target_b, target_a);
 
         yield return new WaitForSeconds(endTime / 100);
-        colorConvertCoroutine = StartCoroutine(ConvertColorSpriteIEnumerator(target, endTime, currentTime, targetValue));
+        colorConvertCoroutine = StartCoroutine(ConvertColorSprite_IE(target, endTime, currentTime, targetValue));
     }
 }

@@ -39,84 +39,79 @@ public class VerificationPanelPart : MonoBehaviour
         UnvisiblePart();
     }
 
-    public void SetLayer(int layer)//¸ğµç ÀÔ·Â Á¦¾î
+    public void SetLayer(int layer)//í•˜ìœ„ ìš”ì†Œì˜ ì…ë ¥ ì œì–´
     {
         this.gameObject.layer = layer;
         GameObject.Find("XButton").layer = layer;
     }
 
-    public void VisiblePart()//È®ÀÎ Ã¢ °¡½Ã
+    public void VisiblePart()//íŒŒíŠ¸ ê°€ì‹œ
     {
         this.transform.localPosition = new Vector3(-63.6f, -45.7f, 0);
     }
 
-    public void UnvisiblePart()//È®ÀÎ Ã¢ ºñ°¡½Ã
+    public void UnvisiblePart()//íŒŒíŠ¸ ë¹„ê°€ì‹œ
     {
         this.transform.localPosition = new Vector3(330, -45.7f, 0);
     }
 
-    public void StartDecodeVerification()//º¹È£È­ È®ÀÎ ½ÃÀÛÇÏ±â
+    public void StartDecodeVerification()//ë³µí˜¸í™” ê²€ì¦ ê°œì‹œ
     {
-        StartCoroutine(StartDecodeVerificationIEnumerator());
+        StartCoroutine(StartDecodeVerification_IE());
     }
 
-    private IEnumerator StartDecodeVerificationIEnumerator()//º¹È£È­ È®ÀÎ ½ÃÀÛÇÏ±â
+    private IEnumerator StartDecodeVerification_IE()//StartDecodeVerification_IEnumerator
     {
-        if (adfgvx.encodeDataLoadPart.GetData() == "¾ÏÈ£È­ µ¥ÀÌÅÍ¸¦ ·ÎµåÇÏ¿© ½ÃÀÛ¡¦")
+        //ì—ëŸ¬ ë°œìƒ
+        if (adfgvx.encodeDataLoadPart.GetTextField_Data() == "ì•”í˜¸í™” ë°ì´í„°ë¥¼ ë¡œë“œí•˜ì—¬ ì‹œì‘â€¦")
         {
-            adfgvx.InformError("¾ÏÈ£È­ µ¥ÀÌÅÍ ºó Ä­ : º¹È£È­ ½ÃÄö½º ÁøÇà ºÒ°¡");
+            adfgvx.InformError("ë³µí˜¸í™” ë°ì´í„° ë¬´ê²°ì„± ê²€ì¦ ë¶ˆê°€ : ì•”í˜¸í™” ë°ì´í„° ê³µë°±");
             yield break;
         }
         else if(adfgvx.afterDecodingPart.GetInputField_Data().GetInputString() == "")
         {
-            adfgvx.InformError("º¹È£È­ µ¥ÀÌÅÍ ºó Ä­ : º¹È£È­ ½ÃÄö½º ÁøÇà ºÒ°¡");
+            adfgvx.InformError("ë³µí˜¸í™” ë°ì´í„° ë¬´ê²°ì„± ê²€ì¦ ë¶ˆê°€ : ë³µí˜¸í™” ë°ì´í„° ê³µë°±");
             yield break;
         }
         else if(adfgvx.transpositionpart.GetInputField_keyword().GetInputString() == "")
         {
-            adfgvx.InformError("º¹È£È­ Å° ºó Ä­ : º¹È£È­ ½ÃÄö½º ÁøÇà ºÒ°¡");
+            adfgvx.InformError("ë³µí˜¸í™” ë°ì´í„° ë¬´ê²°ì„± ê²€ì¦ ë¶ˆê°€ : ë³µí˜¸í™” ì „ì¹˜ í‚¤ ê³µë°±");
             yield break;
         }
 
-        adfgvx.InformUpdate("º¹È£È­ µ¥ÀÌÅÍ ÀúÀå ½ÃÄö½º °³½Ã");
+        adfgvx.InformUpdate("ë³µí˜¸í™” ë¬´ê²°ì„± ê²€ì¦ ì‘ì—… ê°œì‹œâ€¦");
 
-        //°á°ú Ã¢ Á¦¸ñ ÃÊ±âÈ­
+        //ì—°ì¶œ
         title.SetSizeTextOnly(new Vector2(1,1));
         title.SetTextColor(Color.white);
-        title.SetText("ÃÖÁ¾ º¹È£È­ ½ÃÄö½º ÁøÇà Áß");
-
-        //°á°ú Ã¢ Å©±â Á¶Á¤
+        title.SetText("ë³µí˜¸í™” ë¬´ê²°ì„± ê²€ì¦ ì§„í–‰ ì¤‘â€¦");
         panelBackgroundSprite_D.size = new Vector2(231.8f, 46.3f);
         panelGuideSprite.size = new Vector2(57.9f, 11.7f);
-
         loadingGauge.VisibleGaugeImediately();
-        
         percentage.SetTextColor(Color.white);
         percentageInfo.SetTextColor(Color.white);
         result.SetTextColor(Color.clear);
         consoleLog.SetColorText(Color.white);
-
-        //ÇÃ·¹ÀÌ ½Ã°£ ÀúÀå
-        float totalElaspedTime = adfgvx.GetTotalElapsedTime();
-
-        //¸ğµç ÀÔ·Â Â÷´Ü
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
-
-        //È®ÀÎ ÆĞ³Î °¡½Ã ¸ğµå
-        VisiblePart();
-
-        //°ÔÀÌÁö ¹Ù
         loadingGauge.FillGaugeBar(3.0f, new Color(0.13f, 0.67f, 0.28f, 1));
         percentage.FillPercentage(3.0f);
 
-        //·Îµù ·Î±×
+        //ê±¸ë¦° ì‹œê°„
+        float totalElaspedTime = adfgvx.GetTotalElapsedTime();
+
+        //ì…ë ¥ ì°¨ë‹¨
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+
+        //íŒŒíŠ¸ ê°€ì‹œ
+        VisiblePart();
+
+        //ë¡œê·¸ íŒŒì¼ ê²½ë¡œ
         string filePath = adfgvx.ReturnDecodeScore() ? "DecodeSuccess" : "DecodeFail";
         consoleLog.FillLoadingLog(3.0f, filePath);
 
-        //ÀÛ¾÷ ÁßÀÎ °Í °°Àº »ç¿îµå Àç»ı
+        //ì˜¤ë””ì˜¤ ì¬ìƒ
         adfgvx.PlayAudioSource(ADFGVX.Audio.DataProcessing);
 
-        //È®ÀÎ Ã¢ ÀÛ¾÷ Á¾·á ¿¬Ãâ
+        //ì—°ì¶œ
         yield return new WaitForSeconds(4f);
         title.ConvertSizeTextOnly(new Vector2(1.66f,1.66f), 1f);
         percentage.ConvertColorTextOnly(1f, Color.clear);
@@ -124,46 +119,46 @@ public class VerificationPanelPart : MonoBehaviour
         loadingGauge.UnvisibleGauge(1f);
         consoleLog.HideTextOnly(1f);
         
-        //°á°ú ¼¼ºÎ»çÇ× Èå¸§ Ãâ·Â ÁØºñ
+        //ê²°ê³¼ ì •ë³´
         string info;
         string keword;
         string time;
         if (adfgvx.ReturnDecodeScore())
         {
-            title.SetText("ÃÖÁ¾ º¹È£È­ ½ÃÄö½º ¿Ï·á");
+            title.SetText("ë°ì´í„° ë³µí˜¸í™” ì‘ì—… ì„±ê³µ");
             title.ConvertColorTextOnly(3f, new Color(0.1f, 0.35f, 0.85f, 1f));
 
-            info = "¾Ë¸² : " + adfgvx.encodeDataLoadPart.GetTextField_SecurityLevel().GetText() + " '" + adfgvx.encodeDataLoadPart.GetInputField_filePath().GetInputString() + "'¸¦\n";
-            keword = "¾ÏÈ£ Å° : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "·Î º¹È£È­ ¼º°ø\n";
+            info = "ë³´ì•ˆ ë“±ê¸‰ : " + adfgvx.encodeDataLoadPart.GetTextField_SecurityLevel().GetText() + " '" + adfgvx.encodeDataLoadPart.GetInputField_filePath().GetInputString() + "'ì„\n";
+            keword = "ì „ì¹˜ í‚¤ : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "ë¡œ ë³µí˜¸í™”ì— ì„±ê³µí–ˆìŠµë‹ˆë‹¤\n";
         }
         else
         {
-            title.SetText("ÃÖÁ¾ º¹È£È­ ½ÃÄö½º ½ÇÆĞ");
+            title.SetText("ë°ì´í„° ë³µí˜¸í™” ì‘ì—… ì‹¤íŒ¨");
             title.ConvertColorTextOnly(3f, new Color(0.76f, 0.28f, 0.28f, 1f));
 
-            info = "°æ°í : " + adfgvx.encodeDataLoadPart.GetTextField_SecurityLevel().GetText() + " '" + adfgvx.encodeDataLoadPart.GetInputField_filePath().GetInputString() + "'¸¦\n";
-            keword = "¾ÏÈ£ Å° : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "·Î º¹È£È­ ½ÇÆĞ\n";
+            info = "ë³´ì•ˆ ë“±ê¸‰ : " + adfgvx.encodeDataLoadPart.GetTextField_SecurityLevel().GetText() + " '" + adfgvx.encodeDataLoadPart.GetInputField_filePath().GetInputString() + "'ì„\n";
+            keword = "ì „ì¹˜ í‚¤ : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "ë¡œ ë³µí˜¸í™”ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤\n";
         }
-        time = "ÃÑ ÀÛ¾÷ ½Ã°£: " + Mathf.FloorToInt(totalElaspedTime / 60).ToString("D2") + ":" + Mathf.FloorToInt(totalElaspedTime % 60).ToString("D2");
+        time = "ì´ ì‘ì—… ì‹œê°„ : " + Mathf.FloorToInt(totalElaspedTime / 60).ToString("D2") + ":" + Mathf.FloorToInt(totalElaspedTime % 60).ToString("D2");
 
         ConvertSpriteSize(new Vector2(231.8f, 57.6f), panelBackgroundSprite_D, 1f);
         ConvertSpriteSize(new Vector2(57.9f, 14.6f), panelGuideSprite, 1f);
 
-        //°á°ú ¼¼ºÎ»çÇ× Ãâ·Â
+        //ê²°ê³¼ ì•ˆë‚´
         yield return new WaitForSeconds(1.5f);
         result.SetTextColor(Color.white);
         result.SetText("");
         result.FlowText(info + keword + time, 3f);
 
-        //¼Ò¸® Àç»ı
-        adfgvx.soundFlow(30, 3f);
+        //ì˜¤ë””ì˜¤ ì¬ìƒ
+        adfgvx.SoundFlow(30, 3f);
 
-        //È®ÀÎ Ã¢ ÀÔ·Â È¸º¹
+        //ì¢…ë£Œ
         yield return new WaitForSeconds(4f);
         adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 0 ,2);
-        adfgvx.InformUpdate(adfgvx.ReturnDecodeScore() ? "º¹È£È­ µ¥ÀÌÅÍ ÀúÀå ½ÃÄö½º ¼º°ø" : "º¹È£È­ µ¥ÀÌÅÍ ÀúÀå ½ÃÄö½º ½ÇÆĞ");
+        adfgvx.InformUpdate(adfgvx.ReturnDecodeScore() ? "ë³µí˜¸í™” ë°ì´í„° ë¬´ê²°ì„± ê²€ì¦ì— ì„±ê³µí–ˆìŠµë‹ˆë‹¤" : "ë³µí˜¸í™” ë°ì´í„° ë¬´ê²°ì„± ê²€ì¦ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤");
 
-        //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
+        //íŠœí† ë¦¬ì–¼ ê´€ë ¨ ì½”ë“œ
         if (adfgvx.GetCurrentTutorialPhase() == 9 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             Debug.Log(adfgvx.ReturnDecodeScore());
@@ -174,69 +169,62 @@ public class VerificationPanelPart : MonoBehaviour
         }
     }
 
-    public void StartEncodeVerifiaction()//¾ÏÈ£È­ È®ÀÎ ½ÃÀÛÇÏ±â
+    public void StartEncodeVerifiaction()//ì•”í˜¸í™” ê²€ì¦ ê°œì‹œ
     {
-        StartCoroutine(StartEncodeVerificationIEnumerator());
+        StartCoroutine(StartEncodeVerification_IE());
     }
 
-    private IEnumerator StartEncodeVerificationIEnumerator()//¾ÏÈ£È­ È®ÀÎ ½ÃÀÛÇÏ±â
+    private IEnumerator StartEncodeVerification_IE()//StartEncodeVerifiaction_IEnumerator
     {
         if(adfgvx.encodeDataSavePart.GetInputField_Data().GetInputString() == "")
         {
-            adfgvx.InformError("¾ÏÈ£È­ ³»¿ë ºó Ä­ : ¾ÏÈ£È­ ½ÃÄö½º ÁøÇà ºÒ°¡");
+            adfgvx.InformError("ì•”í˜¸í™” ë°ì´í„° ë¬´ê²°ì„± ê²€ì¦ ë¶ˆê°€ : ì €ì¥ íŒŒì¼ ë‚´ìš© ê³µë°±");
             yield break;
         }
         if(adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() == "")
         {
-            adfgvx.InformError("¾ÏÈ£È­ Á¦¸ñ ºó Ä­ : ¾ÏÈ£È­ ½ÃÄö½º ÁøÇà ºÒ°¡");
+            adfgvx.InformError("ì•”í˜¸í™” ë°ì´í„° ë¬´ê²°ì„± ê²€ì¦ ë¶ˆê°€ : ì €ì¥ íŒŒì¼ ì œëª© ê³µë°±");
             yield break;
         }
         if(adfgvx.transpositionpart.GetInputField_keyword().GetInputString() == "")
         {
-            adfgvx.InformError("¾ÏÈ£È­ Å° ºó Ä­ : ¾ÏÈ£È­ ½ÃÄö½º ÁøÇà ºÒ°¡");
+            adfgvx.InformError("ì•”í˜¸í™” ë°ì´í„° ë¬´ê²°ì„± ê²€ì¦ ë¶ˆê°€ : ì•”í˜¸í™” ì „ì¹˜ í‚¤ ê³µë°±");
             yield break;
         }
 
-        adfgvx.InformUpdate("¾ÏÈ£È­ µ¥ÀÌÅÍ ÀúÀå ½ÃÄö½º °³½Ã");
+        adfgvx.InformUpdate("ì•”í˜¸í™” ë¬´ê²°ì„± ê²€ì¦ ì‘ì—… ê°œì‹œâ€¦");
 
-        //°á°ú Ã¢ Á¦¸ñ ÃÊ±âÈ­
+        //ì—°ì¶œ
         title.SetSizeTextOnly(new Vector2(1, 1));
         title.SetTextColor(Color.white);
-        title.SetText("ÃÖÁ¾ ¾ÏÈ£È­ ½ÃÄö½º ÁøÇà Áß");
-
-        //°á°ú Ã¢ Å©±â Á¶Á¤
+        title.SetText("ì•”í˜¸í™” ë¬´ê²°ì„± ê²€ì¦ ì§„í–‰ ì¤‘â€¦");
         panelBackgroundSprite_D.size = new Vector2(231.8f, 46.3f);
         panelGuideSprite.size = new Vector2(57.9f, 11.7f);
-
-        //°á°ú Ã¢ °ÔÀÌÁö ÃÊ±âÈ­
         loadingGauge.VisibleGaugeImediately();
-
         percentage.SetTextColor(Color.white);
         percentageInfo.SetTextColor(Color.white);
         result.SetTextColor(Color.clear);
         consoleLog.SetColorText(Color.white);
-
-        //ÇÃ·¹ÀÌ ½Ã°£ ÀúÀå
-        float totalElaspedTime = adfgvx.GetTotalElapsedTime();
-
-        //¸ğµç ÀÔ·Â Â÷´Ü
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
-
-        //È®ÀÎ ÆĞ³Î °¡½Ã ¸ğµå
-        VisiblePart();
-
-        //°ÔÀÌÁö ¹Ù
         loadingGauge.FillGaugeBar(3f, new Color(0.13f, 0.67f, 0.28f, 1f));
         percentage.FillPercentage(3f);
 
-        //·Îµù ·Î±×
-        string filePath = true ? "EncodeSuccess" : "EncodeFail";
+        //ê±¸ë¦° ì‹œê°„
+        float totalElaspedTime = adfgvx.GetTotalElapsedTime();
+
+        //ì…ë ¥ ì°¨ë‹¨
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+
+        //íŒŒíŠ¸ ê°€ì‹œ
+        VisiblePart();
+
+        //ë¡œê·¸ íŒŒì¼ ê²½ë¡œ
+        string filePath = adfgvx.ReturnEncodeScore() ? "EncodeSuccess" : "EncodeFail";
         consoleLog.FillLoadingLog(3f, filePath);
 
-        //ÀÛ¾÷ ÁßÀÎ °Í °°Àº »ç¿îµå Àç»ı
+        //ì˜¤ë””ì˜¤ ì¬ìƒ
         adfgvx.PlayAudioSource(ADFGVX.Audio.DataProcessing);
 
-        //È®ÀÎ Ã¢ ÀÛ¾÷ Á¾·á ¿¬Ãâ
+        //ì—°ì¶œ
         yield return new WaitForSeconds(4f);
         title.ConvertSizeTextOnly(new Vector2(1.66f,1.66f), 1f);
         percentage.ConvertColorTextOnly(1f, Color.clear);
@@ -244,47 +232,47 @@ public class VerificationPanelPart : MonoBehaviour
         loadingGauge.UnvisibleGauge(1f);
         consoleLog.HideTextOnly(1f);
 
-        //°á°ú ¾È³» Èå¸§ Ãâ·Â
+        //ê²°ê³¼ ì •ë³´
         string info;
         string keyword;
         string time;
         if (adfgvx.ReturnEncodeScore())
         {
-            title.SetText("ÃÖÁ¾ ¾ÏÈ£È­ ½ÃÄö½º ¼º°ø");
+            title.SetText("ë°ì´í„° ì•”í˜¸í™” ì‘ì—… ì„±ê³µ");
             title.ConvertColorTextOnly(3f, new Color(0.1f, 0.35f, 0.85f, 1f));
 
-            info = "¾Ë¸² : " + adfgvx.encodeDataSavePart.GetSecurityLevel() + " '" + adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() + "'¸¦\n";
-            keyword = "¾ÏÈ£ Å° : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "·Î ¾ÏÈ£È­ ¼º°ø\n";
+            info = "ë³´ì•ˆ ë“±ê¸‰ : " + adfgvx.encodeDataSavePart.GetSecurityLevel() + " '" + adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() + "'ì„\n";
+            keyword = "ì „ì¹˜ í‚¤ : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "ë¡œ ì•”í˜¸í™” í•˜ëŠ”ë° ì„±ê³µí–ˆìŠµë‹ˆë‹¤\n";
         }
         else
         {
-            title.SetText("ÃÖÁ¾ ¾ÏÈ£È­ ½ÃÄö½º ½ÇÆĞ");
+            title.SetText("ë°ì´í„° ì•”í˜¸í™” ì‘ì—… ì„±ê³µ");
             title.ConvertColorTextOnly(3f, new Color(0.76f, 0.28f, 0.28f, 1f));
 
-            info = "°æ°í : " + adfgvx.encodeDataSavePart.GetSecurityLevel() + " '" + adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() + "'¸¦\n";
-            keyword = "¾ÏÈ£ Å° : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "·Î ¾ÏÈ£È­ ½ÇÆĞ\n";
+            info = "ë³´ì•ˆ ë“±ê¸‰ : " + adfgvx.encodeDataSavePart.GetSecurityLevel() + " '" + adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() + "'ì„\n";
+            keyword = "ì „ì¹˜ í‚¤ : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "ë¡œ ì•”í˜¸í™” í•˜ëŠ”ë° ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤\n";
         }
 
-        time = "ÃÑ ÀÛ¾÷ ½Ã°£: " + Mathf.FloorToInt(totalElaspedTime / 60).ToString("D2") + ":" + Mathf.FloorToInt(totalElaspedTime % 60).ToString("D2");
+        time = "ì´ ì‘ì—… ì‹œê°„ : " + Mathf.FloorToInt(totalElaspedTime / 60).ToString("D2") + ":" + Mathf.FloorToInt(totalElaspedTime % 60).ToString("D2");
         
         ConvertSpriteSize(new Vector2(231.8f, 57.6f), panelBackgroundSprite_D, 1f);
         ConvertSpriteSize(new Vector2(57.9f, 14.6f), panelGuideSprite, 1f);
 
-        //°á°ú ¼¼ºÎ»çÇ× Ãâ·Â
+        //ê²°ê³¼ ì•ˆë‚´
         yield return new WaitForSeconds(1.5f);
         result.SetText("");
         result.SetTextColor(Color.white);
         result.FlowText(info + keyword + time, 3f);
 
-        //¼Ò¸® Àç»ı
-        adfgvx.soundFlow(30, 3f);
+        //ì˜¤ë””ì˜¤ ì¬ìƒ
+        adfgvx.SoundFlow(30, 3f);
 
-        //È®ÀÎ Ã¢ ÀÔ·Â È¸º¹
+        //ì¢…ë£Œ
         yield return new WaitForSeconds(4f);
         adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 0, 2);
-        adfgvx.InformUpdate(adfgvx.ReturnDecodeScore() ? "¾ÏÈ£È­ µ¥ÀÌÅÍ ÀúÀå ½ÃÄö½º ¼º°ø" : "¾ÏÈ£È­ µ¥ÀÌÅÍ ÀúÀå ½ÃÄö½º ½ÇÆĞ");
+        adfgvx.InformUpdate(adfgvx.ReturnDecodeScore() ? "ì•”í˜¸í™” ë°ì´í„° ë¬´ê²°ì„± ê²€ì¦ì— ì„±ê³µí–ˆìŠµë‹ˆë‹¤" : "ì•”í˜¸í™” ë°ì´í„° ë¬´ê²°ì„± ê²€ì¦ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤");
 
-        //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
+        //íŠœí† ë¦¬ì–¼ ê´€ë ¨ ì½”ë“œ
         if(adfgvx.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
         {
             if (adfgvx.ReturnEncodeScore())

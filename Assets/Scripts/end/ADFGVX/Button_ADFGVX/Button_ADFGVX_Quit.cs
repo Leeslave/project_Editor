@@ -7,6 +7,6 @@ public class Button_ADFGVX_Quit : Button_ADFGVX
     protected override void OnMouseDown()
     {
         base.OnMouseDown();
-        Debug.Log("ADFGVX¸¦ Á¾·áÇÕ´Ï´Ù");
+        Debug.Log("ADFGVX ë¯¸ë‹ˆê²Œìž„ ì¢…ë£Œ");
     }
 }

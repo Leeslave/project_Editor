@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Chat_VoightKampff : Chat
 {
-    [Header("°ÔÀÓ ¸Å´ÏÀú")]
+    [Header("ê²Œì„ ë§¤ë‹ˆì €")]
     public GameManager_VoightKampff GameManager;
 
     protected override void SetLayerDefault()

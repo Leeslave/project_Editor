@@ -9,6 +9,6 @@ public class Button_ADFGVX : Button
     protected override void Start()
     {
         GameManager = GameObject.Find("GameManager").GetComponent<ADFGVX>();
-        InitButton();
+        Init();
     }
 }

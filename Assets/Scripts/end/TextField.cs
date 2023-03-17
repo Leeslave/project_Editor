@@ -20,29 +20,29 @@ public class TextField : MonoBehaviour
             guideSprite = transform.Find("GuideText").GetComponent<SpriteRenderer>();
     }
 
-    public string GetText()//markText를 반환한다
+    public string GetText()
     {
         return markText.text;
     }
 
-    public void SetText(string value)//markText를 value로 설정한다
+    public void SetText(string value)
     {
         markText.text = value;
     }
 
-    public bool GetIsNowFlowText()//흐름 출력 진행 여부 반환
+    public bool GetIsNowFlowText()
     {
         return isNowFlowText;
     }
 
-    public void FlowText(string value, float endTime)//value를 endTime안에 markText에 순차적으로 채워 넣는다
+    public void FlowText(string value, float endTime)
     {
         markText.text = "";
         isNowFlowText = true;
-        StartCoroutine(FlowTextIEnumerator(value, 0, endTime));
+        StartCoroutine(FlowText_IE(value, 0, endTime));
     }
 
-    private IEnumerator FlowTextIEnumerator(string value, int idx, float endTime)//FlowText 재귀
+    private IEnumerator FlowText_IE(string value, int idx, float endTime)
     {
         if (idx >= value.Length)
         {
@@ -53,27 +53,25 @@ public class TextField : MonoBehaviour
         markText.text += value.Substring(idx, 1);
         
         yield return new WaitForSeconds(endTime / value.Length);
-        StartCoroutine(FlowTextIEnumerator(value, idx + 1, endTime));
+        StartCoroutine(FlowText_IE(value, idx + 1, endTime));
     }
 
-
-
-    public void SetTextColor(Color targetValue)//martText 색 설정
+    public void SetTextColor(Color targetValue)
     {
         markText.color = targetValue;
     }
 
-    public void ConvertColorTextOnly(float time, Color targetValue)//martText 색 변환
+    public void ConvertColorTextOnly(float time, Color targetValue)
     {
         ConvertColorText(markText, time, targetValue);
     }
 
-    private void ConvertColorText(TextMeshPro target, float endTime, Color targetColor)//markText 색 변환 시작
+    private void ConvertColorText(TextMeshPro target, float endTime, Color targetColor)
     {
-        StartCoroutine(ConvertColorTextIEnumerator(target.color, target, endTime, 0, targetColor));
+        StartCoroutine(ConvertColorText_IE(target.color, target, endTime, 0, targetColor));
     }
 
-    private IEnumerator ConvertColorTextIEnumerator(Color currentColor, TextMeshPro target, float endTime, float currentTime, Color targetColor)//markText 색 변환 재귀
+    private IEnumerator ConvertColorText_IE(Color currentColor, TextMeshPro target, float endTime, float currentTime, Color targetColor)
     {
         currentTime += endTime / 100;
         if (currentTime > endTime)
@@ -86,12 +84,10 @@ public class TextField : MonoBehaviour
         target.color = new Color(targetColorR, targetColorG, targetColorB, targetColorA);
 
         yield return new WaitForSeconds(endTime / 100);
-        StartCoroutine(ConvertColorTextIEnumerator(currentColor, target, endTime, currentTime, targetColor));
+        StartCoroutine(ConvertColorText_IE(currentColor, target, endTime, currentTime, targetColor));
     }
 
-
-
-    public void ConvertSizeTextOnly(Vector2 targetSize, float endTime)//markText 사이즈 전환
+    public void ConvertSizeTextOnly(Vector2 targetSize, float endTime)
     {
         ConvertSizeText(markText, targetSize, endTime);
     }
@@ -101,12 +97,12 @@ public class TextField : MonoBehaviour
         markText.transform.localScale = new Vector2(targetSize.x, targetSize.y);
     }
 
-    private void ConvertSizeText(TextMeshPro target, Vector2 targetSize, float endTime)//markText 사이즈 전환 시작
+    private void ConvertSizeText(TextMeshPro target, Vector2 targetSize, float endTime)
     {
-        StartCoroutine(ConvertSizeTextIEnumerator(target.transform.localScale, target, targetSize, endTime, 0));
+        StartCoroutine(ConvertSizeText_IE(target.transform.localScale, target, targetSize, endTime, 0));
     }
 
-    private IEnumerator ConvertSizeTextIEnumerator(Vector2 currentSize, TextMeshPro target, Vector2 targetSize, float endTime, float currentTime)//markText 사이즈 전환 재귀
+    private IEnumerator ConvertSizeText_IE(Vector2 currentSize, TextMeshPro target, Vector2 targetSize, float endTime, float currentTime)
     {
         currentTime += endTime / 100;
         if (currentTime > endTime)
@@ -117,15 +113,15 @@ public class TextField : MonoBehaviour
         target.transform.localScale = new Vector3(newSizeX, newSizeY, 1);
 
         yield return new WaitForSeconds(endTime / 100);
-        StartCoroutine(ConvertSizeTextIEnumerator(currentSize, target, targetSize, endTime, currentTime));
+        StartCoroutine(ConvertSizeText_IE(currentSize, target, targetSize, endTime, currentTime));
     }
 
     public void FillPercentage(float endTime)
     {
-        StartCoroutine(FillPercentageIEnumerator(endTime, 0));
+        StartCoroutine(FillPercentage_IE(endTime, 0));
     }
 
-    private IEnumerator FillPercentageIEnumerator(float endTime, float currentendTime)
+    private IEnumerator FillPercentage_IE(float endTime, float currentendTime)
     {
         currentendTime += endTime / 100;
         if (currentendTime > endTime)
@@ -134,6 +130,6 @@ public class TextField : MonoBehaviour
         markText.text = Mathf.CeilToInt(currentendTime / endTime * 100).ToString() + "%";
 
         yield return new WaitForSeconds(endTime / 100);
-        StartCoroutine(FillPercentageIEnumerator(endTime, currentendTime));
+        StartCoroutine(FillPercentage_IE(endTime, currentendTime));
     }
 }

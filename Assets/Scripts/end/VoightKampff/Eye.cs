@@ -15,10 +15,10 @@ public class Eye : MonoBehaviour
         middle, middle_idle,
         Surprise, Shaking, 
     }                               
-    private string currentAnimation;                        //ÇöÀç ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌ¸§
-    [Header("¾Ö´Ï¸ŞÀÌ¼Ç ½ºÄÌ·¹Åæ")]
+    private string currentAnimation;
+    [Header("ìŠ¤íŒŒì¸ ìŠ¤ì¼ˆë ˆí†¤ ì• ë‹ˆë©”ì´ì…˜")]
     public SkeletonAnimation skeletonAnimation;
-    [Header("¾Ö´Ï¸ŞÀÌ¼Ç ¿¡¼Â¹è¿­")]
+    [Header("ì• ë‹ˆë©”ì´ì…˜ í´ë¦½")]
     public AnimationReferenceAsset[] animClip;
     private Coroutine animationCoroutine;
 
@@ -58,14 +58,14 @@ public class Eye : MonoBehaviour
         return Mathf.Abs(a - b) < 0.05f;
     }
 
-    public void RotatePupil(int rotateStartingPos, int rotateEndingPos, bool clockwise)//½ÃÀÛ °¢µµ¿¡¼­ Á¾·á °¢µµ±îÁö ÁöÁ¤ ¹æÇâÀ¸·Î ´«µ¿ÀÚ È¸Àü
+    public void RotatePupil(int rotateStartingPos, int rotateEndingPos, bool clockwise)//
     {
         Debug.Log("Eye : RotatePupil " + rotateStartingPos + " to " + rotateEndingPos + " by clockwise" + clockwise);
         if (animationCoroutine != null)
             StopCoroutine(animationCoroutine);
         animationCoroutine = StartCoroutine(RotatePupil_IE(rotateStartingPos, rotateEndingPos, clockwise));
     }
-    private IEnumerator RotatePupil_IE(int rotateStartingPos, int rotateEndingPos, bool clockwise)//½ÃÀÛ °¢µµ¿¡¼­ Á¾·á °¢µµ±îÁö ÁöÁ¤ ¹æÇâÀ¸·Î ´«µ¿ÀÚ È¸Àü IEnumerator
+    private IEnumerator RotatePupil_IE(int rotateStartingPos, int rotateEndingPos, bool clockwise)
     {
         int dir = clockwise ? 1 : -1;
         int currentPos = 0;
@@ -82,26 +82,26 @@ public class Eye : MonoBehaviour
         SetCurrentAnimation(AnimState.middle_idle, true, 1.0f);
     }
 
-    public void Surprise()//³î¶÷ ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+    public void Surprise()
     {
         Debug.Log("Eye : Surprise");
         StartCoroutine(Surprise_IE());
     }
-    private IEnumerator Surprise_IE()//³î¶÷ ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı IEnumerator
+    private IEnumerator Surprise_IE()
     {
         SetCurrentAnimation(AnimState.Surprise, false, 1.0f);
         yield return new WaitForSeconds(4.0f);
         SetCurrentAnimation(AnimState.middle_idle, true, 1.0f);
     }
 
-    public void DrawStar()//º°À» ±×¸³´Ï´Ù
+    public void DrawStar()
     {
         Debug.Log("Eye : DrawStar");
         if (animationCoroutine != null)
             StopCoroutine(animationCoroutine);
         animationCoroutine = StartCoroutine(DrawStar_IE());
     }
-    private IEnumerator DrawStar_IE()//º°À» ±×¸³´Ï´Ù IEnumerator
+    private IEnumerator DrawStar_IE()
     {
         SetCurrentAnimation(AnimState.h0, false, 1.0f);
         yield return new WaitForSeconds(0.2f);
@@ -118,14 +118,14 @@ public class Eye : MonoBehaviour
         SetCurrentAnimation(AnimState.middle_idle, true, 1.0f);
     }
 
-    public void DrawCSign()//C»çÀÎÀ» ±×¸³´Ï´Ù
+    public void DrawCSign()
     {
         Debug.Log("Eye : DrawCSign");
         if (animationCoroutine != null)
             StopCoroutine(animationCoroutine);
         animationCoroutine = StartCoroutine(DrawCSign_IE());
     }
-    private IEnumerator DrawCSign_IE()//C»çÀÎÀ» ±×¸³´Ï´Ù IEnumerator
+    private IEnumerator DrawCSign_IE()
     {
         SetCurrentAnimation(AnimState.h2, false, 1.0f);
         yield return new WaitForSeconds(0.2f);
@@ -156,14 +156,14 @@ public class Eye : MonoBehaviour
         SetCurrentAnimation(AnimState.middle_idle, true, 1.0f);
     }
 
-    public void DrawVSign()//V»çÀÎÀ» ±×¸³´Ï´Ù
+    public void DrawVSign()
     {
         Debug.Log("Eye : DrawVSign");
         if (animationCoroutine != null)
             StopCoroutine(animationCoroutine);
         animationCoroutine = StartCoroutine(DrawVSign_IE());
     }
-    private IEnumerator DrawVSign_IE()//V»çÀÎÀ» ±×¸³´Ï´Ù IEnumerator
+    private IEnumerator DrawVSign_IE()
     {
         SetCurrentAnimation(AnimState.h14, false, 1.0f);
         yield return new WaitForSeconds(0.2f);
@@ -174,14 +174,14 @@ public class Eye : MonoBehaviour
         SetCurrentAnimation(AnimState.middle_idle, true, 1.0f);
     }
 
-    public void DrawFSign()//F»çÀÎÀ» ±×¸³´Ï´Ù
+    public void DrawFSign()
     {
         Debug.Log("Eye : DrawFSign");
         if (animationCoroutine != null)
             StopCoroutine(animationCoroutine);
         animationCoroutine = StartCoroutine(DrawFSign_IE());
     }
-    private IEnumerator DrawFSign_IE()//F»çÀÎÀ» ±×¸³´Ï´Ù IEnumerator
+    private IEnumerator DrawFSign_IE()
     {
         SetCurrentAnimation(AnimState.h2, false, 1.0f);
         yield return new WaitForSeconds(0.105f);
@@ -198,14 +198,14 @@ public class Eye : MonoBehaviour
         SetCurrentAnimation(AnimState.middle_idle, true, 1.0f);
     }
 
-    public void DrawNSign()//N»çÀÎÀ» ±×¸³´Ï´Ù
+    public void DrawNSign()
     {
         Debug.Log("Eye : DrawNSign");
         if (animationCoroutine != null)
             StopCoroutine(animationCoroutine);
         animationCoroutine = StartCoroutine(DrawNSign_IE());
     }
-    private IEnumerator DrawNSign_IE()//N»çÀÎÀ» ±×¸³´Ï´Ù IEnumerator
+    private IEnumerator DrawNSign_IE()
     {
         SetCurrentAnimation(AnimState.h10, false, 1.0f);
         yield return new WaitForSeconds(0.2f);
@@ -224,14 +224,14 @@ public class Eye : MonoBehaviour
         SetCurrentAnimation(AnimState.middle_idle, true, 1.0f);
     }
 
-    public void DrawZSign()//Z»çÀÎÀ» ±×¸³´Ï´Ù
+    public void DrawZSign()
     {
         Debug.Log("Eye : DrawZSign");
         if (animationCoroutine != null)
             StopCoroutine(animationCoroutine);
         animationCoroutine = StartCoroutine(DrawZSign_IE());
     }
-    private IEnumerator DrawZSign_IE()//Z»çÀÎÀ» ±×¸³´Ï´Ù
+    private IEnumerator DrawZSign_IE()
     {
         SetCurrentAnimation(AnimState.h14, true, 1.0f);
         yield return new WaitForSeconds(0.2f);
@@ -244,12 +244,12 @@ public class Eye : MonoBehaviour
         SetCurrentAnimation(AnimState.middle_idle, true, 1.0f);
     }
 
-    private void SetCurrentAnimation(AnimState state, bool loop, float timeScale)//ÁÖ¾îÁø ¾Ö´Ï¸ŞÀÌ¼Ç »óÅÂ »óÅÂ¿¡ µû¶ó ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+    private void SetCurrentAnimation(AnimState state, bool loop, float timeScale)//í˜„ì¬ ì• ë‹ˆë©”ì´ì…˜ ì„¤ì •
     {
         AsyncAnimation(animClip[(int)state], loop, timeScale);
     }
 
-    private void AsyncAnimation(AnimationReferenceAsset animClip, bool loop, float timeScale)//ÁÖ¾îÁø Á¶°Ç¿¡ ¸ÂÃç ¾Ö´Ï¸ŞÀÌ¼Ç µ¿±âÈ­
+    private void AsyncAnimation(AnimationReferenceAsset animClip, bool loop, float timeScale)//ì• ë‹ˆë©”ì´ì…˜ ë™ê¸°í™”
     {
         if (animClip.name.Equals(currentAnimation))
             return;

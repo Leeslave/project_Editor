@@ -19,34 +19,24 @@ public class EncodeDataSavePart : MonoBehaviour
         level = transform.Find("SecurityLevel").GetComponent<Button_ADFGVX_ChangeSecurityLevel>();
     }
 
-    public void SetLayer(int layer)//ÀÌ °ÔÀÓ¿ÀºêÁ§Æ® ÇÏÀ§ ¿ä¼ÒÀÇ ·¹ÀÌ¾î Á¦¾î
+    public void SetLayer(int layer)//í•˜ìœ„ ìš”ì†Œì˜ ì…ë ¥ ì œì–´
     {
         transform.Find("Title").gameObject.layer = layer;
         transform.Find("Data").gameObject.layer = layer;
         transform.Find("SecurityLevel").gameObject.layer = layer;
     }
 
-    public void UnvisiblePart()//ÆÄÆ® ºñ°¡½Ã
-    {
-        this.gameObject.transform.localPosition = new Vector3(70.7f, -300, 0);
-    }
-
-    public void VisiblePart()//ÆÄÆ® °¡½Ã
-    {
-        this.gameObject.transform.localPosition = new Vector3(70.7f, -67.9f, 0);
-    }
-
-    public InputField_ADFGVX GetInputField_Title()//Á¦¸ñ ÀÎÇ² ÇÊµå ¹İÈ¯
+    public InputField_ADFGVX GetInputField_Title()//ì œëª© ì…ë ¥ì°½ ë°˜í™˜
     {
         return title;
     }
 
-    public InputField_ADFGVX GetInputField_Data()//³»¿ë ÀÎÇ² ÇÊµå ¹İÈ¯
+    public InputField_ADFGVX GetInputField_Data()//ë°ì´í„° ì…ë ¥ì°½ ë°˜í™˜
     {
         return data;
     }
 
-    public string GetSecurityLevel()//º¸¾È µî±Ş ·¹º§ ¹İÈ¯
+    public string GetSecurityLevel()//ë³´ì•ˆ ë“±ê¸‰ ë°˜í™˜
     {
         return level.GetMarkText();
     }

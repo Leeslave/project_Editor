@@ -26,14 +26,14 @@ public class Gauge : MonoBehaviour
         return barSprite;
     }
 
-    public void FillGaugeBar(float time, Color barColor)//게이지 바 채움
+    public void FillGaugeBar(float time, Color barColor)
     {
         barSprite.size = new Vector2(0.01f, barSprite.size.y);
         barSprite.color = barColor;
         StartCoroutine(FillGaugeBarIEnumerator(time, 0));
     }
 
-    private IEnumerator FillGaugeBarIEnumerator(float endTime, float currentendTime)//게이지 바 채움 재귀
+    private IEnumerator FillGaugeBarIEnumerator(float endTime, float currentendTime)
     {
         currentendTime += endTime / 100;
         if (currentendTime > endTime)
@@ -45,24 +45,24 @@ public class Gauge : MonoBehaviour
         StartCoroutine(FillGaugeBarIEnumerator(endTime, currentendTime));
     }
 
-    public void UnvisibleGauge(float endTime)//게이지 바 비가시 모드
+    public void UnvisibleGauge(float endTime)
     {
         ConvertColorSprite(barSprite, endTime, Color.clear);
         ConvertColorSprite(guideSprite, endTime, Color.clear);
     }
 
-    public void VisibleGaugeImediately()//게이지 바 가시 모드
+    public void VisibleGaugeImediately()
     {
         barSprite.color = new Color(0.13f, 0.67f, 0.28f, 1);
         guideSprite.color = Color.white;
     }
 
-    private void ConvertColorSprite(SpriteRenderer target, float endTime, Color targetValue)//스프라이트 색 변환
+    private void ConvertColorSprite(SpriteRenderer target, float endTime, Color targetValue)
     {
-        StartCoroutine(ConvertColorSpriteIEnumerator(target, endTime, 0, targetValue));
+        StartCoroutine(ConvertColorSprite_IE(target, endTime, 0, targetValue));
     }
 
-    private IEnumerator ConvertColorSpriteIEnumerator(SpriteRenderer target, float endTime, float currentTime, Color targetValue)//스프라이트 색 변환 재귀
+    private IEnumerator ConvertColorSprite_IE(SpriteRenderer target, float endTime, float currentTime, Color targetValue)
     {
         currentTime += endTime / 100;
         if (currentTime > endTime)
@@ -75,6 +75,6 @@ public class Gauge : MonoBehaviour
         target.color = new Color(target_r, target_g, target_b, target_a);
 
         yield return new WaitForSeconds(endTime / 100);
-        StartCoroutine(ConvertColorSpriteIEnumerator(target, endTime, currentTime, targetValue));
+        StartCoroutine(ConvertColorSprite_IE(target, endTime, currentTime, targetValue));
     }
 }

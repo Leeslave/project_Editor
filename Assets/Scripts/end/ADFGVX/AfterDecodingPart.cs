@@ -29,35 +29,19 @@ public class AfterDecodingPart : MonoBehaviour
         button_DecodeSave = GameObject.Find("DecodeSave");
     }
 
-    public void SetLayer(int layer)//ÀÌ °ÔÀÓ¿ÀºêÁ§Æ® ÇÏÀ§ ¿ä¼ÒÀÇ ·¹ÀÌ¾î Á¦¾î
+    public void SetLayer(int layer)//í•˜ìœ„ ìš”ì†Œì˜ ìž…ë ¥ ì œì–´
     {
         transform.Find("DecodeSave").gameObject.layer = layer;
         transform.Find("Data").gameObject.layer = layer;
     }
-
-    public void UnvisiblePart()//ÆÄÆ® ºñ°¡½Ã ¸ðµå
-    {
-        this.transform.localPosition = new Vector3(66.9f, 150, 0);
-    }
-
-    public void VisiblePart()//ÆÄÆ® °¡½Ã ¸ðµå
-    {
-        this.transform.localPosition = new Vector3(66.9f, 14.6f, 0);
-    }
-
-    public InputField_ADFGVX GetInputField_Data()//µ¥ÀÌÅÍ ÀÎÇ² ÇÊµå ¹ÝÈ¯
+    
+    public InputField_ADFGVX GetInputField_Data()//ë°ì´í„° ìž…ë ¥ì°½ ë°˜í™˜
     {
         return data;
     }
 
-    public void AddInputField_Data(string value)//Å°º¸µå ÀÔ·Â
+    public void AddInputField_Data(string value)//ë°ì´í„° ìž…ë ¥ì°½ì— value ì¶”ê°€
     {
-        if (value.ToCharArray()[0] >= '0' && value.ToCharArray()[0] <= '9')
-        {
-            adfgvx.InformError("À¯È¿ÇÏÁö ¾ÊÀº ÀÔ·Â : ÀÔ·Â ºÒ°¡");
-            return;
-        }
-
         TextMeshPro row = adfgvx.biliteralsubstitutionpart.GetRowText();
         TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetLineText();
 
@@ -75,22 +59,22 @@ public class AfterDecodingPart : MonoBehaviour
         }
         else
         {
-            adfgvx.InformError("ADFGVX ¿ø¼Ò¸¦ Å°º¸µå·Î ÀÔ·ÂÇÏ½Ê½Ã¿À");
+            adfgvx.InformError("ADFGVX í…Œì´ë¸”ì— í•´ë‹¹í•˜ëŠ” ì›ì†Œ ìž…ë ¥ ìš”ë§");
             return;
         }
     }
 
-    public void ReturnInputField()//Å°º¸µå ¿£ÅÍ
+    public void ReturnInputField()//ë°ì´í„° ìž…ë ¥ì°½ì˜ ê°’ì„ í† ëŒ€ë¡œ ë³€í™˜
     {
         TextMeshPro row = adfgvx.biliteralsubstitutionpart.GetRowText();
         TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetLineText();
 
-        //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
+        //íŠœí† ë¦¬ì–¼ ê´€ë ¨ ì½”ë“œ
         if(adfgvx.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            if (row.text == "F" && line.text == "G" && adfgvx.biliteralsubstitutionpart.GetCurrentArrayNum() == 0)
+            if (row.text == "F" && line.text == "G" && adfgvx.biliteralsubstitutionpart.GetCurrentADFGVXArrayNum() == 0)
                 adfgvx.MoveToNextTutorialPhase(2.0f);
-            else if(adfgvx.biliteralsubstitutionpart.GetCurrentArrayNum() != 0)
+            else if(adfgvx.biliteralsubstitutionpart.GetCurrentADFGVXArrayNum() != 0)
             {
                 adfgvx.DisplayTutorialDialog(147, 0f);
                 row.text = "-";

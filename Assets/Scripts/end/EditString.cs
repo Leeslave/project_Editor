@@ -5,9 +5,9 @@ using TMPro;
 
 public class EditStirng : MonoBehaviour
 {
-    public static string CollectEnglishUpperAlphabet(string value)//ºóÄ­, ¼ıÀÚ µîÀ» Á¦¿ÜÇÏ°í ¿µ¾î ¾ËÆÄºª¸¸ ¸ğ¾Æ¼­ ¹İÈ¯ÇÑ´Ù
+    public static string CollectEnglishUpperAlphabet(string value)//ì˜ì–´ì˜ ëŒ€ë¬¸ì ì•ŒíŒŒë²³ë§Œ ëª¨ì•„ì¤€ë‹¤
     {
-        //value¿¡ µé¾îÀÖ´Â ¾ËÆÄºª °³¼ö È®ÀÎ, »õ·Ó°Ô ¸¸µé¾îÁú arrayÀÇ ±æÀÌ¸¦ ±¸ÇÑ´Ù
+        //array ê¸¸ì´ í™•ì¸
         int newArrayLenght = 0;
         for (int i = 0; i < value.Length; i++)
         {
@@ -15,11 +15,11 @@ public class EditStirng : MonoBehaviour
                 newArrayLenght++;
         }
 
-        //valueÀÇ ¾ËÆÄºª °³¼ö ¸¸Å­ array ÇÒ´ç
+        //array í• ë‹¹
         char[] array = new char[newArrayLenght];
         int idx = 0;
 
-        //array¿¡ idx¸¦ ´Ã·Á°¡¸é¼­ ¾ËÆÄºª ÀüºÎ ÀúÀå
+        //arrayì— ì˜ì–´ ì•ŒíŒŒë²³ë§Œ ì±„ì›Œë„£ìŒ
         for (int i = 0; i < value.Length; i++)
         {
             if (value[i] >= 'A' && value[i] <= 'Z' || value[i] == '_')
@@ -28,7 +28,6 @@ public class EditStirng : MonoBehaviour
                 idx++;
             }
         }
-
         return array.ArrayToString();
     }
 }
