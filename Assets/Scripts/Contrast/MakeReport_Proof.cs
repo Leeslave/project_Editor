@@ -42,8 +42,6 @@ public class MakeReport_Proof : MonoBehaviour
         ReportTop.text =  $" 제국력 {Date[0]}년 {Date[1]}월 {Date[2]}일\n";
         ReportTop.text += $" 진술자 : {Name}\n";
         ReportTop.text += " 진술 내용 :\n";
-
-        Debug.Log($"Csv/Report_Proof/{Name}/{Date[1] + Date[2]}");
         List<Dictionary<string, object>> Data = CSVReader.Read($"Csv/Report_Proof/{Name}/{Date[1] + Date[2]}");
         
         foreach(var a in Data)

@@ -35,6 +35,9 @@ public class MakeLine : MonoBehaviour
             case "ReportText":
                 a.GetComponent<TMP_Text>().color = Color.black;
                 break;
+            case "DistanceText":
+                a.GetComponent<TMP_Text>().color = new Color(0.9254902f, 0.9019608f, 0.7372549f, 1);
+                break;
             default:
                 for (int i = 0; i < a.transform.childCount; i++) a.transform.GetChild(i).GetComponent<TMP_Text>().color = Color.black;
                 break;
@@ -81,7 +84,6 @@ public class MakeLine : MonoBehaviour
                 GameObject tmp = Instantiate(Res, gameObject.transform); DotList.Add(tmp);
                 MyUi.ChangeUIPosition(ref tmp, new Vector3(Goal.x, Goal.y + Ch, Goal.z));
                 Submit.SetActive(true);
-                Debug.Log(Submit.name);
                 yield break;
             }
         }
