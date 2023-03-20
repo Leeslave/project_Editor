@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -13,13 +13,13 @@ public class UserDataManager : MonoBehaviour
 
         static SaveData()
         {
-            // °ÔÀÓ »ó Ã¹ ½ÃÀÛ ³¯Â¥ : Á¦±¹·Â 17³â 12¿ù 13ÀÏ
+            // ê²Œì„ ìƒ ì²« ì‹œì‘ ë‚ ì§œ : ì œêµ­ë ¥ 17ë…„ 12ì›” 13ì¼
             date = new Dictionary<string, int>();
             date.Add("Year", 17);
             date.Add("Month", 12);
             date.Add("Day", 13);
 
-            // ÇÏ·ç ½Ã°£´ë (0 : Ãâ±Ù Àü, 1 : ¾÷¹« Àü, 2 : ¾÷¹« ÈÄ, 3 : Àú³á)
+            // í•˜ë£¨ ì‹œê°„ëŒ€ (0 : ì¶œê·¼ ì „, 1 : ì—…ë¬´ ì „, 2 : ì—…ë¬´ í›„, 3 : ì €ë…)
             time = 0;
 
             renown = 0;
