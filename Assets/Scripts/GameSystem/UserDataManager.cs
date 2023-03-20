@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class UserDataManager : MonoBehaviour
 {
-    private static class SaveData
+    private class SaveData
     {
+        public static SaveData instance;
         public static Dictionary<string, int> date;
         public static int time;
         public static int renown;
@@ -47,6 +48,6 @@ public class UserDataManager : MonoBehaviour
         SaveData.time = PlayerPrefs.GetInt("Time");
         SaveData.renown = PlayerPrefs.GetInt("Renown");
 
-        ;
+        JsonUtility.ToJson(SaveData.instance);
     }
 }
