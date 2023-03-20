@@ -28,8 +28,9 @@ public class MapButton : MonoBehaviour
         if (!highlighted) GetComponent<Image>().color = BfColor;
     }
     public void ClickPointer(PointerEventData data) 
-    { 
-        if (tag == "MapButton_Top")
+    {
+        if (data.pointerId == -2) return;   // Only React To Left Mouse;
+            if (tag == "MapButton_Top")
         {
             if (Manager.CurButton != null) Manager.CurButton.SetActive(false);
             highlighted = true;

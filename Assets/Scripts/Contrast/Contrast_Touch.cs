@@ -77,22 +77,25 @@ public class Contrast_Touch : MonoBehaviour
             Debug.Log(ClickedObject);
             if (JGError) JudgeTouchOption(ClickedObject);
             else EtcTouchOption(ClickedObject);
-
             JGDouble = true; Invoke("DoubleCheck",DoubleLag);
         }
         if (Input.GetMouseButtonDown(1))
         {
             GameObject ClickedObject = MyUi.GRay(gr); if (ClickedObject == null) return;
-            if (Option.activeSelf) Option.SetActive(false);
-            Option.SetActive(true);
-            Option.GetComponent<OptionManager>().OptionInit(ClickedObject);
-            Vector3 CurCamPos = Camera.main.ScreenToWorldPoint(Input.mousePosition); CurCamPos.z = 0;
-            Option.transform.position = CurCamPos;
+            InitOption(ClickedObject);
         }
         if (Input.GetMouseButtonUp(0)) Draging = false;
         if (Draging) MyUi.DragUI(CurBar,AnchorGap);
     }
 
+
+    void InitOption(GameObject ClickedObject)
+    {
+        if (Option.activeSelf) Option.SetActive(false);
+        Option.SetActive(true); Option.GetComponent<OptionManager>().OptionInit(ClickedObject);
+        Vector3 CurCamPos = Camera.main.ScreenToWorldPoint(Input.mousePosition); CurCamPos.z = 0;
+        Option.transform.position = CurCamPos;
+    }
 
 
     void JudgeTouchOption(GameObject _ClickedObject)

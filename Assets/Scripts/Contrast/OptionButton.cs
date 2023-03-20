@@ -34,8 +34,10 @@ public class OptionButton : MonoBehaviour
         GetComponent<Image>().color = BfColor;
         switch (name)
         {
+            case "Create":
+                break;
             case "Edit":
-                Debug.Log("±â´Þ·Á");
+
                 break;
             case "Delete":
                 Manager.ChangedList.Push(new Tuple<GameObject, string>(Manager.CurObject,""));

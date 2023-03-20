@@ -12,11 +12,12 @@ public class OptionManager : MonoBehaviour
     public void OptionInit(GameObject ClickedObject)
     {
         CurObject = ClickedObject;
-        if (ChangedList.Count != 0) ChildInit(transform.GetChild(2).GetComponent<OptionButton>());
-        if (ClickedObject.tag.Substring(ClickedObject.tag.Length - 4, 4) == "Text")
+        if (CurObject.name == "ReportView" || CurObject.tag == "ReportText")
         {
             ChildInit(transform.GetChild(0).GetComponent<OptionButton>());
-            if (ClickedObject.tag != "MapText") ChildInit(transform.GetChild(1).GetComponent<OptionButton>());
+            ChildInit(transform.GetChild(3).GetComponent<OptionButton>());
+            ChildInit(transform.GetChild(1).GetComponent<OptionButton>());
+            ChildInit(transform.GetChild(2).GetComponent<OptionButton>());
         }
     }
 

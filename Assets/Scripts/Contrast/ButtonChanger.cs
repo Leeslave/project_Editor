@@ -24,6 +24,7 @@ public class ButtonChanger : MonoBehaviour
     }
     void ClickPointer(PointerEventData data)
     {
+        if (data.pointerId == -2) return; // Only React To Left Mouse
         GetComponent<Image>().color = BfColor;
     }
 }
