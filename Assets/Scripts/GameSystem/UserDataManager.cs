@@ -1,53 +1,82 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEngine;
 
 public class UserDataManager : MonoBehaviour
 {
-    private class SaveData
+    /**
+    * 플레이어 데이터를 저장, 로드
+    * initNewPlayerData
+    * SavePlayerData
+    * LoadPlayerData
+    */
+    private class PlayerData
     {
-        public static SaveData instance;
-        public static Dictionary<string, int> date;
-        public static int time;
-        public static int renown;
-
-        static SaveData()
-        {
-            // 게임 상 첫 시작 날짜 : 제국력 17년 12월 13일
-            date = new Dictionary<string, int>();
-            date.Add("Year", 17);
-            date.Add("Month", 12);
-            date.Add("Day", 13);
-
-            // 하루 시간대 (0 : 출근 전, 1 : 업무 전, 2 : 업무 후, 3 : 저녁)
-            time = 0;
-
-            renown = 0;
-        }
+        public int year;
+        public int month;
+        public int day;
+        public int time;
+        public int renown;
     }
+
+    private PlayerData playerData = new PlayerData(); 
+    public string path;
 
     public void InitNewPlayerData()
     {   
-        foreach(var key in SaveData.date.Keys)
         {
-            PlayerPrefs.SetInt(key, SaveData.date[key]);
+            playerData.year = 17;
+            playerData.month = 12;
+            playerData.day = 13;
+            playerData.time = 0;
+            playerData.renown = 0;
         }
-
-        PlayerPrefs.SetInt("Time", SaveData.time);
-        PlayerPrefs.SetInt("Renown", SaveData.renown);
+        
+        asyncPlayerPrefs();
     }
 
     public void SavePlayerData()
     {
-        foreach (var key in SaveData.date.Keys)
-        {
-            SaveData.date[key] = PlayerPrefs.GetInt(key);
-        }
+        asyncPlayerData();
 
-        SaveData.time = PlayerPrefs.GetInt("Time");
-        SaveData.renown = PlayerPrefs.GetInt("Renown");
+        string jsonObjectData = JsonUtility.ToJson(playerData);
+        
+        FileStream fileStream = new FileStream(Application.dataPath + path, FileMode.Create);
+        byte[] data = Encoding.UTF8.GetBytes(jsonObjectData);
+        fileStream.Write(data, 0, data.Length);
+        fileStream.Close();
+    }
 
-        JsonUtility.ToJson(SaveData.instance);
+    public void LoadPlayerData()
+    { 
+        FileStream fileStream = new FileStream(Application.dataPath + path, FileMode.Open);
+        byte[] data = new byte[fileStream.Length];
+        fileStream.Read(data, 0, data.Length);
+        fileStream.Close();
+
+        string jsonObjectData = Encoding.UTF8.GetString(data);
+        playerData = JsonUtility.FromJson<PlayerData>(jsonObjectData);
+
+        asyncPlayerPrefs();
+    }
+
+    private void asyncPlayerPrefs()
+    {
+        PlayerPrefs.SetInt("Year", playerData.year);
+        PlayerPrefs.SetInt("Month", playerData.year);
+        PlayerPrefs.SetInt("Day", playerData.year);
+        PlayerPrefs.SetInt("Time", playerData.time);
+        PlayerPrefs.SetInt("Renown", playerData.renown);
+    }
+
+    private void asyncPlayerData()
+    {
+        playerData.year = PlayerPrefs.GetInt("Year");
+        playerData.month = PlayerPrefs.GetInt("Month");
+        playerData.day = PlayerPrefs.GetInt("Day");
+        playerData.time = PlayerPrefs.GetInt("Time");
+        playerData.renown = PlayerPrefs.GetInt("Renown");
     }
 }
