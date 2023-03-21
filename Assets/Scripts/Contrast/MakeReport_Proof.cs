@@ -1,14 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using System.IO;
-using System;
 using Random = UnityEngine.Random;
 using System.Text.RegularExpressions;
-using Unity.VisualScripting;
-using UnityEditor.Rendering.LookDev;
-using UnityEditor.Build;
+using System.Globalization;
+using System;
 
 public class MakeReport_Proof : MonoBehaviour
 {
@@ -21,22 +17,24 @@ public class MakeReport_Proof : MonoBehaviour
     public GameObject Report;
     public GameObject CardProcess;
     public GameObject WorkProcess;
+    public GameObject ChangeBT;
     
 
     GameObject WorkTextSub = null;
-    ReportChanger ForRepChange;
+    ReportChangeButton ForRepChange;
 
     string[] Date;
+    CultureInfo culture = new CultureInfo("Ko-KR");
 
     private void Start()
     {
-        ForRepChange = Report.GetComponent<ReportChanger>();
+        ForRepChange = ChangeBT.GetComponent<ReportChangeButton>();
         MakingReport_Proof();
     }
 
     void MakingReport_Proof()
     {
-        string[] a = { "1720", "12", "18" };
+        string[] a = { "2020", "12", "18" };
         MakingReport_Proof(a);
     }
 
@@ -113,6 +111,8 @@ public class MakeReport_Proof : MonoBehaviour
                 if (CurDay == i) WorkTextSub.transform.SetParent(WorkProcess.transform);
                 else
                 {
+                    string DayCnt = Convert.ToDateTime($"{Date[1]}/{i}/{Date[0]}").ToString("ddd");
+                    if (DayCnt == "≈‰" || DayCnt == "¿œ") continue;
                     GameObject CntText = Instantiate(WorkText, WorkProcess.transform);
                     CntText.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = $"{Date[1]}/{i}";
                     int tmp = 0;

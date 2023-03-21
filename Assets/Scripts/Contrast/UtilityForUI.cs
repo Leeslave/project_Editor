@@ -8,10 +8,10 @@ using UnityEngine.UI;
 
 public static class MyUi
 {
-     public static Vector3 UIPosition(GameObject a) { return a.GetComponent<RectTransform>().anchoredPosition; }
-     public static Vector3 UISize(GameObject a) { return a.GetComponent<RectTransform>().sizeDelta; }
+     public static Vector3 UIPosition(GameObject a) { return a.GetComponent<RectTransform>().anchoredPosition; }    // transform.position -> RectTransform.position
+     public static Vector3 UISize(GameObject a) { return a.GetComponent<RectTransform>().sizeDelta; }     // UI 기준의 Size 반환
      public static void ChangeUIPosition(ref GameObject a, Vector3 l) { a.GetComponent<RectTransform>().anchoredPosition = l; }
-     public static GameObject GRay(GraphicRaycaster gr)
+     public static GameObject GRay(GraphicRaycaster gr)     // Graphic Raycast
     {
         var ped = new PointerEventData(null);
         ped.position = Input.mousePosition;

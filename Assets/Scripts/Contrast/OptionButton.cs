@@ -37,9 +37,11 @@ public class OptionButton : MonoBehaviour
         {
             case "Create":
                 Create.SetActive(true);
+                Create.GetComponent<ReportChangeButton>().IsCreate = true;
                 break;
             case "Edit":
-                Debug.Log("Ÿy");
+                Create.SetActive(true);
+                Create.GetComponent<ReportChangeButton>().IsCreate = false;
                 break;
             case "Delete":
                 Manager.ChangedList.Push(new Tuple<GameObject, string>(Manager.CurObject,""));

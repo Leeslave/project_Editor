@@ -80,8 +80,9 @@ public class Contrast_Touch : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(1))
         {
+
             GameObject ClickedObject = MyUi.GRay(gr); if (ClickedObject == null) return;
-            InitOption(ClickedObject);
+            if (ClickedObject.name == "ReportView" || ClickedObject.tag == "ReportText") InitOption(ClickedObject);
         }
         if (Input.GetMouseButtonUp(0)) Draging = false;
         if (Draging) MyUi.DragUI(CurBar,AnchorGap);
