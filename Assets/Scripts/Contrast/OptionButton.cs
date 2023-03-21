@@ -13,6 +13,7 @@ public class OptionButton : MonoBehaviour
     OptionManager Manager;
     public bool TouchAble = false;
     public Image CurColor;
+    public GameObject Create;
 
     void Start()
     {
@@ -35,9 +36,10 @@ public class OptionButton : MonoBehaviour
         switch (name)
         {
             case "Create":
+                Create.SetActive(true);
                 break;
             case "Edit":
-
+                Debug.Log("Ÿy");
                 break;
             case "Delete":
                 Manager.ChangedList.Push(new Tuple<GameObject, string>(Manager.CurObject,""));

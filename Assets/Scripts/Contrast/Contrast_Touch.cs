@@ -74,7 +74,6 @@ public class Contrast_Touch : MonoBehaviour
             GameObject ClickedObject = MyUi.GRay(gr); if (ClickedObject == null) return;
             if (ClickedObject.layer != 5) return;    // Not Need Ray -> Return
 
-            Debug.Log(ClickedObject);
             if (JGError) JudgeTouchOption(ClickedObject);
             else EtcTouchOption(ClickedObject);
             JGDouble = true; Invoke("DoubleCheck",DoubleLag);
@@ -101,6 +100,7 @@ public class Contrast_Touch : MonoBehaviour
     void JudgeTouchOption(GameObject _ClickedObject)
     {
         if (_ClickedObject == CurReportText || _ClickedObject == CurContrastText) return;
+        Debug.Log(_ClickedObject.tag);
         switch (_ClickedObject.tag)
         {
             case "ReportText":
@@ -116,6 +116,7 @@ public class Contrast_Touch : MonoBehaviour
                 LineTest();
                 break;
             case "CardText":
+                Debug.Log("!");
                 JudgeSub(_ClickedObject);
                 break;
             case "WorkText":

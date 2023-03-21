@@ -8,6 +8,7 @@ using Random = UnityEngine.Random;
 using System.Text.RegularExpressions;
 using Unity.VisualScripting;
 using UnityEditor.Rendering.LookDev;
+using UnityEditor.Build;
 
 public class MakeReport_Proof : MonoBehaviour
 {
@@ -20,13 +21,16 @@ public class MakeReport_Proof : MonoBehaviour
     public GameObject Report;
     public GameObject CardProcess;
     public GameObject WorkProcess;
+    
 
     GameObject WorkTextSub = null;
+    ReportChanger ForRepChange;
 
     string[] Date;
 
-    private void Awake()
+    private void Start()
     {
+        ForRepChange = Report.GetComponent<ReportChanger>();
         MakingReport_Proof();
     }
 
@@ -59,6 +63,7 @@ public class MakeReport_Proof : MonoBehaviour
         CntText.name = "";
         ReportText tmp = CntText.GetComponent<ReportText>();
         tmp.Time = Data["Time"].ToString();
+        ForRepChange.TimeList.Add(tmp.Time);
         tmp.Place = Data["Place"].ToString();
         tmp.Action = Data["Action"].ToString();
         tmp.ChangeText();
