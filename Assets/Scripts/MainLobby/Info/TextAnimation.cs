@@ -12,8 +12,8 @@ public class TextAnimation : AnimBase
     */
     public TextAsset textAsset;
     public TextInfo textInfo;
-    public float defaultStringTime = 0.05f;
-    public float defaultTextTime = 0.2f;
+    public float delayEachChar = 0.05f;
+    public float delayEachStringLine = 0.2f;
 
     void Awake()
     {
@@ -38,12 +38,12 @@ public class TextAnimation : AnimBase
             switch (iter.infoType)
             {
                 case 0:
-                    yield return StartCoroutine(AnimString(iter.info, iter.stringTime < 0 ? defaultStringTime : iter.stringTime));
-                    yield return new WaitForSeconds(iter.textTime < 0 ? defaultTextTime : iter.textTime);
+                    yield return StartCoroutine(AnimString(iter.info, iter.stringTime < 0 ? delayEachChar : iter.stringTime));
+                    yield return new WaitForSeconds(iter.textTime < 0 ? delayEachStringLine : iter.textTime);
                     break;
                 case 1:
-                    yield return StartCoroutine(AnimInt(iter.info, iter.stringTime < 0 ? defaultStringTime : iter.stringTime));
-                    yield return new WaitForSeconds(iter.textTime < 0 ? defaultTextTime : iter.textTime);
+                    yield return StartCoroutine(AnimInt(iter.info, iter.stringTime < 0 ? delayEachChar : iter.stringTime));
+                    yield return new WaitForSeconds(iter.textTime < 0 ? delayEachStringLine : iter.textTime);
                     break;
             }
         }

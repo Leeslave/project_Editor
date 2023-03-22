@@ -14,7 +14,6 @@ public class ScreenManager : MonoBehaviour
     public GameObject bootPanel;
     public AnimationController bootAnimation;
     public float logoOnSeconds;
-    public float cliOnSeconds;
     private GameObject bootLogo;
     private GameObject bootCLI;
     private bool isBoot;
@@ -29,15 +28,18 @@ public class ScreenManager : MonoBehaviour
         bootCLI.SetActive(false);
     }
 
-    public void PowerOnScreen()
+    public void OnPowerClicked()
     {
         if (isBoot == false)
         {
             StartCoroutine("BootScreen");
         }
+        else
+        {
+            // TODO: 전원 끄기
+        }
     }
 
-    // TODO: 텍스트 애니메이션 끝나는 시간 맞춰서 부팅 종료되도록 수정
     IEnumerator BootScreen()
     {
         bootLogo.SetActive(true);
@@ -48,7 +50,7 @@ public class ScreenManager : MonoBehaviour
 
         // yield return bootAnimation.isFinished == true
         yield return new WaitUntil(() => bootAnimation.isFinished == true);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.6f);
 
         bootPanel.SetActive(false);
         isBoot = true;

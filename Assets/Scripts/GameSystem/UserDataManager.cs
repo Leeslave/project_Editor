@@ -22,7 +22,7 @@ public class UserDataManager : MonoBehaviour
     }
 
     private PlayerData playerData = new PlayerData(); 
-    public string path;
+    private string path = "/Resources/Saves/";
 
     public void InitNewPlayerData()
     {   
@@ -37,21 +37,21 @@ public class UserDataManager : MonoBehaviour
         asyncPlayerPrefs();
     }
 
-    public void SavePlayerData()
+    public void SavePlayerData(string saveFileName)
     {
         asyncPlayerData();
 
         string jsonObjectData = JsonUtility.ToJson(playerData);
         
-        FileStream fileStream = new FileStream(Application.dataPath + path, FileMode.Create);
+        FileStream fileStream = new FileStream(Application.dataPath + path + saveFileName + ".json", FileMode.Create);
         byte[] data = Encoding.UTF8.GetBytes(jsonObjectData);
         fileStream.Write(data, 0, data.Length);
         fileStream.Close();
     }
 
-    public void LoadPlayerData()
+    public void LoadPlayerData(string saveFileName)
     { 
-        FileStream fileStream = new FileStream(Application.dataPath + path, FileMode.Open);
+        FileStream fileStream = new FileStream(Application.dataPath + path + saveFileName + ".json", FileMode.Open);
         byte[] data = new byte[fileStream.Length];
         fileStream.Read(data, 0, data.Length);
         fileStream.Close();
@@ -65,8 +65,8 @@ public class UserDataManager : MonoBehaviour
     private void asyncPlayerPrefs()
     {
         PlayerPrefs.SetInt("Year", playerData.year);
-        PlayerPrefs.SetInt("Month", playerData.year);
-        PlayerPrefs.SetInt("Day", playerData.year);
+        PlayerPrefs.SetInt("Month", playerData.month);
+        PlayerPrefs.SetInt("Day", playerData.day);
         PlayerPrefs.SetInt("Time", playerData.time);
         PlayerPrefs.SetInt("Renown", playerData.renown);
     }

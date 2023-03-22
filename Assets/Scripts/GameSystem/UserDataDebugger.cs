@@ -14,8 +14,6 @@ public class UserDataDebugger : MonoBehaviour
         if (userDataManager == null)
             userDataManager = GameObject.FindObjectOfType<UserDataManager>();
 
-        userDataManager.InitNewPlayerData();
-
-        userDataManager.SavePlayerData();
+        userDataManager.LoadPlayerData("debugsave_1");
     }
 }
