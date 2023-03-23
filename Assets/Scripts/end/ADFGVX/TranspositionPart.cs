@@ -10,16 +10,17 @@ public class TranspositionPart : MonoBehaviour
     private InputField_ADFGVX keyword;
     private TextField priority;
 
-    private TextMeshPro[] lines;
 
-    private SpriteRenderer transposedLineGuideBox;
 
-    //ÀüÄ¡, ¿ªÀüÄ¡ ¶§ »ç¿ëÇÏ´Â º¯¼öµé
-    private int[] place;                                //Å°¿öµå ¹®ÀÚÀÇ ¼øÀ§
-    int rowLength;                                      //ÀüÄ¡ Çà·ÄÀÇ Çà ±æÀÌ
-    int lineLength;                                     //ÀüÄ¡ Çà·ÄÀÇ ¿­ ±æÀÌ
-    private string[] tempLine;                          //Èå¸§ Ãâ·Â Àü, Àá½Ã ÀúÀåÇØ³õ´Â´Ù
-    private int flowLine;                               //Èå¸§ Ãâ·Â ÀÎµ¦½º
+
+    //í‚¤ ìˆœìœ„ ì „ì¹˜ ê´€ë ¨ ë³€ìˆ˜
+    private int[] place;                                //í‚¤ ìˆœìœ„ ì €ì¥ ë°°ì—´
+    int rowLength;                                      //ì „ì¹˜ëœ í–‰ë ¬ì˜ ì—´ ê¸¸ì´
+    int lineLength;                                     //ì „ì¹˜ëœ í–‰ë ¬ì˜ ì—´ ê¸¸ì´
+    private string[] tempLine;                          //ì¼ì‹œì ìœ¼ë¡œ í–‰ë ¬ ì €ì¥
+    private int flowLine;                               //2ì°¨ì› ì¶œë ¥ ì¸ë±ìŠ¤
+    private TextMeshPro[] lines;                        //ì „ì¹˜ëœ í–‰ë ¬ì´ ì¶œë ¥ë˜ëŠ” í…ìŠ¤íŠ¸
+    private SpriteRenderer transposedMatrixGuide;       //ì „ì¹˜ëœ í–‰ë ¬ë¥¼ ë‘˜ëŸ¬ì‹¸ëŠ” ìŠ¤í”„ë¼ì´íŠ¸
 
     private void Start()
     {
@@ -36,12 +37,12 @@ public class TranspositionPart : MonoBehaviour
         priority = transform.Find("Priority").GetComponent<TextField>();
         priority.SetText("");
         
-        transposedLineGuideBox = GetComponentsInChildren<SpriteRenderer>()[0];
-        transposedLineGuideBox.size = new Vector2(0, 0);
+        transposedMatrixGuide = GetComponentsInChildren<SpriteRenderer>()[0];
+        transposedMatrixGuide.size = new Vector2(0, 0);
         tempLine = new string[9];
     }
 
-    public void SetLayer(int layer)//ÀÌ °ÔÀÓ¿ÀºêÁ§Æ® ÇÏÀ§ ¿ä¼ÒÀÇ ·¹ÀÌ¾î Á¦¾î
+    public void SetLayer(int layer)//í•˜ìœ„ ìš”ì†Œì˜ ì…ë ¥ ì œì–´
     {
         transform.Find("Keyword").gameObject.layer = layer;
     }
@@ -56,11 +57,11 @@ public class TranspositionPart : MonoBehaviour
         return place;
     }
 
-    public void AddKeyword(string value)//Keyword¿¡ ÇÑ ±ÛÀÚ ÀÔ·Â
+    public void AddKeyword(string value)//ì „ì¹˜ í‚¤ ì…ë ¥ì°½ì— ì¶”ê°€
     {
         if (value.ToCharArray()[0] < 'A' || value.ToCharArray()[0] > 'Z')
         {
-            adfgvx.InformError("À¯È¿ÇÏÁö ¾ÊÀº ÀüÄ¡ Å° ÀÔ·Â : ÀÔ·Â ºÒ°¡");
+            adfgvx.InformError("ìœ íš¨í•˜ì§€ ì•Šì€ ì „ì¹˜ í‚¤ ì…ë ¥ ì‹œë„ : ì¬í™•ì¸ ìš”ë§");
             return;
         }
 
@@ -68,16 +69,16 @@ public class TranspositionPart : MonoBehaviour
         UpdatePriority();
     }
 
-    public void DeleteKeyword()//Keyword¿¡¼­ ÇÑ ±ÛÀÚ »èÁ¦
+    public void DeleteKeyword()//ì „ì¹˜ í‚¤ ì…ë ¥ì°½ì— ì‚­ì œ
     {
         keyword.DeleteInputField(2);
         UpdatePriority();
     }
   
-    private void UpdatePriority()//Priority¸¦ »õ·Î ±¸ÇÑ´Ù
+    private void UpdatePriority()//í‚¤ ìˆœìœ„ ì—…ë°ì´íŠ¸
     {
         string result = "";
-        string value = CollectEnglishAlphabet(keyword.GetInputString());
+        string value = EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString());
         place = new int[value.Length];
 
         for(int i = 0; i < value.Length; i++)
@@ -116,88 +117,72 @@ public class TranspositionPart : MonoBehaviour
         priority.SetText(result);
     }
 
-    private string CollectEnglishAlphabet(string value)//ºóÄ­, ¼ıÀÚ µîÀ» Á¦¿ÜÇÏ°í ¿µ¾î ¾ËÆÄºª¸¸ ¸ğ¾Æ¼­ ¹İÈ¯ÇÑ´Ù
+    public void OnTransposeDown()//í‚¤ ìˆœìœ„ì— ë”°ë¥¸ í–‰ë ¬ ì „ì¹˜
     {
-        //array0¿¡ µé¾îÀÖ´Â ¾ËÆÄºª °³¼ö È®ÀÎ, »õ·Ó°Ô ¸¸µé¾îÁú array1ÀÇ ±æÀÌ È®ÀÎ
-        int newarraylenght = 0;
-        for (int i = 0; i < value.Length; i++)
-        {
-            if (value[i] >= 'A' && value[i] <= 'Z' || value[i] == '_')
-                newarraylenght++;
-        }
+        //ì…ë ¥ ì°¨ë‹¨
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+        keyword.SetIsReadyForInput(false);
+        keyword.SetIsFlash(false);
 
-        //array0ÀÇ ¾ËÆÄºª °³¼ö ¸¸Å­ array ÇÒ´ç
-        char[] array = new char[newarraylenght];
-        int idx = 0;
-
-        //array01¿¡ idx¸¦ ´Ã·Á°¡¸é¼­ ¾ËÆÄºª ÀüºÎ ÀúÀå
-        for (int i = 0; i < value.Length; i++)
+        //íŠœí† ë¦¬ì–¼ ê´€ë ¨ ì½”ë“œ
+        if (adfgvx.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            if (value[i] >= 'A' && value[i] <= 'Z' || value[i] == '_')
+            if (EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString()) != "SUKHOI")
             {
-                array[idx] = value[i];
-                idx++;
+                adfgvx.DisplayTutorialDialog(85, 0f);
+                return;
             }
         }
-        return array.ArrayToString();
-    }
-
-    public void OnTransposeDown()//EncodeData¸¦ Å° ¼ø¼­¿¡ µû¶ó¼­ Transposition¿¡ ÀüÄ¡
-    {
-        //¿¡·¯ ¹ß»ı
+        if (adfgvx.GetCurrentTutorialPhase() == 2 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        {
+            if (EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString()).Length != 7)
+            {
+                adfgvx.DisplayTutorialDialog(73, 0f);
+                return;
+            }
+            else
+                adfgvx.MoveToNextTutorialPhase(2.0f);
+        }
+        if (adfgvx.GetCurrentTutorialPhase() == 1 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        {
+            if (EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString()) != "HELLO")
+            {
+                adfgvx.DisplayTutorialDialog(41, 0f);
+                return;
+            }
+            else
+                adfgvx.MoveToNextTutorialPhase(2.0f);
+        }
+    
+        //ì—ëŸ¬ ë°œìƒ
         if (keyword.GetInputString().Length == 0)
         {
-            adfgvx.InformError("ÀüÄ¡ ½ÇÆĞ : ÀüÄ¡ Å° °ø¹é");
-            keyword.SetIsReadyForInput(false);
-            keyword.SetIsFlash(false);
+            adfgvx.InformError("ì „ì¹˜ ë¶ˆê°€ : ì „ì¹˜ í‚¤ ê³µë°±");
             return;
         }
-        else if (adfgvx.encodeDataLoadPart.GetData() == "¾ÏÈ£È­ µ¥ÀÌÅÍ¸¦ ·ÎµåÇÏ¿© ½ÃÀÛ¡¦")
+        else if (adfgvx.encodeDataLoadPart.GetTextField_Data() == "ì•”í˜¸í™” ë°ì´í„°ë¥¼ ë¡œë“œí•˜ì—¬ ì‹œì‘â€¦")
         {
-            adfgvx.InformError("ÀüÄ¡ ½ÇÆĞ : ÀüÄ¡ ´ë»ó °ø¹é");
-            keyword.SetIsReadyForInput(false);
-            keyword.SetIsFlash(false);
+            adfgvx.InformError("ì „ì¹˜ ë¶ˆê°€ : ì•”í˜¸í™” ë°ì´í„° ê³µë°±");
             return;
         }
-        else if (CollectEnglishAlphabet(adfgvx.encodeDataLoadPart.GetData()).Length / place.Length > 12)
+        else if (EditStirng.CollectEnglishUpperAlphabet(adfgvx.encodeDataLoadPart.GetTextField_Data()).Length / place.Length > 12)
         {            
-            //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
-            if (adfgvx.GetCurrentTutorialPhase() == 1 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
-            {
-                if (CollectEnglishAlphabet(keyword.GetInputString()) != "HELLO")
-                    adfgvx.DisplayTutorialDialog(41, 0f);
-                else
-                    adfgvx.MoveToNextTutorialPhase(2.0f);
-            }
-
-            adfgvx.InformError("ÀüÄ¡ ½ÇÆĞ : ¸Ş¸ğ¸® ¿ë·® ÃÊ°ú");
-            keyword.SetIsReadyForInput(false);
-            keyword.SetIsFlash(false);
+            adfgvx.InformError("ì „ì¹˜ ë¶ˆê°€ : ë©”ëª¨ë¦¬ ìš©ëŸ‰ ì´ˆê³¼");
             return;
         }
-        else if (CollectEnglishAlphabet(adfgvx.encodeDataLoadPart.GetData()).Length % place.Length != 0)
+        else if (EditStirng.CollectEnglishUpperAlphabet(adfgvx.encodeDataLoadPart.GetTextField_Data()).Length % place.Length != 0)
         {
-            //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
-            if (adfgvx.GetCurrentTutorialPhase() == 2 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
-            {
-                if (CollectEnglishAlphabet(keyword.GetInputString()).Length != 7)
-                    adfgvx.DisplayTutorialDialog(73, 0f);
-                else
-                    adfgvx.MoveToNextTutorialPhase(2.0f);
-            }
-
-            adfgvx.InformError("ÀüÄ¡ ½ÇÆĞ : ¸Ş¸ğ¸® ´©¼ö ¹ß»ı");
-            keyword.SetIsReadyForInput(false);
-            keyword.SetIsFlash(false);
+            adfgvx.InformError("ì „ì¹˜ ë¶ˆê°€ : ë©”ëª¨ë¦¬ ëˆ„ìˆ˜ ë°œìƒ");
             return;
         }
 
-        //Å° ¼øÀ§ ÃÊ±âÈ­
+        //ì „ì¹˜ ë¹„ì›€
         ClearTransposition();
 
-        string Chiper = CollectEnglishAlphabet(adfgvx.encodeDataLoadPart.GetData());
+        string Chiper = EditStirng.CollectEnglishUpperAlphabet(adfgvx.encodeDataLoadPart.GetTextField_Data());
         int InputPriority = 1;
         lineLength = place.Length;
+
         rowLength = Chiper.Length / place.Length;
         for (int i = 0; i < place.Length; i++)
         {
@@ -212,65 +197,56 @@ public class TranspositionPart : MonoBehaviour
             }
         }
 
-        adfgvx.InformUpdate("ÀüÄ¡ ÀÛ¾÷ Áß¡¦ ÇÁ·Î±×·¥À» °­Á¦ Á¾·áÇÏÁö ¸¶½Ê½Ã¿À");
-        ResizeAndRePositionEdge();
+        adfgvx.InformUpdate("í‚¤ ìˆœìœ„ ì „ì¹˜ í”„ë¡œí† ì½œ ì§„í–‰ ì¤‘ : ê°•ì œ ì¢…ë£Œí•˜ì§€ ë§ˆì‹­ì‹œì˜¤");
+        ResizeAndRePositionMatrixGuide();
         printFlow();
 
-        keyword.SetIsReadyForInput(false);
-        keyword.SetIsFlash(false);
+        //ì˜¤ë””ì˜¤ ì¬ìƒ
+        adfgvx.SoundFlow(rowLength + lineLength, 0.1f * (rowLength + lineLength));
 
-        //»ç¿îµå Àç»ı
-        adfgvx.soundFlow(rowLength + lineLength, 0.1f * (rowLength + lineLength));
-
-        //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
+        //íŠœí† ë¦¬ì–¼ ê´€ë ¨ ì½”ë“œ
         if (adfgvx.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            if (CollectEnglishAlphabet(keyword.GetInputString()) != "SUKHOI")
-                adfgvx.DisplayTutorialDialog(85, 0f);
-            else
+            if (EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString()) == "SUKHOI")
                 adfgvx.MoveToNextTutorialPhase(0.1f * (rowLength + lineLength));
         }
     }
 
-    public void OnTransposeReverseDown()//OriginalData¸¦ Å° ¼ø¼­¿¡ µû¶ó¼­ Transposition¿¡ ¿ªÀüÄ¡
+    public void OnTransposeReverseDown()//í‚¤ ìˆœìœ„ì— ë”°ë¥¸ í–‰ë ¬ ì—­ì „ì¹˜
     {
-        //¿¡·¯ ¹ß»ı
+        //ì…ë ¥ ì°¨ë‹¨
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+        keyword.SetIsReadyForInput(false);
+        keyword.SetIsFlash(false);
+
+        //ì—ëŸ¬ ë°œìƒ
         if (keyword.GetInputString().Length == 0)
         {
-            adfgvx.InformError("¿ªÀüÄ¡ ½ÇÆĞ : ÀüÄ¡ Å° °ø¹é");
-            keyword.SetIsReadyForInput(false);
-            keyword.SetIsFlash(false);
+            adfgvx.InformError("ì—­ì „ì¹˜ ë¶ˆê°€ : ì „ì¹˜ í‚¤ ê³µë°±");
             return;
         }
         else if (adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString() == "")
         {
-            adfgvx.InformError("¿ªÀüÄ¡ ½ÇÆĞ : ¿ªÀüÄ¡ ´ë»ó °ø¹é");
-            keyword.SetIsReadyForInput(false);
-            keyword.SetIsFlash(false);
+            adfgvx.InformError("ì—­ì „ì¹˜ ë¶ˆê°€ : ì˜¤ë¦¬ì§€ë„ ë°ì´í„° ê³µë°±");
             return;
         }
-        else if (CollectEnglishAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString()).Length / place.Length > 12)
+        else if (EditStirng.CollectEnglishUpperAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString()).Length / place.Length > 12)
         {
-            adfgvx.InformError("¿ªÀüÄ¡ ½ÇÆĞ : ¸Ş¸ğ¸® ¿ë·® ÃÊ°ú");
-            keyword.SetIsReadyForInput(false);
-            keyword.SetIsFlash(false);
+            adfgvx.InformError("ì—­ì „ì¹˜ ë¶ˆê°€ : ë©”ëª¨ë¦¬ ìš©ëŸ‰ ì´ˆê³¼");
             return;
         }
-        else if (CollectEnglishAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString()).Length % place.Length != 0)
+        else if (EditStirng.CollectEnglishUpperAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString()).Length % place.Length != 0)
         {
-            adfgvx.InformError("¿ªÀüÄ¡ ½ÇÆĞ : ¸Ş¸ğ¸® ´©¼ö ¹ß»ı");
-            keyword.SetIsReadyForInput(false);
-            keyword.SetIsFlash(false);
+            adfgvx.InformError("ì—­ì „ì¹˜ ë¶ˆê°€ : ë©”ëª¨ë¦¬ ëˆ„ìˆ˜ ë°œìƒ");
             return;
         }
 
         ClearTransposition();
 
-        string Chiper = CollectEnglishAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString());
+        string Chiper = EditStirng.CollectEnglishUpperAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString());
         lineLength = place.Length;
         rowLength = Chiper.Length / place.Length;
 
-        //ÇÑ ±ÛÀÚ ¾¿ µ¹¾Æ°¡¸é¼­ Ã¤¿î´Ù
         int length = Chiper.Length;
         for (int i = 0; i < length; i++)
         {
@@ -278,24 +254,21 @@ public class TranspositionPart : MonoBehaviour
             Chiper = Chiper.Substring(1);
         }
 
-        adfgvx.InformUpdate("¿ªÀüÄ¡ ÀÛ¾÷ Áß¡¦ ÇÁ·Î±×·¥À» °­Á¦ Á¾·áÇÏÁö ¸¶½Ê½Ã¿À");
-        ResizeAndRePositionEdge();
+        adfgvx.InformUpdate("í‚¤ ìˆœìœ„ ì „ì¹˜ í”„ë¡œí† ì½œ ì§„í–‰ ì¤‘ : ê°•ì œ ì¢…ë£Œí•˜ì§€ ë§ˆì‹­ì‹œì˜¤");
+        ResizeAndRePositionMatrixGuide();
         printFlow();
 
-        keyword.SetIsReadyForInput(false);
-        keyword.SetIsFlash(false);
+        //ì˜¤ë””ì˜¤ ì¬ìƒ
+        adfgvx.SoundFlow(rowLength + lineLength, 0.1f * (rowLength + lineLength));
 
-        //»ç¿îµå Àç»ı
-        adfgvx.soundFlow(rowLength + lineLength, 0.1f * (rowLength + lineLength));
-
-        //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
+        //íŠœí† ë¦¬ì–¼ ê´€ë ¨ ì½”ë“œ
         if(adfgvx.GetCurrentTutorialPhase() == 2 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
         {
             adfgvx.MoveToNextTutorialPhase(0.1f * (rowLength + lineLength));
         }
     }
 
-    public void ClearTransposition()//TranspositionÀ» ºñ¿î´Ù
+    public void ClearTransposition()//ì „ì¹˜ í–‰ë ¬ ë¹„ì›€
     {
         for (int i = 0; i < 9; i++)
         {
@@ -304,7 +277,7 @@ public class TranspositionPart : MonoBehaviour
         }
     }
 
-    private void ResizeAndRePositionEdge()//TranspositionÀÇ °¡ÀÌµå ¶óÀÎ »çÀÌÁî¸¦ Çà°ú ¿­ Å©±â¿¡ ¸ÂÃç¼­ »çÀÌÁî¸¦ Á¶Á¤ÇÏ°í Àç¹èÄ¡ÇÑ´Ù
+    private void ResizeAndRePositionMatrixGuide()//ì „ì¹˜ í–‰ë ¬ í¬ê¸°ì— ë‹¤ë¥¸ í¬ê¸° ì¡°ì •
     {
         float pos_x = transform.GetChild(0).localPosition.x + (2.5f * (lineLength - 1));
         float size_x = 2.5f * lineLength;
@@ -313,17 +286,14 @@ public class TranspositionPart : MonoBehaviour
         GetComponentsInChildren<SpriteRenderer>()[0].size = new Vector2(size_x, size_y);
     }
 
-    private void printFlow()//2Â÷¿ø Æò¸é Èå¸§ Ãâ·Â
+    private void printFlow()//2ì°¨ì› ì¶œë ¥ ê°œì‹œ
     {
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
-
-        //Èå¸§ Ãâ·Â °³½Ã
         flowLine = 0;
         InvokeRepeating("printFlowLine", 0.0f, 0.1f);
         keyword.SetMarkText(keyword.GetInputString());
     }
 
-    private void printFlowLine()//Èå¸§ Ãâ·Â ¿À¸¥ÂÊ
+    private void printFlowLine()//2ì°¨ì› ì—´ ì¶œë ¥
     {
         if (flowLine == lineLength)
         {
@@ -333,15 +303,16 @@ public class TranspositionPart : MonoBehaviour
         StartCoroutine(printFlowRow(flowLine++, 0));
     }
 
-    private IEnumerator printFlowRow(int flowLine, int FlowRow)//Èå¸§ Ãâ·Â ¾Æ·¡ÂÊ
+    private IEnumerator printFlowRow(int flowLine, int FlowRow)//2ì°¨ì› í–‰ ì¶œë ¥
     {
-        if(flowLine == lineLength - 1 && FlowRow == rowLength)//Èå¸§ Ãâ·Â ÃÖÁ¾ Á¾·á ½Ã
+        if(flowLine == lineLength - 1 && FlowRow == rowLength)//ë§ˆì§€ë§‰ ì¶œë ¥ ì¢…ë£Œ
         {
+            //ì…ë ¥ íšŒë³µ
             adfgvx.SetPartLayerWaitForSec(0f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-            adfgvx.InformUpdate("ÀüÄ¡ ÀÛ¾÷ Á¾·á : ÃÑ ÀÛ¾÷ ½Ã°£ " + (0.1f * (rowLength + lineLength)).ToString() + "s");
+            adfgvx.InformUpdate("í‚¤ ìˆœìœ„ ì „ì¹˜ í”„ë¡œí† ì½œ ì¢…ë£Œ : ì´ ì‘ì—… ì‹œê°„ " + (0.1f * (rowLength + lineLength)).ToString() + "s");
             yield break;
         }
-        else if (FlowRow == rowLength)
+        else if (FlowRow == rowLength)//í–‰ì˜ ë ë„ë‹¬
             yield break;
         lines[flowLine].text += tempLine[flowLine][FlowRow].ToString();
         yield return new WaitForSeconds(0.1f);

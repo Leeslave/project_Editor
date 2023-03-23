@@ -8,8 +8,6 @@ public class EncodeDataLoadPart : MonoBehaviour
 {
     private ADFGVX adfgvx;
 
-    private TextMeshPro partTitle;                  //ÆÄÆ® Å¸ÀÌÆ²
-
     private InputField_ADFGVX filePath;
 
     private TextField securityLevel;
@@ -20,13 +18,11 @@ public class EncodeDataLoadPart : MonoBehaviour
     private TextField date;
     private TextField dateUI;
 
-    private string DecodedChiper = "";           //º¹È£È­µÈ µ¥ÀÌÅÍ °ª
+    private string DecodedChiper = "";  //ë³µí˜¸í™” ì •ë‹µ
 
     private void Start()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
-
-        partTitle = GetComponentsInChildren<TextMeshPro>()[0];
 
         filePath = transform.Find("FilePath").GetComponent<InputField_ADFGVX>();
 
@@ -39,41 +35,31 @@ public class EncodeDataLoadPart : MonoBehaviour
         dateUI = transform.Find("DateUI").GetComponent<TextField>();
     }
 
-    public void SetLayer(int layer)//ÀÌ °ÔÀÓ¿ÀºêÁ§Æ® ÇÏÀ§ ¿ä¼ÒÀÇ ·¹ÀÌ¾î Á¦¾î
+    public void SetLayer(int layer)//í•˜ìœ„ ìš”ì†Œì˜ ì…ë ¥ ì œì–´
     {
         transform.Find("FilePath").gameObject.layer = layer;
         transform.Find("Load").gameObject.layer = layer;
     }
 
-    public void UnvisiblePart()//¾ÏÈ£ ÆÄÆ® °¡½Ã
-    {
-        this.transform.localPosition = new Vector3(102.3f, -200f, 0);
-    }
-
-    public void VisiblePart()//¾ÏÈ£ ÆÄÆ® ºñ°¡½Ã
-    {
-        this.transform.localPosition = new Vector3(102.3f, -68.2f, 0);
-    }
-
-    public InputField_ADFGVX GetInputField_filePath()//ÆÄÀÏ °æ·Î ÀÎÇ² ÇÊµå ¹İÈ¯
+    public InputField_ADFGVX GetInputField_filePath()//íŒŒì¼ ê²½ë¡œ ì…ë ¥ì°½ ë°˜í™˜
     {
         return filePath;
     }
 
-    public TextField GetTextField_SecurityLevel()//º¸¾È µî±Ş ÀÎÇ² ÇÊµå ¹İÈ¯
+    public TextField GetTextField_SecurityLevel()//ë³´ì•ˆ ë“±ê¸‰ í…ìŠ¤íŠ¸ì°½ ë°˜í™˜
     {
         return securityLevel;
     }
 
-    public void LoadEncodeData()//inputstring¿¡ µû¶ó¼­ ¾ÏÈ£¹®À» ºÒ·¯¿Â´Ù
+    public void LoadEncodeData()//ì•”í˜¸í™”ëœ ë°ì´í„°ë¥¼ ë¡œë“œ
     {
-        if (date.GetIsNowFlowText() || sender.GetIsNowFlowText())//¾ÆÁ÷ Àü¿¡ ¸í·É¹ŞÀº ÆÄÀÏ ºÒ·¯¿À±â ÀÛ¾÷ÀÌ ³¡³ªÁö ¾ÊÀ½
+        if (date.GetIsNowFlowText() || sender.GetIsNowFlowText())//ì¶œë ¥ ì¤‘ì´ ì•„ë‹ˆì—ˆë‹¤ë©´
         {
-            adfgvx.InformError("ÆÄÀÏ ºÒ·¯¿À±â ºÒ°¡ : ÀÛ¾÷ ÁøÇà Áß");
+            adfgvx.InformError("í˜„ì¬ ì•”í˜¸í™” ë°ì´í„° ë¡œë“œ ì¤‘ : ì¢…ë£Œ ì‹œê¹Œì§€ ëŒ€ê¸° ìš”ë§");
             return;
         }
 
-        //return Å°¸¦ ´­·¶À¸´Ï °Ë»öÃ¢ ¼±ÅÃ°ú ±ô¹ÚÀÓÀ» ºñÈ°¼ºÈ­ÇÑ´Ù
+        //ê¹œë°•ì„ ì¢…ë£Œ
         filePath.StopFlashInputField();
 
         string FilePath = "";
@@ -90,34 +76,29 @@ public class EncodeDataLoadPart : MonoBehaviour
         string ReceiverUI = "";
         string Receiver = "";
 
-        //ArrayNum¿¡ µû¶ó¼­ °¢±â ´Ù¸¥ Ç¥ÀÇ FilePath°¡ ÀúÀåµÈ´Ù
         FilePath = "Assets/Resources/Chiper/" + filePath.GetInputString() + ".txt";
         TxtFile = new FileInfo(FilePath);
 
-        if (!TxtFile.Exists)//Filepath°¡ À¯È¿ÇÏÁö ¾Ê´Ù¸é
+        if (!TxtFile.Exists)
         {
-            //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
+            //íŠœí† ë¦¬ì–¼ ê´€ë ¨ ì½”ë“œ
             if (adfgvx.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 adfgvx.DisplayTutorialDialog(11, 0f);
             }
 
-            adfgvx.InformError("'" + filePath.GetInputString() + "' " + "¿¢¼¼½º ½ÇÆĞ : À¯È¿ÇÏÁö ¾ÊÀº °æ·Î");
-            filePath.DisplayErrorInInputField("ÆÄÀÏ Á¢±Ù ºÒ°¡!");
+            adfgvx.InformError("'" + filePath.GetInputString() + "' " + "ë¡œë“œ ì‹¤íŒ¨ : ìœ íš¨í•˜ì§€ ì•Šì€ íŒŒì¼ ê²½ë¡œ");
+            filePath.DisplayErrorInInputField("íŒŒì¼ ê²½ë¡œ ì˜¤ë¥˜!");
             return;
         }
 
-        //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
+        //íŠœí† ë¦¬ì–¼ ê´€ë ¨ ì½”ë“œ
         if (adfgvx.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            if (filePath.GetInputString() == "SI-XI-I")//Æ©Åä¸®¾óÀÇ ¸í·ÉÀ» µû¶úÀ½
+            if (filePath.GetInputString() == "SI-XI-I")
                 adfgvx.MoveToNextTutorialPhase(3f);
             else
-                adfgvx.DisplayTutorialDialog(14, 3f);
-        }
-        else
-        {
-            adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                adfgvx.DisplayTutorialDialog(14, 3.1f);
         }
             
         StreamReader Reader = new StreamReader(FilePath, System.Text.Encoding.UTF8);
@@ -135,13 +116,24 @@ public class EncodeDataLoadPart : MonoBehaviour
         DecodedChiper = Reader.ReadLine();
         Reader.Close();
 
-        //¸ğµç ÆÄÆ® ÀÔ·Â Â÷´Ü
+        //ì…ë ¥ ì°¨ë‹¨
         adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
-        adfgvx.InformUpdate("'" + filePath.GetInputString() + "' " + "¿¢¼¼½º ¼º°ø : µµ´Ş ½Ã°£ 1ms ÀÌÇÏ");
+        //ì…ë ¥ íšŒë³µ
+        adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-        //Èå¸§ Ãâ·Â ½ÃÀÛ
-        ClearChiperAll();
+        adfgvx.InformUpdate("'" + filePath.GetInputString() + "' " + "ë¡œë“œ ì„±ê³µ : ì´ ì‘ì—… ì‹œê°„ 1ms ì´í•˜");
+
+        //ì—…ë°ì´íŠ¸ ì „ ë¹„ì›€
+        securityLevel.SetText("");
+        title.SetText("");
+        data.SetText("");
+        dateUI.SetText("");
+        date.SetText("");
+        senderUI.SetText("");
+        sender.SetText("");
+
+        //í˜„ì¬ íŒŒíŠ¸ ì—…ë°ì´íŠ¸
         securityLevel.SetText(SecurityLevel);
         title.FlowText(Title, 3.0f);
         data.FlowText(Data, 3.0f);
@@ -150,7 +142,7 @@ public class EncodeDataLoadPart : MonoBehaviour
         senderUI.SetText(SenderUI);
         sender.FlowText(Sender, 3.0f);
 
-        //intermediatechiper¿¡µµ Èå¸§ Ãâ·Â ½ÃÀÛ
+        //ë³µí˜¸í™” í›„ íŒŒíŠ¸ ì—…ë°ì´íŠ¸
         adfgvx.afterDecodingPart.GetSecurityLevel().SetText(SecurityLevel);
         adfgvx.afterDecodingPart.GetTitle().FlowText(Title, 3.0f);
         adfgvx.afterDecodingPart.GetDateUI().SetText(ReceptionDateUI);
@@ -158,30 +150,19 @@ public class EncodeDataLoadPart : MonoBehaviour
         adfgvx.afterDecodingPart.GetSenderUI().SetText(ReceiverUI);
         adfgvx.afterDecodingPart.GetSender().FlowText(Receiver, 3.0f);
 
-        //»ç¿îµå Àç»ı
-        adfgvx.soundFlow(30, 3f);
+        //ì˜¤ë””ì˜¤ ì¬ìƒ
+        adfgvx.SoundFlow(30, 3f);
 
-        //½ºÅ¾¿öÄ¡ ½ÃÀÛ
+        //ì‹œê°„ ì¸¡ì • ê°œì‹œ
         adfgvx.StartStopWatch();
     }
 
-    public void ClearChiperAll()//ºÒ·¯¿ÍÁ® ÀÖ´ø ¾ÏÈ£¹®À» ºñ¿î´Ù
-    {
-        securityLevel.SetText("");
-        title.SetText("");
-        data.SetText("");
-        dateUI.SetText("");
-        date.SetText("");
-        senderUI.SetText("");
-        sender.SetText("");
-    }
-
-    public string GetData()//ºÒ·¯¿ÍÀÖ´ø ¾ÏÈ£¹®À» ¹İÈ¯ÇÑ´Ù
+    public string GetTextField_Data()//ë°ì´í„° í‘œì‹œì°½ ë°˜í™˜
     {
         return data.GetText();
     }
 
-    public string GetDecodedChiper()//º¹È£È­µÈ ¾ÏÈ£¹®À» ¹İÈ¯ÇÑ´Ù
+    public string GetDecodedChiper()//ë³µí˜¸í™” ì •ë‹µ ë°˜í™˜
     {
         return DecodedChiper;
     }

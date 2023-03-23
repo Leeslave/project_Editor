@@ -24,7 +24,7 @@ public class Button_ADFGVX_ChangeSecurityLevel : Button_ADFGVX
 
     private void SetSecurityLevel(int level)
     {
-        string[] korean = { "[Æ¯±Þ ±â¹Ð]", "[1±Þ ±â¹Ð]", "[2±Þ ±â¹Ð]", "[3±Þ ±â¹Ð]"};
+        string[] korean = { "[íŠ¹ê¸‰ ê¸°ë°€]", "[1ê¸‰ ê¸°ë°€]", "[2ê¸‰ ê¸°ë°€]", "[3ê¸‰ ê¸°ë°€]"};
         SetMarkText(korean[level]);
     }
 }

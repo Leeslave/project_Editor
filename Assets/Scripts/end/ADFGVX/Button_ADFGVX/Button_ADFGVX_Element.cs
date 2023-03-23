@@ -9,11 +9,6 @@ public class Button_ADFGVX_Element : Button_ADFGVX
     public int line;
     public bool clicked;
 
-    public void ChangeButtonText(char value)
-    {
-        SetMarkText(value.ToString());
-    }
-
     public string GetButtonText()
     {
         return GetMarkText();
@@ -33,7 +28,7 @@ public class Button_ADFGVX_Element : Button_ADFGVX
         {
             if (GameManager.CurrentMode == ADFGVX.mode.Decoding)
             {
-                GameManager.InformError("¹öÆ° »ç¿ë ºÒ°¡ : ÇöÀç ¸ğµå ÀçÈ®ÀÎ ¿ä¸Á");
+                GameManager.InformError("ë²„íŠ¼ ì‚¬ìš© ë¶ˆê°€ : í˜„ì¬ ëª¨ë“œ í™•ì¸ ìš”ë§");
                 ConvertClickSpriteColor(Color.red);
             }
             else if(GameManager.CurrentMode == ADFGVX.mode.Encoding)

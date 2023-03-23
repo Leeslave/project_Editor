@@ -10,6 +10,7 @@ public class TextFieldProUGUI : MonoBehaviour
     private SpriteRenderer guideSprite;
 
     private float width;
+    private float height;
 
     private Coroutine flowTextWithEndTimeCoroutine;
     private Coroutine flowTextWithDelayCoroutine;
@@ -24,36 +25,42 @@ public class TextFieldProUGUI : MonoBehaviour
             guideSprite = transform.Find("GuideText").GetComponent<SpriteRenderer>();
     }
 
-    public string GetText()//markText¸¦ ¹İÈ¯ÇÑ´Ù
+    public string GetText()//markTextì— ì„¤ì •ëœ ê°’ì„ ë°˜í™˜
     {
         return markText.text;
     }
 
-    public void SetText(string value)//markText¸¦ value·Î ¼³Á¤ÇÑ´Ù
+    public void SetText(string value)//valueì— ë”°ë¼ì„œ markTextë¥¼ ì„¤ì •í•˜ê³  ìº”ë²„ìŠ¤ë¥¼ ì—…ë°ì´íŠ¸, ContentSizeFitterì— ì˜í•´ ë³€ê²½ëœ Rectì˜ ì •ë³´ë¥¼ ì €ì¥
     {
         markText.text = value;
         Canvas.ForceUpdateCanvases();
         width = this.GetComponentInChildren<RectTransform>().rect.width;
+        height = this.GetComponentInChildren<RectTransform>().rect.height;
     }
 
-    public float GetWidth()//RectTransformÀÇ Width ¹İÈ¯
+    public float GetWidth()//ContentSizeFitterì— ë”°ë¼ ì¡°ì •ëœ Rectì˜ ë„ˆë¹„ ë°˜í™˜
     {
         return width;
     }
 
-    public bool GetIsNowFlowText()//Èå¸§ Ãâ·Â ÁøÇà ¿©ºÎ ¹İÈ¯
+    public float GetHeight()//ContentSizeFitterì— ë”°ë¼ ì¡°ì •ëœ Rectì˜ ë†’ì´ ë°˜í™˜
+    {
+        return height;
+    }
+
+    public bool GetIsNowFlowText()//í˜„ì¬ íë¦„ ì¶œë ¥ ì—¬ë¶€ë¥¼ ë°˜í™˜í•œë‹¤
     {
         return isNowFlowText;
     }
 
-    public void FlowTextWithEndTime(string value, float endTime)//value¸¦ endTime¾È¿¡ markText¿¡ ¼øÂ÷ÀûÀ¸·Î Ã¤¿ö ³Ö´Â´Ù
+    public void FlowTextWithEndTime(string value, float endTime)//endTimeì— ë”°ë¼ íë¦„ ì¶œë ¥í•œë‹¤
     {
         markText.text = "";
         isNowFlowText = true;
-        flowTextWithEndTimeCoroutine = StartCoroutine(FlowTextWithEndTimeIEnumerator(value, 0, endTime));
+        flowTextWithEndTimeCoroutine = StartCoroutine(FlowTextWithEndTime_IE(value, 0, endTime));
     }
 
-    private IEnumerator FlowTextWithEndTimeIEnumerator(string value, int idx, float endTime)//FlowText Àç±Í
+    private IEnumerator FlowTextWithEndTime_IE(string value, int idx, float endTime)
     {
         if (idx >= value.Length)
         {
@@ -64,17 +71,17 @@ public class TextFieldProUGUI : MonoBehaviour
         markText.text += value.Substring(idx, 1);
 
         yield return new WaitForSeconds(endTime / value.Length);
-        flowTextWithEndTimeCoroutine = StartCoroutine(FlowTextWithEndTimeIEnumerator(value, idx + 1, endTime));
+        flowTextWithEndTimeCoroutine = StartCoroutine(FlowTextWithEndTime_IE(value, idx + 1, endTime));
     }
 
-    public void FlowTextWithDelay(string value, float delay)//value¸¦ ÇÑ ±ÛÀÚ¾¿ delay¸¦ ÁÖ¸é¼­ markText¿¡ Ã¤¿ö ³Ö´Â´Ù
+    public void FlowTextWithDelay(string value, float delay)//delayì— ë”°ë¼ íë¦„ ì¶œë ¥í•œë‹¤
     {
         markText.text = "";
         isNowFlowText = true;
-        flowTextWithDelayCoroutine = StartCoroutine(FlowTextWithDelayIEnumerator(value, 0, delay));
+        flowTextWithDelayCoroutine = StartCoroutine(FlowTextWithDelay_IE(value, 0, delay));
     }
 
-    private IEnumerator FlowTextWithDelayIEnumerator(string value, int idx, float delay)//FlowTextWithDelay Àç±Í
+    private IEnumerator FlowTextWithDelay_IE(string value, int idx, float delay)
     {
         if(idx >= value.Length)
         {
@@ -85,69 +92,69 @@ public class TextFieldProUGUI : MonoBehaviour
         markText.text += value.Substring(idx, 1);
 
         yield return new WaitForSeconds(delay);
-        flowTextWithDelayCoroutine = StartCoroutine(FlowTextWithDelayIEnumerator(value, idx + 1, delay));
+        flowTextWithDelayCoroutine = StartCoroutine(FlowTextWithDelay_IE(value, idx + 1, delay));
     }
 
-    public void StopCoroutineFlowTextWithEndTime()//endTime Èå¸§ Ãâ·Â ÄÚ·çÆ¾ Á¤Áö
+    public void StopCoroutineFlowTextWithEndTime()//endTime íë¦„ ì¶œë ¥ì„ ê°•ì œ ì¢…ë£Œí•œë‹¤
     {
         StopCoroutine(flowTextWithEndTimeCoroutine);
         isNowFlowText = false;
     }
 
-    public void StopCoroutineFlowTextWithDelay()//delay Èå¸§ Ãâ·Â ÄÚ·çÆ¾ Á¤Áö
+    public void StopCoroutineFlowTextWithDelay()//delay íë¦„ ì¶œë ¥ì„ ê°•ì œ ì¢…ë£Œí•œë‹¤
     {
         if(flowTextWithDelayCoroutine!=null)
            StopCoroutine(flowTextWithDelayCoroutine);
         isNowFlowText = false;
     }
 
-    public void HideTextOnly(float time)//markText ¼û±è
+    public void HideTextOnly(float time)//í…ìŠ¤íŠ¸ì˜ ìƒ‰ê¹”ì„ íˆ¬ëª…ìœ¼ë¡œ ë°”ê¿” ìˆ¨ê¸´ë‹¤
     {
         ConvertColorText(markText, time, Color.clear);
     }
 
-    public void SetColorText(Color targetValue)//martText »ö ¼³Á¤
+    public void SetColorText(Color targetValue)//targetValueë¡œ í…ìŠ¤íŠ¸ì˜ ìƒ‰ê¹”ì„ ì„¤ì •í•œë‹¤
     {
         markText.color = targetValue;
     }
 
-    private void ConvertColorText(TextMeshProUGUI target, float time, Color targetValue)//markText »ö º¯È¯ ½ÃÀÛ
+    private void ConvertColorText(TextMeshProUGUI target, float endTime, Color targetValue)
     {
-        StartCoroutine(ConvertColorTextIEnumerator(target.color, target, time, 0, targetValue));
+        StartCoroutine(ConvertColorText_IE(target.color, target, endTime, 0, targetValue));
     }
 
-    private IEnumerator ConvertColorTextIEnumerator(Color currentValue, TextMeshProUGUI target, float time, float currentTime, Color targetValue)//markText »ö º¯È¯ Àç±Í
+    private IEnumerator ConvertColorText_IE(Color currentValue, TextMeshProUGUI target, float endTime, float currentTime, Color targetValue)//endTimeì— ë”°ë¼ targetValueë¡œ í…ìŠ¤íŠ¸ì˜ ìƒ‰ê¹”ì„ ì„¤ì •í•œë‹¤
     {
-        currentTime += time / 100;
-        if (currentTime > time)
+        currentTime += endTime / 100;
+        if (currentTime > endTime)
             yield break;
 
-        float target_r = currentValue.r + ((targetValue.r - currentValue.r) * (currentTime / time));
-        float target_g = currentValue.g + ((targetValue.g - currentValue.g) * (currentTime / time));
-        float target_b = currentValue.b + ((targetValue.b - currentValue.b) * (currentTime / time));
-        float target_a = currentValue.a + ((targetValue.a - currentValue.a) * (currentTime / time));
+        float target_r = currentValue.r + ((targetValue.r - currentValue.r) * (currentTime / endTime));
+        float target_g = currentValue.g + ((targetValue.g - currentValue.g) * (currentTime / endTime));
+        float target_b = currentValue.b + ((targetValue.b - currentValue.b) * (currentTime / endTime));
+        float target_a = currentValue.a + ((targetValue.a - currentValue.a) * (currentTime / endTime));
         target.color = new Color(target_r, target_g, target_b, target_a);
 
-        yield return new WaitForSeconds(time / 100);
-        StartCoroutine(ConvertColorTextIEnumerator(currentValue, target, time, currentTime, targetValue));
+        yield return new WaitForSeconds(endTime / 100);
+        StartCoroutine(ConvertColorText_IE(currentValue, target, endTime, currentTime, targetValue));
     }
 
-    private void ConvertSizeText(TextMeshProUGUI target, float targetSizeX, float targetSizeY, float time)//markText »çÀÌÁî ÀüÈ¯ ½ÃÀÛ
+    private void ConvertSizeText(TextMeshProUGUI target, float targetSizeX, float targetSizeY, float endTime)
     {
-        StartCoroutine(ConvertSizeTextIEnumerator(target.transform.localScale.x, target.transform.localScale.y, target, targetSizeX, targetSizeY, time, 0));
+        StartCoroutine(ConvertSizeText_IE(target.transform.localScale.x, target.transform.localScale.y, target, targetSizeX, targetSizeY, endTime, 0));
     }
 
-    private IEnumerator ConvertSizeTextIEnumerator(float currentSizeX, float currentSizeY, TextMeshProUGUI target, float targetSizeX, float targetSizeY, float time, float currentTime)//markText »çÀÌÁî ÀüÈ¯ Àç±Í
+    private IEnumerator ConvertSizeText_IE(float currentSizeX, float currentSizeY, TextMeshProUGUI target, float targetSizeX, float targetSizeY, float endTime, float currentTime)//endTimeì— ë”°ë¼ targetSizeë¡œ í…ìŠ¤íŠ¸ì˜ í¬ê¸°ë¥¼ ì„¤ì •í•œë‹¤
     {
-        currentTime += time / 100;
-        if (currentTime > time)
+        currentTime += endTime / 100;
+        if (currentTime > endTime)
             yield break;
 
-        float newSizeX = currentSizeX + (targetSizeX - currentSizeX) * (currentTime / time);
-        float newSizeY = currentSizeY + (targetSizeY - currentSizeY) * (currentTime / time);
+        float newSizeX = currentSizeX + (targetSizeX - currentSizeX) * (currentTime / endTime);
+        float newSizeY = currentSizeY + (targetSizeY - currentSizeY) * (currentTime / endTime);
         target.transform.localScale = new Vector3(newSizeX, newSizeY, 1);
 
-        yield return new WaitForSeconds(time / 100);
-        StartCoroutine(ConvertSizeTextIEnumerator(currentSizeX, currentSizeY, target, targetSizeX, targetSizeY, time, currentTime));
+        yield return new WaitForSeconds(endTime / 100);
+        StartCoroutine(ConvertSizeText_IE(currentSizeX, currentSizeY, target, targetSizeX, targetSizeY, endTime, currentTime));
     }
 }

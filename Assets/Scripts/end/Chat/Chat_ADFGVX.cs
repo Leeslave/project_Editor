@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Chat_ADFGVX : Chat
 {
-    [Header("°ÔÀÓ ¸Å´ÏÀú")]
+    [Header("ê²Œì„ ë§¤ë‹ˆì €")]
     public ADFGVX GameManager;
 
     protected override void SetLayerDefault()

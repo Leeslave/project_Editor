@@ -69,36 +69,36 @@ public class InputField_ADFGVX : Button_ADFGVX
         isCursorOverInputField = false;
     }
 
-    public string GetInputString()//°Ë»öÃ¢ ÀÔ·Â ³»¿ë ¹İÈ¯
+    public string GetInputString()//ì…ë ¥ê°’ ë°˜í™˜
     {
         return inputString;
     }
 
-    public bool GetIsReadyForInput()//°Ë»öÃ¢ ÀÔ·Â °¡´É »óÅÂ
+    public bool GetIsReadyForInput()//ì…ë ¥ ê°€ëŠ¥ ìƒíƒœ ì—¬ë¶€ ë°˜í™˜
     {
         return isReadyForInput;
     }
 
-    public void SetIsReadyForInput(bool value)//°Ë»öÃ¢ ÀÔ·Â °¡´É »óÅÂ Á¦¾î
+    public void SetIsReadyForInput(bool value)//ì…ë ¥ ê°€ëŠ¥ ìƒíƒœ ì—¬ë¶€ ì„¤ì •
     {
         isReadyForInput = value;
     }
 
-    public bool GetIsFlash()//IsFlash ¹İÈ¯
+    public bool GetIsFlash()//í˜„ì¬ ê¹œë°•ì„ ì—¬ë¶€ ë°˜í™˜
     {
         return isFlash;
     }
 
-    public void SetIsFlash(bool value)//IsFlash ¼³Á¤
+    public void SetIsFlash(bool value)//í˜„ì¬ ê¹œë°•ì„ ì—¬ë¶€ ì„¤ì •
     {
         isFlash = value;
     }
 
-    public void AddInputField(string value)//ÀÔ·ÂÃ¢¿¡ Ãß°¡
+    public void AddInputField(string value)//ì…ë ¥ê°’ì— value ì¶”ê°€í•œ í›„ ì…ë ¥ì°½ ì—…ë°ì´íŠ¸
     {
         if(inputString.Length > InputFieldMaxLength)
         {
-            GameManager.InformError(InputFieldName + " ÃÖ´ë ÀÔ·Â : ÀÔ·Â ºÒ°¡");
+            GameManager.InformError(InputFieldName + " ì…ë ¥ ë¶ˆê°€ : ìµœëŒ€ ì…ë ¥");
             return;
         }
 
@@ -109,11 +109,11 @@ public class InputField_ADFGVX : Button_ADFGVX
         GameManager.PlayAudioSource(ADFGVX.Audio.AddChar);
     }
 
-    public void DeleteInputField(int length)//ÀÔ·ÂÃ¢¿¡ »èÁ¦
+    public void DeleteInputField(int length)//ì…ë ¥ê°’ì— lengthë§Œí¼ ì‚­ì œ í›„ ì…ë ¥ì°½ ì—…ë°ì´íŠ¸
     {
         if (inputString.Length == 0)
         {
-            GameManager.InformError(InputFieldName + " ÃÖ¼Ò ÀÔ·Â : »èÁ¦ ºÒ°¡");
+            GameManager.InformError(InputFieldName + " ì‚­ì œ ë¶ˆê°€ : ìµœì†Œ ì…ë ¥");
             return;
         }
 
@@ -124,19 +124,19 @@ public class InputField_ADFGVX : Button_ADFGVX
         GameManager.PlayAudioSource(ADFGVX.Audio.DeleteChar);
     }
 
-    public void ClearInputField()//ÀÔ·ÂÃ¢ ºñ¿ò
+    public void ClearInputField()//ì…ë ¥ì°½ ë¹„ì›€
     {
         inputString = "";
         SetMarkText("");
     }
 
-    public void ReturnInputField()//°Ë»öÃ¢¿¡ ¿£ÅÍ
+    public void ExitInputField()//ì…ë ¥ì°½ íƒˆì¶œ
     {
         StopFlashInputField();
         InitInputField();
     }
 
-    public void DisplayErrorInInputField(string value)//°Ë»öÃ¢¿¡ ¿¡·¯ ¸Ş¼¼Áö¸¦ ¶ç¿î´Ù
+    public void DisplayErrorInInputField(string value)//ì…ë ¥ì°½ì— ì—ëŸ¬ ë©”ì„¸ì§€ ë„ì›€
     {
         SetMarkText(value);
         inputString = "";
@@ -144,21 +144,21 @@ public class InputField_ADFGVX : Button_ADFGVX
         isFlash = false;
     }
 
-    public void StopFlashInputField()//°Ë»öÃ¢ ¼±ÅÃ°ú ±ô¹ÚÀÓÀ» ºñÈ°¼ºÈ­ÇÑ´Ù
+    public void StopFlashInputField()//ì…ë ¥ì°½ ê¹œë°•ì„ ì •ì§€
     {
         SetMarkText(inputString);
         isReadyForInput = false;
         isFlash = false;
     }
 
-    private void StartFlashInputField()//°Ë»öÃ¢À» ±ô¹ÚÀÌ°Ô ¸¸µç´Ù
+    private void StartFlashInputField()//ì…ë ¥ì°½ ê¹œë°•ì„ ê°œì‹œ
     {
-        StartCoroutine(FlashInputField_IE());
+        StartCoroutine(StartFlashInputField_IE());
     }
 
-    private IEnumerator FlashInputField_IE()
+    private IEnumerator StartFlashInputField_IE()//StartFlashInputField_IEnumerator
     {
-        if (inputString.Length <= InputFieldMaxLength && isReadyForInput && !skipOneFlash)//ÀÔ·ÂÃ¢ ±æÀÌ¸¦ ³Ñ±â°Å³ª, ÀÔ·Â ÁßÀÌ ¾Æ´Ï°Å³ª, ½ºÅµ ¸í·ÉÀÌ ÀÖ´Ù¸é °Ç³Ê¶Ú´Ù
+        if (inputString.Length <= InputFieldMaxLength && isReadyForInput && !skipOneFlash)
         {
             if (isFlash)
             {
@@ -167,22 +167,22 @@ public class InputField_ADFGVX : Button_ADFGVX
             }
             else
             {
-                SetMarkText(inputString + "¡¦");
+                SetMarkText(inputString + "â€¦");
                 isFlash = true;
             }
         }
-        else if (!isReadyForInput && inputString != "")//ÀÔ·Â ÁßÀÌ ¾Æ´Ï³ª ºóÄ­ÀÌ ¾Æ´Ï¶ó¸é, ÀÔ·Â »óÅÂ¸¦ À¯ÁöÇÑ´Ù
+        else if (!isReadyForInput && inputString != "")
             SetMarkText(inputString);
 
-        //ÀÌ¹ø ÅÏ¿¡ ½ºÅµÇßÀ¸´Ï ´ÙÀ½ ¹ø¿¡´Â ±ô¹Ú¿©¾ß ÇÑ´Ù
+        //í•œë²ˆ ê¹œë°•ì„ì„ ê±´ë„ˆë›°ì—ˆë‹¤ë©´ ë‹¤ìŒì—ëŠ” ê¹œë°•ì—¬ì•¼ í•œë‹¤
         skipOneFlash = !skipOneFlash ? false : false;
         yield return new WaitForSeconds(0.5f);
-        StartCoroutine(FlashInputField_IE());
+        StartCoroutine(StartFlashInputField_IE());
     }
 
-    private void InitInputField()//°Ë»öÃ¢À» ÃÊ±âÈ­ÇÑ´Ù
+    private void InitInputField()
     {
         if (inputString == "")
-            SetMarkText("Å¬¸¯ÇÏ¿© ÀÔ·Â¡¦");
+            SetMarkText("í´ë¦­í•˜ì—¬ ì…ë ¥â€¦");
     }
 }

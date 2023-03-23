@@ -19,32 +19,23 @@ public class BeforeEncodingPart : MonoBehaviour
         primeFactor = transform.Find("PrimeFactor").GetComponent<TextField>();
     }
 
-    public void SetLayer(int layer)//ÀÌ °ÔÀÓ¿ÀºêÁ§Æ® ÇÏÀ§ ¿ä¼ÒÀÇ ·¹ÀÌ¾î Á¦¾î
+    public void SetLayer(int layer)//í•˜ìœ„ ìš”ì†Œì˜ ì…ë ¥ ì œì–´
     {
         transform.Find("Data").gameObject.layer = layer;
     }
 
-    public void VisiblePart()//ÆÄÆ® °¡½Ã ¸ğµå
-    {
-        this.transform.localPosition = new Vector3(96.3f, -19f, 0);
-    }
 
-    public void UnvisiblePart()//ÆÄÆ® ºñ°¡½Ã ¸ğµå
-    {
-        this.transform.localPosition = new Vector3(96.3f, 200, 0);
-    }
-
-    public InputField_ADFGVX GetInputField_Data()//µ¥ÀÌÅÍ ÀÎÇ² ÇÊµå ¹İÈ¯
+    public InputField_ADFGVX GetInputField_Data()//ë°ì´í„° ì…ë ¥ì°½ ë°˜í™˜
     {
         return data;
     }
 
-    public void AddInputField_Data(string value)//data¿¡ value¿¡ ´ëÀÀÇÏ´Â °ªÀ» ÀÔ·Â
+    public void AddInputField_Data(string value)//ë°ì´í„° ì…ë ¥ì°½ì— value ì¶”ê°€
     {
-        //Æ©Åä¸®¾ó °ü·Ã ÄÚµå
+        //íŠœí† ë¦¬ì–¼ ê´€ë ¨ ì½”ë“œ
         if(adfgvx.GetCurrentTutorialPhase() == 1 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
         {
-            if (adfgvx.biliteralsubstitutionpart.GetCurrentArrayNum() != 0)
+            if (adfgvx.biliteralsubstitutionpart.GetCurrentADFGVXArrayNum() != 0)
             {
                 adfgvx.DisplayTutorialDialog(44, 0f);
                 return;
@@ -65,9 +56,9 @@ public class BeforeEncodingPart : MonoBehaviour
             }
         }
 
-        if(idx_row == 6 && idx_line == 6)//ÇØ´çÇÏ´Â ¿¤¸®¸ÕÆ®¸¦ Ã£Áö ¸øÇß½À´Ï´Ù
+        if(idx_row == 6 && idx_line == 6)//ì…ë ¥ê°’ê³¼ ì¼ì¹˜í•˜ëŠ” í…Œì´ë¸” ì›ì†Œê°€ ì—†ë‹¤
         {
-            adfgvx.InformError("ADFGVX¹è¿­¿¡ ´ëÀÀÇÏÁö ¾Ê´Â ÀÔ·Â : ÀÔ·Â ºÒ°¡");
+            adfgvx.InformError("ë‚˜ì˜¤ë©´ ì•ˆë˜ëŠ” ì˜¤ë¥˜!?");
             return;
         }
 
@@ -75,17 +66,17 @@ public class BeforeEncodingPart : MonoBehaviour
         UpdateRecommendKeyword();
     }
 
-    public void DeleteInputField_Data()//keyboard ÀÔ·ÂÀÇ ÀÇÇØ data¿¡ ºí·ÏÀ» »èÁ¦
+    public void DeleteInputField_Data()//ë°ì´í„° ì…ë ¥ì°½ì—ì„œ ì‚­ì œ
     {        
         data.DeleteInputField(3);
         UpdateRecommendKeyword();
     }
 
-    private void UpdateRecommendKeyword()//ÃßÃµ Å°¿öµå ¾÷µ¥ÀÌÆ®
+    private void UpdateRecommendKeyword()//ì¶”ì²œ ì „ì¹˜ í‚¤ ê¸€ì ìˆ˜ ì—…ë°ì´íŠ¸
     {
-        string number = ("¾ÏÈ£È­ ´ë»ó ÃÑ ±ÛÀÚ ¼ö : " + data.GetMarkText().Length / 3 * 2).ToString();
+        string number = ("ì˜¤ë¦¬ì§€ë„ ë°ì´í„°ì˜ ê¸€ì ìˆ˜ : " + data.GetMarkText().Length / 3 * 2).ToString();
 
-        string prime = "ÃßÃµ ¾ÏÈ£ Å° ±ÛÀÚ ¼ö : ";
+        string prime = "ì¶”ì²œí•˜ëŠ” ì „ì¹˜ í‚¤ì˜ ê¸€ì ìˆ˜ : ";
 
         if (data.GetMarkText().Length / 3 * 2 == 0)
             prime += "NULL";

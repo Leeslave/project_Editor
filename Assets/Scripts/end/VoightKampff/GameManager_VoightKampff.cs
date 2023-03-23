@@ -14,18 +14,15 @@ public class GameManager_VoightKampff : MonoBehaviour
     private GameObject careerPart;    
     private GameObject suspecionPart;
 
-    [Header("µğ¹ö±× ·Î±×")]
+    [Header("ë””ë²„ê·¸ ë¡œê·¸ ì°½")]
     public DebugLog debugLog;
 
     private void Start()
     {
-        //Ã¤ÆÃ UI¿Í ¿¬°á
         chat = GameObject.Find("Chat_VoightKampff").GetComponent<Chat_VoightKampff>();
 
-        //Eye°ú ¿¬°á
         eye = GameObject.Find("Eye").GetComponent<Eye>();
 
-        //°¢ ÆÄÆ® È®ÀÎ
         addressPart = GameObject.Find("Address");
         namePart = GameObject.Find("Name");
         familyPart = GameObject.Find("Family");
@@ -33,23 +30,23 @@ public class GameManager_VoightKampff : MonoBehaviour
         careerPart = GameObject.Find("Career");
         suspecionPart = GameObject.Find("Suspecion");
 
-        //ÀÔ·Â ÀüºÎ Â÷´Ü
+        //ì…ë ¥ ì°¨ë‹¨
         SetLayer(2, 2, 2, 2, 2, 2, 2);
 
-        debugLog.DebugInfo("º¸ÀÌµå Ä¯ÇÁ Å×½ºÆ® ÀÀ¿ë ÇÁ·Î±×·¥ Á¤»ó °¡µ¿");
+        debugLog.DebugInfo("ë³´ì´íŠ¸ ìº„í”„ í…ŒìŠ¤íŠ¸ ë¨¸ì‹  ì •ìƒ ì‘ë™");
     }
 
-    public Chat_VoightKampff GetChat()//chat ¹İÈ¯
+    public Chat_VoightKampff GetChat()
     {
         return chat;
     }
 
-    public Eye GetEye()//eye ¹İÈ¯
+    public Eye GetEye()
     {
         return eye;
     }
 
-    public void SetLayer(int layer_Address, int layer_Name, int layer_Family, int layer_Property, int layer_Career, int layer_Suspecion, int layer_DebugLog)//¸ğµç ÀÔ·Â Á¦¾î
+    public void SetLayer(int layer_Address, int layer_Name, int layer_Family, int layer_Property, int layer_Career, int layer_Suspecion, int layer_DebugLog)//í•˜ìœ„ íŒŒíŠ¸ì˜ ëª¨ë“  ì…ë ¥ ì œì–´
     {
         addressPart.layer = layer_Address;
         namePart.layer = layer_Name;
@@ -70,7 +67,7 @@ public class GameManager_VoightKampff : MonoBehaviour
 
     public void OnNodeDown(int line)
     {
-        //ÀÔ·Â ÀüºÎ Â÷´Ü
+        //ì…ë ¥ ì°¨ë‹¨
         SetLayer(2, 2, 2, 2, 2, 2, 2);
         chat.LoadLine(line);
     }

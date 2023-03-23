@@ -10,20 +10,20 @@ public class SpineAnimation : MonoBehaviour
         Idle
     }
 
-    protected AnimState currentAnimState;                   //ÇöÀç ¾Ö´Ï¸ŞÀÌ¼Ç                                 
-    private string currentAnimation;                        //ÇöÀç ¾Ö´Ï¸ŞÀÌ¼Ç ÀÌ¸§
+    protected AnimState currentAnimState;                   //í˜„ì¬ ì• ë‹ˆë©”ì´ì…˜ ìƒíƒœ                           
+    private string currentAnimation;                        //í˜„ì¬ ì• ë‹ˆë©”ì´ì…˜ ì´ë¦„
 
-    [Header("¾Ö´Ï¸ŞÀÌ¼Ç ½ºÄÌ·¹Åæ")]
+    [Header("ìŠ¤íŒŒì¸ ìŠ¤ì¼ˆë¦¬í†¤ ì• ë‹ˆë©”ì´ì…˜")]
     public SkeletonAnimation skeletonAnimation;
-    [Header("¾Ö´Ï¸ŞÀÌ¼Ç ¿¡¼Â¹è¿­")]
+    [Header("ì• ë‹ˆë©”ì´ì…˜ í´ë¦½")]
     public AnimationReferenceAsset[] animClip;
 
-    protected virtual void SetCurrentAnimation(AnimState state, bool loop, float timeScale)//ÁÖ¾îÁø ¾Ö´Ï¸ŞÀÌ¼Ç »óÅÂ »óÅÂ¿¡ µû¶ó ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı
+    protected virtual void SetCurrentAnimation(AnimState state, bool loop, float timeScale)
     {
         AsyncAnimation(animClip[(int)state], loop, timeScale);
     }
 
-    protected virtual void AsyncAnimation(AnimationReferenceAsset animClip, bool loop, float timeScale)//ÁÖ¾îÁø Á¶°Ç¿¡ ¸ÂÃç ¾Ö´Ï¸ŞÀÌ¼Ç µ¿±âÈ­
+    protected virtual void AsyncAnimation(AnimationReferenceAsset animClip, bool loop, float timeScale)
     {
         if (animClip.name.Equals(currentAnimation))
             return;

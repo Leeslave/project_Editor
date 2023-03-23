@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Button_VoightKampff_Node : Button_VoightKampff
 {
-    [Header("ÁöÁ¤µÈ ¶óÀÎ")]
+    [Header("ì§€ì •ëœ CSV ì¤„")]
     public int line;
 
     protected override void OnMouseDown()

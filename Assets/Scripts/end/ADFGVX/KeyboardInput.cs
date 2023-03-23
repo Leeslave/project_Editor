@@ -7,20 +7,20 @@ public class KeyboardInput : MonoBehaviour
     private ADFGVX adfgvx;
    
     Dictionary<KeyCode, Action> keyDictionary;
-    private string lastInputKeyCode;                //Àú¹ø¿¡ ÀÔ·ÂµÈ Å°ÄÚµå °ª ÀúÀå
-    private bool isKeyHoldingDown;                  //Å°´Ù¿î À¯Áö ¿©ºÎ
-    private int holdingDownCounter;                 //Å°´Ù¿î ÀÌÈÄ·Î ¾ó¸¶³ª ¸¹Àº FixedFrameÀÌ Áö³ª°¬´ÂÁö Ä«¿îÆ®
-    private int ContinuousInputCounter;             //¿¬¼Ó ÀÔ·ÂÀÇ È½¼ö - ÀÏÁ¤ È½¼ö¸¦ ³Ñ±â¸é ¿¬¼Ó ÀÔ·Â ¼Óµµ°¡ »¡¶óÁø´Ù
+    private string lastInputKeyCode;                //ì €ë²ˆ í”„ë ˆì„ì—ì„œì˜ ì…ë ¥ í‚¤
+    private bool isKeyHoldingDown;                  //í‚¤ í™€ë“œ ë‹¤ìš´ ì—¬ë¶€
+    private int holdingDownCounter;                 //í™€ë“œ ë‹¤ìš´ ì¹´ìš´í„°
+    private int ContinuousInputCounter;             //ì—°ì† ì…ë ¥ ì¹´ìš´í„°
 
-    [Header("¿Àµğ¿À ¼Ò½º ÄÄÆ÷³ÍÆ®")]
+    [Header("ì˜¤ë””ì˜¤ ì†ŒìŠ¤ ì»´í¬ë„ŒíŠ¸")]
     public AudioSource audioSource;
-    [Header("Å°º¸µå Å¬¸¯ ½Ã ¿Àµğ¿À Àç»ı ¿©ºÎ")]
-    public bool PlayKeyboardAudio;
-    [Header("Å°º¸µå Å¬¸¯ ½Ã ¿Àµğ¿À Å¬¸³ - ·£´ı Àç»ı")]
+    [Header("í‚¤ë³´ë“œ í´ë¦­ ì˜¤ë””ì˜¤ ì¬ìƒ ì—¬ë¶€")]
+    public bool PlayKeyboardClickAudio;
+    [Header("í‚¤ë³´ë“œ í´ë¦­ ì˜¤ë””ì˜¤ í´ë¦½ - ëœë¤ ì¬ìƒ")]
     public AudioClip[] KeyboardClickAudioClips;
-    [Header("¸¶¿ì½º Å¬¸¯ ½Ã ¿Àµğ¿À Àç»ı ¿©ºÎ")]
-    public bool PlayMouseAudio;
-    [Header("¸¶¿ì½º Å¬¸¯ ½Ã ¿Àµğ¿À Å¬¸³ - ·£´ı Àç»ı")]
+    [Header("ë§ˆìš°ìŠ¤ í´ë¦­ ì˜¤ë””ì˜¤ ì¬ìƒ ì—¬ë¶€")]
+    public bool PlayMouseClickAudio;
+    [Header("ë§ˆìš°ìŠ¤ í´ë¦­ ì˜¤ë””ì˜¤ í´ë¦½ - ëœë¤ ì¬ìƒ")]
     public AudioClip[] MouseClickAudioClips;
 
     private void Start()
@@ -71,7 +71,7 @@ public class KeyboardInput : MonoBehaviour
             { KeyCode.Return, KeyDown_Return }
         };
 
-        //¿¬¼Ó ÀÔ·Â °ü·Ã º¯¼ö ÃÊ±âÈ­
+        //í‚¤ í™€ë“œ ê´€ë ¨ ë³€ìˆ˜ ì´ˆê¸°í™”
         lastInputKeyCode = "";
         ContinuousInputCounter = 0;
         holdingDownCounter = 0;
@@ -81,51 +81,49 @@ public class KeyboardInput : MonoBehaviour
     {
         foreach (var dic in keyDictionary)
         {
-            //µñ¼Å³Ê¸®¿¡ ÀÖ´Â Å°ÄÚµå °ªÀÌ Å°´Ù¿îµÈ ¼ø°£
+            //í‚¤ ë”•ì…”ë„ˆë¦¬ì— ìˆëŠ” í‚¤ë³´ë“œ ë²„íŠ¼ ë‹¤ìš´
             if (Input.GetKeyDown(dic.Key))
             {
-                if(PlayKeyboardAudio)
+                //í‚¤ë³´ë“œ ë²„íŠ¼ ë‹¤ìš´ ì˜¤ë””ì˜¤ ì¬ìƒ
+                if(PlayKeyboardClickAudio)
                 {
-                    //Å°º¸µå ÀÔ·Â »ç¿îµå¸¦ ·£´ıÀ¸·Î Àç»ıÇÑ´Ù
                     audioSource.clip = KeyboardClickAudioClips[UnityEngine.Random.Range(0, KeyboardClickAudioClips.Length - 1)];
                     audioSource.Play();
                 }
 
-                //ÀÔ·Â°ªÀ» Å°·Î µñ¼Å³Ê¸®¿¡¼­ ¾×¼ÇÀ» ½ÇÇàÇÑ´Ù
+                //í‚¤ì½”ë“œì— ë”°ë¥¸ ì‹¤í–‰
                 dic.Value();
 
-                //ÀÌ¹ø¿¡ ÀÔ·ÂÇÑ Å°ÄÚµå°¡ Àú¹ø¿¡ ÀÔ·ÂÇÑ Å°ÄÚµå¿Í ´Ù¸£´Ù¸é
+                //ì´ë²ˆ í‚¤ì½”ë“œê°€ ì €ë²ˆ í‚¤ì½”ë“œì™€ ë‹¤ë¦„ 
                 if (dic.Key.ToString() != lastInputKeyCode)
                 {
+                    //í‚¤ í™€ë“œ ê´€ë ¨ ë³€ìˆ˜ ì´ˆê¸°í™”
                     holdingDownCounter = 0;
                     ContinuousInputCounter = 0;
                 }
 
-                //lastInputKeyCodeÀÇ °ªÀ» ÀÌ¹ø¿¡ ÀÔ·ÂÇÑ Å°ÄÚµåÀÇ °ªÀ¸·Î µ¤¾î¾º¿î´Ù
                 lastInputKeyCode = dic.Key.ToString();
             }
 
-            //µñ¼Å³Ê¸®¿¡ ÀÖ´Â Å°ÄÚµå °ªÀÌ Å°´Ù¿îµÇ°í ÀÖ´Â µ¿¾È
+            //í‚¤ë³´ë“œ ë²„íŠ¼ í™€ë“œ
             if(Input.GetKey(dic.Key))
             {
-                //Å°´Ù¿î ÁßÀÎ »óÅÂÀÓÀ» ¾Ë¸²
                 isKeyHoldingDown = true;
             }
         }
 
-        //¾î¶² Å°ÄÚµåµç Å°´Ù¿îÀÌ ²÷±ä ¼ø°£
+        //í‚¤ë³´ë“œ ë²„íŠ¼ ì—…
         if (!Input.anyKey && isKeyHoldingDown)
         {
-            //¿¬¼Ó ÀÔ·Â °ü·Ã º¯¼öÀÇ °ª ÃÊ±âÈ­
+            //í‚¤í™€ë“œ ê´€ë ¨ ë³€ìˆ˜ ì´ˆê¸°í™”
             holdingDownCounter = 0;
             ContinuousInputCounter = 0;
             isKeyHoldingDown = false;
         }
 
-        //¸¶¿ì½º ¹öÆ°´Ù¿îµÈ ¼ø°£
-        if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && PlayMouseAudio)
+        //ë§ˆìš°ìŠ¤ ë²„íŠ¼ ë‹¤ìš´ ì˜¤ë””ì˜¤ ì¬ìƒ
+        if ((Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1)) && PlayMouseClickAudio)
         {
-            //¸¶¿ì½º Å¬¸¯ »ç¿îµå¸¦ ·£´ıÀ¸·Î Àç»ı
             audioSource.clip = MouseClickAudioClips[UnityEngine.Random.Range(0, MouseClickAudioClips.Length - 1)];
             audioSource.Play();
         }
@@ -135,24 +133,24 @@ public class KeyboardInput : MonoBehaviour
     {
         foreach (var dic in keyDictionary)
         {
-            //µñ¼Å³Ê¸®¿¡ ÀÖ´Â Å°ÄÚµå °ªÀÌ Å°´Ù¿îÀÎ µ¿¾È
+            //í‚¤ ë”•ì…”ë„ˆë¦¬ì— ìˆëŠ” í‚¤ë³´ë“œ ë²„íŠ¼ í™€ë“œ
             if (Input.GetKey(dic.Key))
             {
-                //µ¿ÀÏ ÀÔ·ÂÀÌ ¸î FixedFrameµ¿¾È À¯ÁöµÇ¾ú´ÂÁö holdingDownCounterÀº °è»ê
+                //ì €ë²ˆ í‚¤ì½”ë“œì™€ ê°™ì€ í‚¤ì½”ë“œ ê°’ì„ í™€ë“œí•˜ëŠ” ë™ì•ˆ
                 if (dic.Key.ToString() == lastInputKeyCode)
                     holdingDownCounter++;
 
-                //¿¬¼Ó ÀÔ·ÂÀÌ ÀÏ¾î³­ È½¼ö°¡ 3È¸ ÀÌ»óÀÌ¸é ¿¬¼Ó ÀÔ·Â µô·¹ÀÌ°¡ 10 FixedFrame¿¡¼­ 2 FixedFrameÀ¸·Î ÀüÈ¯
+                //ì—°ì† ì…ë ¥ ì¹´ìš´í„° íšŸìˆ˜ê°€ 3íšŒë¥¼ ë„˜ê¸°ë©´ ì—°ì† ì…ë ¥ ê°„ê²©ì´ 10 í”½ìŠ¤ë“œ í”„ë ˆì„ì—ì„œ 2 í”½ìŠ¤ë“œ í”„ë ˆì„ìœ¼ë¡œ ë°”ë€ë‹¤
                 float countinuousInputDelay = (ContinuousInputCounter > 3) ? 2 : 10;
 
-                //µ¿ÀÏ ÀÔ·ÂÀÌ ¿¬¼Ó ÀÔ·Â µô·¹ÀÌ¸¦ »óÈ¸ÇÏ¸é 
+                //ì—°ì† ì…ë ¥ ê°„ê²©ì„ í™€ë“œ ë‹¤ìš´ ì¹´ìš´í„°ê°€ ë„˜ê¸°ë©´
                 if (holdingDownCounter > countinuousInputDelay)
                 {
-                    //µ¿ÀÏ ÀÔ·Â Ä«¿îÅÍ¸¦ ÃÊ±âÈ­ÇÏ°í, ¿¬¼Ó ÀÔ·ÂÀÌ ÀÏ¾î³­ È½¼ö¸¦ ´Ã¸°´Ù 
+                    //í™€ë“œ ë‹¤ìš´ ì¹´ìš´í„°ë¥¼ ì´ˆê¸°í™”í•˜ê³  ì—°ì† ì…ë ¥ ì¹´ìš´í„° íšìˆ˜ë¥¼ ëŠ˜ë¦°ë‹¤
                     holdingDownCounter = 0;
                     ContinuousInputCounter++;
 
-                    //ÀÔ·Â°ªÀ» Å°·Î µñ¼Å³Ê¸®¿¡¼­ ¾×¼ÇÀ» ½ÇÇàÇÑ´Ù
+                    //í‚¤ì½”ë“œì— ë”°ë¥¸ ì‹¤í–‰
                     dic.Value();
                 }
             }
@@ -382,13 +380,13 @@ public class KeyboardInput : MonoBehaviour
                 adfgvx.transpositionpart.OnTransposeReverseDown();
          
             if(adfgvx.beforeEncodingPart.GetInputField_Data().GetIsReadyForInput())
-                adfgvx.beforeEncodingPart.GetInputField_Data().ReturnInputField();
+                adfgvx.beforeEncodingPart.GetInputField_Data().ExitInputField();
 
             if (adfgvx.encodeDataSavePart.GetInputField_Title().GetIsReadyForInput())
-                adfgvx.encodeDataSavePart.GetInputField_Title().ReturnInputField();
+                adfgvx.encodeDataSavePart.GetInputField_Title().ExitInputField();
 
             if (adfgvx.encodeDataSavePart.GetInputField_Data().GetIsReadyForInput())
-                adfgvx.encodeDataSavePart.GetInputField_Data().ReturnInputField();
+                adfgvx.encodeDataSavePart.GetInputField_Data().ExitInputField();
         }
     }
 }

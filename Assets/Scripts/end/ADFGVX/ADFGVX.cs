@@ -4,101 +4,86 @@ using UnityEngine;
 
 public class ADFGVX : MonoBehaviour
 {
-    public enum mode//ADFGVX���
+    public enum mode//ADFGVX모드
     { Encoding, Decoding };
 
-    [Header("���� ADFGVX ���")]
+    [Header("현재 ADFGVX 모드")]
     public mode CurrentMode;
 
-    [Header("Ʃ�丮��� ����")]
+    [Header("튜토리얼 실행여부")]
     public bool PlayAsTutorial;
     private int[] DecodeTutorialPhaseArray;
     private int[] EncodeTutorialPhaseArray;
     private int currentTutorialPhase;
 
-    [Header("�ڷΰ��� ��ư")]
+    [Header("메인메뉴로 나가는 버튼")]
     public Button_ADFGVX_Quit quitButton;
-    [Header("���� �α� ��Ʈ")]
+    [Header("디버그 로그 창")]
     public DebugLog debugLog;
-    [Header("ȭ��ǥ ��Ʈ")]
+    [Header("안내 화살표")]
     public GuideArrowPart guidearrowpart;
-    [Header("���� ���� ġȯ ��Ʈ")]
+    [Header("이중 문자 치환 파트")]
     public BiliteralSubstitutionPart biliteralsubstitutionpart;
-    [Header("Ű ���� ��ġ ��Ʈ")]
+    [Header("키 순위 전치 파트")]
     public TranspositionPart transpositionpart;
-    [Header("��ȣȭ �� ��Ʈ")]
+    [Header("복호화 후 파트")]
     public AfterDecodingPart afterDecodingPart;
-    [Header("��ȣȭ �� ��Ʈ")]
+    [Header("암호화 전 파트")]
     public BeforeEncodingPart beforeEncodingPart;
-    [Header("��ȣȭ ������ �ε� ��Ʈ")]
+    [Header("암호화 데이터 로드 파트")]
     public EncodeDataLoadPart encodeDataLoadPart;
-    [Header("��ȣȭ ������ ���� ��Ʈ")]
+    [Header("암호화 데이터 저장 파트")]
     public EncodeDataSavePart encodeDataSavePart;
-    [Header("Ȯ�� â ��Ʈ")]
-    public VerificationPanelPart verificationpart;
-    [Header("Chat_ADFGVX")]
+    [Header("무결성 검증 파트")]
+    public VerificationPanelPart verificationPart;
+    [Header("채팅 프리펩")]
     public Chat_ADFGVX chat_ADFGVX;
 
     public enum Audio
     {
         TextFlow, AddChar, DeleteChar, MouseClick, DataProcessing
     }
-    private AudioSource audioSource;
+
+    [Header("오디오 소스 컴포넌트")]
+    public AudioSource audioSource;
+    [Header("오디오 클립")]
     public AudioClip[] audioClips;
 
     private float totalElapsedTime;
 
     private void Start()
     {
-        //���� �˸�
-        InformUpdate("��������ī ǥ�� ��ȣ �ý��� V7 ���� ����");
-
-        //���� ��忡 ����
+        //현재 모드에 따라 창 배치
         if (CurrentMode == mode.Decoding)
         {
-            afterDecodingPart.VisiblePart();
-            encodeDataLoadPart.VisiblePart();
+            afterDecodingPart.gameObject.transform.localPosition = new Vector3(66.9f, 14.6f, 0);
+            encodeDataLoadPart.gameObject.transform.localPosition = new Vector3(102.3f, -68.2f, 0);
         }
         else if (CurrentMode == mode.Encoding)
         {
             guidearrowpart.Rotate180();
-            beforeEncodingPart.VisiblePart();
-            encodeDataSavePart.VisiblePart();
+            beforeEncodingPart.gameObject.transform.localPosition = new Vector3(96.3f, -19f, 0);
+            encodeDataSavePart.gameObject.transform.localPosition = new Vector3(70.7f, -67.9f, 0);
         }
 
-        Invoke("SetTutorial", 1f);
+        Invoke("StartTutorial", 1f);
 
-        //����� �ҽ� ������Ʈ Ȯ��
-        audioSource = GetComponent<AudioSource>();
+        InformUpdate("아츠토츠카 표준 암호 체계 V7 가동 상태 정상");
     }
 
     private void Update()
     {
-        StopWatch();
-    }
-
-    private void SetTutorial()
-    {
-        //Ʃ�丮�� ������ ���
-        if (PlayAsTutorial)
-        {
-            if(CurrentMode == mode.Decoding)
-                DecodeTutorialPhaseArray = chat_ADFGVX.GetListOfTutorialPhase().ToArray();
-            else if(CurrentMode == mode.Encoding)
-                EncodeTutorialPhaseArray = chat_ADFGVX.GetListOfTutorialPhase().ToArray();
-            currentTutorialPhase = -1;
-            MoveToNextTutorialPhase(0f);
-        }
+        UpdateStopWatch();
     }
 
     public void SetPartLayerWaitForSec(float endTime, int layer_quit, int layer_BiliteralSubstitution, int layer_Transposition, int layer_AfterDecode, 
-        int layer_BeforeEncode, int layer_EncodeDataSave, int layer_EncodeDataLoad, int layer_Verification, int layer_DebugLog)//��� ��Ʈ ���̾� ����
+        int layer_BeforeEncode, int layer_EncodeDataSave, int layer_EncodeDataLoad, int layer_Verification, int layer_DebugLog)//모든 파트의 입력 제어
     {
         StartCoroutine(SetPartLayerWaitForSec_IE(endTime, 0, layer_quit, layer_BiliteralSubstitution, layer_Transposition, layer_AfterDecode, layer_BeforeEncode, layer_EncodeDataSave, layer_EncodeDataLoad, layer_Verification, layer_DebugLog));
     }
 
     private IEnumerator<WaitForSeconds> SetPartLayerWaitForSec_IE(float endTime, float currentTime, int layer_quit, int layer_BiliteralSubstitution, int layer_Transposition, 
-        int layer_AfterDecode, int layer_BeforeEncode, int layer_EncodeDataSave, int layer_EncodeDataLoad, int layer_Verification, int layer_DebugLog)//��� ��Ʈ ���̾� ����
+        int layer_AfterDecode, int layer_BeforeEncode, int layer_EncodeDataSave, int layer_EncodeDataLoad, int layer_Verification, int layer_DebugLog)//SetPartLayerWaitForSec_IE
     {
         if(endTime == 0f)
         {
@@ -109,7 +94,7 @@ public class ADFGVX : MonoBehaviour
             beforeEncodingPart.SetLayer(layer_BeforeEncode);
             encodeDataSavePart.SetLayer(layer_EncodeDataSave);
             encodeDataLoadPart.SetLayer(layer_EncodeDataLoad);
-            verificationpart.SetLayer(layer_Verification);
+            verificationPart.SetLayer(layer_Verification);
             debugLog.SetLayer(layer_DebugLog); 
             yield break;
         }
@@ -124,7 +109,7 @@ public class ADFGVX : MonoBehaviour
             beforeEncodingPart.SetLayer(layer_BeforeEncode);
             encodeDataSavePart.SetLayer(layer_EncodeDataSave);
             encodeDataLoadPart.SetLayer(layer_EncodeDataLoad);
-            verificationpart.SetLayer(layer_Verification);
+            verificationPart.SetLayer(layer_Verification);
             debugLog.SetLayer(layer_DebugLog); 
             yield break;
         }
@@ -133,28 +118,28 @@ public class ADFGVX : MonoBehaviour
         StartCoroutine(SetPartLayerWaitForSec_IE(endTime, currentTime, layer_quit, layer_BiliteralSubstitution, layer_Transposition, layer_AfterDecode, layer_BeforeEncode, layer_EncodeDataSave, layer_EncodeDataLoad, layer_Verification, layer_DebugLog));
     }
 
-    public void StartStopWatch()//��ž��ġ �����
+    public void StartStopWatch()//시간 측정 시작
     {
         totalElapsedTime = 0;
     }
 
-    private void StopWatch()//��ž��ġ
+    private void UpdateStopWatch()//시간 측정 
     {
         totalElapsedTime += Time.deltaTime;
     }
 
-    public float GetTotalElapsedTime()//totalElapsedTime�� ��ȯ�մϴ�
+    public float GetTotalElapsedTime()//시간 측정 값 반환
     {
         return totalElapsedTime;
     }
 
-    public bool ReturnDecodeScore()//��ȣȭ ����� ��ȯ�մϴ�
+    public bool ReturnDecodeScore()//복호화 결과 반환
     {
 
         return EditStirng.CollectEnglishUpperAlphabet(encodeDataLoadPart.GetDecodedChiper()) == EditStirng.CollectEnglishUpperAlphabet(afterDecodingPart.GetInputField_Data().GetInputString());
     }
 
-    public bool ReturnEncodeScore()//��ȣȭ ����� ��ȯ�մϴ�
+    public bool ReturnEncodeScore()//암호화 결과 반환
     {
         string original = EditStirng.CollectEnglishUpperAlphabet(beforeEncodingPart.GetInputField_Data().GetInputString());
         string keyword = EditStirng.CollectEnglishUpperAlphabet(transpositionpart.GetInputField_keyword().GetInputString());
@@ -176,34 +161,34 @@ public class ADFGVX : MonoBehaviour
         return answer.ArrayToString() == encode;
     }
 
-    public void InformUpdate(string value)//InfoBox�� ������Ʈ�� ������ ����
+    public void InformUpdate(string value)//디버그 로그 창 업데이트
     {
         debugLog.DebugInfo(value);
     }
 
-    public void InformError(string value)//InfoBox�� ���� �߻� ������ ����
+    public void InformError(string value)//디버그 로그 창 에러
     {
         debugLog.DebugError(value);
     }
 
-    public void PlayAudioSource(Audio value)//������ ���� ���
+    public void PlayAudioSource(Audio value)//오디오 재생
     {
         audioSource.clip = audioClips[((int)value)];
         audioSource.Play();
     }
 
-    public void soundFlow(int length, float endTime)//���� �帧 ���
+    public void SoundFlow(int length, float endTime)//흐름 출력 재생
     {
-        StartCoroutine(soundFlowIEnumerator(length, 0, endTime));
+        StartCoroutine(SoundFlowIEnumerator(length, 0, endTime));
     }
 
-    private IEnumerator<WaitForSeconds> soundFlowIEnumerator(int length, int idx, float endTime)//���� �帧 ��� ���
+    private IEnumerator<WaitForSeconds> SoundFlowIEnumerator(int length, int idx, float endTime)//soundFlow_IE
     {
         if (idx >= length)
             yield break;
         PlayAudioSource(Audio.TextFlow);
         yield return new WaitForSeconds(endTime / length);
-        StartCoroutine(soundFlowIEnumerator(length, idx + 1, endTime));
+        StartCoroutine(SoundFlowIEnumerator(length, idx + 1, endTime));
     }
 
 
@@ -215,14 +200,27 @@ public class ADFGVX : MonoBehaviour
 
 
 
-    //Ʃ�丮�� ����
+    //튜토리얼 관련 코드
 
-    public int GetCurrentTutorialPhase()//���� Ʃ�丮�� �ܰ踦 ��ȯ�Ѵ�
+    private void StartTutorial()//튜토리얼을 시작합니다
+    {
+        if (!PlayAsTutorial)
+            return;
+
+        if(CurrentMode == mode.Decoding)
+            DecodeTutorialPhaseArray = chat_ADFGVX.GetListOfTutorialPhase();
+        else if(CurrentMode == mode.Encoding)
+            EncodeTutorialPhaseArray = chat_ADFGVX.GetListOfTutorialPhase();
+        currentTutorialPhase = -1;
+        MoveToNextTutorialPhase(0f);
+    }
+
+    public int GetCurrentTutorialPhase()//현재 튜토리얼 페이즈 반환
     {
         return currentTutorialPhase;
     }
 
-    public void MoveToNextTutorialPhase(float endTime)//endTime ���Ŀ� ���� Ʃ�丮�� �ܰ�� �Ѿ��
+    public void MoveToNextTutorialPhase(float endTime)//endTime을 대기한 후 다음 튜토리얼 페이즈로 이동
     {
         if (!PlayAsTutorial)
             return;
@@ -252,7 +250,7 @@ public class ADFGVX : MonoBehaviour
         StartCoroutine(MoveToNextTutorialPhase_IE(currentTime, endTime));
     }
 
-    public void DisplayTutorialDialog(int line, float endTime)//Ʃ�丮�� �� Ư�� �̺�Ʈ���� �ߵ�, ������ ���� ��ȭ�� ����
+    public void DisplayTutorialDialog(int line, float endTime)//endTime을 대기한 후 다음 튜토리얼 대화를 표시
     {
         if (!PlayAsTutorial)
             return;
