@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -24,32 +25,67 @@ public static class MyUi
     }
     public static void DragUI(GameObject DragingObject, Vector3 AnchorGap) { Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition); mousePos.z = 0; DragingObject.transform.position = mousePos - AnchorGap; }
     public static int StringToInt(string cnt) { int a = 0; foreach (char b in cnt) a = a * 10 + (b - '0'); return a; }
+    public static void AddEvent(EventTrigger eventTrigger, EventTriggerType Type, Action<PointerEventData> Event)
+    {
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = Type;
+        entry.callback.AddListener((data) => { Event((PointerEventData)data); });
+        eventTrigger.triggers.Add(entry);
+    }
 
     public static void ButtonInit(EventTrigger eventTrigger, Action<PointerEventData> OnPointer, Action<PointerEventData> OutPointer, Action<PointerEventData> ClickPointer)
     {
         //data.pointerId : left -> -1, right -> -2, Wheel -> -3;
-        if (OnPointer != null)
-        {
-            EventTrigger.Entry entry_PointerEnter = new EventTrigger.Entry();
-            entry_PointerEnter.eventID = EventTriggerType.PointerEnter;
-            entry_PointerEnter.callback.AddListener((data) => { OnPointer((PointerEventData)data); });
-            eventTrigger.triggers.Add(entry_PointerEnter);
-        }
+        if (OnPointer != null) AddEvent(eventTrigger, EventTriggerType.PointerEnter, OnPointer);
 
-        if (OutPointer != null)
-        {
-            EventTrigger.Entry entry_PointerOut = new EventTrigger.Entry();
-            entry_PointerOut.eventID = EventTriggerType.PointerExit;
-            entry_PointerOut.callback.AddListener((data) => { OutPointer((PointerEventData)data); });
-            eventTrigger.triggers.Add(entry_PointerOut);
-        }
+        if (OutPointer != null) AddEvent(eventTrigger, EventTriggerType.PointerExit, OutPointer);
 
-        if (ClickPointer != null)
+        if (ClickPointer != null) AddEvent(eventTrigger, EventTriggerType.PointerClick, ClickPointer);
+    }
+
+    public static class CSVReader
+    {
+        static string SPLIT_RE = @",(?=(?:[^""]*""[^""]*"")*(?![^""]*""))";
+        static string LINE_SPLIT_RE = @"\r\n|\n\r|\n|\r";
+        static char[] TRIM_CHARS = { '\"' };
+
+        public static List<Dictionary<string, object>> Read(string file)
         {
-            EventTrigger.Entry entry_PointerClick = new EventTrigger.Entry();
-            entry_PointerClick.eventID = EventTriggerType.PointerClick;
-            entry_PointerClick.callback.AddListener((data) => { ClickPointer((PointerEventData)data); });
-            eventTrigger.triggers.Add(entry_PointerClick);
+            var list = new List<Dictionary<string, object>>();
+            TextAsset data = Resources.Load(file) as TextAsset;
+
+            var lines = Regex.Split(data.text, LINE_SPLIT_RE);
+
+            if (lines.Length <= 1) return list;
+
+            var header = Regex.Split(lines[0], SPLIT_RE);
+            for (var i = 1; i < lines.Length; i++)
+            {
+
+                var values = Regex.Split(lines[i], SPLIT_RE);
+                if (values.Length == 0 || values[0] == "") continue;
+
+                var entry = new Dictionary<string, object>();
+                for (var j = 0; j < header.Length && j < values.Length; j++)
+                {
+                    string value = values[j];
+                    value = value.TrimStart(TRIM_CHARS).TrimEnd(TRIM_CHARS).Replace("\\", "");
+                    object finalvalue = value;
+                    int n;
+                    float f;
+                    if (int.TryParse(value, out n))
+                    {
+                        finalvalue = n;
+                    }
+                    else if (float.TryParse(value, out f))
+                    {
+                        finalvalue = f;
+                    }
+                    entry[header[j]] = finalvalue;
+                }
+                list.Add(entry);
+            }
+            return list;
         }
     }
 }

@@ -12,7 +12,13 @@ public class OptionManager : MonoBehaviour
     public void OptionInit(GameObject ClickedObject)
     {
         CurObject = ClickedObject;
+        if (gameObject.activeSelf) gameObject.SetActive(false);
+        gameObject.SetActive(true);
+        Vector3 CurCamPos = Camera.main.ScreenToWorldPoint(Input.mousePosition); CurCamPos.z = 0;
+        transform.position = CurCamPos;
+
         ChildInit(transform.GetChild(0).GetComponent<OptionButton>());
+        ChildInit(transform.GetChild(3).GetComponent<OptionButton>());
         if (ClickedObject.tag == "ReportText")
         {
             ChildInit(transform.GetChild(1).GetComponent<OptionButton>());
