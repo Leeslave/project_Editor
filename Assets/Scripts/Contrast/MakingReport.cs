@@ -10,6 +10,8 @@ public class MakingReport : MonoBehaviour
     public GameObject Contrast;
     public ContrastManager CM;
 
+    public GameObject ChangeButton;
+
     public TMP_Text Text;
 
     private void Start()
@@ -24,6 +26,7 @@ public class MakingReport : MonoBehaviour
         CntText.name = "";
         ReportText tmp = CntText.GetComponent<ReportText>();
         tmp.Time = Data["Time"].ToString();
+        ChangeButton.GetComponent<ReportChangeButton>().TimeList.Add(Data["Time"].ToString());
         tmp.Place = Data["Place"].ToString();
         tmp.Action = Data["Action"].ToString();
         tmp.ChangeText();

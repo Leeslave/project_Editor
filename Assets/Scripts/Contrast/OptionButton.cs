@@ -36,11 +36,11 @@ public class OptionButton : MonoBehaviour
         switch (name)
         {
             case "Create":
-                Create.SetActive(true);
+                Create.transform.parent.gameObject.SetActive(true);
                 Create.GetComponent<ReportChangeButton>().IsCreate = true;
                 break;
             case "Edit":
-                Create.SetActive(true);
+                Create.transform.parent.gameObject.SetActive(true);
                 Create.GetComponent<ReportChangeButton>().IsCreate = false;
                 break;
             case "Delete":
@@ -49,8 +49,9 @@ public class OptionButton : MonoBehaviour
                 break;
             case "RollBack":
                 Tuple<GameObject,string> cnt = Manager.ChangedList.Pop();
-                if (cnt.Item2 != "") cnt.Item1.GetComponent<TMP_Text>().text = cnt.Item2;
-                else cnt.Item1.SetActive(true);
+                if (cnt.Item2 == "Edit") cnt.Item1.GetComponent<TMP_Text>().text = cnt.Item2;
+                else if (cnt.Item2 == "") cnt.Item1.SetActive(true);
+                else Destroy(cnt.Item1);
                 break;
         }
         transform.parent.gameObject.SetActive(false);

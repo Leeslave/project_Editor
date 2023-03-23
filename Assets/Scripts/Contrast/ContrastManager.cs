@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -16,6 +15,7 @@ public class ContrastManager : MonoBehaviour
     public GameObject Card;
     public GameObject Work;
     public GameObject Map;
+    public GameObject Fog;
 
     public List<Dictionary<string, object>> Data;
 
@@ -58,6 +58,17 @@ public class ContrastManager : MonoBehaviour
         Data = MyUi.CSVReader.Read($"Csv/Report_Proof/{Name}/{Date[1]}{Date[2]}");
     }
 
+    public void StartJudge()
+    {
+        JudgeTime = true; Fog.SetActive(true);
+    }
+
+    public void LineEnd()
+    {
+        CurReport = null; CurContrast = null;
+        JudgeTime = false; Fog.SetActive(false);
+    }
+
     public void InputCall()
     {
         OptionClose();
@@ -76,7 +87,11 @@ public class ContrastManager : MonoBehaviour
         else Clicked.GetComponent<TMP_Text>().color = new Color(1, 0, 0, 1);
         CurReport = Clicked;
 
-        if (CurContrast != null && CurReport != null) GetComponent<MakeLine>().DrawDotLine(CurContrast, CurReport);
+        if (CurContrast != null && CurReport != null)
+        {
+            Debug.Log("!");
+            GetComponent<MakeLine>().DrawDotLine(CurContrast, CurReport);
+        }
     }
     public void ContrastClick(GameObject Clicked)
     {
@@ -91,8 +106,12 @@ public class ContrastManager : MonoBehaviour
             CurContrast = Clicked;
             ChangeAllChild(Clicked.transform, Color.red);
         }
-        
-        if (CurContrast != null && CurReport != null) GetComponent<MakeLine>().DrawDotLine(CurContrast, CurReport);
+
+        if (CurContrast != null && CurReport != null)
+        {
+            Debug.Log("!");
+            GetComponent<MakeLine>().DrawDotLine(CurContrast, CurReport);
+        }
     }
 
     void ChangeAllChild(Transform cnt, Color ChangeColor)

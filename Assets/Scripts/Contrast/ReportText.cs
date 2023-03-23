@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 
 public class ReportText : MonoBehaviour
 {
+    public GameObject Contrast;
     ContrastManager CM;
 
     public string Time;
@@ -24,7 +25,7 @@ public class ReportText : MonoBehaviour
         EventTrigger eventTrigger = GetComponent<EventTrigger>();
 
         if (tag == "ReportText") CM = transform.parent.GetComponent<MakingReport>().CM;
-        else CM = transform.GetChild(0).GetComponent<MakingReport>().CM;
+        else CM = Contrast.GetComponent<ContrastManager>();
 
         MyUi.AddEvent(eventTrigger, EventTriggerType.PointerClick, Click);
     }
@@ -32,6 +33,6 @@ public class ReportText : MonoBehaviour
     void Click(PointerEventData data)
     {
         if (data.pointerId == -2) CM.Option.GetComponent<OptionManager>().OptionInit(gameObject);
-        else CM.ReportClick(gameObject);
+        else if(CM.JudgeTime) CM.ReportClick(gameObject);
     }
 }

@@ -25,6 +25,7 @@ public class ContrastText : MonoBehaviour
 
     void Click(PointerEventData data)
     {
+        if (!CM.JudgeTime || data.pointerId == -2) return;
         CM.ContrastClick(gameObject);
     }
 }

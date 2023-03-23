@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using System.Collections.Generic;
 using UnityEditor.Rendering.Universal;
+using System;
 
 public class ReportChangeButton : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class ReportChangeButton : MonoBehaviour
     public GameObject Report;
     public GameObject ReportText;
     public GameObject ErrorLog;
+    public GameObject Option;
 
     public List<string> TimeList = new List<string>();
     public bool IsCreate = true;
@@ -53,7 +55,6 @@ public class ReportChangeButton : MonoBehaviour
         if (IsCreate)
         {
             InsertNewReport();
-
         }
         else
         {
@@ -69,6 +70,7 @@ public class ReportChangeButton : MonoBehaviour
         cnt.transform.SetSiblingIndex(ind + 1);
         cntt.Time = Time.text.Substring(0, Time.text.Length - 1); cntt.Place = Place.text; cntt.Action = Action.text;
         cntt.ChangeText();
+        Option.GetComponent<OptionManager>().ChangedList.Push(new Tuple<GameObject,string>(cnt,"Create"));
     }
     bool JudgeTime()
     {
