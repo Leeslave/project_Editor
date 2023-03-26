@@ -208,9 +208,9 @@ public class ADFGVX : MonoBehaviour
             return;
 
         if(CurrentMode == mode.Decoding)
-            DecodeTutorialPhaseArray = chat_ADFGVX.GetListOfTutorialPhase();
+            DecodeTutorialPhaseArray = chat_ADFGVX.GetArrayOfTutorialPhase();
         else if(CurrentMode == mode.Encoding)
-            EncodeTutorialPhaseArray = chat_ADFGVX.GetListOfTutorialPhase();
+            EncodeTutorialPhaseArray = chat_ADFGVX.GetArrayOfTutorialPhase();
         currentTutorialPhase = -1;
         MoveToNextTutorialPhase(0f);
     }

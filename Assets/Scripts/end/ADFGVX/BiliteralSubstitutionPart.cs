@@ -21,6 +21,11 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     private TextMeshPro rowText;
     private TextMeshPro lineText;
     private TextMeshPro arrayNumText;
+    private GameObject ADFGVXTable;
+    private Button_ADFGVX_Delete delete;
+    private Button_ADFGVX_ArrayMinus arrayMinus;
+    private Button_ADFGVX_ArrayPlus arrayPlus;
+    private Button_ADFGVX_Clear clear;
 
     private int currentADFGVXArrayNum;
     private const int ArrayNum_MAX = 4;
@@ -29,9 +34,14 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 
-        rowText = GetComponentsInChildren<TextMeshPro>()[1];
-        lineText = GetComponentsInChildren<TextMeshPro>()[2];
-        arrayNumText = GetComponentsInChildren<TextMeshPro>()[3];
+        rowText = transform.GetChild(5).GetComponent<TextMeshPro>();
+        lineText = transform.GetChild(6).GetComponent<TextMeshPro>();
+        arrayNumText = transform.GetChild(7).GetComponent<TextMeshPro>();
+        ADFGVXTable = transform.GetChild(8).gameObject;
+        delete = transform.GetChild(9).GetComponent<Button_ADFGVX_Delete>();
+        arrayMinus = transform.GetChild(10).GetComponent<Button_ADFGVX_ArrayMinus>();
+        arrayPlus = transform.GetChild(11).GetComponent<Button_ADFGVX_ArrayPlus>();
+        clear = transform.GetChild(12).GetComponent<Button_ADFGVX_Clear>();
 
         decodeRow = 6;
         decodeLine = 6;
@@ -42,20 +52,19 @@ public class BiliteralSubstitutionPart : MonoBehaviour
 
     public void SetLayer(int layer)//하위 요소의 입력 제어
     {
-        GameObject arrayKeyboard = transform.Find("ArrayKeyboard").gameObject;
         for(int i=0;i<6;i++)
         {
-            arrayKeyboard.transform.Find("Line (" + i.ToString() + ")").gameObject.layer = layer;
-            arrayKeyboard.transform.Find("Row (" + i.ToString() + ")").gameObject.layer = layer;
+            ADFGVXTable.transform.GetChild(i).gameObject.layer = layer;
+            ADFGVXTable.transform.GetChild(6+i).gameObject.layer = layer;
         }
         for(int i=0;i<36;i++)
         {
-            arrayKeyboard.transform.Find("Element (" + i.ToString() + ")").gameObject.layer = layer;
+            ADFGVXTable.transform.GetChild(12+i).gameObject.layer = layer;
         }
-        transform.Find("Delete").gameObject.layer = layer;
-        transform.Find("Clear").gameObject.layer = layer;
-        transform.Find("ArrayMinus").gameObject.layer = layer;
-        transform.Find("ArrayPlus").gameObject.layer = layer;
+        delete.gameObject.layer = layer;
+        clear.gameObject.layer = layer;
+        arrayMinus.gameObject.layer = layer;
+        arrayPlus.gameObject.layer = layer;
     }
 
     public TextMeshPro GetRowText()//행의 입력값을 반환

@@ -10,9 +10,6 @@ public class TranspositionPart : MonoBehaviour
     private InputField_ADFGVX keyword;
     private TextField priority;
 
-
-
-
     //키 순위 전치 관련 변수
     private int[] place;                                //키 순위 저장 배열
     int rowLength;                                      //전치된 행렬의 열 길이
@@ -44,7 +41,12 @@ public class TranspositionPart : MonoBehaviour
 
     public void SetLayer(int layer)//하위 요소의 입력 제어
     {
-        transform.Find("Keyword").gameObject.layer = layer;
+        keyword.gameObject.layer = layer;
+        if(layer == 2)
+        {
+            keyword.SetIsReadyForInput(false);
+            keyword.SetIsFlash(false);
+        }
     }
 
     public InputField_ADFGVX GetInputField_keyword()
@@ -119,8 +121,6 @@ public class TranspositionPart : MonoBehaviour
 
     public void OnTransposeDown()//키 순위에 따른 행렬 전치
     {
-        //입력 차단
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
         keyword.SetIsReadyForInput(false);
         keyword.SetIsFlash(false);
 
@@ -175,6 +175,9 @@ public class TranspositionPart : MonoBehaviour
             adfgvx.InformError("전치 불가 : 메모리 누수 발생");
             return;
         }
+
+        //입력 차단
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         //전치 비움
         ClearTransposition();

@@ -6,8 +6,8 @@ using TMPro;
 
 public class TextFieldProUGUI : MonoBehaviour
 {
-    private TextMeshProUGUI markText;
-    private SpriteRenderer guideSprite;
+    [Header("표시 텍스트")]
+    public TextMeshProUGUI markText;
 
     private float width;
     private float height;
@@ -18,11 +18,7 @@ public class TextFieldProUGUI : MonoBehaviour
 
     private void Start()
     {
-        if (transform.Find("MarkText") != null)
-            markText = transform.Find("MarkText").GetComponent<TextMeshProUGUI>();
 
-        if (transform.Find("GuideText") != null)
-            guideSprite = transform.Find("GuideText").GetComponent<SpriteRenderer>();
     }
 
     public string GetText()//markText에 설정된 값을 반환

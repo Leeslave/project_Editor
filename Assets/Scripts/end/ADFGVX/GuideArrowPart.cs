@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class GuideArrowPart : MonoBehaviour
 {
-    private SpriteRenderer guideArrow_0;
-    private SpriteRenderer guideArrow_1;
-    private SpriteRenderer guideArrow_2;
+    private GameObject guideArrow_0;
+    private GameObject guideArrow_1;
+    private GameObject guideArrow_2;
 
     void Start()
     {
-        guideArrow_0 = transform.Find("GuideArrow").GetComponent<SpriteRenderer>();
-        guideArrow_1 = transform.Find("GuideArrow (1)").GetComponent<SpriteRenderer>();
-        guideArrow_2 = transform.Find("GuideArrow (2)").GetComponent<SpriteRenderer>();
+        guideArrow_0 = transform.GetChild(0).gameObject;
+        guideArrow_1 = transform.GetChild(1).gameObject;
+        guideArrow_2 = transform.GetChild(2).gameObject;
     }
 
     public void Rotate180()

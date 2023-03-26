@@ -31,8 +31,13 @@ public class AfterDecodingPart : MonoBehaviour
 
     public void SetLayer(int layer)//하위 요소의 입력 제어
     {
-        transform.Find("DecodeSave").gameObject.layer = layer;
-        transform.Find("Data").gameObject.layer = layer;
+        button_DecodeSave.gameObject.layer = layer;
+        data.gameObject.layer = layer;
+        if(layer == 2)
+        {
+            data.SetIsReadyForInput(false);
+            data.SetIsFlash(false);
+        }
     }
     
     public InputField_ADFGVX GetInputField_Data()//데이터 입력창 반환
