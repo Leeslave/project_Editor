@@ -60,7 +60,7 @@ public class UserDataManager : MonoBehaviour
         playerData = JsonUtility.FromJson<PlayerData>(jsonObjectData);
 
         asyncPlayerPrefs();
-        asyncSceneData();
+        // asyncSceneData();
     }
 
     private void asyncPlayerPrefs()
@@ -74,7 +74,7 @@ public class UserDataManager : MonoBehaviour
 
     public void asyncSceneData()
     {
-        GameObject.FindObjectOfType<Chat>().FileName += PlayerPrefs.GetInt("Day").ToString() + "_" + PlayerPrefs.GetInt("Time").ToString();
+        
     }
 
     private void asyncPlayerData()
