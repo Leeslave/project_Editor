@@ -8,8 +8,6 @@ public class EncodeDataLoadPart : MonoBehaviour
 {
     private ADFGVX adfgvx;
 
-    private InputField_ADFGVX filePath;
-
     private TextField securityLevel;
     private TextField title;
     private TextField data;
@@ -17,6 +15,8 @@ public class EncodeDataLoadPart : MonoBehaviour
     private TextField senderUI;
     private TextField date;
     private TextField dateUI;
+    private InputField_ADFGVX filePath;
+    private Button_ADFGVX_Load load;
 
     private string DecodedChiper = "";  //복호화 정답
 
@@ -24,21 +24,26 @@ public class EncodeDataLoadPart : MonoBehaviour
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 
-        filePath = transform.Find("FilePath").GetComponent<InputField_ADFGVX>();
-
-        securityLevel = transform.Find("SecurityLevel").GetComponent<TextField>();
-        title = transform.Find("Title").GetComponent<TextField>();
-        data = transform.Find("Data").GetComponent<TextField>();
-        sender = transform.Find("Sender").GetComponent<TextField>();
-        senderUI = transform.Find("SenderUI").GetComponent<TextField>();
-        date = transform.Find("Date").GetComponent<TextField>();
-        dateUI = transform.Find("DateUI").GetComponent<TextField>();
+        securityLevel = transform.GetChild(2).GetComponent<TextField>();
+        title = transform.GetChild(3).GetComponent<TextField>();
+        data = transform.GetChild(4).GetComponent<TextField>();
+        date = transform.GetChild(5).GetComponent<TextField>();
+        dateUI = transform.GetChild(6).GetComponent<TextField>();
+        sender = transform.GetChild(7).GetComponent<TextField>();
+        senderUI = transform.GetChild(8).GetComponent<TextField>();
+        filePath = transform.GetChild(9).GetComponent<InputField_ADFGVX>();
+        load = transform.GetChild(10).GetComponent<Button_ADFGVX_Load>();
     }
 
     public void SetLayer(int layer)//하위 요소의 입력 제어
     {
-        transform.Find("FilePath").gameObject.layer = layer;
-        transform.Find("Load").gameObject.layer = layer;
+        filePath.gameObject.layer = layer;
+        load.gameObject.layer = layer;
+        if(layer == 2)
+        {
+            filePath.SetIsReadyForInput(false);
+            filePath.SetIsFlash(false);
+        }
     }
 
     public InputField_ADFGVX GetInputField_filePath()//파일 경로 입력창 반환
@@ -98,7 +103,7 @@ public class EncodeDataLoadPart : MonoBehaviour
             if (filePath.GetInputString() == "SI-XI-I")
                 adfgvx.MoveToNextTutorialPhase(3f);
             else
-                adfgvx.DisplayTutorialDialog(14, 3.1f);
+                adfgvx.DisplayTutorialDialog(14, 3.01f);
         }
             
         StreamReader Reader = new StreamReader(FilePath, System.Text.Encoding.UTF8);

@@ -8,33 +8,29 @@ public class VerificationPanelPart : MonoBehaviour
 {
     private ADFGVX adfgvx;
 
-    private SpriteRenderer screenBlurSprite;
-    private SpriteRenderer panelBackgroundSprite_U;
     private SpriteRenderer panelBackgroundSprite_D;
     private SpriteRenderer panelGuideSprite;
-
     private TextField title;
     private TextField result;
     private TextField percentageInfo;
     private TextField percentage;
-    private Gauge loadingGauge;
-    private Log consoleLog;
+    private Gauge gauge;
+    private Log log;
+    private Button_ADFGVX_QuitVerificationPanel quit;
 
     private void Start()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 
-        title = transform.Find("Title").GetComponent<TextField>();
-        result = transform.Find("Result").GetComponent<TextField>();
-        percentageInfo = transform.Find("PercentageInfo").GetComponent<TextField>();
-        percentage = transform.Find("Percentage").GetComponent<TextField>();
-        loadingGauge = transform.Find("LoadingGauge").GetComponent<Gauge>();
-        consoleLog = transform.Find("ConsoleLog").GetComponent<Log>();
-
-        screenBlurSprite = GetComponentsInChildren<SpriteRenderer>()[0];
-        panelBackgroundSprite_U = GetComponentsInChildren<SpriteRenderer>()[1];
-        panelBackgroundSprite_D = GetComponentsInChildren<SpriteRenderer>()[2];
-        panelGuideSprite = GetComponentsInChildren<SpriteRenderer>()[3];
+        panelBackgroundSprite_D = transform.GetChild(2).GetComponent<SpriteRenderer>();
+        panelGuideSprite = transform.GetChild(3).GetComponent<SpriteRenderer>();
+        title = transform.GetChild(4).GetComponent<TextField>();
+        result = transform.GetChild(5).GetComponent<TextField>();
+        percentageInfo = transform.GetChild(6).GetComponent<TextField>();
+        percentage = transform.GetChild(7).GetComponent<TextField>();
+        gauge = transform.GetChild(8).GetComponent<Gauge>();
+        log = transform.GetChild(9).GetComponent<Log>();
+        quit = transform.GetChild(10).GetComponent<Button_ADFGVX_QuitVerificationPanel>();
 
         UnvisiblePart();
     }
@@ -42,7 +38,7 @@ public class VerificationPanelPart : MonoBehaviour
     public void SetLayer(int layer)//하위 요소의 입력 제어
     {
         this.gameObject.layer = layer;
-        GameObject.Find("XButton").layer = layer;
+        quit.gameObject.layer = layer;
     }
 
     public void VisiblePart()//파트 가시
@@ -87,12 +83,12 @@ public class VerificationPanelPart : MonoBehaviour
         title.SetText("복호화 무결성 검증 진행 중…");
         panelBackgroundSprite_D.size = new Vector2(231.8f, 46.3f);
         panelGuideSprite.size = new Vector2(57.9f, 11.7f);
-        loadingGauge.VisibleGaugeImediately();
+        gauge.VisibleGaugeImediately();
         percentage.SetTextColor(Color.white);
         percentageInfo.SetTextColor(Color.white);
         result.SetTextColor(Color.clear);
-        consoleLog.SetColorText(Color.white);
-        loadingGauge.FillGaugeBar(3.0f, new Color(0.13f, 0.67f, 0.28f, 1));
+        log.SetColorText(Color.white);
+        gauge.FillGaugeBar(3.0f, new Color(0.13f, 0.67f, 0.28f, 1));
         percentage.FillPercentage(3.0f);
 
         //걸린 시간
@@ -106,7 +102,7 @@ public class VerificationPanelPart : MonoBehaviour
 
         //로그 파일 경로
         string filePath = adfgvx.ReturnDecodeScore() ? "DecodeSuccess" : "DecodeFail";
-        consoleLog.FillLoadingLog(3.0f, filePath);
+        log.FillLoadingLog(3.0f, filePath);
 
         //오디오 재생
         adfgvx.PlayAudioSource(ADFGVX.Audio.DataProcessing);
@@ -116,8 +112,8 @@ public class VerificationPanelPart : MonoBehaviour
         title.ConvertSizeTextOnly(new Vector2(1.66f,1.66f), 1f);
         percentage.ConvertColorTextOnly(1f, Color.clear);
         percentageInfo.ConvertColorTextOnly(1f, Color.clear);
-        loadingGauge.UnvisibleGauge(1f);
-        consoleLog.HideTextOnly(1f);
+        gauge.UnvisibleGauge(1f);
+        log.HideTextOnly(1f);
         
         //결과 정보
         string info;
@@ -200,12 +196,12 @@ public class VerificationPanelPart : MonoBehaviour
         title.SetText("암호화 무결성 검증 진행 중…");
         panelBackgroundSprite_D.size = new Vector2(231.8f, 46.3f);
         panelGuideSprite.size = new Vector2(57.9f, 11.7f);
-        loadingGauge.VisibleGaugeImediately();
+        gauge.VisibleGaugeImediately();
         percentage.SetTextColor(Color.white);
         percentageInfo.SetTextColor(Color.white);
         result.SetTextColor(Color.clear);
-        consoleLog.SetColorText(Color.white);
-        loadingGauge.FillGaugeBar(3f, new Color(0.13f, 0.67f, 0.28f, 1f));
+        log.SetColorText(Color.white);
+        gauge.FillGaugeBar(3f, new Color(0.13f, 0.67f, 0.28f, 1f));
         percentage.FillPercentage(3f);
 
         //걸린 시간
@@ -219,7 +215,7 @@ public class VerificationPanelPart : MonoBehaviour
 
         //로그 파일 경로
         string filePath = adfgvx.ReturnEncodeScore() ? "EncodeSuccess" : "EncodeFail";
-        consoleLog.FillLoadingLog(3f, filePath);
+        log.FillLoadingLog(3f, filePath);
 
         //오디오 재생
         adfgvx.PlayAudioSource(ADFGVX.Audio.DataProcessing);
@@ -229,8 +225,8 @@ public class VerificationPanelPart : MonoBehaviour
         title.ConvertSizeTextOnly(new Vector2(1.66f,1.66f), 1f);
         percentage.ConvertColorTextOnly(1f, Color.clear);
         percentageInfo.ConvertColorTextOnly(1f, Color.clear);
-        loadingGauge.UnvisibleGauge(1f);
-        consoleLog.HideTextOnly(1f);
+        gauge.UnvisibleGauge(1f);
+        log.HideTextOnly(1f);
 
         //결과 정보
         string info;

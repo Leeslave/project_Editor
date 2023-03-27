@@ -9,19 +9,27 @@ public class BeforeEncodingPart : MonoBehaviour
     private InputField_ADFGVX data;
     private TextField block;
     private TextField primeFactor;
+    private Button_ADFGVX_Retranspose reTranspose;
 
     private void Start()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 
-        data = transform.Find("Data").GetComponent<InputField_ADFGVX>();
-        block = transform.Find("Block").GetComponent<TextField>();
-        primeFactor = transform.Find("PrimeFactor").GetComponent<TextField>();
+        data = transform.GetChild(2).GetComponent<InputField_ADFGVX>();
+        block = transform.GetChild(3).GetComponent<TextField>();
+        primeFactor = transform.GetChild(4).GetComponent<TextField>();
+        reTranspose = transform.GetChild(5).GetComponent<Button_ADFGVX_Retranspose>();
     }
 
     public void SetLayer(int layer)//하위 요소의 입력 제어
     {
-        transform.Find("Data").gameObject.layer = layer;
+        data.gameObject.layer = layer;
+        reTranspose.gameObject.layer = layer;
+        if(layer==2)
+        {
+            data.SetIsReadyForInput(false);
+            data.SetIsFlash(false);
+        }
     }
 
 

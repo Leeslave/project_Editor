@@ -6,24 +6,42 @@ public class EncodeDataSavePart : MonoBehaviour
 {
     private ADFGVX adfgvx;
 
-    private InputField_ADFGVX title;
+    private Button_ADFGVX_ChangeSecurityLevel securityLevel;
     private InputField_ADFGVX data;
-    private Button_ADFGVX_ChangeSecurityLevel level;
+    private InputField_ADFGVX title;
+    private TextField date;
+    private TextField dateUI;
+    private TextField sender;
+    private TextField senderUI;
+    private Button_ADFGVX_SaveEncodedData save;
 
     private void Start()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 
-        title = transform.Find("Title").GetComponent<InputField_ADFGVX>();
-        data = transform.Find("Data").GetComponent<InputField_ADFGVX>();
-        level = transform.Find("SecurityLevel").GetComponent<Button_ADFGVX_ChangeSecurityLevel>();
+        securityLevel = transform.GetChild(2).GetComponent<Button_ADFGVX_ChangeSecurityLevel>();
+        data = transform.GetChild(3).GetComponent<InputField_ADFGVX>();
+        title = transform.GetChild(4).GetComponent<InputField_ADFGVX>();
+        date = transform.GetChild(5).GetComponent<TextField>();
+        dateUI = transform.GetChild(6).GetComponent<TextField>();
+        sender = transform.GetChild(7).GetComponent<TextField>();
+        senderUI = transform.GetChild(8).GetComponent<TextField>();
+        save = transform.GetChild(9).GetComponent<Button_ADFGVX_SaveEncodedData>();
     }
 
     public void SetLayer(int layer)//하위 요소의 입력 제어
     {
-        transform.Find("Title").gameObject.layer = layer;
-        transform.Find("Data").gameObject.layer = layer;
-        transform.Find("SecurityLevel").gameObject.layer = layer;
+        title.gameObject.layer = layer;
+        data.gameObject.layer = layer;
+        securityLevel.gameObject.layer = layer;
+        save.transform.gameObject.layer = layer;
+        if(layer==2)
+        {
+            title.SetIsReadyForInput(false);
+            title.SetIsFlash(false);
+            data.SetIsReadyForInput(false);
+            data.SetIsFlash(false);
+        }
     }
 
     public InputField_ADFGVX GetInputField_Title()//제목 입력창 반환
@@ -38,6 +56,6 @@ public class EncodeDataSavePart : MonoBehaviour
 
     public string GetSecurityLevel()//보안 등급 반환
     {
-        return level.GetMarkText();
+        return securityLevel.GetMarkText();
     }
 }
