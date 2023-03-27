@@ -266,14 +266,17 @@ public class Chat : MonoBehaviour
     {
         data = CSVReader.Read("Assets/Resources/Chats/" + TargetingCSVFileName + ".csv");
         if(data==null)
-            Debug.LogError("Coundn't Find CSV File '" + TargetingCSVFileName + "'");
+            Debug.LogWarning("Coundn't Find CSV File '" + TargetingCSVFileName + "'");
         else
             Debug.Log("Load CSV File '" + TargetingCSVFileName + "'");
-        currentLine = 1;
     }
 
     public virtual void LoadLine(int line)//CSV파일의 지정한 줄 로드
     {
+        //로드된 데이터가 없으면 종료
+        if(data == null)
+            return;
+
         currentLine = line;
 
         //오디오 재생
