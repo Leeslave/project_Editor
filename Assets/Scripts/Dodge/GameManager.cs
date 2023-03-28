@@ -36,29 +36,30 @@ public class GameManager: MonoBehaviour
     private int CurIndex;           // Current Index (For Pattern List)
     private int CurRepeat;          // Current Repeatition
     private int CurPattern;         // Current Pattern
-    private bool TimeOn = true;
 
     private void Awake()
     {
         PTL = new List<Pattern>();
         PTL.Add(new Pattern());
         ReadPattern();
+        Init();
     }
 
-    private void OnEnable()
+    private void Start()
     {
         Init();
     }
 
     IEnumerator MakePattern()
     {
-        yield return new WaitForSeconds(PatternInterv/2);
+        yield return new WaitForSeconds(0.5f);
         for (CurRepeat = 0; CurRepeat < RepeatNum; CurRepeat++)
         {
             Transform[] cnt;
             string Dir;
             if (CurRepeat % 2 == 0) { cnt = SPR; Dir = "R"; }
             else { cnt = SPL; Dir = "L"; }
+
             for (CurIndex = 0; CurIndex < PTL[CurPattern].PT[0].Length; CurIndex++)
             {
                 for (int i = 0; i < PTL[CurPattern].PT.Count; i++)
@@ -74,41 +75,32 @@ public class GameManager: MonoBehaviour
             yield return new WaitForSeconds(RepeatInterv);
         }
 
-        yield return new WaitForSeconds(PatternInterv/2);
-        Init();
+        yield return new WaitForSeconds(PatternInterv);
+        int PatternCnt = Random.Range(0, PatternNum);
+        while(PatternCnt != CurPattern) PatternCnt = Random.Range(0, PatternNum);
+        CurPattern = PatternCnt;
+        StartCoroutine(MakePattern());
     }
 
     IEnumerator TImeUpdate()
     {
-        for(time = 0; time <= TimeToSurvive; time += 0.01f)
+        for(time = 0; time <= TimeToSurvive + 0.01f; time += 0.01f)
         {
             yield return new WaitForSeconds(0.01f);
             Timer.text = string.Format("{0:0.00}", time);
         }
-        Timer.text = string.Format("{0:0.00}", time);
-        StopAllCoroutines();
-        BM.DelBul();
-        EndPattern();
-    }
-
-    void EndPattern()
-    {
-        for(int i = 0; i< SPR.Length; i++)
-        {
-            GameObject Left = BM.MakeBul("L"); Left.transform.position = SPL[i].position;
-            GameObject Right = BM.MakeBul("R"); Right.transform.position = SPR[i].position;
-        }
+        StopCoroutine("MakePattern");
     }
 
     void Init()
     {
-        CurPattern = Random.Range(1, PatternNum + 1);
+        CurPattern = Random.Range(0, PatternNum);
         CurIndex = 0;
         CurRepeat = 0;
-        if (TimeOn) { time = 0; StartCoroutine(TImeUpdate()); TimeOn = false; }
+        time = 0;
+        StartCoroutine(TImeUpdate());
         StartCoroutine(MakePattern());
     }
-
 
     // Read Pattern In Resources Folder. Name of The Pattern File Must be Pattern_X ( ex) Pattern_1, Pattern_2)
     void ReadPattern()
@@ -140,7 +132,8 @@ public class GameManager: MonoBehaviour
 
     void GameOverFunc()
     {
-        StopAllCoroutines();
+        StopCoroutine("MakePattern");
+        StopCoroutine("TimeUpdate");
         GameEnd.SetActive(true);
         Pl.End_Player();
         BM.EndBul();
