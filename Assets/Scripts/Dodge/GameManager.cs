@@ -36,23 +36,22 @@ public class GameManager: MonoBehaviour
     private int CurIndex;           // Current Index (For Pattern List)
     private int CurRepeat;          // Current Repeatition
     private int CurPattern;         // Current Pattern
+    private bool TimeOn = true;
 
     private void Awake()
     {
-        PTL = new List<Pattern>();
-        PTL.Add(new Pattern());
+        PTL = new List<Pattern>() { new Pattern() };
         ReadPattern();
-        Init();
     }
 
-    private void Start()
+    private void OnEnable()
     {
         Init();
     }
 
     IEnumerator MakePattern()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(PatternInterv / 2);
         for (CurRepeat = 0; CurRepeat < RepeatNum; CurRepeat++)
         {
             Transform[] cnt;
@@ -75,30 +74,38 @@ public class GameManager: MonoBehaviour
             yield return new WaitForSeconds(RepeatInterv);
         }
 
-        yield return new WaitForSeconds(PatternInterv);
-        int PatternCnt = Random.Range(0, PatternNum);
-        while(PatternCnt != CurPattern) PatternCnt = Random.Range(0, PatternNum);
-        CurPattern = PatternCnt;
-        StartCoroutine(MakePattern());
+        yield return new WaitForSeconds(PatternInterv / 2);
+        Init();
     }
 
     IEnumerator TImeUpdate()
     {
-        for(time = 0; time <= TimeToSurvive + 0.01f; time += 0.01f)
+        for (time = 0; time <= TimeToSurvive; time += 0.01f)
         {
             yield return new WaitForSeconds(0.01f);
             Timer.text = string.Format("{0:0.00}", time);
         }
-        StopCoroutine("MakePattern");
+        Timer.text = string.Format("{0:0.00}", time);
+        StopAllCoroutines();
+        BM.DelBul();
+        EndPattern();
+    }
+
+    void EndPattern()
+    {
+        for (int i = 0; i < SPR.Length; i++)
+        {
+            GameObject Left = BM.MakeBul("L"); Left.transform.position = SPL[i].position;
+            GameObject Right = BM.MakeBul("R"); Right.transform.position = SPR[i].position;
+        }
     }
 
     void Init()
     {
-        CurPattern = Random.Range(0, PatternNum);
+        CurPattern = Random.Range(1, PatternNum + 1);
         CurIndex = 0;
         CurRepeat = 0;
-        time = 0;
-        StartCoroutine(TImeUpdate());
+        if (TimeOn) { time = 0; StartCoroutine(TImeUpdate()); TimeOn = false; }
         StartCoroutine(MakePattern());
     }
 
@@ -132,8 +139,7 @@ public class GameManager: MonoBehaviour
 
     void GameOverFunc()
     {
-        StopCoroutine("MakePattern");
-        StopCoroutine("TimeUpdate");
+        StopAllCoroutines();
         GameEnd.SetActive(true);
         Pl.End_Player();
         BM.EndBul();

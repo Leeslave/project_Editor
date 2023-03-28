@@ -43,6 +43,8 @@ public class BulletManager : MonoBehaviour
             if (!Pool[i].activeSelf)
             {
                 Pool[i].SetActive(true);
+                if (Dir == "L") Pool[i].GetComponent<Rigidbody2D>().AddForce(Vector2.right * 10, ForceMode2D.Impulse);
+                else Pool[i].GetComponent<Rigidbody2D>().AddForce(Vector2.left * 10, ForceMode2D.Impulse);
                 return Pool[i];
             }
         }
