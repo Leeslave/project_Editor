@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class MakeTile : MonoBehaviour
@@ -8,7 +9,9 @@ public class MakeTile : MonoBehaviour
     public GameObject CWall;
     public GameObject RWall;
     public GameObject Player;
-    public Map Maze_Inf;
+    public MazeMap Maze_Inf;
+    public GameObject Clear;
+
     public float Move_X;
     public float Move_Y;
     public int Col;
@@ -16,11 +19,12 @@ public class MakeTile : MonoBehaviour
 
     void Awake()
     {
-        Maze_Inf = new Map();
+        Maze_Inf = new MazeMap();
         Maze_Inf.MazeMaking(Col, Row);
         CreateLevel();
-        GameObject cnt = Instantiate(Player, new Vector3(Maze_Inf.Player_X * Move_X + 0.5f, Maze_Inf.Player_Y * Move_Y + 0.5f, 0), transform.rotation);
+        Player.transform.position = new Vector3(Maze_Inf.Player_X * Move_X + 5, Maze_Inf.Player_Y * Move_Y + 5f, 0);
     }
+
 
     void CreateLevel()
     {
@@ -31,19 +35,23 @@ public class MakeTile : MonoBehaviour
             {
                 if (!Maze_Inf.Maze[x, Y].Left)     // 哭率 寒 积己 咯何
                 {
-                    GameObject cnt = Instantiate(CWall,new Vector3(x,y + 0.5f,0),transform.rotation);
+                    GameObject cnt = Instantiate(CWall,new Vector3(x * 10,y * 10 + 5,0),transform.rotation);
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.left) { cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0); cnt.tag = "ExitWall"; }
                 }
                 if (!Maze_Inf.Maze[x, Y].Right)     // 坷弗率 寒 积己 咯何
                 {
-                    GameObject cnt = Instantiate(CWall, new Vector3(x+1, y + 0.5f, 0), new Quaternion(0,0,90,0));
+                    GameObject cnt = Instantiate(CWall, new Vector3(x * 10 +10, y* 10 + 5, 0), new Quaternion(0,0,90,0));
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.right) { cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0); cnt.tag = "ExitWall"; }
                 }
                 if (!Maze_Inf.Maze[x, Y].Down)     // 酒贰率 寒 积己 咯何
                 {
-                    GameObject cnt = Instantiate(RWall, new Vector3(x + 0.5f, y, 0), transform.rotation);
+                    GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10, 0), transform.rotation);
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.down) { cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0); cnt.tag = "ExitWall"; }
                 }
                 if (!Maze_Inf.Maze[x, Y].Up)     // 困率 寒 积己 咯何
                 {
-                    GameObject cnt = Instantiate(RWall, new Vector3(x + 0.5f, y+1, 0), transform.rotation);
+                    GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10+10, 0), transform.rotation);
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.up) { cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0); cnt.tag = "ExitWall"; }
                 }
             }
         }
