@@ -25,20 +25,17 @@ public class GameManager: MonoBehaviour
     public List<Pattern> PTL;       // List of Patterns
     public TMP_Text Timer;          // Timer Prefab
     //Public variable
-    public float MPPM;              // Interval within the Pattern
-    public float MBPM;              // Interval between Bullets
-    public float PTIV;              // Interval between Patterns (When Pattern End)
+    public float RepeatInterv;      // Interval within the Pattern
+    public float BulletInterv;      // Interval between Bullets
+    public float PatternInterv;     // Interval between Patterns (When Pattern End)
     public int PatternNum;          // Num of Pattern
     public int RepeatNum;           // Num of Repeatition of Pattern
-    public int TimeToSurvie;        // How Long Player Have To Survie
+    public int TimeToSurvive;        // How Long Player Have To Survie
     //Private variable
-    private float CPPM;             // Current Interval constant within the Pattern
     private float time = 0;         // Current Time (For Timer)
     private int CurIndex;           // Current Index (For Pattern List)
     private int CurRepeat;          // Current Repeatition
     private int CurPattern;         // Current Pattern
-    private bool PTIVJ = true;      // Don't Call MakeBullet Function betweens interval
-    private bool IsPTEnd = true;    // Judgment whether Pattern is End
 
     private void Awake()
     {
@@ -48,13 +45,69 @@ public class GameManager: MonoBehaviour
         Init();
     }
 
+    private void Start()
+    {
+        Init();
+    }
 
-    // Read Pattern In Resources Folder. Name of The Pattern File Must be PatternX ( ex) Pattern1, Pattern2)
+    IEnumerator MakePattern()
+    {
+        yield return new WaitForSeconds(0.5f);
+        for (CurRepeat = 0; CurRepeat < RepeatNum; CurRepeat++)
+        {
+            Transform[] cnt;
+            string Dir;
+            if (CurRepeat % 2 == 0) { cnt = SPR; Dir = "R"; }
+            else { cnt = SPL; Dir = "L"; }
+
+            for (CurIndex = 0; CurIndex < PTL[CurPattern].PT[0].Length; CurIndex++)
+            {
+                for (int i = 0; i < PTL[CurPattern].PT.Count; i++)
+                {
+                    if (PTL[CurPattern].PT[i][CurIndex] == 1)
+                    {
+                        GameObject tmp = BM.MakeBul(Dir);
+                        tmp.transform.position = cnt[i].position;
+                    }
+                }
+                yield return new WaitForSeconds(BulletInterv);
+            }
+            yield return new WaitForSeconds(RepeatInterv);
+        }
+
+        yield return new WaitForSeconds(PatternInterv);
+        int PatternCnt = Random.Range(0, PatternNum);
+        while(PatternCnt != CurPattern) PatternCnt = Random.Range(0, PatternNum);
+        CurPattern = PatternCnt;
+        StartCoroutine(MakePattern());
+    }
+
+    IEnumerator TImeUpdate()
+    {
+        for(time = 0; time <= TimeToSurvive + 0.01f; time += 0.01f)
+        {
+            yield return new WaitForSeconds(0.01f);
+            Timer.text = string.Format("{0:0.00}", time);
+        }
+        StopCoroutine("MakePattern");
+    }
+
+    void Init()
+    {
+        CurPattern = Random.Range(0, PatternNum);
+        CurIndex = 0;
+        CurRepeat = 0;
+        time = 0;
+        StartCoroutine(TImeUpdate());
+        StartCoroutine(MakePattern());
+    }
+
+    // Read Pattern In Resources Folder. Name of The Pattern File Must be Pattern_X ( ex) Pattern_1, Pattern_2)
     void ReadPattern()
     {
         for (int i = 1; i < PatternNum+1; i++)
         {
-            string tmp = "Pattern" + i.ToString();
+            string tmp = "Text/Dodge/Pattern_" + i.ToString();
             TextAsset textFile = Resources.Load(tmp) as TextAsset;
             if (textFile == null)
             {
@@ -76,116 +129,13 @@ public class GameManager: MonoBehaviour
             stringReader.Close();
         }
     }
-    void Update()
+
+    void GameOverFunc()
     {
-        if (!Pl.IsGameOver)
-        {
-            Timer.text = string.Format("{0:N2}",time);
-            time += Time.deltaTime;
-            if(time >= TimeToSurvie)
-            {
-                gameObject.SetActive(false);
-            }
-            if (CPPM >= MPPM)
-            {
-                IsPTEnd = false;
-                CurIndex = 0;
-                CurRepeat = 0;
-                InvokeRepeating("MakeBullet", 1, MBPM);
-                CPPM = 0;
-            }
-            if (IsPTEnd)
-            {
-                if (CPPM == 0) CurPattern = Random.Range(1,PatternNum+1);
-                CPPM += Time.deltaTime;
-            }
-        }
-        else
-        {
-            if (!GameOver.activeSelf)
-            {
-                GameOver.SetActive(true);
-                CancelInvoke("MakeBullet");
-                BM.DelBul();
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                Init();
-            }
-        }
-    }
-    private void OnEnable()
-    {
-        Init();
-    }
-    private void OnDisable()
-    {
+        StopCoroutine("MakePattern");
+        StopCoroutine("TimeUpdate");
         GameEnd.SetActive(true);
         Pl.End_Player();
-        CancelInvoke("MakeBullet");
         BM.EndBul();
-    }
-
-    void Pause()
-    {
-
-    }
-    void Init()
-    {
-        time = 0;
-        CPPM = 5;
-        CurIndex = 0;
-        CurRepeat = 0;
-        IsPTEnd = true;
-        PTIVJ = true;
-        CurPattern = Random.Range(1, PatternNum + 1);
-        GameOver.SetActive(false);
-        Pl.IsGameOver = false;
-        Pl.make_Player();
-    }
-    void MakeBullet()
-    {
-        if (PTIVJ)
-        {
-            if (CurIndex < PTL[CurPattern].PT[0].Length)
-            {
-                for (int y = 0; y < PTL[CurPattern].PT.Count; y++)
-                {
-                    if (CurRepeat % 2 == 0)
-                    {
-                        if (PTL[CurPattern].PT[y][CurIndex] == 1)
-                        {
-                            GameObject bullet = BM.MakeBul("L");
-                            bullet.transform.position = SPL[y].position;
-                        }
-                    }
-                    else
-                    {
-                        if (PTL[CurPattern].PT[PTL[CurPattern].PT.Count - y - 1][CurIndex] == 1)
-                        {
-                            GameObject bullet = BM.MakeBul("R");
-                            bullet.transform.position = SPR[y].position;
-                        }
-                    }
-                }
-                CurIndex += 1;
-            }
-            if (CurIndex >= PTL[CurPattern].PT[0].Length)
-            {
-                CurIndex = 0;
-                CurRepeat++;
-                PTIVJ = false;
-                Invoke("MakeBulletSub", PTIV);
-            }
-            if (CurRepeat == PTL[CurPattern].repeat)
-            {
-                CancelInvoke("MakeBullet");
-                IsPTEnd = true;
-            }
-        }
-    }
-    void MakeBulletSub()
-    {
-        PTIVJ = true;
     }
 }
