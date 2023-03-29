@@ -10,34 +10,26 @@ public class DayIntro : MonoBehaviour
     *   - 날짜 인트로
     */
     private AudioSource awakeSFX;
-    private CameraMove cameraManager;
+    private SceneController cameraManager;
 
     
     public float textOnDelay;
     public float textOnDuration;
     public GameObject dayText;
-    private int year;
-    private int month;
-    private int day;
-    private int time;
     private string hour;
 
     private void Awake()
     {
-        year = PlayerPrefs.GetInt("Year");
-        month = PlayerPrefs.GetInt("Month");
-        day = PlayerPrefs.GetInt("Day");
-        time = PlayerPrefs.GetInt("Time");
         Debug.Log("Current Renown: " + PlayerPrefs.GetInt("Renown").ToString());
 
         awakeSFX = GetComponent<AudioSource>();
-        cameraManager = Camera.main.GetComponent<CameraMove>();
+        cameraManager = Camera.main.GetComponent<SceneController>();
     }
 
     private void Start() {
         cameraManager.enabled = false;
 
-        switch(time) {
+        switch(PlayerPrefs.GetInt("Time")) {
             case 0:
                 hour = "06:30 AM";
                 break;
@@ -57,7 +49,7 @@ public class DayIntro : MonoBehaviour
 
     IEnumerator DayCountIntro() {
         dayText.SetActive(false);
-        dayText.GetComponent<TMP_Text>().text = $"제국력 {year}년 {month}월 {day}일\n\n{hour}";
+        dayText.GetComponent<TMP_Text>().text = $"제국력 {PlayerPrefs.GetInt("Year")}년 {PlayerPrefs.GetInt("Month")}월 {PlayerPrefs.GetInt("Day")}일\n\n{hour}";
         yield return new WaitForSeconds(textOnDelay);
         dayText.SetActive(true);
         awakeSFX.Play();
