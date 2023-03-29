@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class UpgradePattern : MonoBehaviour
 {
+    public List<GameObject> PlatL = new List<GameObject>();
     public GameObject Plat;
     public Transform SPCNT;
 
@@ -50,7 +51,7 @@ public class UpgradePattern : MonoBehaviour
 
     public IEnumerator Pattern1()
     {
-        GM.Pl.ChangeType();
+        GM.Pl.ChangeType("Normal");
         yield return new WaitForSeconds(1);
         for (int i = 0; i < 20; i++)
         {
@@ -65,8 +66,8 @@ public class UpgradePattern : MonoBehaviour
 
     public IEnumerator Pattern2()
     {
+        GM.Pl.ChangeType("Ping");
         int j = Random.Range(1, 3);
-
         yield return new WaitForSeconds(1);
         int dk = -1;
         int k = 6;
@@ -80,6 +81,7 @@ public class UpgradePattern : MonoBehaviour
             if (k == 6 || k == 11)
             {
                 GameObject cnt = Instantiate(Plat);
+                PlatL.Add(cnt);
                 if (k == 6) cnt.transform.position = SP[j][k];
                 else cnt.transform.position = SP[j][k + 3];
                 cnt.GetComponent<Rigidbody2D>().AddForce(DF[j] * 8, ForceMode2D.Impulse);
@@ -92,8 +94,9 @@ public class UpgradePattern : MonoBehaviour
     }
     public IEnumerator Pattern3()
     {
-        GM.Pl.ChangeType();
+        GM.Pl.ChangeType("Normal");
         yield return new WaitForSeconds(1);
+        
         for (int i = 0; i < 30; i++)
         {
             for (int x = 0; x < 9; x += 2) if (x != 4) GM.BM.MakeSmallBul(DE[x][0] * 5, DE[x][1] * 5).transform.position = new Vector2(SPT[12].x + 0.5f, SPL[9].y);
@@ -103,5 +106,9 @@ public class UpgradePattern : MonoBehaviour
             for (int x = SPL.Length / 2; x < SPL.Length; x++) GM.BM.MakeSmallBul(Vector2.right * 5, Vector2.zero).transform.position = SPL[x];
             yield return new WaitForSeconds(1.5f);
         }
+    }
+    public void EndCor()
+    {
+        StopAllCoroutines();
     }
 }

@@ -65,6 +65,10 @@ public class BulletManager : MonoBehaviour
         {
             a.SetActive(false);
         }
+        foreach(var a in BL)
+        {
+            a.SetActive(false);
+        }
     }
 
     public void EndBul()

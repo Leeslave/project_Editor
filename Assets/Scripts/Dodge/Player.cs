@@ -49,12 +49,19 @@ public class Player : MonoBehaviour
         RayAble = true;
     }
 
-    public void ChangeType()
+    public void ChangeType(string type)
     {
-        if (MovePing) rigid.velocity = Vector2.zero;
-        else rigid.velocity = new Vector2(0,-10);
-        MovePing = !MovePing;
-        
+        Debug.Log(type);
+        if(type == "Ping")
+        {
+            rigid.velocity = new Vector2(0, -10);
+            MovePing = true;
+        }
+        else
+        {
+            rigid.velocity = new Vector2(0, 0);
+            MovePing = false;
+        }
     }
 
     void NormalMove()
@@ -86,17 +93,13 @@ public class Player : MonoBehaviour
         gameObject.SetActive(true);
         gameObject.transform.position = new Vector2(3,-2);
     }
-    public void End_Player()
-    {
-        gameObject.SetActive(false);
-    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log(collision.gameObject.tag);
         if (collision.gameObject.tag == "Bullet")
         {
             gameObject.SetActive(false);
-            IsGameOver = true;
+            GM.GameOverFunc();
         }
     }
 }

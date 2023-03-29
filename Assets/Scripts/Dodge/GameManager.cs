@@ -25,7 +25,7 @@ public class GameManager: MonoBehaviour
     public List<Pattern> PTL;       // List of Patterns
     public TMP_Text Timer;          // Timer Prefab
     public GameObject PlatU;
-    public GameObject PlatL;
+    public GameObject PlatD;
 
     //Public variable
     public float RepeatInterv;      // Interval within the Pattern
@@ -33,28 +33,33 @@ public class GameManager: MonoBehaviour
     public float PatternInterv;     // Interval between Patterns (When Pattern End)
     public int PatternNum;          // Num of Pattern
     public int RepeatNum;           // Num of Repeatition of Pattern
-    public int TimeToSurvive;        // How Long Player Have To Survie
+    public float TimeToSurvive;     // How Long Player Have To Survie
     //Private variable
+    private UpgradePattern UP;      // Upgrade Pattern
+    private float NormalTime;
+    private IEnumerator[] UpPatterns;
     private float time = 0;         // Current Time (For Timer)
     private int CurIndex;           // Current Index (For Pattern List)
     private int CurRepeat;          // Current Repeatition
     private int CurPattern;         // Current Pattern
+    private bool AllEnd = false;
     private bool TimeOn = true;
 
     private void Awake()
     {
         PTL = new List<Pattern>() { new Pattern() };
         ReadPattern();
+        NormalTime = TimeToSurvive;
     }
     private void Start()
     {
-        /*StartCoroutine(GetComponent<UpgradePattern>().Pattern2());*/
-        StartCoroutine(GetComponent<UpgradePattern>().Pattern1());
+        UP = GetComponent<UpgradePattern>();
+        UpPatterns = new IEnumerator[] { UP.Pattern1(), UP.Pattern2(), UP.Pattern3() };
     }
 
     private void OnEnable()
     {
-        /*Init();*/
+        Init();
     }
 
     IEnumerator MakePattern()
@@ -89,7 +94,7 @@ public class GameManager: MonoBehaviour
 
     IEnumerator TImeUpdate()
     {
-        for (time = 0; time <= TimeToSurvive; time += 0.01f)
+        for (; time <= TimeToSurvive; time += 0.01f)
         {
             yield return new WaitForSeconds(0.01f);
             Timer.text = string.Format("{0:0.00}", time);
@@ -97,7 +102,55 @@ public class GameManager: MonoBehaviour
         Timer.text = string.Format("{0:0.00}", time);
         StopAllCoroutines();
         BM.DelBul();
-        EndPattern();
+        if (TimeToSurvive == NormalTime)
+        {
+            AllEnd = true;
+            EndPattern();
+        }
+        else
+        {
+            GameEnd.SetActive(true);
+        }
+    }
+    IEnumerator GameContinue()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.001f);
+            if (Input.GetKeyDown(KeyCode.R)) 
+            {
+                Pl.make_Player();
+                PlatU.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                PlatD.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+                GameOver.SetActive(false);   
+                if (!AllEnd)
+                {
+                    TimeOn = true;
+                    TimeToSurvive = NormalTime;
+                    Pl.ChangeType("Ping");
+                    PlatU.transform.position = new Vector2(PlatU.transform.position.x, 4);
+                    PlatD.transform.position = new Vector2(PlatD.transform.position.x, -6.5f);
+                    Init();
+                    yield break;
+                }
+                else
+                {
+                    Pl.make_Player();
+                    TimeToSurvive *= 2;
+                    StartCoroutine(TImeUpdate());
+                    PlatU.transform.position = new Vector2(PlatU.transform.position.x, 8.5f);
+                    PlatD.transform.position = new Vector2(PlatD.transform.position.x, -11f);
+                    AllEnd = false;
+                    StartCoroutine(HiddenPattern());
+                    yield break;
+                }
+            }
+        }
+    }
+    public IEnumerator HiddenPattern()
+    {
+        StartCoroutine(UpPatterns[Random.Range(0,UpPatterns.Length)]);
+        yield break;
     }
 
     void EndPattern()
@@ -111,9 +164,11 @@ public class GameManager: MonoBehaviour
 
     void Init()
     {
+        
         CurPattern = Random.Range(1, PatternNum + 1);
         CurIndex = 0;
         CurRepeat = 0;
+        
         if (TimeOn) { time = 0; StartCoroutine(TImeUpdate()); TimeOn = false; }
         StartCoroutine(MakePattern());
     }
@@ -146,11 +201,13 @@ public class GameManager: MonoBehaviour
         }
     }
 
-    void GameOverFunc()
+    public void GameOverFunc()
     {
         StopAllCoroutines();
-        GameEnd.SetActive(true);
-        Pl.End_Player();
+        UP.EndCor();
         BM.EndBul();
+        foreach (var a in UP.PlatL) Destroy(a);
+        GameOver.SetActive(true);
+        StartCoroutine(GameContinue());
     }
 }
