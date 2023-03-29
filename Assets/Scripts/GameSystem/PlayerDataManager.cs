@@ -22,7 +22,6 @@ public class PlayerDataManager : MonoBehaviour
         public int renown;
     }
 
-    private SceneController 
 
     private PlayerData playerData = new PlayerData(); 
     private string path = "/Resources/Save/";
