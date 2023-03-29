@@ -6,61 +6,79 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     Rigidbody2D rigid;
+    public GameManager GM;
     public GameObject Up;
     public GameObject Down;
+    public int speed;
     public float MaxSpeed_Y;
-    public float MaxSpeed_X;
     public bool IsGameOver;
-    bool UpAble = true;
-    bool DownAble = true;
+    public bool MovePing;
+    bool RayAble = true;
 
     private void Awake()
     {
         IsGameOver = false;
         rigid = GetComponent<Rigidbody2D>();
+        rigid.velocity = new Vector2(0, -speed);
     }
     private void FixedUpdate()
     {
-        float h = Input.GetAxisRaw("Horizontal");
-        rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
-        if (rigid.velocity.x > MaxSpeed_X) rigid.velocity = new Vector2(MaxSpeed_X, rigid.velocity.y);
-        else if (rigid.velocity.x < MaxSpeed_X * (-1)) rigid.velocity = new Vector2(MaxSpeed_X * (-1), rigid.velocity.y);
-        if (rigid.velocity.y > MaxSpeed_Y) rigid.velocity = new Vector2(rigid.velocity.x, MaxSpeed_Y);
-        else if (rigid.velocity.y < MaxSpeed_Y * (-1)) rigid.velocity = new Vector2(rigid.velocity.x, MaxSpeed_Y * (-1));
-        RaycastHit2D RayHit_Down = Physics2D.Raycast(rigid.position, Vector3.down, 0.35f,LayerMask.GetMask("Plat"));
-        RaycastHit2D RayHit_Up = Physics2D.Raycast(rigid.position, Vector3.up, 0.35f, LayerMask.GetMask("Plat"));
-        if (RayHit_Down.collider != null)
+        if (MovePing) PingPong();
+        else NormalMove();
+    }
+
+    void PingPong()
+    {
+        float x = Input.GetAxisRaw("Horizontal"); transform.position += new Vector3(x, 0, 0) * speed * Time.deltaTime;
+        Vector2 RayCnt = Vector2.zero;
+        if (rigid.velocity.y < 0) RayCnt = Vector2.down;
+        else RayCnt = Vector2.up;
+        RaycastHit2D RayHit = Physics2D.Raycast(rigid.position, RayCnt, 0.4f, LayerMask.GetMask("Plat"));
+        if (RayHit.collider != null && RayAble)
         {
-            if (RayHit_Down.collider.name == "Plat_Down" && DownAble)
-            {
-                rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y * (-0.5f));
-                DownAble = false;
-                UpAble = true;
-                rigid.gravityScale *= -1;
-                Down.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.4f);
-                Invoke("ChangeColor_Down", 0.5f);
-            }
-        }
-        if (RayHit_Up.collider != null)
-        {
-            if (RayHit_Up.collider.name == "Plat_Up" && UpAble)
-            {
-                rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y * (-0.5f));
-                UpAble = false;
-                DownAble = true;
-                rigid.gravityScale *= -1;
-                Up.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.4f);
-                Invoke("ChangeColor_Up", 0.5f);
-            }
+            rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y * (-1));
+            StartCoroutine(ChangeColor(RayHit.collider.gameObject));
+            RayHit.collider.gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.4f);
+            RayAble = false;
+            Invoke("CanRay", 0.2f);
         }
     }
-    void ChangeColor_Up()
+
+    void CanRay()
     {
-        Up.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+        RayAble = true;
     }
-    void ChangeColor_Down()
+
+    public void ChangeType()
     {
-        Down.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+        if (MovePing) rigid.velocity = Vector2.zero;
+        else rigid.velocity = new Vector2(0,-10);
+        MovePing = !MovePing;
+        
+    }
+
+    void NormalMove()
+    {
+        MoveSpeed();
+        DirMove();
+    }
+    void DirMove()
+    {
+        float y = Input.GetAxisRaw("Vertical");
+        float x = Input.GetAxisRaw("Horizontal");
+        Vector3 nextPos = new Vector3(x, y, 0) * speed * Time.deltaTime;
+        transform.position += nextPos;
+    }
+    void MoveSpeed()
+    {
+        if (Input.GetButton("SlowMove")) speed = 5;
+        else speed = 10;
+    }
+
+    IEnumerator ChangeColor(GameObject a)
+    {
+        yield return new WaitForSeconds(0.3f);
+        a.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
     }
 
     public void make_Player()
@@ -74,6 +92,7 @@ public class Player : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.Log(collision.gameObject.tag);
         if (collision.gameObject.tag == "Bullet")
         {
             gameObject.SetActive(false);

@@ -24,6 +24,9 @@ public class GameManager: MonoBehaviour
     public Transform[] SPL;         // Bullet Spawn Position(Transform) List_Left
     public List<Pattern> PTL;       // List of Patterns
     public TMP_Text Timer;          // Timer Prefab
+    public GameObject PlatU;
+    public GameObject PlatL;
+
     //Public variable
     public float RepeatInterv;      // Interval within the Pattern
     public float BulletInterv;      // Interval between Bullets
@@ -43,21 +46,27 @@ public class GameManager: MonoBehaviour
         PTL = new List<Pattern>() { new Pattern() };
         ReadPattern();
     }
+    private void Start()
+    {
+        /*StartCoroutine(GetComponent<UpgradePattern>().Pattern2());*/
+        StartCoroutine(GetComponent<UpgradePattern>().Pattern1());
+    }
 
     private void OnEnable()
     {
-        Init();
+        /*Init();*/
     }
 
     IEnumerator MakePattern()
     {
         yield return new WaitForSeconds(PatternInterv / 2);
+
         for (CurRepeat = 0; CurRepeat < RepeatNum; CurRepeat++)
         {
             Transform[] cnt;
-            string Dir;
-            if (CurRepeat % 2 == 0) { cnt = SPR; Dir = "R"; }
-            else { cnt = SPL; Dir = "L"; }
+            Vector2 Dir;
+            if (CurRepeat % 2 == 0) { cnt = SPR; Dir = Vector2.left; }
+            else { cnt = SPL; Dir = Vector2.right; }
 
             for (CurIndex = 0; CurIndex < PTL[CurPattern].PT[0].Length; CurIndex++)
             {
@@ -65,7 +74,7 @@ public class GameManager: MonoBehaviour
                 {
                     if (PTL[CurPattern].PT[i][CurIndex] == 1)
                     {
-                        GameObject tmp = BM.MakeBul(Dir);
+                        GameObject tmp = BM.MakeSmallBul(Dir * 10, Vector2.zero);
                         tmp.transform.position = cnt[i].position;
                     }
                 }
@@ -95,8 +104,8 @@ public class GameManager: MonoBehaviour
     {
         for (int i = 0; i < SPR.Length; i++)
         {
-            GameObject Left = BM.MakeBul("L"); Left.transform.position = SPL[i].position;
-            GameObject Right = BM.MakeBul("R"); Right.transform.position = SPR[i].position;
+            GameObject Left = BM.MakeSmallBul(Vector2.right * 10, Vector2.zero); Left.transform.position = SPL[i].position;
+            GameObject Right = BM.MakeSmallBul(Vector2.left * 10, Vector2.zero); Right.transform.position = SPR[i].position;
         }
     }
 
