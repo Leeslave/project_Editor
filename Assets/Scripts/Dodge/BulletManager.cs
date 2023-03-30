@@ -43,7 +43,7 @@ public class BulletManager : MonoBehaviour
         }
         return null;
     }
-    public GameObject MakeBigBul(Vector2 Dir1, Vector2 Dir2)
+    public GameObject MakeBigBul(Vector2 Dir1, Vector2 Dir2, bool Pattern)
     {
         Pool = BL;
         for (int i = 0; i < Pool.Length; i++)
@@ -53,7 +53,7 @@ public class BulletManager : MonoBehaviour
                 Pool[i].SetActive(true);
                 Pool[i].GetComponent<Rigidbody2D>().AddForce(Dir1, ForceMode2D.Impulse);
                 Pool[i].GetComponent<Rigidbody2D>().AddForce(Dir2, ForceMode2D.Impulse);
-                Pool[i].GetComponent<BulletMove>().BigBullet(GetComponent<BulletManager>());
+                if(Pattern)Pool[i].GetComponent<BulletMove>().BigBullet(GetComponent<BulletManager>());
                 return Pool[i];
             }
         }

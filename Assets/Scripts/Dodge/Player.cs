@@ -70,6 +70,7 @@ public class Player : MonoBehaviour
         MoveSpeed();
         DirMove();
     }
+
     void DirMove()
     {
         float y = Input.GetAxisRaw("Vertical");
@@ -100,6 +101,7 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Bullet")
         {
             gameObject.SetActive(false);
+            GM.GameResult();
         }
     }
 }

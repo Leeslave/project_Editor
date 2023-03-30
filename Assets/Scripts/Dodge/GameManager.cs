@@ -35,19 +35,32 @@ public class GameManager: MonoBehaviour
     public int RepeatNum;           // Num of Repeatition of Pattern
     public float TimeToSurvive;     // How Long Player Have To Survie
 
+    //Private variable
+    IEnumerator CurPlayPattern;     // Now Playing Patter(Normal/Hard)
+    UpgradePattern UpValue;         // For UpgradePattern Script
+    Timer TimerValue;               // For Timer Script
+    public bool GameType = false;          // Now Playing Type(Normal/Hard : false/true)
+
     private void Awake()
     {
         PTL = new List<Pattern>() { new Pattern() };
+        UpValue = GetComponent<UpgradePattern>();
+        TimerValue = Timer.GetComponent<Timer>(); TimerValue.MaxTime = TimeToSurvive;
         ReadPattern();
     }
     private void Start()
     {
-        StartCoroutine(MakeNormalPattern());
+        /*CurPlayPattern = MakeNormalPattern();*/
+        /*TimeFlow();*/
+        UpValue.RandPT();
     }
 
-    IEnumerator MakeNormalPattern()
+
+    IEnumerator MakeNormalPattern()     // Make Normal Pattenr
     {
-        Pattern CurPattern = PTL[Random.Range(0, PatternNum)];
+        yield return new WaitForSeconds(0.5f);
+        Pattern CurPattern = PTL[Random.Range(1, PatternNum+1)];
+        Debug.Log(CurPattern);
         for(int CurRepeat = 0; CurRepeat < CurPattern.repeat; CurRepeat++)
         {
             for(int x = 0; x < CurPattern.PT[0].Length; x++)
@@ -67,6 +80,55 @@ public class GameManager: MonoBehaviour
         yield break;
     }
 
+    public void EndPattern()
+    {
+        BM.DelBul();
+        StopAllCoroutines();
+        for (int i = 0; i < SPL.Length; i++)
+        {
+            BM.MakeSmallBul(Vector2.left * 2.5f, Vector2.zero).transform.position = SPR[i].position;
+            BM.MakeSmallBul(Vector2.right * 2.5f, Vector2.zero).transform.position = SPL[i].position;
+        }
+    }
+
+    void TimeFlow()         // Timer Work, Pattern Work
+    {
+        TimerValue.IsTimeFlow = true;
+        StartCoroutine(CurPlayPattern);
+    }
+
+    public void GameResult()
+    {
+        BM.DelBul();
+        TimerValue.IsTimeFlow = false;
+        if (!GameType)      // When Normal
+        {
+            if (TimerValue.time >= TimeToSurvive)        // Endure Time
+            {
+                GameEnd.SetActive(true);
+            }
+            else            // GameOver
+            {
+                GameOver.SetActive(true);
+                StopAllCoroutines();
+                TimerValue.time = 0;
+            }
+        }
+        else              // When Hard
+        {
+            UpValue.EndPT();
+            GameEnd.SetActive(true);
+            if (TimerValue.time >= TimeToSurvive * 2)
+            {
+                GameEnd.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = "Hidden";
+            }
+            else           // GameOver
+            {
+                TimerValue.time = 0;
+                TimerValue.MaxTime = TimeToSurvive;
+            }
+        }
+    }
 
     
     void ReadPattern()  // Read Pattern In Resources Folder. Name of The Pattern File Must be Pattern_X ( ex) Pattern_1, Pattern_2)

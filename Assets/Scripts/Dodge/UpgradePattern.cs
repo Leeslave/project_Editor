@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class UpgradePattern : MonoBehaviour
 {
@@ -32,16 +33,16 @@ public class UpgradePattern : MonoBehaviour
     GameManager GM;
     IEnumerator CurPlay = null;
 
-    private void Start()
+    private void Awake()
     {
-        for(int i = 0; i < 26; i++)
+        for (int i = 0; i < 26; i++)
         {
             SPT[i] = new Vector2(SPCNT.position.x + i, SPCNT.position.y);
-            
+
             SPB[i] = new Vector2(SPCNT.position.x + i, SPCNT.position.y - 18);
-            
+
         }
-        for(int i = 0; i < 19; i++)
+        for (int i = 0; i < 19; i++)
         {
             SPL[i] = new Vector2(SPCNT.position.x, SPCNT.position.y - i);
             SPR[i] = new Vector2(SPCNT.position.x + 25, SPCNT.position.y - i);
@@ -61,7 +62,7 @@ public class UpgradePattern : MonoBehaviour
             Debug.Log("1 Playing");
             int a = Random.Range(0,4);
             int b = Random.Range(1, SP[a].Length-1);
-            GM.BM.MakeBigBul(DF[a] * 2, Vector2.zero).transform.position = SP[a][b];
+            GM.BM.MakeBigBul(DF[a] * 2, Vector2.zero,true).transform.position = SP[a][b];
             yield return new WaitForSeconds(3);
         }
         yield break;
@@ -118,14 +119,62 @@ public class UpgradePattern : MonoBehaviour
         yield break;
     }
 
+    public IEnumerator Pattern4()
+    {
+        Debug.Log("4 On");
+        GM.Pl.ChangeType("Normal");
+        yield return new WaitForSeconds(1);
+
+        Vector3 Cnt1 = new Vector3(SPT[12].x + 0.5f, SPL[9].y, 0);
+        Vector3 Cnt2 = new Vector3(SPT[25].x, SPL[9].y, 0);
+        Vector3 Cnt3 = new Vector3(SPT[0].x, SPL[9].y, 0);
+        GM.BM.MakeBigBul(Vector2.zero, Vector2.zero, false).transform.position = Cnt1;
+        GM.BM.MakeBigBul(Vector2.zero, Vector2.zero, false).transform.position = Cnt2;
+        GM.BM.MakeBigBul(Vector2.zero, Vector2.zero, false).transform.position = Cnt3;
+
+        for (int i = 0; i < 50; i++)
+        {
+            GM.BM.MakeSmallBul((GM.Pl.transform.position - Cnt1).normalized * 7, Vector2.zero).transform.position = Cnt1;
+            GM.BM.MakeSmallBul((GM.Pl.transform.position - Cnt2).normalized * 7, Vector2.zero).transform.position = Cnt2;
+            GM.BM.MakeSmallBul((GM.Pl.transform.position - Cnt3).normalized * 7, Vector2.zero).transform.position = Cnt3;
+            yield return new WaitForSeconds(0.25f);
+        }
+
+        yield break;
+    }
+    public IEnumerator Pattern5()
+    {
+        GM.Pl.ChangeType("Normal");
+        GM.Pl.transform.GetChild(0).gameObject.SetActive(true);
+        yield return new WaitForSeconds(1);
+
+        Vector3 Cnt1 = new Vector3(SPT[12].x + 0.5f, SPL[9].y, 0);
+
+        for (int i = 0; i < 1000; i++)
+        {
+            int r2 = Random.Range(10, 20);
+            float a1 = Random.Range(-1f, 1f); if (a1 == 0) a1 = 1;
+            float a2 = Random.Range(-1f, 1f); if (a2 == 0) a2 = -1;
+            Vector2 s = new Vector2(a1,a2);
+            GM.BM.MakeSmallBul(s * r2, Vector2.zero).transform.position = Cnt1;
+            yield return new WaitForSeconds(0.01f);
+        }
+        
+        yield break;
+    }
+
+
     public void RandPT()
     {
-        int cnt = Random.Range(0, 3);
+        /*int cnt = Random.Range(0, 4);*/
+        int cnt = 4;
         switch (cnt) 
         {
             case 0: CurPlay = Pattern1(); break;
             case 1: CurPlay = Pattern2(); break;
             case 2: CurPlay = Pattern3(); break;
+            case 3: CurPlay = Pattern4(); break;
+            case 4: CurPlay = Pattern5(); break;
         }
         StartCoroutine(CurPlay);
     }
@@ -134,5 +183,6 @@ public class UpgradePattern : MonoBehaviour
         if (CurPlay != null) StopCoroutine(CurPlay);
         CurPlay = null;
         foreach (var a in PlatL) Destroy(a);
+        GM.Pl.transform.GetChild(0).gameObject.SetActive(false);
     }
 }
