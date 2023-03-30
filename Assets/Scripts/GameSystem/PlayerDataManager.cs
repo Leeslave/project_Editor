@@ -12,6 +12,9 @@ public class PlayerDataManager : MonoBehaviour
     * SavePlayerData
     * LoadPlayerData
     */
+    
+    public string path = "/Resources/Save/";
+
     private class PlayerData
     {
         public int year;
@@ -21,10 +24,7 @@ public class PlayerDataManager : MonoBehaviour
         public string location;
         public int renown;
     }
-
-
     private PlayerData playerData = new PlayerData(); 
-    private string path = "/Resources/Save/";
 
     public void InitNewPlayerData()
     {   
