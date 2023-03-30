@@ -40,7 +40,6 @@ public class BulletMove: MonoBehaviour
     {
         if (collision.gameObject.tag == "Border")
         {
-            StopAllCoroutines();
             gameObject.SetActive(false);
         }
     }

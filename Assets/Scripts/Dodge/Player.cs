@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     public float MaxSpeed_Y;
     public bool IsGameOver;
     public bool MovePing;
+    public bool MoveAble = true;
     bool RayAble = true;
 
     private void Awake()
@@ -23,6 +24,7 @@ public class Player : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (!MoveAble) return;
         if (MovePing) PingPong();
         else NormalMove();
     }
@@ -51,7 +53,6 @@ public class Player : MonoBehaviour
 
     public void ChangeType(string type)
     {
-        Debug.Log(type);
         if(type == "Ping")
         {
             rigid.velocity = new Vector2(0, -10);
@@ -88,10 +89,10 @@ public class Player : MonoBehaviour
         a.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
     }
 
-    public void make_Player()
+    private void OnEnable()
     {
-        gameObject.SetActive(true);
-        gameObject.transform.position = new Vector2(3,-2);
+        gameObject.transform.position = new Vector2(3, -2);
+        speed = 10;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
