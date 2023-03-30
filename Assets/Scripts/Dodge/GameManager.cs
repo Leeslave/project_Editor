@@ -34,30 +34,65 @@ public class GameManager: MonoBehaviour
     public int PatternNum;          // Num of Pattern
     public int RepeatNum;           // Num of Repeatition of Pattern
     public float TimeToSurvive;     // How Long Player Have To Survie
-    //Private variable
-    private IEnumerator TimerCor;   // For Timmer Coroutine
-    private bool TimerWork = false; // For Check TImerCor Is On Work;
-    private IEnumerator PatternCor; // For Pattern Update Coroutine
-    private bool PatternOn = false; // For Check PatternCor Is On Work;
-    private IEnumerator EndCor;     // For End Coroutine
-    private bool EndWork = false;   // For Check EndCor Is On Work;
-    private UpgradePattern UP;      // Upgrade Pattern
-    private float NormalTime;       // For Rollback Time To Survive
-    private float time = 0;         // Current Time (For Timer)
-    private int CurIndex;           // Current Index (For Pattern List)
-    private int CurRepeat;          // Current Repeatition
-    private int CurPattern;         // Current Pattern
-    private bool AllEnd = false;    // Whether player lasted for the Time For Survive
-    private bool TimeOn = true;     // Is Timer On
 
     private void Awake()
     {
         PTL = new List<Pattern>() { new Pattern() };
         ReadPattern();
-        NormalTime = TimeToSurvive;
     }
     private void Start()
     {
-        UP = GetComponent<UpgradePattern>();
+        StartCoroutine(MakeNormalPattern());
+    }
+
+    IEnumerator MakeNormalPattern()
+    {
+        Pattern CurPattern = PTL[Random.Range(0, PatternNum)];
+        for(int CurRepeat = 0; CurRepeat < CurPattern.repeat; CurRepeat++)
+        {
+            for(int x = 0; x < CurPattern.PT[0].Length; x++)
+            {
+                for(int y = 0; y < CurPattern.PT.Count; y++)
+                {
+                    if (CurPattern.PT[y][x] == 1)
+                    {
+                        if (CurRepeat % 2 == 0) BM.MakeSmallBul(Vector2.left * 10, Vector2.zero).transform.position = SPR[y].position;
+                        else BM.MakeSmallBul(Vector2.right * 10, Vector2.zero).transform.position = SPL[y].position;
+                    }
+                }
+                yield return new WaitForSeconds(BulletInterv);
+            }
+            yield return new WaitForSeconds(RepeatInterv);
+        }
+        yield break;
+    }
+
+
+    
+    void ReadPattern()  // Read Pattern In Resources Folder. Name of The Pattern File Must be Pattern_X ( ex) Pattern_1, Pattern_2)
+    {
+        for (int i = 1; i < PatternNum+1; i++)
+        {
+            string tmp = "Text/Dodge/Pattern_" + i.ToString();
+            TextAsset textFile = Resources.Load(tmp) as TextAsset;
+            if (textFile == null)
+            {
+                return;
+            }
+            StringReader stringReader = new StringReader(textFile.text);
+            Pattern Data = new Pattern();
+            Data.PT = new List<int[]>();
+            Data.repeat = RepeatNum;
+
+            while (stringReader != null)
+            {
+                string line = stringReader.ReadLine();
+                if (line == null) break;
+                int[] cnt = Array.ConvertAll(line.Split(' '), int.Parse);
+                Data.PT.Add(cnt);
+            }
+            PTL.Add(Data);
+            stringReader.Close();
+        }
     }
 }
