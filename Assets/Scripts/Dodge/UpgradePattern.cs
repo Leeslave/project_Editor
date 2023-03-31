@@ -51,7 +51,42 @@ public class UpgradePattern : MonoBehaviour
         GM = GetComponent<GameManager>();
     }
 
-    public IEnumerator Pattern1()
+    public IEnumerator Pattern1()       // Play Time : 25s
+    {
+        GM.Pl.ChangeType("Ping");
+        yield return new WaitForSeconds(1);
+
+        int j = Random.Range(1, 3);
+        int dk = -1;
+        int k = 7;
+        bool jk = true;
+        float tm = 0;
+
+        
+        for (int i = 0; i < 110; i++)
+        {
+            if(i == 30) for (int y = 6; y <= 12; y++) GM.BM.MakeSmallBul(DF[2 / j] * 1.5f, Vector2.zero).transform.position = SP[2 / j][y];
+            for (int y = 4; y <= 14; y++)
+            {
+                if (!(y >= k && y <= k + 3)) GM.BM.MakeSmallBul(DF[j] * 6, Vector2.zero).transform.position = SP[j][y];
+            }
+            if (k == 7 || k == 10)
+            {
+                GameObject cnt = Instantiate(Plat);
+                PlatL.Add(cnt);
+                if (k == 7) cnt.transform.position = SP[j][k];
+                else cnt.transform.position = SP[j][k + 3];
+                cnt.GetComponent<Rigidbody2D>().AddForce(DF[j] * 6, ForceMode2D.Impulse);
+                if(jk) dk *= -1;
+                jk = !jk;
+            }
+            if (jk) k += dk;
+            yield return new WaitForSeconds(GM.BulletInterv * 1.4f);
+        }
+        yield break;
+    }
+
+    public IEnumerator Pattern2()
     {
         Debug.Log("1 On");
         GM.Pl.ChangeType("Normal");
@@ -60,46 +95,14 @@ public class UpgradePattern : MonoBehaviour
         for (int i = 0; i < 20; i++)
         {
             Debug.Log("1 Playing");
-            int a = Random.Range(0,4);
-            int b = Random.Range(1, SP[a].Length-1);
-            GM.BM.MakeBigBul(DF[a] * 2, Vector2.zero,true).transform.position = SP[a][b];
+            int a = Random.Range(0, 4);
+            int b = Random.Range(1, SP[a].Length - 1);
+            GM.BM.MakeBigBul(DF[a] * 2, Vector2.zero, true).transform.position = SP[a][b];
             yield return new WaitForSeconds(3);
         }
         yield break;
     }
 
-    public IEnumerator Pattern2()
-    {
-        Debug.Log("2 On");
-        GM.Pl.ChangeType("Ping");
-        yield return new WaitForSeconds(1);
-
-        int j = Random.Range(1, 3);
-        int dk = -1;
-        int k = 6;
-        bool jk = true;
-        for (int i = 0; i < 100; i++)
-        {
-            Debug.Log("2 Playing");
-            for (int y = 3; y <= 15; y++)
-            {
-                if (!(y >= k && y <= k + 3)) GM.BM.MakeSmallBul(DF[j] * 8, Vector2.zero).transform.position = SP[j][y];
-            }
-            if (k == 6 || k == 11)
-            {
-                GameObject cnt = Instantiate(Plat);
-                PlatL.Add(cnt);
-                if (k == 6) cnt.transform.position = SP[j][k];
-                else cnt.transform.position = SP[j][k + 3];
-                cnt.GetComponent<Rigidbody2D>().AddForce(DF[j] * 8, ForceMode2D.Impulse);
-                if(jk) dk *= -1;
-                jk = !jk;
-            }
-            if (jk) k += dk;
-            yield return new WaitForSeconds(GM.BulletInterv);
-        }
-        yield break;
-    }
     public IEnumerator Pattern3()
     {
         Debug.Log("3 On");
@@ -166,7 +169,6 @@ public class UpgradePattern : MonoBehaviour
 
     public void RandPT()
     {
-        /*int cnt = Random.Range(0, 4);*/
         int cnt = 4;
         switch (cnt) 
         {

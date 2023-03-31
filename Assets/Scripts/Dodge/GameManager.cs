@@ -15,15 +15,16 @@ using Unity.VisualScripting;
 public class GameManager: MonoBehaviour
 {
     [SerializeField]
-    //Prefabs
+    public Timer Timer;             // Timer Prefab
     public BulletManager BM;        // Bullet Create Manager Prefab
+    public GlitchEffect MC;         // Making Glitch Prefab
     public Player Pl;               // Player Prefab
+    //Prefabs
     public GameObject GameOver;     // GameOver Prefab
     public GameObject GameEnd;      // GameEnd Prefab
     public Transform[] SPR;         // Bullet Spawn Position(Transform) List_Right
     public Transform[] SPL;         // Bullet Spawn Position(Transform) List_Left
-    public List<Pattern> PTL;       // List of Patterns
-    public TMP_Text Timer;          // Timer Prefab
+    public List<Pattern> PTL;       // List of Patterns       
     public GameObject PlatU;        // PlatForm_Up
     public GameObject PlatD;        // PlatForm_Down
 
@@ -33,34 +34,33 @@ public class GameManager: MonoBehaviour
     public float PatternInterv;     // Interval between Patterns (When Pattern End)
     public int PatternNum;          // Num of Pattern
     public int RepeatNum;           // Num of Repeatition of Pattern
+    [Range(5, 30)]
     public float TimeToSurvive;     // How Long Player Have To Survie
 
     //Private variable
     IEnumerator CurPlayPattern;     // Now Playing Patter(Normal/Hard)
     UpgradePattern UpValue;         // For UpgradePattern Script
-    Timer TimerValue;               // For Timer Script
-    public bool GameType = false;          // Now Playing Type(Normal/Hard : false/true)
+    public bool GameType = false;   // Now Playing Type(Normal/Hard : false/true)
 
     private void Awake()
     {
         PTL = new List<Pattern>() { new Pattern() };
         UpValue = GetComponent<UpgradePattern>();
-        TimerValue = Timer.GetComponent<Timer>(); TimerValue.MaxTime = TimeToSurvive;
+        
         ReadPattern();
     }
     private void Start()
     {
-        /*CurPlayPattern = MakeNormalPattern();*/
-        /*TimeFlow();*/
-        UpValue.RandPT();
+        CurPlayPattern = MakeNormalPattern();
+        TimeFlow();
+        /*UpValue.RandPT();*/
+        Timer.MaxTime = TimeToSurvive;
     }
-
 
     IEnumerator MakeNormalPattern()     // Make Normal Pattenr
     {
-        yield return new WaitForSeconds(0.5f);
+        if(Timer.time == 0) yield return new WaitForSeconds(0.1f);
         Pattern CurPattern = PTL[Random.Range(1, PatternNum+1)];
-        Debug.Log(CurPattern);
         for(int CurRepeat = 0; CurRepeat < CurPattern.repeat; CurRepeat++)
         {
             for(int x = 0; x < CurPattern.PT[0].Length; x++)
@@ -77,6 +77,10 @@ public class GameManager: MonoBehaviour
             }
             yield return new WaitForSeconds(RepeatInterv);
         }
+        yield return new WaitForSeconds(PatternInterv);
+        CurPattern = PTL[Random.Range(0, PatternNum) + 1];
+        CurPlayPattern = MakeNormalPattern();
+        StartCoroutine(CurPlayPattern);
         yield break;
     }
 
@@ -93,17 +97,17 @@ public class GameManager: MonoBehaviour
 
     void TimeFlow()         // Timer Work, Pattern Work
     {
-        TimerValue.IsTimeFlow = true;
+        Timer.IsTimeFlow = true;
         StartCoroutine(CurPlayPattern);
     }
 
     public void GameResult()
     {
         BM.DelBul();
-        TimerValue.IsTimeFlow = false;
+        Timer.IsTimeFlow = false;
         if (!GameType)      // When Normal
         {
-            if (TimerValue.time >= TimeToSurvive)        // Endure Time
+            if (Timer.time >= TimeToSurvive)        // Endure Time
             {
                 GameEnd.SetActive(true);
             }
@@ -111,23 +115,28 @@ public class GameManager: MonoBehaviour
             {
                 GameOver.SetActive(true);
                 StopAllCoroutines();
-                TimerValue.time = 0;
+                Timer.time = 0;
             }
         }
         else              // When Hard
         {
             UpValue.EndPT();
             GameEnd.SetActive(true);
-            if (TimerValue.time >= TimeToSurvive * 2)
+            if (Timer.time >= TimeToSurvive * 2)
             {
                 GameEnd.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = "Hidden";
             }
             else           // GameOver
             {
-                TimerValue.time = 0;
-                TimerValue.MaxTime = TimeToSurvive;
+                Timer.time = 0;
+                Timer.MaxTime = TimeToSurvive;
             }
         }
+    }
+
+    public void MakeGlitch(float a, float b, float c)
+    {
+        MC.intensity = a; MC.flipIntensity = b; MC.colorIntensity = c;
     }
 
     
