@@ -70,7 +70,7 @@ public class PlayerDataManager : MonoBehaviour
 
     public void asyncSceneData()
     {
-        
+        // GameObject newWorldCanvas = Resources.Load<GameObject>()
     }
 
     private void asyncPlayerData()
