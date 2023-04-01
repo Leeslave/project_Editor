@@ -189,7 +189,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &162852235
 GameObject:
@@ -449,7 +449,7 @@ RectTransform:
   - {fileID: 940758744}
   - {fileID: 895817667}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1092,14 +1092,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 651338443}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.1, y: -1.3, z: 0}
+  m_LocalPosition: {x: -5.72, y: -1.3, z: 0}
   m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 560186167}
   - {fileID: 2005898586}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &651338447
 BoxCollider2D:
@@ -2105,7 +2105,7 @@ RectTransform:
   - {fileID: 1114878167}
   - {fileID: 712382708}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2153,7 +2153,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1108436862}
   - component: {fileID: 1108436861}
-  - component: {fileID: 1108436863}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -2175,41 +2174,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Timer: {fileID: 882553795}
   BM: {fileID: 1728303026}
+  PM: {fileID: 0}
   MC: {fileID: 519420033}
   Pl: {fileID: 651338448}
   GameOver: {fileID: 943586924}
   GameEnd: {fileID: 233463447}
-  SPR:
-  - {fileID: 1144249923}
-  - {fileID: 1118110373}
-  - {fileID: 364372800}
-  - {fileID: 738849175}
-  - {fileID: 498300023}
-  - {fileID: 1488060044}
-  - {fileID: 184959017}
-  - {fileID: 463820252}
-  - {fileID: 1345502910}
-  - {fileID: 330828681}
-  SPL:
-  - {fileID: 162852236}
-  - {fileID: 175597408}
-  - {fileID: 1631376685}
-  - {fileID: 1967637797}
-  - {fileID: 1440404290}
-  - {fileID: 2043825739}
-  - {fileID: 1000728898}
-  - {fileID: 921885184}
-  - {fileID: 676368008}
-  - {fileID: 874435963}
   PlatU: {fileID: 327523273}
   PlatD: {fileID: 1785629143}
-  RepeatInterv: 2
-  BulletInterv: 0.1
-  PatternInterv: 3
-  PatternNum: 3
-  RepeatNum: 2
-  TimeToSurvive: 30
   GameType: 0
+  TimeToSurvive: 30
 --- !u!4 &1108436862
 Transform:
   m_ObjectHideFlags: 0
@@ -2223,23 +2196,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1108436863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1108436860}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec202eccdb6fedb40826aec88b17ab4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlatL: []
-  Plat: {fileID: 8623557440379539538, guid: 6b849450fdba06e4681db91c02ea7d0c, type: 3}
-  SPCNT: {fileID: 1620713675}
 --- !u!1 &1114878166
 GameObject:
   m_ObjectHideFlags: 0
@@ -2632,7 +2590,7 @@ Transform:
   - {fileID: 891111832}
   - {fileID: 693683243}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1345502909
 GameObject:
@@ -2756,7 +2714,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1631376684
 GameObject:
@@ -3181,7 +3139,7 @@ RectTransform:
   m_Children:
   - {fileID: 882553792}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3342,7 +3300,7 @@ Transform:
   - {fileID: 676368008}
   - {fileID: 874435963}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2043825738
 GameObject:
@@ -3375,3 +3333,77 @@ Transform:
   m_Father: {fileID: 2042530957}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2056103067
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2056103068}
+  - component: {fileID: 2056103069}
+  m_Layer: 0
+  m_Name: PatternManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2056103068
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2056103067}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2056103069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2056103067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec202eccdb6fedb40826aec88b17ab4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GM: {fileID: 1108436861}
+  BM: {fileID: 1728303026}
+  Plat: {fileID: 8623557440379539538, guid: 6b849450fdba06e4681db91c02ea7d0c, type: 3}
+  Razer: {fileID: 7406032466084232264, guid: a44a66b40df22ad4bb2f1c0b9d10860b, type: 3}
+  SPCNT: {fileID: 1620713675}
+  SPRE:
+  - {fileID: 1144249923}
+  - {fileID: 1118110373}
+  - {fileID: 364372800}
+  - {fileID: 738849175}
+  - {fileID: 498300023}
+  - {fileID: 1488060044}
+  - {fileID: 184959017}
+  - {fileID: 463820252}
+  - {fileID: 1345502910}
+  - {fileID: 330828681}
+  SPLE:
+  - {fileID: 162852236}
+  - {fileID: 175597408}
+  - {fileID: 1631376685}
+  - {fileID: 1967637797}
+  - {fileID: 1440404290}
+  - {fileID: 2043825739}
+  - {fileID: 1000728898}
+  - {fileID: 921885184}
+  - {fileID: 676368008}
+  - {fileID: 874435963}
+  RepeatInterv: 0
+  BulletInterv: 0
+  PatternInterv: 0

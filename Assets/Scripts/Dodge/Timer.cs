@@ -22,8 +22,6 @@ public class Timer : MonoBehaviour
                 time = MaxTime;
                 GetComponent<TMP_Text>().text = string.Format("{0:0.00}", time);
                 IsTimeFlow = false;
-                if (!GM.GameType) GM.EndPattern();
-                else GM.GameResult();
             }
         }
     }

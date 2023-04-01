@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
+
+//Bullet Object Pooling
 public class BulletManager : MonoBehaviour
 {
     [SerializeField]
