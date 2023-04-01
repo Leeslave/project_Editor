@@ -24,7 +24,8 @@ public class ScreenManager : MonoBehaviour
     public float logoOnSeconds;     //로고 이미지 활성 시간
     private string currentBootStatus;        //현 부팅 상태 (Off > On > TryOff> )
 
-    private void Start() {
+    /// 컴포넌트 설정, 부팅 초기값 off
+    private void Awake() {
         bootLogo = bootPanel.transform.GetChild(0).gameObject;
         bootCLI = bootPanel.transform.GetChild(1).gameObject;
         bootCLI.GetComponent<Text>().text = "";
@@ -37,11 +38,13 @@ public class ScreenManager : MonoBehaviour
         currentBootStatus = "Off";
     }
 
-    /**
-    * 전원 버튼 클릭 이벤트
-    * - Off -> On : 전원 키기
-    * - On -> TryOff -> GetOff -> Off : 전원 끄기 -> 한번 더 눌러 전원 끄기
-    */
+    /// <summary>
+    /// 전원 버튼 클릭 이벤트
+    /// </summary>
+    /// <remarks>
+    /// <para>- Off -> On : 전원 키기</para>
+    /// <para>- On -> TryOff -> GetOff -> Off : 전원 끄기 -> 한번 더 눌러 전원 끄기</para>
+    /// </remarks>
     public void OnPowerClicked()
     {
         switch (currentBootStatus)
@@ -58,10 +61,9 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
-    /**
-    * 리셋 버튼 클릭 이벤트
-    * - 즉시 재부팅 실행
-    */
+    /// <summary>
+    /// 재부팅 버튼 클릭 이벤트
+    /// </summary>
     public void OnResetClicked()
     {
         StopAllCoroutines();
@@ -77,6 +79,7 @@ public class ScreenManager : MonoBehaviour
     */
     IEnumerator BootScreen()
     {
+        // 부팅 시작
         currentBootStatus = "TryOn";
         bootPanel.SetActive(true);
         // TODO: desktop 비활성화
@@ -108,15 +111,18 @@ public class ScreenManager : MonoBehaviour
     */
     IEnumerator OffScreen()
     {
+        // 종료 시도
         currentBootStatus = "TryOff";
         // TODO: desktop 비활성화(정지)
         bootPanel.SetActive(true);
         bootLogo.SetActive(false);
         bootCLI.SetActive(true);
 
+        // 3초 내 종료 대기
         bootCLI.GetComponent<Text>().text = "\n\n3초 내로 전원 버튼을 다시 눌러 전원 끄기...";
         for(var i = 0; i<6; i++)
         {
+            // 종료
             if(currentBootStatus == "GetOff")
             {
                 currentBootStatus = "Off";
@@ -128,6 +134,8 @@ public class ScreenManager : MonoBehaviour
             }
             yield return new WaitForSeconds(0.5f);
         }
+
+        // 종료 취소 및 스크린 재개
         currentBootStatus = "On";
         bootCLI.GetComponent<Text>().text = "";
         // TODO: desktop 활성화(재개)

@@ -19,7 +19,10 @@ public class DayIntro : MonoBehaviour
     public TMP_Text dayText;      //글자 활성화용 텍스트 오브젝트
     private string hour;        // 시간대 프리셋으로 시간 문자열
 
-    /// 시간대 문자열 설정 함수 (0: 출근전, 1: 업무전, 2: 업무후, 3: 퇴근 후)
+    /**
+    * 시간대 문자열 설정 함수
+    - (0: 출근전, 1: 업무전, 2: 업무후, 3: 퇴근 후)
+    */ 
     private void setHour(int timeOffset)
     {
         switch(timeOffset) {
@@ -72,6 +75,6 @@ public class DayIntro : MonoBehaviour
 
         //종료 및 WorldCanvas 설정
         gameObject.SetActive(false);
-           // TODO: 위치에 해당하는 worldCanvas 생성으로 수정
+        playerDataManager.asyncSceneData();
     }
 }

@@ -11,7 +11,7 @@ public class ActivateScreen : MonoBehaviour
     */
     public List<GameObject> offList;
     public GameObject downButton;
-    public GameObject screenObject;
+    private GameObject screenObject;
     public float screenZoomMultiplier;
 
     private bool isScreenActive;
@@ -19,6 +19,7 @@ public class ActivateScreen : MonoBehaviour
     private void Awake() {
         isScreenActive = false;
         downButton.SetActive(false);
+        screenObject = GameObject.FindObjectOfType<ScreenManager>().gameObject;
     }
 
     /// <summary>
