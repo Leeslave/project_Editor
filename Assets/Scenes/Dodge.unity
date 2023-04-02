@@ -431,7 +431,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!224 &233463451
 RectTransform:
@@ -441,7 +441,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 233463447}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1210,7 +1210,7 @@ GameObject:
   - component: {fileID: 693683243}
   - component: {fileID: 693683245}
   - component: {fileID: 693683244}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Down
   m_TagString: Border
   m_Icon: {fileID: 0}
@@ -1624,10 +1624,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 843a91eab95677d48a4b8d12c1b43d65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GM: {fileID: 1108436861}
+  PM: {fileID: 2056103069}
   MaxTime: 0
-  IsTimeFlow: 0
+  IsTimeFlow: 1
   time: 0
+  TimeToSurvive: 30
 --- !u!1 &891111831
 GameObject:
   m_ObjectHideFlags: 0
@@ -1639,7 +1640,7 @@ GameObject:
   - component: {fileID: 891111832}
   - component: {fileID: 891111834}
   - component: {fileID: 891111833}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Up
   m_TagString: Border
   m_Icon: {fileID: 0}
@@ -2087,7 +2088,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!224 &943586928
 RectTransform:
@@ -2097,7 +2098,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 943586924}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2174,15 +2175,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Timer: {fileID: 882553795}
   BM: {fileID: 1728303026}
-  PM: {fileID: 0}
-  MC: {fileID: 519420033}
+  PM: {fileID: 2056103069}
   Pl: {fileID: 651338448}
-  GameOver: {fileID: 943586924}
+  GameOverP: {fileID: 0}
   GameEnd: {fileID: 233463447}
   PlatU: {fileID: 327523273}
   PlatD: {fileID: 1785629143}
   GameType: 0
-  TimeToSurvive: 30
+  TimeToSurvive: 0
 --- !u!4 &1108436862
 Transform:
   m_ObjectHideFlags: 0
@@ -2406,7 +2406,7 @@ GameObject:
   - component: {fileID: 1234356170}
   - component: {fileID: 1234356171}
   - component: {fileID: 1234356172}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Left
   m_TagString: Border
   m_Icon: {fileID: 0}
@@ -2486,7 +2486,7 @@ GameObject:
   - component: {fileID: 1269651708}
   - component: {fileID: 1269651709}
   - component: {fileID: 1269651710}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Right
   m_TagString: Border
   m_Icon: {fileID: 0}
@@ -3377,8 +3377,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec202eccdb6fedb40826aec88b17ab4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GM: {fileID: 1108436861}
   BM: {fileID: 1728303026}
+  MainCam: {fileID: 519420031}
+  TM: {fileID: 882553795}
+  Pl: {fileID: 651338448}
   Plat: {fileID: 8623557440379539538, guid: 6b849450fdba06e4681db91c02ea7d0c, type: 3}
   Razer: {fileID: 7406032466084232264, guid: a44a66b40df22ad4bb2f1c0b9d10860b, type: 3}
   SPCNT: {fileID: 1620713675}
@@ -3404,6 +3406,6 @@ MonoBehaviour:
   - {fileID: 921885184}
   - {fileID: 676368008}
   - {fileID: 874435963}
-  RepeatInterv: 0
-  BulletInterv: 0
-  PatternInterv: 0
+  RepeatInterv: 2
+  BulletInterv: 0.1
+  PatternInterv: 3

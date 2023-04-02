@@ -2,14 +2,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 // Make Pattern / End Pattern
 public class PatternManager : MonoBehaviour
 {
-    public GameManager GM;
     public BulletManager BM;
+    public Camera MainCam;
+    public Timer TM;
+    public Player Pl;
 
     public GameObject Plat;
     public GameObject Razer;
@@ -48,9 +51,6 @@ public class PatternManager : MonoBehaviour
         new Vector2[] {Vector2.left,Vector2.down}, new Vector2[] {Vector2.zero,Vector2.down}, new Vector2[] { Vector2.right, Vector2.down }
     };
 
-
-    IEnumerator CurPlay = null;
-
     private void Awake()
     {
         for (int i = 0; i < 26; i++)
@@ -69,10 +69,15 @@ public class PatternManager : MonoBehaviour
         ReadExternalPattern();
     }
 
+    private void Start()
+    {
+        StartPT(0);
+    }
+
     // EZ
     IEnumerator MakeEasyPattern()     // Make Normal Pattenr
     {
-        if (GM.Timer.time == 0) yield return new WaitForSeconds(0.1f);
+        if (TM.time == 0) yield return new WaitForSeconds(0.1f);
         List<int[]> CurPattern = PTLE[Random.Range(0, PatternNum)];
         for (int CurRepeat = 0; CurRepeat < 2; CurRepeat++)
         {
@@ -91,13 +96,14 @@ public class PatternManager : MonoBehaviour
             yield return new WaitForSeconds(RepeatInterv);
         }
         yield return new WaitForSeconds(PatternInterv);
+        StartCoroutine(ChangePT(MakeEasyPattern()));
         yield break;
     }
 
-    // Normal
+    // Normal                   N1 -> N2 -> Hard
     IEnumerator PatternN1()       // Play Time : 25s
     {
-        GM.Pl.ChangeType("Ping");
+        Pl.ChangeType("Ping");
         yield return new WaitForSeconds(1);
 
         int j = Random.Range(1, 3);
@@ -124,12 +130,14 @@ public class PatternManager : MonoBehaviour
             if (jk) k += dk;
             yield return new WaitForSeconds(BulletInterv * 1.4f);
         }
+        yield return new WaitForSeconds(12);
+        StartCoroutine(ChangePT(PatternN2()));
         yield break;
     }
 
     IEnumerator PatternN2()
     {
-        GM.Pl.ChangeType("Ping");
+        Pl.ChangeType("Ping");
         yield return new WaitForSeconds(1);
 
         float MidY = (SPLE[4].position.y + SPLE[5].position.y) / 2;
@@ -137,17 +145,55 @@ public class PatternManager : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             int a1 = Random.Range(0, 2);
-            if (a1 == 0) Instantiate(Razer).transform.position = new Vector3(2.6f, -4, 0);
-            else Instantiate(Razer).transform.position = new Vector3(2.6f, 1.4f, 0);
-
+            StartCoroutine(CamShake());
+            if (a1 == 0)
+            {
+                GameObject cnt = Instantiate(Plat);
+                cnt.transform.position = new Vector3(SPLE[4].position.x,MidY,0);
+                cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.right * 3, ForceMode2D.Impulse);
+                Instantiate(Razer).transform.position = new Vector3(2.6f, -4, 0);
+            }
+            else
+            {
+                GameObject cnt = Instantiate(Plat);
+                cnt.transform.position = new Vector3(SPRE[4].position.x, MidY, 0);
+                cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.left * 3, ForceMode2D.Impulse);
+                Instantiate(Razer).transform.position = new Vector3(2.6f, 1.4f, 0);
+            }
+            yield return new WaitForSeconds(9);
         }
+        MakeGlitch(0.3f, 0.7f, 1);
+        yield return new WaitForSeconds(5);
+        MakeGlitch(0, 0, 0);
+        TM.IsTimeFlow = true;
+        TM.MaxTime = 10000;
+        StartCoroutine(ChangePT(Pattern1()));
         yield break;
     }
+    IEnumerator CamShake()
+    {
+        float Cx = MainCam.transform.position.x;
+        float Cy = MainCam.transform.position.y;
+        yield return new WaitForSeconds(2f);
+        for (int i = 0; i < 24; i++)
+        {
+            MainCam.transform.position = new Vector3(Cx - 0.5f, Cy, -2);
+            yield return new WaitForSeconds(0.05f);
+            MainCam.transform.position = new Vector3(Cx+0.5f, Cy, -2);
+            yield return new WaitForSeconds(0.05f);
+            MainCam.transform.position = new Vector3(Cx, Cy+0.5f, -2);
+            yield return new WaitForSeconds(0.05f);
+            MainCam.transform.position = new Vector3(Cx, Cy-0.5f, -2);
+            yield return new WaitForSeconds(0.05f);
+            MainCam.transform.position = new Vector3(Cx, Cy, -2);
+            yield return new WaitForSeconds(0.05f);
+        }
+    }
 
-    // Hard
+    // Hard                     1 -> 2 -> 3 -> 4
     IEnumerator Pattern1()
     {
-        GM.Pl.ChangeType("Normal");
+        Pl.ChangeType("Normal");
         yield return new WaitForSeconds(1);
 
         for (int i = 0; i < 20; i++)
@@ -157,12 +203,13 @@ public class PatternManager : MonoBehaviour
             BM.MakeBigBul(DF[a] * 2, Vector2.zero, true).transform.position = SP[a][b];
             yield return new WaitForSeconds(3);
         }
+        StartCoroutine(ChangePT(Pattern2()));
         yield break;
     }
 
     IEnumerator Pattern2()
     {
-        GM.Pl.ChangeType("Normal");
+        Pl.ChangeType("Normal");
         yield return new WaitForSeconds(1);
 
         for (int i = 0; i < 30; i++)
@@ -175,12 +222,13 @@ public class PatternManager : MonoBehaviour
             for (int x = SPL.Length / 2; x < SPL.Length; x++) BM.MakeSmallBul(Vector2.right * 5, Vector2.zero).transform.position = SPL[x];
             yield return new WaitForSeconds(1.5f);
         }
+        StartCoroutine(ChangePT(Pattern3()));
         yield break;
     }
 
     IEnumerator Pattern3()
     {
-        GM.Pl.ChangeType("Normal");
+        Pl.ChangeType("Normal");
         yield return new WaitForSeconds(1);
 
         Vector3 Cnt1 = new Vector3(SPT[12].x + 0.5f, SPL[9].y, 0);
@@ -192,19 +240,20 @@ public class PatternManager : MonoBehaviour
 
         for (int i = 0; i < 50; i++)
         {
-            BM.MakeSmallBul((GM.Pl.transform.position - Cnt1).normalized * 7, Vector2.zero).transform.position = Cnt1;
-            BM.MakeSmallBul((GM.Pl.transform.position - Cnt2).normalized * 7, Vector2.zero).transform.position = Cnt2;
-            BM.MakeSmallBul((GM.Pl.transform.position - Cnt3).normalized * 7, Vector2.zero).transform.position = Cnt3;
+            BM.MakeSmallBul((Pl.transform.position - Cnt1).normalized * 7, Vector2.zero).transform.position = Cnt1;
+            BM.MakeSmallBul((Pl.transform.position - Cnt2).normalized * 7, Vector2.zero).transform.position = Cnt2;
+            BM.MakeSmallBul((Pl.transform.position - Cnt3).normalized * 7, Vector2.zero).transform.position = Cnt3;
             yield return new WaitForSeconds(0.25f);
         }
 
+        StartCoroutine(ChangePT(Pattern4()));
         yield break;
     }
 
     IEnumerator Pattern4()
     {
-        GM.Pl.ChangeType("Normal");
-        GM.Pl.transform.GetChild(0).gameObject.SetActive(true);
+        Pl.ChangeType("Normal");
+        Pl.transform.GetChild(0).gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
 
         Vector3 Cnt1 = new Vector3(SPT[12].x + 0.5f, SPL[9].y, 0);
@@ -232,19 +281,39 @@ public class PatternManager : MonoBehaviour
             BM.MakeSmallBul(Vector2.right * 2.5f, Vector2.zero).transform.position = SPLE[i].position;
         }
     }
+    public void MakeGlitch(float a, float b, float c)
+    {
+        GlitchEffect MC = MainCam.GetComponent<GlitchEffect>();
+        MC.intensity = a; MC.flipIntensity = b; MC.colorIntensity = c;
+    }
+
+    IEnumerator ChangePT(IEnumerator a)
+    {
+        StartCoroutine(a);
+        yield break;
+    }
+
+    public void StartPT(int i)
+    {
+        EndPT();
+        switch (i) 
+        {
+            case 0: StartCoroutine(ChangePT(MakeEasyPattern())); break;
+            case 1: StartCoroutine(ChangePT(PatternN1())); break;
+        }
+    }
 
     public void EndPT()     // End All Pattern
     {
-        if (CurPlay != null) StopCoroutine(CurPlay);
-        CurPlay = null;
+        StopAllCoroutines();
         foreach (var a in PlatL) Destroy(a);
-        GM.Pl.transform.GetChild(0).gameObject.SetActive(false);
-        BM.EndBul();
+        Pl.transform.GetChild(0).gameObject.SetActive(false);
+        BM.DelBul();
     }
 
     void ReadExternalPattern()  // Read Pattern In Resources Folder. Name of The Pattern File Must be Pattern_X ( ex) Pattern_1, Pattern_2)
     {
-        for (int i = 1; i < 4; i++)
+        for (int i = 1; i < 5; i++)
         {
             string tmp = "Text/Dodge/Pattern_" + i.ToString();
             TextAsset textFile = Resources.Load(tmp) as TextAsset;

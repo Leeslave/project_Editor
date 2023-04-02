@@ -101,7 +101,6 @@ public class Player : MonoBehaviour
         if (collision.gameObject.tag == "Bullet")
         {
             gameObject.SetActive(false);
-            GM.GameResult();
         }
     }
 }

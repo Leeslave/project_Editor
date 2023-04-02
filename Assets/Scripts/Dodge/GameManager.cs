@@ -19,11 +19,10 @@ public class GameManager: MonoBehaviour
     public Timer Timer;             // Timer Prefab
     public BulletManager BM;        // Bullet Create Manager Prefab
     public PatternManager PM;       // For UpgradePattern Script
-    public GlitchEffect MC;         // Making Glitch Prefab
     public Player Pl;               // Player Prefab
 
     //Prefabs
-    public GameObject GameOver;     // GameOver Prefab
+    public GameObject GameOverP;     // GameOver Prefab
     public GameObject GameEnd;      // GameEnd Prefab
 
     public GameObject PlatU;        // PlatForm_Up
@@ -37,55 +36,8 @@ public class GameManager: MonoBehaviour
     //Private variable
     IEnumerator CurPlayPattern;     // Now Playing Patter(Normal/Hard)
 
-    private void Start()
+    void TimeFlow(bool tp)         // Timer Work, Pattern Work
     {
-        Timer.MaxTime = TimeToSurvive;
+        Timer.IsTimeFlow = tp;
     }
-
-    void TimeFlow()         // Timer Work, Pattern Work
-    {
-        Timer.IsTimeFlow = true;
-        StartCoroutine(CurPlayPattern);
-    }
-
-    public void GameResult()
-    {
-        BM.DelBul();
-        Timer.IsTimeFlow = false;
-        if (!GameType)      // When Normal
-        {
-            if (Timer.time >= TimeToSurvive)        // Endure Time
-            {
-                GameEnd.SetActive(true);
-            }
-            else            // GameOver
-            {
-                GameOver.SetActive(true);
-                StopAllCoroutines();
-                Timer.time = 0;
-            }
-        }
-        else              // When Hard
-        {
-            /*UpValue.EndPT();*/
-            GameEnd.SetActive(true);
-            if (Timer.time >= TimeToSurvive * 2)
-            {
-                GameEnd.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = "Hidden";
-            }
-            else           // GameOver
-            {
-                Timer.time = 0;
-                Timer.MaxTime = TimeToSurvive;
-            }
-        }
-    }
-
-    public void MakeGlitch(float a, float b, float c)
-    {
-        MC.intensity = a; MC.flipIntensity = b; MC.colorIntensity = c;
-    }
-
-
-
 }

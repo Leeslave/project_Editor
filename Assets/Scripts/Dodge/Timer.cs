@@ -6,10 +6,17 @@ using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-    public GameManager GM;
+    public PatternManager PM;
     public float MaxTime;
-    public bool IsTimeFlow = false;
+    public bool IsTimeFlow = true;
     public float time = 0;
+    [Range(5, 30)]
+    public float TimeToSurvive;     // How Long Player Have To Survie
+
+    private void Awake()
+    {
+        MaxTime = TimeToSurvive;
+    }
 
     private void Update()
     {
@@ -22,6 +29,7 @@ public class Timer : MonoBehaviour
                 time = MaxTime;
                 GetComponent<TMP_Text>().text = string.Format("{0:0.00}", time);
                 IsTimeFlow = false;
+                PM.StartPT(1);
             }
         }
     }
