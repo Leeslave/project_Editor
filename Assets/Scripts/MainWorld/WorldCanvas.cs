@@ -43,14 +43,25 @@ public class WorldCanvas : MonoBehaviour
         }
     }
 
-    /**
-    * 월드 내 위치로 현재 화면 활성화
-    */  
-    private void ActiveCurrentScene()
+    /// <summary>
+    /// 현재 위치 활성화
+    /// </summary>
+    public void ActiveCurrentScene()
     {
         for(int idx = 0; idx < transform.childCount; idx++)
         {
             sceneList[idx].gameObject.SetActive(idx == currentPosition);
+        }
+    }
+
+    /// <summary>
+    /// 모든 씬 페이지 비활성화
+    /// </summary>
+    public void DeactivateCurrentScene()
+    {
+        for(int idx = 0; idx < transform.childCount; idx++)
+        {
+            sceneList[idx].gameObject.SetActive(false);
         }
     }
 

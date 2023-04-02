@@ -19,7 +19,7 @@ public class ActivateScreen : MonoBehaviour
     private void Awake() {
         isScreenActive = false;
         downButton.SetActive(false);
-        screenObject = GameObject.FindObjectOfType<ScreenManager>().gameObject;
+        screenObject = GameObject.FindObjectOfType<ScreenManager>().transform.GetChild(0).gameObject;
     }
 
     /// <summary>
@@ -45,7 +45,9 @@ public class ActivateScreen : MonoBehaviour
         else
         {
             screenObject.SetActive(true);
-            transform.parent.parent.gameObject.SetActive(false);
+            transform
+                .parent         //월드 페이지들
+                .parent.gameObject.SetActive(false);    // 월드 캔버스
         }
     }
 
