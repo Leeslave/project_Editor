@@ -22,6 +22,11 @@ public class WorldCanvas : MonoBehaviour
 
     private int currentPosition = 0;    // 현재 배경컷 위치
 
+    /// 이벤트 카메라 할당
+    private void Awake() {
+        gameObject.GetComponent<Canvas>().worldCamera = Camera.main;
+    }
+
     /// 활성화될때마다 월드 내 시간 동기화
     void OnEnabled()
     {
@@ -87,8 +92,9 @@ public class WorldCanvas : MonoBehaviour
         }
     }
 
-    public void MoveNextWorld()
+    public void MoveNextWorld(string nextWorld)
     {
-
+        PlayerPrefs.SetString("Location", nextWorld);
+        PlayerDataManager.asyncSceneData();
     }
 }

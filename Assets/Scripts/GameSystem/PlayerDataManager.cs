@@ -12,8 +12,8 @@ using UnityEngine;
     */
 public class PlayerDataManager : MonoBehaviour
 {
-    public string savefilePath = "/Resources/Save/";    // 세이브 파일 경로
-    public string worldfilePath = "Prefab/MainWorld/";  // 월드 프리팹 경로
+    public static string savefilePath = "/Resources/Save/";    // 세이브 파일 경로
+    public static string worldfilePath = "Prefab/MainWorld/";  // 월드 프리팹 경로
 
     /**
     * 플레이어 데이터 클래스
@@ -30,10 +30,11 @@ public class PlayerDataManager : MonoBehaviour
         public string location;
         public int renown;
     }
-    private PlayerData playerData = new PlayerData();   // PlayerPrefs와 데이터 연동
+    private static PlayerData playerData = new PlayerData();   // PlayerPrefs와 데이터 연동
+
 
     // 데이터 초기 설정
-    public void InitNewPlayerData()
+    public static void InitNewPlayerData()
     {   
         LoadPlayerData(savefilePath+"initial.json");
         asyncPlayerPrefs();
@@ -43,7 +44,7 @@ public class PlayerDataManager : MonoBehaviour
     /// 플레이어 데이터 JSON 저장
     /// </summary>
     /// <param name="SaveFileName">저장 경로 내 파일명</param>
-    public void SavePlayerData(string saveFileName)
+    public static void SavePlayerData(string saveFileName)
     {
         asyncPlayerData();
 
@@ -59,7 +60,7 @@ public class PlayerDataManager : MonoBehaviour
     /// 플레이어 데이터 JSON 로드
     /// </summary>
     /// <param name="SaveFileName">저장 경로 내 파일명</param>
-    public void LoadPlayerData(string saveFileName)
+    public static void LoadPlayerData(string saveFileName)
     { 
         FileStream fileStream = new FileStream(Application.dataPath + savefilePath + saveFileName + ".json", FileMode.Open);
         byte[] data = new byte[fileStream.Length];
@@ -72,12 +73,13 @@ public class PlayerDataManager : MonoBehaviour
         asyncPlayerPrefs();
         asyncSceneData();
     }
+    
 
     /// <summary>
     /// 플레이어의 위치와 활성화 월드 동기화
     /// </summary>
     /// <remarks>씬 내 WorldCanvas 객체 삭제 후 새로 생성</remarks>
-    public void asyncSceneData()
+    public static void asyncSceneData()
     {
         var existWorld = GameObject.FindObjectOfType<WorldCanvas>();
         if (existWorld != null)
@@ -91,7 +93,7 @@ public class PlayerDataManager : MonoBehaviour
     /**
     * PlayerData -> PlayerPrefs 데이터 동기화
     */
-    private void asyncPlayerPrefs()
+    private static void asyncPlayerPrefs()
     {
         PlayerPrefs.SetInt("Year", playerData.year);
         PlayerPrefs.SetInt("Month", playerData.month);
@@ -104,7 +106,7 @@ public class PlayerDataManager : MonoBehaviour
     /**
     * PlayerPrefs -> PlayerData 데이터 동기화
     */
-    private void asyncPlayerData()
+    private static void asyncPlayerData()
     {
         playerData.year = PlayerPrefs.GetInt("Year");
         playerData.month = PlayerPrefs.GetInt("Month");

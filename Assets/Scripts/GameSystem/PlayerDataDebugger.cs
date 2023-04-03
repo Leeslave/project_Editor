@@ -4,16 +4,10 @@ using UnityEngine;
 
 public class PlayerDataDebugger : MonoBehaviour
 {
-    public PlayerDataManager userDataManager;
     public string debugSaveData;
-
-
 
     private void Awake()
     {
-        if (userDataManager == null)
-            userDataManager = GameObject.FindObjectOfType<PlayerDataManager>();
-
-        userDataManager.LoadPlayerData(debugSaveData);
+        PlayerDataManager.LoadPlayerData(debugSaveData);
     }
 }

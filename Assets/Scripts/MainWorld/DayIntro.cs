@@ -12,8 +12,6 @@ public class DayIntro : MonoBehaviour
         - PlayerDataManager의 월드 로딩 실행
     */
     private AudioSource awakeSFX;   // 인트로용 효과음
-    private PlayerDataManager playerDataManager;  //TODO: 월드 로딩 용 데이터매니저
-
     public float textOnDelay;   // 시작부터 글자 활성화까지의 딜레이
     public float textOnDuration;    //글자 활성화 지속시간
     public TMP_Text dayText;      //글자 활성화용 텍스트 오브젝트
@@ -45,7 +43,6 @@ public class DayIntro : MonoBehaviour
     private void Awake()
     {
         awakeSFX = GetComponent<AudioSource>();
-        playerDataManager = GameObject.FindObjectOfType<PlayerDataManager>();
     }
 
     // 인트로 시작
@@ -75,6 +72,6 @@ public class DayIntro : MonoBehaviour
 
         //종료 및 WorldCanvas 설정
         gameObject.SetActive(false);
-        playerDataManager.asyncSceneData();
+        PlayerDataManager.asyncSceneData();
     }
 }
