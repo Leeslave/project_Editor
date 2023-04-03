@@ -284,7 +284,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
 
     private void UpdateADFGVXArray()//currentADFGVXArrayNum에 따라서 ADFGVX 테이블 원소의 텍스트를 변경한다
     {
-        string FilePath = "Assets/Resources/Text/Array_" + currentADFGVXArrayNum + ".txt";
+        string FilePath = "Assets/Resources/Text/EncodeDecode/Array/Array_" + currentADFGVXArrayNum + ".txt";
         FileInfo TxtFile = new FileInfo(FilePath);
         string value = "";
 

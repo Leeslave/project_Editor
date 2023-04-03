@@ -151,7 +151,6 @@ public class VerificationPanelPart : MonoBehaviour
 
         //종료
         yield return new WaitForSeconds(4f);
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 0 ,2);
         adfgvx.InformUpdate(adfgvx.ReturnDecodeScore() ? "복호화 데이터 무결성 검증에 성공했습니다" : "복호화 데이터 무결성 검증에 실패했습니다");
 
         //튜토리얼 관련 코드
@@ -162,6 +161,10 @@ public class VerificationPanelPart : MonoBehaviour
                 adfgvx.MoveToNextTutorialPhase(0f);
             else
                 adfgvx.DisplayTutorialDialog(166, 0f);
+        }
+        else        
+        {
+           adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 0 ,2);
         }
     }
 
@@ -265,7 +268,6 @@ public class VerificationPanelPart : MonoBehaviour
 
         //종료
         yield return new WaitForSeconds(4f);
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 0, 2);
         adfgvx.InformUpdate(adfgvx.ReturnDecodeScore() ? "암호화 데이터 무결성 검증에 성공했습니다" : "암호화 데이터 무결성 검증에 실패했습니다");
 
         //튜토리얼 관련 코드
@@ -275,6 +277,10 @@ public class VerificationPanelPart : MonoBehaviour
                 adfgvx.MoveToNextTutorialPhase(0f);
             else
                 adfgvx.DisplayTutorialDialog(67, 0f);
+        }
+        else
+        {
+            adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 0, 2);
         }
     }
 

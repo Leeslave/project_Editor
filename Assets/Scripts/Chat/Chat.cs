@@ -19,6 +19,7 @@ public class Chat : MonoBehaviour
 
     //CSV 데이터 저장
     protected List<Dictionary<string, object>> data;
+    protected Dictionary<string, object> currentLineData;
 
     private bool isLastNowFlowText;
     private bool isAbleToMoveNextLine;
@@ -221,8 +222,6 @@ public class Chat : MonoBehaviour
         button_Skip.SetActive(false);
         button_Remind.SetActive(true);
 
-        SetLayerDefault();
-
         dialog.StopCoroutineFlowTextWithDelay();
 
         for(;;tempLine++)
@@ -257,6 +256,7 @@ public class Chat : MonoBehaviour
                     break;
                 case "E":
                     currentLine = tempLine + 1;
+                    SetLayerAtEnd();
                     return;
             }
         } 
@@ -287,7 +287,7 @@ public class Chat : MonoBehaviour
         isAbleToMoveNextLine = false;
 
         //현재 라인 데이터 로드
-        Dictionary<string, object> currentLineData = data[line - 1];
+        currentLineData = data[line - 1];
 
         //단락 유무 확인 및 다시보기에 추가
         if (currentLineData["RemindInstruction"].ToString() != "")
@@ -389,7 +389,7 @@ public class Chat : MonoBehaviour
                 button_Choice2.SetActive(false);
                 button_Remind.SetActive(true);
                 button_Skip.SetActive(false);
-                SetLayerDefault();
+                SetLayerAtEnd();
                 break;
         }
     }
@@ -409,8 +409,8 @@ public class Chat : MonoBehaviour
         return tutorialPhaseList.ToArray();
     }
 
-    protected virtual void SetLayerDefault()//입력 제어
+    protected virtual void SetLayerAtEnd()//입력 제어
     {
-
+        
     }
 }

@@ -81,7 +81,7 @@ public class EncodeDataLoadPart : MonoBehaviour
         string ReceiverUI = "";
         string Receiver = "";
 
-        FilePath = "Assets/Resources/Chiper/" + filePath.GetInputString() + ".txt";
+        FilePath = "Assets/Resources/Text/EncodeDecode/Key/" + filePath.GetInputString() + ".txt";
         TxtFile = new FileInfo(FilePath);
 
         if (!TxtFile.Exists)
@@ -103,7 +103,12 @@ public class EncodeDataLoadPart : MonoBehaviour
             if (filePath.GetInputString() == "SI-XI-I")
                 adfgvx.MoveToNextTutorialPhase(3f);
             else
-                adfgvx.DisplayTutorialDialog(14, 3.01f);
+                adfgvx.DisplayTutorialDialog(14, 3.2f);
+        }
+        else
+        {
+            //입력 회복
+            adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
             
         StreamReader Reader = new StreamReader(FilePath, System.Text.Encoding.UTF8);
@@ -123,9 +128,6 @@ public class EncodeDataLoadPart : MonoBehaviour
 
         //입력 차단
         adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
-
-        //입력 회복
-        adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         adfgvx.InformUpdate("'" + filePath.GetInputString() + "' " + "로드 성공 : 총 작업 시간 1ms 이하");
 

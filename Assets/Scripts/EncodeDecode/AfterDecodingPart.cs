@@ -81,7 +81,7 @@ public class AfterDecodingPart : MonoBehaviour
                 adfgvx.MoveToNextTutorialPhase(2.0f);
             else if(adfgvx.biliteralsubstitutionpart.GetCurrentADFGVXArrayNum() != 0)
             {
-                adfgvx.DisplayTutorialDialog(147, 0f);
+                adfgvx.DisplayTutorialDialog(175, 0f);
                 row.text = "-";
                 line.text = "-";
                 return;
