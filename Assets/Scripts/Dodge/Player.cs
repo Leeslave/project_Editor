@@ -1,26 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
     Rigidbody2D rigid;
-    public GameManager GM;
+    public PatternManager PM;
     public GameObject Up;
     public GameObject Down;
+    public GameObject Particle;
+    public GameObject GameOver;
+    public GameObject EndG;
+    public Image[] HPS;
+    public Sprite HPOn;
+    public Sprite HPOff;
+
     public int speed;
+    public int CurHp;
     public float MaxSpeed_Y;
     public bool IsGameOver;
     public bool MovePing;
     public bool MoveAble = true;
     bool RayAble = true;
+    List<GameObject> PtL = new List<GameObject>();
 
     private void Awake()
     {
         IsGameOver = false;
         rigid = GetComponent<Rigidbody2D>();
         rigid.velocity = new Vector2(0, -speed);
+        for (int i = 0; i < 9; i++) { PtL.Add(Instantiate(Particle)); PtL[i].SetActive(false); }
     }
     private void FixedUpdate()
     {
@@ -58,7 +70,7 @@ public class Player : MonoBehaviour
             rigid.velocity = new Vector2(0, -10);
             MovePing = true;
         }
-        else
+        else if(type == "Normal")
         {
             rigid.velocity = new Vector2(0, 0);
             MovePing = false;
@@ -88,11 +100,40 @@ public class Player : MonoBehaviour
     {
         yield return new WaitForSeconds(0.3f);
         a.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+        yield break;
+    }
+    IEnumerator RealEnd()
+    {
+        ChangeType("End");
+        rigid.velocity = new Vector2(0, 0);
+        MoveAble = false;
+        EndG.SetActive(true);
+        EndG.GetComponent<RealEnd>().Ending("Game Over", "마음이 꺾였다...");
+        yield return new WaitForSeconds(1);
+        foreach(var a in PtL)
+        {
+            a.SetActive(true);
+            a.transform.position = transform.position;
+            a.GetComponent<Rigidbody2D>().gravityScale = 1;
+            a.GetComponent<Rigidbody2D>().AddForce((Vector2.up * Random.Range(5,15) + Vector2.left * Random.Range(-4,5)),ForceMode2D.Impulse);
+        }
+        gameObject.SetActive(false);
+        yield break;
     }
 
     private void OnEnable()
     {
-        gameObject.transform.position = new Vector2(3, -2);
+        if (CurHp != 3)
+        {
+            PM.EndPT(false);
+            PM.StartPT(0);
+            PM.TM.IsTimeFlow = true;
+            PM.TM.time = 0;
+            PM.TM.MaxTime = PM.TM.TimeToSurvive;
+        }
+        foreach (var a in PtL) a.SetActive(false);
+        gameObject.transform.position = new Vector2(0, 0);
+        ChangeType("Ping");
         speed = 10;
     }
 
@@ -100,7 +141,31 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.tag == "Bullet")
         {
-            gameObject.SetActive(false);
+            PM.EndPT(true);
+            PM.TM.IsTimeFlow = false;
+            if (CurHp > 1)
+            {
+                for (int i = 0; i < 9; i++)
+                {
+                    if (i == 4) continue;
+                    PtL[i].transform.position = transform.position;
+                    PtL[i].SetActive(true);
+                    PtL[i].GetComponent<Rigidbody2D>().AddForce((PM.DE[i][0] + PM.DE[i][1]) * Random.Range(1, 4), ForceMode2D.Impulse);
+                }
+                HPS[--CurHp].sprite = HPOff;
+                gameObject.SetActive(false);
+                Invoke("OnGameOver", 1);
+            }
+            else
+            {
+                PM.EndPT(false);
+                StartCoroutine(RealEnd());
+            }
         }
+    }
+
+    void OnGameOver()
+    {
+        GameOver.SetActive(true);
     }
 }

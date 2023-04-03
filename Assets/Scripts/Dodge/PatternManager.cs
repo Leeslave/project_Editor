@@ -14,8 +14,12 @@ public class PatternManager : MonoBehaviour
     public Timer TM;
     public Player Pl;
 
+    public GameObject PlatTop;
+    public GameObject PlatBottom;
+
     public GameObject Plat;
     public GameObject Razer;
+    public GameObject GameEnd;
     public Transform SPCNT;
     public Transform[] SPRE;
     public Transform[] SPLE;
@@ -28,6 +32,7 @@ public class PatternManager : MonoBehaviour
     int PatternNum = 0;             // Num of Pattern
 
     List<List<int[]>> PTLE = new List<List<int[]>>();
+    GameObject CurRazer = null;
 
     // 좌우 소환 위치(히든용)
     Vector2[][] SP;
@@ -37,14 +42,14 @@ public class PatternManager : MonoBehaviour
     Vector2[] SPR = new Vector2[19];
 
     // 4방
-    Vector2[] DF =
+    public Vector2[] DF =
     {
                       Vector2.up,
         Vector2.left,            Vector2.right,
                      Vector2.down
     };
     // 8방 + 중앙
-    Vector2[][] DE =
+    public Vector2[][] DE =
     {
         new Vector2[] {Vector2.left,Vector2.up}, new Vector2[] {Vector2.zero,Vector2.up}, new Vector2[] { Vector2.right, Vector2.up },
         new Vector2[] {Vector2.left,Vector2.zero}, new Vector2[] {Vector2.zero,Vector2.zero}, new Vector2[] { Vector2.right, Vector2.zero },
@@ -77,7 +82,8 @@ public class PatternManager : MonoBehaviour
     // EZ
     IEnumerator MakeEasyPattern()     // Make Normal Pattenr
     {
-        if (TM.time == 0) yield return new WaitForSeconds(0.1f);
+        PlatTop.SetActive(true); PlatTop.SetActive(true);
+        if (TM.time == 0) yield return new WaitForSeconds(0.2f);
         List<int[]> CurPattern = PTLE[Random.Range(0, PatternNum)];
         for (int CurRepeat = 0; CurRepeat < 2; CurRepeat++)
         {
@@ -103,7 +109,10 @@ public class PatternManager : MonoBehaviour
     // Normal                   N1 -> N2 -> Hard
     IEnumerator PatternN1()       // Play Time : 25s
     {
-        Pl.ChangeType("Ping");
+        MakeGlitch(0.1f, 0.5f, 0.7f);
+        yield return new WaitForSeconds(1);
+        MakeGlitch(0, 0, 0);
+
         yield return new WaitForSeconds(1);
 
         int j = Random.Range(1, 3);
@@ -130,14 +139,17 @@ public class PatternManager : MonoBehaviour
             if (jk) k += dk;
             yield return new WaitForSeconds(BulletInterv * 1.4f);
         }
-        yield return new WaitForSeconds(12);
+        yield return new WaitForSeconds(10);
         StartCoroutine(ChangePT(PatternN2()));
         yield break;
     }
 
     IEnumerator PatternN2()
     {
-        Pl.ChangeType("Ping");
+
+        MakeGlitch(0.1f, 0.5f, 0.7f);
+        yield return new WaitForSeconds(1.5f);
+        MakeGlitch(0, 0, 0);
         yield return new WaitForSeconds(1);
 
         float MidY = (SPLE[4].position.y + SPLE[5].position.y) / 2;
@@ -146,19 +158,20 @@ public class PatternManager : MonoBehaviour
         {
             int a1 = Random.Range(0, 2);
             StartCoroutine(CamShake());
+            CurRazer = Instantiate(Razer);
             if (a1 == 0)
             {
                 GameObject cnt = Instantiate(Plat);
                 cnt.transform.position = new Vector3(SPLE[4].position.x,MidY,0);
                 cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.right * 3, ForceMode2D.Impulse);
-                Instantiate(Razer).transform.position = new Vector3(2.6f, -4, 0);
+                CurRazer.transform.position = new Vector3(2.6f, -4, 0);
             }
             else
             {
                 GameObject cnt = Instantiate(Plat);
                 cnt.transform.position = new Vector3(SPRE[4].position.x, MidY, 0);
                 cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.left * 3, ForceMode2D.Impulse);
-                Instantiate(Razer).transform.position = new Vector3(2.6f, 1.4f, 0);
+                CurRazer.transform.position = new Vector3(2.6f, 1.4f, 0);
             }
             yield return new WaitForSeconds(9);
         }
@@ -193,6 +206,7 @@ public class PatternManager : MonoBehaviour
     // Hard                     1 -> 2 -> 3 -> 4
     IEnumerator Pattern1()
     {
+        PlatTop.SetActive(false); PlatTop.SetActive(false);
         Pl.ChangeType("Normal");
         yield return new WaitForSeconds(1);
 
@@ -267,8 +281,11 @@ public class PatternManager : MonoBehaviour
             BM.MakeSmallBul(s * r2, Vector2.zero).transform.position = Cnt1;
             yield return new WaitForSeconds(0.01f);
         }
-
-        yield break;
+        yield return new WaitForSeconds(10);
+        EndPT(false);
+        Pl.gameObject.SetActive(false);
+        Pl.EndG.SetActive(true);
+        Pl.EndG.GetComponent<RealEnd>().Ending("Game Clear", "당신의 의지가 풍만해진다.");
     }
 
     public void EasyEndPattern() // End Of Easy Pattern(Not Hidden)
@@ -295,7 +312,7 @@ public class PatternManager : MonoBehaviour
 
     public void StartPT(int i)
     {
-        EndPT();
+        EndPT(false);
         switch (i) 
         {
             case 0: StartCoroutine(ChangePT(MakeEasyPattern())); break;
@@ -303,12 +320,17 @@ public class PatternManager : MonoBehaviour
         }
     }
 
-    public void EndPT()     // End All Pattern
+    public void EndPT(bool IsEnd)     // End All Pattern
     {
-        StopAllCoroutines();
-        foreach (var a in PlatL) Destroy(a);
-        Pl.transform.GetChild(0).gameObject.SetActive(false);
-        BM.DelBul();
+        if (!IsEnd)
+        {
+            StopAllCoroutines();
+            if (CurRazer != null) Destroy(CurRazer);
+            foreach (var a in PlatL) Destroy(a);
+            Pl.transform.GetChild(0).gameObject.SetActive(false);
+            BM.DelBul();
+        }
+        else StopAllCoroutines();
     }
 
     void ReadExternalPattern()  // Read Pattern In Resources Folder. Name of The Pattern File Must be Pattern_X ( ex) Pattern_1, Pattern_2)
