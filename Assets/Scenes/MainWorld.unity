@@ -239,7 +239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f2e16d8ef66d3d4086bb17e497aecde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldObject: {fileID: 0}
+  screen: {fileID: 0}
   bootPanel: {fileID: 1593194985}
   desktop: {fileID: 1776350918}
   bootAnimation: {fileID: 112133230}
@@ -832,7 +832,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &716782899
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1204,6 +1204,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugSaveData: debugsave_1
+  date: 
+  time: 0
+  location: 
+  renown: 0
 --- !u!4 &1249213935
 Transform:
   m_ObjectHideFlags: 0
@@ -1312,7 +1316,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1344169158
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3037,7 +3041,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4387854034118625790, guid: 681ac0e80a9e3ef46a790ca4c8c77747, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 681ac0e80a9e3ef46a790ca4c8c77747, type: 3}
