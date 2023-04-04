@@ -71,7 +71,6 @@ public class PlayerDataManager : MonoBehaviour
         playerData = JsonUtility.FromJson<PlayerData>(jsonObjectData);
 
         asyncPlayerPrefs();
-        asyncSceneData();
     }
     
 
@@ -82,13 +81,14 @@ public class PlayerDataManager : MonoBehaviour
     public static void asyncSceneData()
     {
         asyncPlayerData();
-        
+
         var existWorld = GameObject.FindObjectOfType<WorldCanvas>();
         if (existWorld != null)
         {
             Destroy(existWorld.gameObject);
         }
         GameObject newWorldCanvas = Instantiate(Resources.Load<GameObject>(worldfilePath + playerData.location + "Canvas"));
+        Debug.Log("New Worlc Created: " + newWorldCanvas.ToString());
     }
 
     

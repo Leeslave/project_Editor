@@ -241,6 +241,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldObject: {fileID: 0}
   bootPanel: {fileID: 1593194985}
+  desktop: {fileID: 1776350918}
   bootAnimation: {fileID: 112133230}
   logoOnSeconds: 1
 --- !u!114 &112133229
@@ -562,7 +563,6 @@ GameObject:
   m_Component:
   - component: {fileID: 623082740}
   - component: {fileID: 623082742}
-  - component: {fileID: 623082741}
   m_Layer: 5
   m_Name: ScreenUI
   m_TagString: Untagged
@@ -580,7 +580,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1776350919}
   - {fileID: 1593194986}
@@ -593,36 +593,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &623082741
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 623082739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &623082742
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1032,8 +1002,8 @@ RectTransform:
   m_GameObject: {fileID: 891859083}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1646336501}
   - {fileID: 1471061468}
@@ -1233,7 +1203,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0c0eefc069b4845a00483bdf84e47d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  userDataManager: {fileID: 0}
   debugSaveData: debugsave_1
 --- !u!4 &1249213935
 Transform:
@@ -1797,7 +1766,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1593194986
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1807,8 +1776,8 @@ RectTransform:
   m_GameObject: {fileID: 1593194985}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1344169158}
   - {fileID: 716782899}
@@ -2077,7 +2046,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 19.75
+  m_fontSize: 14.1
   m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2212,7 +2181,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.4
+  m_fontSize: 11.7
   m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2306,8 +2275,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a24acd5c252494242bd74fe36421055b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  savefilePath: /Resources/Save/
-  worldfilePath: Prefab/MainWorld/
 --- !u!1 &1776350918
 GameObject:
   m_ObjectHideFlags: 0
@@ -2325,7 +2292,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1776350919
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2335,8 +2302,8 @@ RectTransform:
   m_GameObject: {fileID: 1776350918}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 658621669}
   - {fileID: 1379341438}
@@ -2474,7 +2441,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.4
+  m_fontSize: 11.7
   m_fontSizeBase: 23.15
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2884,7 +2851,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

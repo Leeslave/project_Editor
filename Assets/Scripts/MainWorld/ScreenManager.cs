@@ -16,22 +16,35 @@ public class ScreenManager : MonoBehaviour
     *   메일 및 기타 PC 업무
     */
     
-    public GameObject worldObject;   //스크린이 활성화 된 world
+    private GameObject worldObject;   //스크린이 활성화 된 world
+
+    /// 스크린내 기본 요소 (에디터 할당)
+    public GameObject screen;      // 스크린
     public GameObject bootPanel;    //부팅 패널
+    public GameObject desktop;      // 바탕화면 패널
+
+    /// 부팅 패널 요소 (find)
     private GameObject bootLogo;    //로고 이미지
     private GameObject bootCLI;     //부팅 콘솔 텍스트창
+
+    /// 부팅 애니메이션 설정값
     public AnimationController bootAnimation;   //부팅 애니메이션
     public float logoOnSeconds;     //로고 이미지 활성 시간
     private string currentBootStatus;        //현 부팅 상태 (Off > On > TryOff> )
 
     /// 컴포넌트 설정, 부팅 초기값 off
-    private void Awake() {
+    private void Start() {
+        /// 월드 오브젝트 할당
+        worldObject = GameObject.FindObjectOfType<WorldCanvas>().gameObject;
+
+        /// 부팅 오브젝트 할당
         bootLogo = bootPanel.transform.GetChild(0).gameObject;
         bootCLI = bootPanel.transform.GetChild(1).gameObject;
         bootCLI.GetComponent<Text>().text = "";
 
+        /// 부팅 대기 화면으로 설정
+        desktop.SetActive(false);
         bootPanel.SetActive(true);
-
         bootLogo.SetActive(false);
         bootCLI.SetActive(false);
 
@@ -69,8 +82,6 @@ public class ScreenManager : MonoBehaviour
         StopAllCoroutines();
         bootCLI.GetComponent<Text>().text = "";
         StartCoroutine("BootScreen");
-
-        // TODO: desktop 초기화 후 시작
     }
 
     /**
@@ -82,7 +93,7 @@ public class ScreenManager : MonoBehaviour
         // 부팅 시작
         currentBootStatus = "TryOn";
         bootPanel.SetActive(true);
-        // TODO: desktop 비활성화
+        desktop.SetActive(false);
 
         // 로고 활성화
         bootLogo.SetActive(true);
@@ -101,7 +112,8 @@ public class ScreenManager : MonoBehaviour
         bootPanel.SetActive(false);
         currentBootStatus = "On";
 
-        // TODO: desktop 초기화 후 시작
+        desktop.SetActive(true);
+        // TODO: desktop 초기화 (시작)
     }
 
     /**
@@ -113,7 +125,7 @@ public class ScreenManager : MonoBehaviour
     {
         // 종료 시도
         currentBootStatus = "TryOff";
-        // TODO: desktop 비활성화(정지)
+        desktop.SetActive(false);
         bootPanel.SetActive(true);
         bootLogo.SetActive(false);
         bootCLI.SetActive(true);
@@ -126,7 +138,7 @@ public class ScreenManager : MonoBehaviour
             if(currentBootStatus == "GetOff")
             {
                 currentBootStatus = "Off";
-                // TODO: desktop 비활성화(종료)
+                // TODO: desktop 초기화 (종료)
                 worldObject.SetActive(true);
                 bootCLI.GetComponent<Text>().text = "";
                 bootPanel.transform.parent.gameObject.SetActive(false);
@@ -138,7 +150,7 @@ public class ScreenManager : MonoBehaviour
         // 종료 취소 및 스크린 재개
         currentBootStatus = "On";
         bootCLI.GetComponent<Text>().text = "";
-        // TODO: desktop 활성화(재개)
+        desktop.SetActive(true);
         bootPanel.SetActive(false);
     }
 }
