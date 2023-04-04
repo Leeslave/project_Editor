@@ -81,6 +81,8 @@ public class PlayerDataManager : MonoBehaviour
     /// <remarks>씬 내 WorldCanvas 객체 삭제 후 새로 생성</remarks>
     public static void asyncSceneData()
     {
+        asyncPlayerData();
+        
         var existWorld = GameObject.FindObjectOfType<WorldCanvas>();
         if (existWorld != null)
         {

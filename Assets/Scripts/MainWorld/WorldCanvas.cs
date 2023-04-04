@@ -17,10 +17,12 @@ using UnityEngine.UI;
 public class WorldCanvas : MonoBehaviour
 {
     public string location;     //해당 World의 위치명
+    public string nextWorld;    // 다음 이동해야 할 월드
 
     public List<Image> sceneList;    // 배경컷 리스트
 
     private int currentPosition = 0;    // 현재 배경컷 위치
+
 
     /// 이벤트 카메라 할당
     private void Awake() {
@@ -38,6 +40,7 @@ public class WorldCanvas : MonoBehaviour
     /// 시간대 동기화로 배경 이미지 설정 및 위치활성화
     /// </summary>
     /// <remarks>- "이름_순서_시간대.png"</remarks>
+    /// <remarks>- 다른 파일 없으면 기본 값 유지 </remarks>
     private void asyncWorldTime()
     {
         for(int idx = 0; idx < transform.childCount; idx++)
@@ -46,6 +49,8 @@ public class WorldCanvas : MonoBehaviour
             if (newImage != null)
                 sceneList[idx].sprite = newImage;
         }
+
+        // TODO: 다음 이동해야 할 월드 설정 (nextWorld)
     }
 
     /// <summary>
@@ -92,9 +97,13 @@ public class WorldCanvas : MonoBehaviour
         }
     }
 
-    public void MoveNextWorld(string nextWorld)
+    public void MoveNextWorld()
     {
-        PlayerPrefs.SetString("Location", nextWorld);
-        PlayerDataManager.asyncSceneData();
+        if (nextWorld != "" && nextWorld != location)
+        {
+            PlayerPrefs.SetString("Location", nextWorld);
+            PlayerDataManager.asyncSceneData();
+        }
+
     }
 }
