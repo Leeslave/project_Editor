@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActivateScreen : MonoBehaviour
+public class ScreenButton : MonoBehaviour
 {
     /**
     *   스크린 활성화, 비활성화 트리거 코드
@@ -11,7 +11,7 @@ public class ActivateScreen : MonoBehaviour
     */
     public List<GameObject> offList;
     public GameObject downButton;
-    private GameObject screenObject;
+    private ScreenManager screenObject;
     public float screenZoomMultiplier;
 
     private bool isScreenActive;
@@ -19,7 +19,7 @@ public class ActivateScreen : MonoBehaviour
     private void Awake() {
         isScreenActive = false;
         downButton.SetActive(false);
-        screenObject = GameObject.FindObjectOfType<ScreenManager>().transform.GetChild(0).gameObject;
+        screenObject = GameObject.FindObjectOfType<ScreenManager>();
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ public class ActivateScreen : MonoBehaviour
         // 스크린 확대 후 -> 스크린 키기, 이전 캔버스 비활성화
         else
         {
-            screenObject.SetActive(true);
+            // screenObject.SetActive(true);
             transform
                 .parent         //월드 페이지들
                 .parent.gameObject.SetActive(false);    // 월드 캔버스

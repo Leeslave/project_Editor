@@ -16,39 +16,109 @@ public class ScreenManager : MonoBehaviour
     *   메일 및 기타 PC 업무
     */
     
-    private GameObject worldObject;   //스크린이 활성화 된 world
+    private WorldCanvas worldObject;   //스크린이 활성화 된 world
 
     /// 스크린내 기본 요소 (에디터 할당)
-    public GameObject screen;      // 스크린
+    public GameObject screen;      // 스크린 오브젝트
     public GameObject bootPanel;    //부팅 패널
     public GameObject desktop;      // 바탕화면 패널
+    private ScreenMode currentBootStatus;    //현 부팅 상태
 
     /// 부팅 패널 요소 (find)
-    private GameObject bootLogo;    //로고 이미지
     private GameObject bootCLI;     //부팅 콘솔 텍스트창
 
     /// 부팅 애니메이션 설정값
     public AnimationController bootAnimation;   //부팅 애니메이션
     public float logoOnSeconds;     //로고 이미지 활성 시간
-    private string currentBootStatus;        //현 부팅 상태 (Off > On > TryOff> )
+
+
+    /// 스크린 모드
+    public enum ScreenMode{
+        Deactivate,
+        Off,
+        OnBoot,
+        On,
+        TryOff,
+        GetOff
+    }
+
+
+
 
     /// 컴포넌트 설정, 부팅 초기값 off
     private void Start() {
-        /// 월드 오브젝트 할당
-        worldObject = GameObject.FindObjectOfType<WorldCanvas>().gameObject;
-
         /// 부팅 오브젝트 할당
-        bootLogo = bootPanel.transform.GetChild(0).gameObject;
         bootCLI = bootPanel.transform.GetChild(1).gameObject;
         bootCLI.GetComponent<Text>().text = "";
 
         /// 부팅 대기 화면으로 설정
         desktop.SetActive(false);
         bootPanel.SetActive(true);
-        bootLogo.SetActive(false);
         bootCLI.SetActive(false);
 
-        currentBootStatus = "Off";
+        currentBootStatus = ScreenMode.Off;
+    }
+
+    /// <summary>
+    /// 스크린 현재 모드 설정
+    /// </summary>
+    /// <remarks> 부팅 전으로 스크린 화면 활성화하기</remarks>
+    /// <param name=screenMode>전환할 스크린 모드</param>
+    public void SetScreen(ScreenMode screenMode) 
+    {
+        switch(screenMode)
+        {
+            case ScreenMode.Deactivate:
+                // 비활성화 상태
+                // 월드 활성화 상태
+                screen.SetActive(false);
+                worldObject.gameObject.SetActive(true);
+                break;
+            case ScreenMode.Off:
+                // 전원 off 상태
+                // 부팅 전 화면
+                if (screen.activeSelf == false)
+                    screen.SetActive(true);
+
+                desktop.SetActive(false);
+
+                bootPanel.SetActive(true);
+                bootCLI.GetComponent<Text>().text = "";
+                bootCLI.SetActive(false);
+                break;
+            case ScreenMode.On:
+                // 전원 On 상태
+                // 부팅패널 off, 바탕화면 활성화
+                if (screen.activeSelf == false)
+                    screen.SetActive(true);
+                bootPanel.SetActive(false);
+
+                desktop.SetActive(true);
+                break;
+            case ScreenMode.OnBoot:
+                // 부팅 시작 상태
+                // 부팅 패널 활성화
+                if (screen.activeSelf == false)
+                    screen.SetActive(true);
+                if (desktop.activeSelf == true)
+                    desktop.SetActive(false);
+                bootPanel.SetActive(true);
+                bootCLI.GetComponent<Text>().text = "";
+                bootCLI.SetActive(true);
+                break;
+            case ScreenMode.TryOff:
+                // 부탕 종료 시도 상태
+                // 바탕화면 비활성화, 부팅 패널 활성화
+                if (screen.activeSelf == false)
+                    screen.SetActive(true);
+                if (desktop.activeSelf == true)
+                    desktop.SetActive(false);
+                bootPanel.SetActive(true);
+                bootCLI.GetComponent<Text>().text = "";
+                bootCLI.SetActive(true);
+                break;  
+        }
+        currentBootStatus = screenMode;
     }
 
     /// <summary>
@@ -62,14 +132,14 @@ public class ScreenManager : MonoBehaviour
     {
         switch (currentBootStatus)
         {
-            case "Off":
+            case ScreenMode.Off:
                 StartCoroutine("BootScreen");
                 break;
-            case "On":
+            case ScreenMode.On:
                 StartCoroutine("OffScreen");
                 break;
-            case "TryOff":
-                currentBootStatus = "GetOff";
+            case ScreenMode.TryOff:
+                SetScreen(ScreenMode.GetOff);
                 break;
         }
     }
@@ -80,7 +150,6 @@ public class ScreenManager : MonoBehaviour
     public void OnResetClicked()
     {
         StopAllCoroutines();
-        bootCLI.GetComponent<Text>().text = "";
         StartCoroutine("BootScreen");
     }
 
@@ -91,28 +160,21 @@ public class ScreenManager : MonoBehaviour
     IEnumerator BootScreen()
     {
         // 부팅 시작
-        currentBootStatus = "TryOn";
-        bootPanel.SetActive(true);
-        desktop.SetActive(false);
+        currentBootStatus = ScreenMode.OnBoot;
+        SetScreen(ScreenMode.OnBoot);
 
-        // 로고 활성화
-        bootLogo.SetActive(true);
-        bootCLI.SetActive(false);
+        // 로고 활성화 후 종료
+        bootPanel.transform.GetChild(0).gameObject.SetActive(true);
         yield return new WaitForSeconds(logoOnSeconds);
+        bootPanel.transform.GetChild(0).gameObject.SetActive(false);
 
         // 부팅 콘솔 텍스트 활성화
-        bootLogo.SetActive(false);
-        bootCLI.SetActive(true);
         bootAnimation.Play();
         yield return new WaitUntil(() => bootAnimation.isFinished == true);
+        yield return new WaitForSeconds(0.6f);
 
         // 부팅 완료 (콘솔창 초기화)
-        yield return new WaitForSeconds(0.6f);
-        bootCLI.GetComponent<Text>().text = "";
-        bootPanel.SetActive(false);
-        currentBootStatus = "On";
-
-        desktop.SetActive(true);
+        SetScreen(ScreenMode.On);
         // TODO: desktop 초기화 (시작)
     }
 
@@ -124,33 +186,23 @@ public class ScreenManager : MonoBehaviour
     IEnumerator OffScreen()
     {
         // 종료 시도
-        currentBootStatus = "TryOff";
-        desktop.SetActive(false);
-        bootPanel.SetActive(true);
-        bootLogo.SetActive(false);
-        bootCLI.SetActive(true);
+        SetScreen(ScreenMode.TryOff);
 
         // 3초 내 종료 대기
         bootCLI.GetComponent<Text>().text = "\n\n3초 내로 전원 버튼을 다시 눌러 전원 끄기...";
         for(var i = 0; i<6; i++)
         {
             // 종료
-            if(currentBootStatus == "GetOff")
+            if(currentBootStatus == ScreenMode.GetOff)
             {
-                currentBootStatus = "Off";
+                SetScreen(ScreenMode.Deactivate);
                 // TODO: desktop 초기화 (종료)
-                worldObject.SetActive(true);
-                bootCLI.GetComponent<Text>().text = "";
-                bootPanel.transform.parent.gameObject.SetActive(false);
                 yield break;
             }
             yield return new WaitForSeconds(0.5f);
         }
 
         // 종료 취소 및 스크린 재개
-        currentBootStatus = "On";
-        bootCLI.GetComponent<Text>().text = "";
-        desktop.SetActive(true);
-        bootPanel.SetActive(false);
+        SetScreen(ScreenMode.On);
     }
 }
