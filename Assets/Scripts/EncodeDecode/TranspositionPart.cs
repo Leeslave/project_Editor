@@ -108,6 +108,7 @@ public class TranspositionPart : MonoBehaviour
             result += " ";
         }
 
+        //전치 비움
         ClearTransposition();
 
         float pos_x = transform.GetChild(0).localPosition.x + (2.5f * (place.Length - 1));
@@ -177,7 +178,7 @@ public class TranspositionPart : MonoBehaviour
         }
 
         //입력 차단
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         //전치 비움
         ClearTransposition();
@@ -217,8 +218,6 @@ public class TranspositionPart : MonoBehaviour
 
     public void OnTransposeReverseDown()//키 순위에 따른 행렬 역전치
     {
-        //입력 차단
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
         keyword.SetIsReadyForInput(false);
         keyword.SetIsFlash(false);
 
@@ -244,6 +243,10 @@ public class TranspositionPart : MonoBehaviour
             return;
         }
 
+        //입력 차단
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+
+        //전치 비움
         ClearTransposition();
 
         string Chiper = EditStirng.CollectEnglishUpperAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString());
@@ -311,7 +314,7 @@ public class TranspositionPart : MonoBehaviour
         if(flowLine == lineLength - 1 && FlowRow == rowLength)//마지막 출력 종료
         {
             //입력 회복
-            adfgvx.SetPartLayerWaitForSec(0f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            adfgvx.SetPartLayerWaitForSec(0f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
             adfgvx.InformUpdate("키 순위 전치 프로토콜 종료 : 총 작업 시간 " + (0.1f * (rowLength + lineLength)).ToString() + "s");
             yield break;
         }

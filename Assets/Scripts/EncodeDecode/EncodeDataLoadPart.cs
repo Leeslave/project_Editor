@@ -108,7 +108,7 @@ public class EncodeDataLoadPart : MonoBehaviour
         else
         {
             //입력 회복
-            adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
             
         StreamReader Reader = new StreamReader(FilePath, System.Text.Encoding.UTF8);
@@ -127,7 +127,7 @@ public class EncodeDataLoadPart : MonoBehaviour
         Reader.Close();
 
         //입력 차단
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         adfgvx.InformUpdate("'" + filePath.GetInputString() + "' " + "로드 성공 : 총 작업 시간 1ms 이하");
 

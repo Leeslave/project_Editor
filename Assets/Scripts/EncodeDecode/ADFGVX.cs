@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ADFGVX : MonoBehaviour
 {
-    public enum mode//ADFGVX모드
+    public enum mode
     { Encoding, Decoding };
 
     [Header("현재 ADFGVX 모드")]
@@ -41,7 +41,7 @@ public class ADFGVX : MonoBehaviour
 
     public enum Audio
     {
-        TextFlow, AddChar, DeleteChar, MouseClick, DataProcessing
+        TextFlow, AddChar, DeleteChar, DataProcessing
     }
 
     [Header("오디오 소스 컴포넌트")]
@@ -66,7 +66,16 @@ public class ADFGVX : MonoBehaviour
             encodeDataSavePart.gameObject.transform.localPosition = new Vector3(70.7f, -67.9f, 0);
         }
 
-        Invoke("StartTutorial", 1f);
+        //튜토리얼 활성
+        if (PlayAsTutorial)
+        {
+            if(CurrentMode == mode.Decoding)
+                DecodeTutorialPhaseArray = chat_ADFGVX.GetArrayOfTutorialPhase();
+            else if(CurrentMode == mode.Encoding)
+                EncodeTutorialPhaseArray = chat_ADFGVX.GetArrayOfTutorialPhase();
+            currentTutorialPhase = -1;
+            MoveToNextTutorialPhase(0f);
+        }
 
         InformUpdate("아츠토츠카 표준 암호 체계 V7 가동 상태 정상");
     }
@@ -76,46 +85,46 @@ public class ADFGVX : MonoBehaviour
         UpdateStopWatch();
     }
 
-    public void SetPartLayerWaitForSec(float endTime, int layer_quit, int layer_BiliteralSubstitution, int layer_Transposition, int layer_AfterDecode, 
-        int layer_BeforeEncode, int layer_EncodeDataSave, int layer_EncodeDataLoad, int layer_Verification, int layer_DebugLog)//모든 파트의 입력 제어
+    public void SetPartLayerWaitForSec(float endTime, int quitGame, int BiliteralSubstitution, int ArrayPlusMinus, int Delete, int Clear, int Transposition, int AfterDecoding, 
+        int BeforeEncoding, int EncodeDataSave, int EncodeDataLoad, int Verification, int DebugLog)//모든 파트의 입력 제어
     {
-        StartCoroutine(SetPartLayerWaitForSec_IE(endTime, 0, layer_quit, layer_BiliteralSubstitution, layer_Transposition, layer_AfterDecode, layer_BeforeEncode, layer_EncodeDataSave, layer_EncodeDataLoad, layer_Verification, layer_DebugLog));
+        StartCoroutine(SetPartLayerWaitForSec_IE(endTime, 0, quitGame, BiliteralSubstitution, ArrayPlusMinus, Delete, Clear, Transposition, AfterDecoding, BeforeEncoding, EncodeDataSave, EncodeDataLoad, Verification, DebugLog));
     }
 
-    private IEnumerator<WaitForSeconds> SetPartLayerWaitForSec_IE(float endTime, float currentTime, int layer_quit, int layer_BiliteralSubstitution, int layer_Transposition, 
-        int layer_AfterDecode, int layer_BeforeEncode, int layer_EncodeDataSave, int layer_EncodeDataLoad, int layer_Verification, int layer_DebugLog)//SetPartLayerWaitForSec_IE
+    private IEnumerator<WaitForSeconds> SetPartLayerWaitForSec_IE(float endTime, float currentTime, int quitGame, int BiliteralSubstitution, int ArrayPlusMinus, int Delete, int Clear, int Transposition, 
+        int AfterDecoding, int BeforeEncoding, int EncodeDataSave, int EncodeDataLoad, int Verification, int DebugLog)//SetPartLayerWaitForSec_IE
     {
         if(endTime == 0f)
         {
-            quitButton.gameObject.layer = layer_quit;
-            biliteralsubstitutionpart.SetLayer(layer_BiliteralSubstitution);
-            transpositionpart.SetLayer(layer_Transposition);
-            afterDecodingPart.SetLayer(layer_AfterDecode);
-            beforeEncodingPart.SetLayer(layer_BeforeEncode);
-            encodeDataSavePart.SetLayer(layer_EncodeDataSave);
-            encodeDataLoadPart.SetLayer(layer_EncodeDataLoad);
-            verificationPart.SetLayer(layer_Verification);
-            debugLog.SetLayer(layer_DebugLog); 
+            quitButton.gameObject.layer = quitGame;
+            biliteralsubstitutionpart.SetLayer(BiliteralSubstitution, ArrayPlusMinus, Delete, Clear);
+            transpositionpart.SetLayer(Transposition);
+            afterDecodingPart.SetLayer(AfterDecoding);
+            beforeEncodingPart.SetLayer(BeforeEncoding);
+            encodeDataSavePart.SetLayer(EncodeDataSave);
+            encodeDataLoadPart.SetLayer(EncodeDataLoad);
+            verificationPart.SetLayer(Verification);
+            debugLog.SetLayer(DebugLog); 
             yield break;
         }
 
         currentTime += endTime / 100;
         if (currentTime > endTime)
         {
-            quitButton.gameObject.layer = layer_quit;
-            biliteralsubstitutionpart.SetLayer(layer_BiliteralSubstitution);
-            transpositionpart.SetLayer(layer_Transposition);
-            afterDecodingPart.SetLayer(layer_AfterDecode);
-            beforeEncodingPart.SetLayer(layer_BeforeEncode);
-            encodeDataSavePart.SetLayer(layer_EncodeDataSave);
-            encodeDataLoadPart.SetLayer(layer_EncodeDataLoad);
-            verificationPart.SetLayer(layer_Verification);
-            debugLog.SetLayer(layer_DebugLog); 
+            quitButton.gameObject.layer = quitGame;
+            biliteralsubstitutionpart.SetLayer(BiliteralSubstitution, ArrayPlusMinus, Delete, Clear);
+            transpositionpart.SetLayer(Transposition);
+            afterDecodingPart.SetLayer(AfterDecoding);
+            beforeEncodingPart.SetLayer(BeforeEncoding);
+            encodeDataSavePart.SetLayer(EncodeDataSave);
+            encodeDataLoadPart.SetLayer(EncodeDataLoad);
+            verificationPart.SetLayer(Verification);
+            debugLog.SetLayer(DebugLog); 
             yield break;
         }
 
         yield return new WaitForSeconds(endTime / 100);
-        StartCoroutine(SetPartLayerWaitForSec_IE(endTime, currentTime, layer_quit, layer_BiliteralSubstitution, layer_Transposition, layer_AfterDecode, layer_BeforeEncode, layer_EncodeDataSave, layer_EncodeDataLoad, layer_Verification, layer_DebugLog));
+        StartCoroutine(SetPartLayerWaitForSec_IE(endTime, currentTime, quitGame, BiliteralSubstitution, ArrayPlusMinus, Delete, Clear, Transposition, AfterDecoding, BeforeEncoding, EncodeDataSave, EncodeDataLoad, Verification, DebugLog));
     }
 
     public void StartStopWatch()//시간 측정 시작
@@ -201,20 +210,6 @@ public class ADFGVX : MonoBehaviour
 
 
     //튜토리얼 관련 코드
-
-    private void StartTutorial()//튜토리얼을 시작합니다
-    {
-        if (!PlayAsTutorial)
-            return;
-
-        if(CurrentMode == mode.Decoding)
-            DecodeTutorialPhaseArray = chat_ADFGVX.GetArrayOfTutorialPhase();
-        else if(CurrentMode == mode.Encoding)
-            EncodeTutorialPhaseArray = chat_ADFGVX.GetArrayOfTutorialPhase();
-        currentTutorialPhase = -1;
-        MoveToNextTutorialPhase(0f);
-    }
-
     public int GetCurrentTutorialPhase()//현재 튜토리얼 페이즈 반환
     {
         return currentTutorialPhase;
@@ -254,7 +249,7 @@ public class ADFGVX : MonoBehaviour
     {
         if (!PlayAsTutorial)
             return;
-        SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+        SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
         StartCoroutine(DisplayTutorialDialog_IE(line, 0, endTime));
     }
 

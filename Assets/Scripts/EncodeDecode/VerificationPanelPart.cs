@@ -95,7 +95,7 @@ public class VerificationPanelPart : MonoBehaviour
         float totalElaspedTime = adfgvx.GetTotalElapsedTime();
 
         //입력 차단
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         //파트 가시
         VisiblePart();
@@ -164,7 +164,7 @@ public class VerificationPanelPart : MonoBehaviour
         }
         else        
         {
-           adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 0 ,2);
+           adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 ,2);
         }
     }
 
@@ -211,7 +211,7 @@ public class VerificationPanelPart : MonoBehaviour
         float totalElaspedTime = adfgvx.GetTotalElapsedTime();
 
         //입력 차단
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         //파트 가시
         VisiblePart();
@@ -245,7 +245,7 @@ public class VerificationPanelPart : MonoBehaviour
         }
         else
         {
-            title.SetText("데이터 암호화 작업 성공");
+            title.SetText("데이터 암호화 작업 실패");
             title.ConvertColorTextOnly(3f, new Color(0.76f, 0.28f, 0.28f, 1f));
 
             info = "보안 등급 : " + adfgvx.encodeDataSavePart.GetSecurityLevel() + " '" + adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() + "'을\n";
@@ -280,7 +280,7 @@ public class VerificationPanelPart : MonoBehaviour
         }
         else
         {
-            adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 0, 2);
+            adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2);
         }
     }
 

@@ -50,21 +50,21 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         UpdateADFGVXArray();
     }
 
-    public void SetLayer(int layer)//하위 요소의 입력 제어
+    public void SetLayer(int BiliteralSubstitution, int ArrayPlusMinusButton, int Delete, int Clear)//하위 요소의 입력 제어
     {
         for(int i=0;i<6;i++)
         {
-            ADFGVXTable.transform.GetChild(i).gameObject.layer = layer;
-            ADFGVXTable.transform.GetChild(6+i).gameObject.layer = layer;
+            ADFGVXTable.transform.GetChild(i).gameObject.layer = BiliteralSubstitution;
+            ADFGVXTable.transform.GetChild(6+i).gameObject.layer = BiliteralSubstitution;
         }
         for(int i=0;i<36;i++)
         {
-            ADFGVXTable.transform.GetChild(12+i).gameObject.layer = layer;
+            ADFGVXTable.transform.GetChild(12+i).gameObject.layer = BiliteralSubstitution;
         }
-        delete.gameObject.layer = layer;
-        clear.gameObject.layer = layer;
-        arrayMinus.gameObject.layer = layer;
-        arrayPlus.gameObject.layer = layer;
+        delete.gameObject.layer = Delete;
+        clear.gameObject.layer = Clear;
+        arrayMinus.gameObject.layer = ArrayPlusMinusButton;
+        arrayPlus.gameObject.layer = ArrayPlusMinusButton;
     }
 
     public TextMeshPro GetRowText()//행의 입력값을 반환

@@ -9,7 +9,7 @@ public class Chat_ADFGVX : Chat
 
     public override void LoadLine(int line)
     {
-        GameManager.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+        GameManager.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
         base.LoadLine(line);
     }
 
@@ -18,9 +18,8 @@ public class Chat_ADFGVX : Chat
         if(currentLineData["SetLayer"].ToString()==null)
             return;
 
-        int[] layer = new int[9];
+        int[] layer = new int[12];
         string str = currentLineData["SetLayer"].ToString();
-        Debug.Log(str);
         for(int i=0;i<str.Length;i++)
         {
             if(str[i]=='d')
@@ -28,6 +27,6 @@ public class Chat_ADFGVX : Chat
             else if(str[i]=='c')
                 layer[i] = 2;
         }
-        GameManager.SetPartLayerWaitForSec(0f, layer[0], layer[1], layer[2], layer[3], layer[4], layer[5], layer[6], layer[7], layer[8]);
+        GameManager.SetPartLayerWaitForSec(0f, layer[0], layer[1], layer[2], layer[3], layer[4], layer[5], layer[6], layer[7], layer[8], layer[9], layer[10], layer[11]);
     }
 }

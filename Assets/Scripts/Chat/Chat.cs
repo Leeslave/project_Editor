@@ -113,6 +113,11 @@ public class Chat : MonoBehaviour
         }
     }
 
+    private void SetTrueIsAbleToNextLine()//Invoke 용
+    {
+        isAbleToMoveNextLine = true;
+    }
+
     private void AddLineToRemindPanel(string text_speaker, string text_belong, string text_dialog)//다시보기 판넬에 대화 추가
     {
         GameObject one = Instantiate(pastLine);
@@ -135,11 +140,6 @@ public class Chat : MonoBehaviour
         one.transform.Find("Paragraph").GetComponent<TextMeshProUGUI>().text = paragraph;
         one.transform.SetParent(panel_Remind.transform.Find("Viewport").transform.Find("Content"));
         one.transform.localScale = new Vector3(1,1,1);
-    }
-
-    private void SetTrueIsAbleToNextLine()//Invoke 용
-    {
-        isAbleToMoveNextLine = true;
     }
 
     public void OnChoiceDown(int choice)//선택지 다운
@@ -410,7 +410,7 @@ public class Chat : MonoBehaviour
         return tutorialPhaseList.ToArray();
     }
 
-    protected virtual void SetLayerAtEnd()//입력 제어
+    protected virtual void SetLayerAtEnd()//대화 종료 시 입력 제어
     {
         
     }
