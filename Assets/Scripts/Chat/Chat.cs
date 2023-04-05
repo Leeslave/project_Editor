@@ -256,6 +256,7 @@ public class Chat : MonoBehaviour
                     break;
                 case "E":
                     currentLine = tempLine + 1;
+                    currentLineData = data[currentLine - 1];
                     SetLayerAtEnd();
                     return;
             }
