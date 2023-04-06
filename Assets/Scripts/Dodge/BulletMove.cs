@@ -6,6 +6,8 @@ using UnityEngine.Rendering;
 public class BulletMove: MonoBehaviour
 {
 
+    // 3페이즈 관련임으로 주석 적지 않음.
+    // 3페이즈 외에서는 OnCollisonEnter만 사용함.
     public void BigBullet(BulletManager BM)
     {
         StartCoroutine(BigBulletPattern(BM));
