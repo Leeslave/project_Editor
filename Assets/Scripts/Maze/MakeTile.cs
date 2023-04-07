@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -14,6 +15,9 @@ public class MakeTile : MonoBehaviour
     public GameObject Key;
     public MazeMap Maze_Inf;
     public GameObject Clear;
+    public GameObject Fog;
+    public List<List<GameObject>> Fogs = new List<List<GameObject>>();
+    public List<List<bool>> IsFog = new List<List<bool>>();
 
     public float Move_X;
     public float Move_Y;
@@ -34,11 +38,30 @@ public class MakeTile : MonoBehaviour
 
     void CreateLevel()
     {
+        GameObject outsT = Instantiate(Fog, new Vector3((-3) * Move_X + 5, (Col + 5) * Move_Y + 10), new Quaternion(0, 0, 0, 0));
+        outsT.transform.localScale = new Vector2(2 * Row * Move_X + 120 ,12 * Move_Y);
+        GameObject outsL = Instantiate(Fog, new Vector3(-60, -60), new Quaternion(0, 0, 0, 0));
+        outsL.transform.localScale = new Vector2(12 * Move_X, 2 * Col * Move_Y + 120);
+        GameObject outsB = Instantiate(Fog, new Vector3(-60, -60), new Quaternion(0, 0, 0, 0));
+        outsB.transform.localScale = new Vector2(2 * Row * Move_X + 120, 12 * Move_Y);
+        GameObject outsR = Instantiate(Fog, new Vector3((Row + 5) * Move_X + 10, (-3) * Move_Y + 5), new Quaternion(0, 0, 0, 0));
+        outsR.transform.localScale = new Vector2(12 * Move_X, 2 * Col * Move_Y + 120);
+        for(int y = 0; y < Col * 2; y++)
+        {
+            Fogs.Add(new List<GameObject>());
+            IsFog.Add(new List<bool>());
+        }
+
         for (int Y = 0; Y < Col; Y++)
         {
             int y = Col - 1 - Y;
             for (int x = 0; x < Row; x++)
             {
+                for(int a = 0; a < 2; a++)for(int b = 0; b<2;b++)
+                    {
+                        Fogs[Y * 2 + a].Add(Instantiate(Fog, new Vector3(x * Move_X + 2.5f + 5 * b, Y * Move_Y + 2.5f + 5 * a), new Quaternion(0, 0, 0, 0)));
+                        IsFog[Y * 2 + a].Add(false);
+                    }
                 if (!Maze_Inf.Maze[x, Y].Left)     // 哭率 寒 积己 咯何
                 {
                     GameObject cnt = Instantiate(CWall,new Vector3(x * 10,y * 10 + 5,0),transform.rotation);
@@ -78,7 +101,7 @@ public class MakeTile : MonoBehaviour
                 a = new Tuple<int, int>(Random.Range(0, Row), Random.Range(0, Col));
                 z = Vector3.Magnitude(CCnt - new Vector3(x, y, 0));
             }
-            while (Cnt.Contains(a) && z >= KeyWeight);
+            while (Cnt.Contains(a) && z >= KeyWeight * 10);
             Cnt.Add(a);
         }
         for(int i = 1; i <= KeyNum; i++)

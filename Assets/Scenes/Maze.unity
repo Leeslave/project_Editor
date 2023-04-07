@@ -375,12 +375,13 @@ MonoBehaviour:
   Player: {fileID: 582984429260810203}
   Key: {fileID: 6441362338193729787, guid: fc1218cd9267a8a44933f641bc728b55, type: 3}
   Clear: {fileID: 0}
+  Fog: {fileID: 6597443153220137769, guid: 1ffaade72b77ead439448e571ef72412, type: 3}
   Move_X: 10
   Move_Y: 10
-  Col: 5
-  Row: 5
-  KeyNum: 4
-  KeyWeight: 0
+  Col: 20
+  Row: 20
+  KeyNum: 1
+  KeyWeight: 5
 --- !u!4 &766390974
 Transform:
   m_ObjectHideFlags: 0
@@ -474,7 +475,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!224 &1219968160
 RectTransform:
@@ -764,6 +765,7 @@ MonoBehaviour:
   Move_Y: 10
   MoveAble: 0
   InputDelay: 0.2
+  Sight: 3
   maincam: {fileID: 8757802323059507753}
   Clear: {fileID: 3722906338748456574}
 --- !u!4 &2379532259100361379
