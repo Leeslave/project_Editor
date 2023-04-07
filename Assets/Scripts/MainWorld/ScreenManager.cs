@@ -16,7 +16,7 @@ public class ScreenManager : MonoBehaviour
     *   메일 및 기타 PC 업무
     */
     
-    private WorldCanvas worldObject;   //스크린이 활성화 된 world
+    public WorldCanvas worldObject;   //스크린이 활성화 된 world
 
     /// 스크린내 기본 요소 (에디터 할당)
     public GameObject screen;      // 스크린 오브젝트

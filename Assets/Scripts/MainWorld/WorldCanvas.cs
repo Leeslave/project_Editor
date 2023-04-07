@@ -17,8 +17,6 @@ using UnityEngine.UI;
 public class WorldCanvas : MonoBehaviour
 {
     public string location;     //해당 World의 위치명
-    public string nextWorld;    // 다음 이동해야 할 월드
-
     public List<Image> sceneList;    // 배경컷 리스트
 
     private int currentPosition = 0;    // 현재 배경컷 위치
@@ -45,12 +43,12 @@ public class WorldCanvas : MonoBehaviour
     {
         for(int idx = 0; idx < transform.childCount; idx++)
         {
+            // TODO: 날짜별 CSV로 최적화 필요
             Sprite newImage = Resources.Load<Sprite>($"{location}_{idx}_{PlayerPrefs.GetInt("Time")}.png");
             if (newImage != null)
                 sceneList[idx].sprite = newImage;
+            // 날짜/시간별 특수 오브젝트 활성화, 비활성화
         }
-
-        // TODO: 다음 이동해야 할 월드 설정 (nextWorld)
     }
 
     /// <summary>
@@ -97,7 +95,11 @@ public class WorldCanvas : MonoBehaviour
         }
     }
 
-    public void MoveNextWorld()
+    /// <summary>
+    /// 다른 월드로 이동
+    /// </summary>
+    /// <param name="nextWorld">이동할 월드명</param>
+    public void MoveNextWorld(string nextWorld)
     {
         if (nextWorld != "" && nextWorld != location)
         {

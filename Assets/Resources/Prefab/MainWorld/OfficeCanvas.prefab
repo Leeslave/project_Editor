@@ -124,7 +124,7 @@ MonoBehaviour:
       - m_Target: {fileID: 7821009100039744113}
         m_TargetAssemblyTypeName: WorldCanvas, Assembly-CSharp
         m_MethodName: MoveNextWorld
-        m_Mode: 1
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -162,7 +162,7 @@ RectTransform:
   m_GameObject: {fileID: 7821009098907360111}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7142858, y: 0.7142858, z: 0.7142858}
+  m_LocalScale: {x: 0.71428585, y: 0.71428585, z: 0.71428585}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7821009098938765997}
@@ -372,7 +372,7 @@ GameObject:
   - component: {fileID: 7821009099747940925}
   - component: {fileID: 7821009099747940924}
   - component: {fileID: 7821009099747940927}
-  - component: {fileID: 7821009099747940926}
+  - component: {fileID: 7316898958641787704}
   m_Layer: 5
   m_Name: screen
   m_TagString: Untagged
@@ -482,8 +482,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7821009099747940926}
-        m_TargetAssemblyTypeName: ActivateScreen, Assembly-CSharp
+      - m_Target: {fileID: 7316898958641787704}
+        m_TargetAssemblyTypeName: ScreenButton, Assembly-CSharp
         m_MethodName: ClickScreen
         m_Mode: 1
         m_Arguments:
@@ -494,7 +494,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7821009099747940926
+--- !u!114 &7316898958641787704
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -503,13 +503,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7821009099747940921}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14022b25688827b47b672a7611e71272, type: 3}
+  m_Script: {fileID: 11500000, guid: 02e278de31b891b46bca3c1a28f66899, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offList:
-  - {fileID: 4016853967370981596}
   downButton: {fileID: 4016853967972200358}
-  screenZoomMultiplier: 2
+  screenZoomMultiplier: 1.6
 --- !u!1 &7821009099998380370
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,7 +672,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &7821009100039744077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -705,7 +703,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   location: Office
-  nextWorld: Cafe
   sceneList:
   - {fileID: 7821009098938766034}
   - {fileID: 7821009099998380368}
@@ -868,15 +865,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6572851032131764264, guid: 1bf795261f1447b428da728808161acf, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.4285716
+      value: 1.4285715
       objectReference: {fileID: 0}
     - target: {fileID: 6572851032131764264, guid: 1bf795261f1447b428da728808161acf, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.4285716
+      value: 1.4285715
       objectReference: {fileID: 0}
     - target: {fileID: 6572851032131764264, guid: 1bf795261f1447b428da728808161acf, type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.4285716
+      value: 1.4285717
       objectReference: {fileID: 0}
     - target: {fileID: 6572851032131764264, guid: 1bf795261f1447b428da728808161acf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -908,11 +905,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6572851032131764264, guid: 1bf795261f1447b428da728808161acf, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -0.00030517578
       objectReference: {fileID: 0}
     - target: {fileID: 6572851032131764264, guid: 1bf795261f1447b428da728808161acf, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -385.7143
+      value: -385.71362
       objectReference: {fileID: 0}
     - target: {fileID: 6572851032131764264, guid: 1bf795261f1447b428da728808161acf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -941,14 +938,14 @@ PrefabInstance:
     - target: {fileID: 6572851032131764267, guid: 1bf795261f1447b428da728808161acf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 7821009099747940926}
+      objectReference: {fileID: 7316898958641787704}
     - target: {fileID: 6572851032131764267, guid: 1bf795261f1447b428da728808161acf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: DeactivateScreen
       objectReference: {fileID: 0}
     - target: {fileID: 6572851032131764267, guid: 1bf795261f1447b428da728808161acf, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: ActivateScreen, Assembly-CSharp
+      value: ScreenButton, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1bf795261f1447b428da728808161acf, type: 3}
@@ -1079,11 +1076,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1bf795261f1447b428da728808161acf, type: 3}
---- !u!1 &4016853967370981596 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6572851032131764265, guid: 1bf795261f1447b428da728808161acf, type: 3}
-  m_PrefabInstance: {fileID: 7821009100359209205}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4016853967370981597 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6572851032131764264, guid: 1bf795261f1447b428da728808161acf, type: 3}

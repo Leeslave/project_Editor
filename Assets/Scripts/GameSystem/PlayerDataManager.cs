@@ -4,25 +4,26 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 
-/**
+public class PlayerDataManager : MonoBehaviour
+{
+    /**
     * 플레이어 데이터를 저장, 로드
     * initNewPlayerData
     * SavePlayerData
     * LoadPlayerData
     */
-public class PlayerDataManager : MonoBehaviour
-{
     public static string savefilePath = "/Resources/Save/";    // 세이브 파일 경로
     public static string worldfilePath = "Prefab/MainWorld/";  // 월드 프리팹 경로
 
-    /**
-    * 플레이어 데이터 클래스
-    *   - 날짜 데이터 (YYYY:DD:MM - Time)
-    *   - 위치 데이터
-    *   - 현재 명성치
-    */
+
     private class PlayerData
     {
+        /**
+        * 플레이어 데이터 클래스
+        *   - 날짜 데이터 (YYYY:DD:MM - Time)
+        *   - 위치 데이터
+        *   - 현재 명성치
+        */
         public int year;
         public int month;
         public int day;
@@ -59,7 +60,7 @@ public class PlayerDataManager : MonoBehaviour
     /// <summary>
     /// 플레이어 데이터 JSON 로드
     /// </summary>
-    /// <param name="SaveFileName">저장 경로 내 파일명</param>
+    /// <param name=SaveFileName>저장 경로 내 파일명</param>
     public static void LoadPlayerData(string saveFileName)
     { 
         FileStream fileStream = new FileStream(Application.dataPath + savefilePath + saveFileName + ".json", FileMode.Open);
@@ -72,6 +73,7 @@ public class PlayerDataManager : MonoBehaviour
 
         asyncPlayerPrefs();
     }
+    
     
 
     /// <summary>
@@ -88,7 +90,7 @@ public class PlayerDataManager : MonoBehaviour
             Destroy(existWorld.gameObject);
         }
         GameObject newWorldCanvas = Instantiate(Resources.Load<GameObject>(worldfilePath + playerData.location + "Canvas"));
-        Debug.Log("New Worlc Created: " + newWorldCanvas.ToString());
+        Debug.Log("New Worlc Loaded: " + newWorldCanvas.ToString());
     }
 
     
