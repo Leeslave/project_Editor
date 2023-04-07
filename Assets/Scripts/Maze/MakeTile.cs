@@ -21,13 +21,15 @@ public class MakeTile : MonoBehaviour
 
     public float Move_X;
     public float Move_Y;
+    [System.NonSerialized]
     public int Col;
     public int Row;
     public int KeyNum;
-    public int KeyWeight = 5;
+    public int KeyWeight;
 
     void Awake()
     {
+        GetDifficulty();
         Maze_Inf = new MazeMap();
         Maze_Inf.MazeMaking(Col, Row);
         Player.transform.position = new Vector3(Maze_Inf.Player_X * Move_X + 5, Maze_Inf.Player_Y * Move_Y + 5f, 0);
@@ -35,9 +37,29 @@ public class MakeTile : MonoBehaviour
         MakeKey();
     }
 
+    void GetDifficulty()
+    {
+        if (PlayerPrefs.HasKey("Difficulty"))
+        {
+            switch (PlayerPrefs.GetString("Difficulty"))
+            {
+                case "1":
+                    Col = 10; Row = 10; KeyNum = 1; KeyWeight = 1;
+                    break;
+                case "2":
+                    Col = 15; Row = 15; KeyNum = 2; KeyWeight = 3;
+                    break;
+                case "3":
+                    Col = 20; Row = 20; KeyNum = 3; KeyWeight = 5;
+                    break;
+            }
+        }
+    }
+
 
     void CreateLevel()
     {
+        // 미로의 바깥 부분을 둘러싸는  안개를 생성.
         GameObject outsT = Instantiate(Fog, new Vector3((-3) * Move_X + 5, (Col + 5) * Move_Y + 10), new Quaternion(0, 0, 0, 0));
         outsT.transform.localScale = new Vector2(2 * Row * Move_X + 120 ,12 * Move_Y);
         GameObject outsL = Instantiate(Fog, new Vector3(-60, -60), new Quaternion(0, 0, 0, 0));
@@ -46,6 +68,7 @@ public class MakeTile : MonoBehaviour
         outsB.transform.localScale = new Vector2(2 * Row * Move_X + 120, 12 * Move_Y);
         GameObject outsR = Instantiate(Fog, new Vector3((Row + 5) * Move_X + 10, (-3) * Move_Y + 5), new Quaternion(0, 0, 0, 0));
         outsR.transform.localScale = new Vector2(12 * Move_X, 2 * Col * Move_Y + 120);
+
         for(int y = 0; y < Col * 2; y++)
         {
             Fogs.Add(new List<GameObject>());
@@ -57,6 +80,8 @@ public class MakeTile : MonoBehaviour
             int y = Col - 1 - Y;
             for (int x = 0; x < Row; x++)
             {
+                // 안개 관련 정보를 저장하는 배열에 저장
+                // 미로의 한 칸에 총 4개의 안개가 존재
                 for(int a = 0; a < 2; a++)for(int b = 0; b<2;b++)
                     {
                         Fogs[Y * 2 + a].Add(Instantiate(Fog, new Vector3(x * Move_X + 2.5f + 5 * b, Y * Move_Y + 2.5f + 5 * a), new Quaternion(0, 0, 0, 0)));
@@ -85,10 +110,13 @@ public class MakeTile : MonoBehaviour
             }
         }
     }
+
+    // Key 생성
+    // 모든 Key의 위치가 겹치지 않으며, 플레이어와 특정 거리 이상의 위치에서 생성되도록 함.
+
     void MakeKey()
     {
         List<Tuple<int, int>> Cnt = new List<Tuple<int, int>>() { };
-        Cnt.Add(new Tuple<int,int>(Maze_Inf.Player_X,Maze_Inf.Player_Y));
         Vector3 CCnt = new Vector3(Maze_Inf.Player_X, Maze_Inf.Player_Y);
         Tuple<int,int> a;
         double z = 0;
@@ -101,10 +129,10 @@ public class MakeTile : MonoBehaviour
                 a = new Tuple<int, int>(Random.Range(0, Row), Random.Range(0, Col));
                 z = Vector3.Magnitude(CCnt - new Vector3(x, y, 0));
             }
-            while (Cnt.Contains(a) && z >= KeyWeight * 10);
+            while (Cnt.Contains(a) && z >= (KeyWeight * 10));
             Cnt.Add(a);
         }
-        for(int i = 1; i <= KeyNum; i++)
+        for(int i = 0; i < KeyNum; i++)
         {
             Instantiate(Key).transform.position = new Vector3(Cnt[i].Item1 * Move_X + 5, Cnt[i].Item2 * Move_Y + 5, 0);
         }

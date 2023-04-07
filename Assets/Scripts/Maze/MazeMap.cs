@@ -6,7 +6,7 @@ using Vector3 = UnityEngine.Vector3;
 using Random = UnityEngine.Random;
 
 
-// 더 자세하게 알고싶으면 인터넷에 "엘러의 알고리즘" 을 검색해보시길 권장드립니다.
+// 참고한 알고리즘 : 엘러의 알고리즘
 public class MazeMap
 {
     // Map 배열 생성 부분
