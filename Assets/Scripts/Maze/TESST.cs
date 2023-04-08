@@ -11,9 +11,5 @@ public class TESST : MonoBehaviour
         {
             GetComponent<TMP_Text>().text = "Clear : " + PlayerPrefs.GetString("Clear");
         }
-        else
-        {
-            GetComponent<TMP_Text>().text = "Clear : None";
-        }
     }
 }

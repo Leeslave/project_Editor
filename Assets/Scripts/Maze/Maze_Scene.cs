@@ -10,7 +10,7 @@ public class Maze_Scene : MonoBehaviour
     string SceneName;
     private void Awake()
     {
-        if (name == "EXIT") SceneName = "TestT";
+        if (name == "EXIT") { SceneName = "TestT"; PlayerPrefs.SetString("Clear", "Y"); }
         else { SceneName = "Maze"; }
         AddEvent(GetComponent<EventTrigger>(), EventTriggerType.PointerClick, NextScene);
     }
