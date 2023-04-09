@@ -17,8 +17,8 @@ public class TextAnimation : AnimBase
 
     void Awake()
     {
-        // json 텍스트 불러오기
-        textInfo = JsonUtility.FromJson<TextInfo>(textAsset.text);
+        if (textAsset != null)
+            textInfo = JsonUtility.FromJson<TextInfo>(textAsset.text);  // json 텍스트 불러오기
     }
 
     // 텍스트 코루틴 실행

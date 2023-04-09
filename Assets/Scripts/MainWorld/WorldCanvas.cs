@@ -27,6 +27,10 @@ public class WorldCanvas : MonoBehaviour
         gameObject.GetComponent<Canvas>().worldCamera = Camera.main;
     }
 
+    private void Start() {
+        asyncWorldTime();
+        ActiveCurrentScene();
+    }
     /// 활성화될때마다 월드 내 시간 동기화
     void OnEnabled()
     {
