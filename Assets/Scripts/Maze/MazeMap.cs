@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
+using Vector3 = UnityEngine.Vector3;
 using Random = UnityEngine.Random;
-using Vector2 = UnityEngine.Vector2;
-using Quaternion = UnityEngine.Quaternion;
-using Unity.Collections.LowLevel.Unsafe;
 
-public class Map
+
+// 참고한 알고리즘 : 엘러의 알고리즘
+public class MazeMap
 {
     // Map 배열 생성 부분
     public class Cell
@@ -18,6 +18,7 @@ public class Map
         public bool Left;
         public bool Up;
         public bool Down;
+        public Vector3 Exit = Vector3.zero;
     };
     public class Group
     {
@@ -40,16 +41,16 @@ public class Map
             if (Cur_Col != Col - 1) Cell_Down();     // 마지막 Col에선 내릴 필요가 없다.
         }
         TrimMaze();
-        if(Random.Range(0,2) == 0)      // 왼쪽 or 오른쪽 뚫음
+        if(Random.Range(0,2) == 0)      // 왼쪽 or 오른쪽 뚫음(출구 뚫기)
         {
             int cnt = Player_Y <= Col / 2 ? Random.Range(0, Col / 2) : Random.Range(Col / 2, Col); 
             if(Player_X > Row / 2)
             {
-                Maze[0, cnt].Left = true;
+                Maze[0, cnt].Exit = Vector3.left;
             }
             else
             {
-                Maze[Row - 1, cnt].Right = true;
+                Maze[Row - 1, cnt].Exit = Vector3.right;
             }
         }
         else                            // 아래 or 위 뚫음
@@ -57,11 +58,11 @@ public class Map
             int cnt = Player_X > Row / 2 ? Random.Range(0, Row / 2) : Random.Range(Row / 2, Row);
             if (Player_Y > Col / 2)
             {
-                Maze[cnt, Col - 1].Down = true;
+                Maze[cnt, Col - 1].Exit = Vector3.down;
             }
             else
             {
-                Maze[cnt, 0].Up = true;
+                Maze[cnt, 0].Exit = Vector3.up;
             }
         }
     }
@@ -153,7 +154,7 @@ public class Map
             Groups[i].Last_Rows.RemoveRange(0, del_count);   // Group 내에서 이전 Col에 있던 Cell들의 정보 삭제.
         }
     }
-    void TrimMaze()
+    void TrimMaze() // 마지막 모든 Cell을 하나의 Group으로 합침
     {
         for(int Y = 0; Y < Col; Y++)
         {
