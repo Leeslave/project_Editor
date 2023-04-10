@@ -38,7 +38,7 @@ public class Player : MonoBehaviour
         // Particle Object Pooling
         for (int i = 0; i < 9; i++) { PtL.Add(Instantiate(Particle)); PtL[i].SetActive(false); }
     }
-    private void FixedUpdate()
+    private void Update()
     {
         if (!MoveAble) return;
         if (MovePing) PingPong();
@@ -129,8 +129,13 @@ public class Player : MonoBehaviour
             PM.TM.time = 0;
             PM.TM.MaxTime = PM.TM.TimeToSurvive;
         }
+        // 플레이어 사망 연출에 사용된 오브젝트들 비활성화
         foreach (var a in PtL) a.SetActive(false);
         gameObject.transform.position = new Vector2(0, 0);
+        // 색 변경 도중 사망 시, 색이 변경된 채로 유지되기 때문에 이리 유지
+        Up.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+        Down.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+        MoveAble = true;
         ChangeType("Ping");
         speed = 10;
     }
