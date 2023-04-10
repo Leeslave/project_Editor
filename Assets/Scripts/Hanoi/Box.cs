@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// 박스의 정보를 저장(아직 무게만 사용)
 public class Box : MonoBehaviour
 {
     public int Weight;
