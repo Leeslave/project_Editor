@@ -28,6 +28,7 @@ public class PatternManager : MonoBehaviour
     public float RepeatInterv;      // 패턴 반복 사이의 간격
     public float BulletInterv;      // 한 패턴 내 탄막 간의 간격
     public float PatternInterv;     // 패턴과 패턴 사이의 간격
+    public bool IsEnd = false;      // 필사 패턴 여부
 
     List<GameObject> PlatL = new List<GameObject>();        // 레이저 패턴 중 사용되는 Platform들을 저장 <- EndPattern에 사용하기 위함.
     int PatternNum = 0;             // Num of Pattern(안 씀)
@@ -76,8 +77,17 @@ public class PatternManager : MonoBehaviour
         ReadExternalPattern();
     }
 
-    private void Start()
+    public void StartInit()
     {
+        if (PlayerPrefs.GetString("Difficulty") == "1")
+            TM.TimeToSurvive = 20;
+        else if (PlayerPrefs.GetString("Difficulty") == "2")
+            TM.TimeToSurvive = 30;
+        else
+            TM.TimeToSurvive = 40;
+        TM.MaxTime = TM.TimeToSurvive;
+        Pl.gameObject.SetActive(true);
+        TM.IsTimeFlow = true;
         StartPT(0);
     }
 
@@ -85,7 +95,7 @@ public class PatternManager : MonoBehaviour
     IEnumerator MakeEasyPattern()     // 1페이즈에 사용되는 패턴을 생성함.
     {
         /*PlatTop.SetActive(true); PlatTop.SetActive(true);*/               
-        if (TM.time == 0) yield return new WaitForSeconds(0.2f);        // 씬이 시작 됨과 동시에 Pattern이 시작될 때 발생하는 렉 때문에 첫 탄막과 그 다음 탄막 사이의 간격이 생겨 해당 건을 방지하기 위해 0.2초간 멈춤.
+        if (TM.time == 0) yield return new WaitForSeconds(1);        // 씬이 시작 됨과 동시에 Pattern이 시작될 때 발생하는 렉 때문에 첫 탄막과 그 다음 탄막 사이의 간격이 생겨 해당 건을 방지하기 위해 1초간 멈춤.
         List<int[]> CurPattern = PTLE[Random.Range(0, PatternNum)];     // 저장된 패턴 중 임의로 1개의 패턴을 가져옴
         for (int CurRepeat = 0; CurRepeat < 2; CurRepeat++)             // 패턴 2회 반복 실행
         {
@@ -206,13 +216,9 @@ public class PatternManager : MonoBehaviour
             yield return new WaitForSeconds(9);
         }
         yield return new WaitForSeconds(3);
-        // 모든 패턴을 종료
-        EndPT(false);
 
         // 엔딩을 출력
-        Pl.gameObject.SetActive(false);
-        Pl.EndG.SetActive(true);
-        Pl.EndG.GetComponent<RealEnd>().Ending("Game Clear", "당신의 의지가 풍만해진다.");
+        Clear();
 
         /*MakeGlitch(0.3f, 0.7f, 1);
         yield return new WaitForSeconds(5);
@@ -221,6 +227,14 @@ public class PatternManager : MonoBehaviour
         TM.MaxTime = 10000;
         StartCoroutine(ChangePT(Pattern1()));*/
         yield break;
+    }
+
+    public void Clear()
+    {
+        EndPT(false);
+        Pl.gameObject.SetActive(false);
+        Pl.EndG.SetActive(true);
+        Pl.EndG.GetComponent<RealEnd>().Ending("Game Clear", "당신의 의지가 풍만해진다.");
     }
 
     IEnumerator CamShake()      // 화면을 흔드는 효과를 연출함.
@@ -246,7 +260,7 @@ public class PatternManager : MonoBehaviour
     {
         BM.DelBul();
         StopAllCoroutines();
-        for (int i = 0; i < SPL.Length; i++)
+        for (int i = 0; i < SPLE.Length; i++)
         {
             BM.MakeSmallBul(Vector2.left * 2.5f, Vector2.zero).transform.position = SPRE[i].position;
             BM.MakeSmallBul(Vector2.right * 2.5f, Vector2.zero).transform.position = SPLE[i].position;
@@ -281,9 +295,9 @@ public class PatternManager : MonoBehaviour
     // 현재 실행중인 패턴을 중지하며, 인수에 따라 패턴의 부산물을 지울 것인지 아닌지를 정함
     // 지우지 않는 경우를 만든 이유는 연출 때문
     // Input : 패턴의 부산물들을 지울 것인지 아닌지를 결정하는 bool값. True일 경우 지우지 않으며, false일 경우 모두 지움
-    public void EndPT(bool IsEnd)     
+    public void EndPT(bool _IsEnd)     
     {
-        if (!IsEnd)
+        if (!_IsEnd)
         {
             StopAllCoroutines();
             if (CurRazer != null) Destroy(CurRazer);

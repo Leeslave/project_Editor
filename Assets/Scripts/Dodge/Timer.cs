@@ -7,9 +7,8 @@ public class Timer : MonoBehaviour
 {
     public PatternManager PM;
     public float MaxTime;           // 현재 최대 살아남아야 하는 시간
-    public bool IsTimeFlow = true;  // 현재 시간이 흐르는지 여부
+    public bool IsTimeFlow = false;  // 현재 시간이 흐르는지 여부
     public float time = 0;          // 현재 시간
-    [Range(5, 30)]
     public float TimeToSurvive;     // How Long Player Have To Survie
 
     private void Awake()
@@ -29,7 +28,8 @@ public class Timer : MonoBehaviour
                 time = MaxTime;
                 GetComponent<TMP_Text>().text = string.Format("{0:0.00}", time);
                 IsTimeFlow = false;
-                PM.StartPT(1);
+                if (PlayerPrefs.GetString("Difficulty") == "3") PM.StartPT(1);
+                else { PM.EasyEndPattern(); PM.IsEnd = true; }
             }
         }
     }

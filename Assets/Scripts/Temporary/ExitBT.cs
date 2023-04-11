@@ -5,13 +5,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-public class Maze_Scene : MonoBehaviour
+public class ExitBT : MonoBehaviour
 {
-    string SceneName;
     private void Awake()
     {
-        if (name == "EXIT") { SceneName = "TestT"; PlayerPrefs.SetString("Clear", "N"); }
-        else { SceneName = "Maze"; }
+        if(PlayerPrefs.HasKey("Clear")) PlayerPrefs.SetString("Clear", "N");
         AddEvent(GetComponent<EventTrigger>(), EventTriggerType.PointerClick, NextScene);
     }
     void AddEvent(EventTrigger eventTrigger, EventTriggerType Type, Action<PointerEventData> Event)
@@ -23,8 +21,6 @@ public class Maze_Scene : MonoBehaviour
     }
     void NextScene(PointerEventData Data)
     {
-        
-        PlayerPrefs.SetString("Difficulty",name);
-        SceneManager.LoadScene(SceneName);
+        SceneManager.LoadScene("TestT");
     }
 }

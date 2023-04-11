@@ -150,25 +150,29 @@ public class Player : MonoBehaviour
             MoveAble = false;
             PM.EndPT(true);
             PM.TM.IsTimeFlow = false;
-            if (CurHp > 1)
-            {
-                // 플레이어가 터지는 연출
-                for (int i = 0; i < 9; i++)
-                {
-                    if (i == 4) continue;
-                    PtL[i].transform.position = transform.position;
-                    PtL[i].SetActive(true);
-                    PtL[i].GetComponent<Rigidbody2D>().AddForce((PM.DE[i][0] + PM.DE[i][1]) * Random.Range(1, 4), ForceMode2D.Impulse);
-                }
-                // 체력을 한칸 깍고, 1초 뒤 Game Over Object 생성
-                HPS[--CurHp].sprite = HPOff;
-                gameObject.SetActive(false);
-                Invoke("OnGameOver", 1);
-            }
+            if (PM.IsEnd) PM.Clear();
             else
             {
-                PM.EndPT(false);
-                StartCoroutine(RealEnd());
+                if (CurHp > 1)
+                {
+                    // 플레이어가 터지는 연출
+                    for (int i = 0; i < 9; i++)
+                    {
+                        if (i == 4) continue;
+                        PtL[i].transform.position = transform.position;
+                        PtL[i].SetActive(true);
+                        PtL[i].GetComponent<Rigidbody2D>().AddForce((PM.DE[i][0] + PM.DE[i][1]) * Random.Range(1, 4), ForceMode2D.Impulse);
+                    }
+                    // 체력을 한칸 깍고, 1초 뒤 Game Over Object 생성
+                    HPS[--CurHp].sprite = HPOff;
+                    gameObject.SetActive(false);
+                    Invoke("OnGameOver", 1);
+                }
+                else
+                {
+                    PM.EndPT(false);
+                    StartCoroutine(RealEnd());
+                }
             }
         }
     }
