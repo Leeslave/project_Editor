@@ -12,8 +12,6 @@ public class Chat : MonoBehaviour
     public float Delay;
     [Header("바로 실행 여부")]
     public bool PlayOnAwake;
-    [Header("튜토리얼 실행 여부")]
-    public bool PlayAsTutorial;
     [Header("다시보기 줄 프리펩")]
     public GameObject pastLine;
     [Header("다시보기 단락 프리펩")]
@@ -518,93 +516,5 @@ public class Chat : MonoBehaviour
     {
         
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //튜토리얼 관련 코드
-    public int GetCurrentTutorialPhase()//현재 튜토리얼 페이즈 반환
-    {
-        return currentTutorialPhase;
-    }
-
-    public void MoveToNextTutorialPhase(float endTime)//endTime을 대기한 후 다음 튜토리얼 페이즈로 이동
-    {
-        if (!PlayAsTutorial)
-            return;
-        currentTutorialPhase++;
-        Debug.Log("Start TutorialPhase : " + currentTutorialPhase);
-        StartCoroutine(MoveToNextTutorialPhase_IE(0, endTime));
-    }
-
-    public IEnumerator<WaitForSeconds> MoveToNextTutorialPhase_IE(float currentTime, float endTime)//MoveToNextTutorialPhase_IEnumerator
-    {
-        if(endTime == 0f)
-        {
-            int phase = CurrentMode == ADFGVX.mode.Decoding ? DecodeTutorialPhaseArray[currentTutorialPhase] : EncodeTutorialPhaseArray[currentTutorialPhase];
-            DisplayTutorialDialog(phase, 0f);
-            yield break;
-        }
-
-        currentTime += endTime / 100;
-        if (currentTime > endTime)
-        {
-            int phase = CurrentMode == ADFGVX.mode.Decoding ? DecodeTutorialPhaseArray[currentTutorialPhase] : EncodeTutorialPhaseArray[currentTutorialPhase];
-            DisplayTutorialDialog(phase, 0f);
-            yield break;
-        }
-
-        yield return new WaitForSeconds(endTime / 100);
-        StartCoroutine(MoveToNextTutorialPhase_IE(currentTime, endTime));
-    }
-
-    public void DisplayTutorialDialog(int line, float endTime)//endTime을 대기한 후 다음 튜토리얼 대화를 표시
-    {
-        if (!PlayAsTutorial)
-            return;
-        SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
-        StartCoroutine(DisplayTutorialDialog_IE(line, 0, endTime));
-    }
-
-    public IEnumerator<WaitForSeconds> DisplayTutorialDialog_IE(int line, float currentTime, float endTime)//DisplayTutorialDialog_IEnumerator
-    {
-        if(endTime == 0f)
-        {
-            chat_ADFGVX.LoadLine(line);
-            yield break;
-        }
-
-        currentTime += endTime / 100;
-        if(currentTime>endTime)
-        {
-            chat_ADFGVX.LoadLine(line);
-            yield break;
-        }
-
-        yield return new WaitForSeconds(endTime / 100);
-        StartCoroutine(DisplayTutorialDialog_IE(line, currentTime, endTime));
-    }
-
-
-
-
-
-
-
-
-
+    
 }
