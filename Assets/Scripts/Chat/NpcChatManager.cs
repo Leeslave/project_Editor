@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,8 +12,8 @@ public class NpcChatManager : MonoBehaviour
     *   - 대화 횟수 or 대화 여부 저장
     */
 
-    public string chatName = "";
-    public bool isTalked = false;
+    public string NPCName = "";
+    public int talkCount = 0;
     private string chatFileName;
     private Chat chatObject;
 
@@ -20,15 +21,23 @@ public class NpcChatManager : MonoBehaviour
         chatObject = GameObject.FindObjectOfType<Chat>();
     }
 
+    private void Start() {
+        asyncChatFile();
+    }
+
     /// 활성화 될때마다 날짜 갱신 (추가 정보 있으면 갱신 필요)
     private void OnEnable() {
-        chatFileName = chatName + "_" + PlayerPrefs.GetInt("Day").ToString() + ".csv";
+        asyncChatFile();
+    }
+
+    private void asyncChatFile() {
+        chatFileName = NPCName + "_" + PlayerPrefs.GetInt("Day").ToString() + "_" + PlayerPrefs.GetInt("Time").ToString() + ".csv";
     }
 
     /// <summary>
     /// 대화 시작 이벤트 함수
     /// </summary>
-    public void OnChatStart() {
+    public void OnChatStart(Action CallBackFunc = null) {
         if (chatFileName != "")
             chatObject.LoadData(chatFileName);
         chatObject.LoadLine(1);
