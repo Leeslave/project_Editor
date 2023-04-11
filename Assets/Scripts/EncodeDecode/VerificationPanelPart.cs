@@ -95,7 +95,7 @@ public class VerificationPanelPart : MonoBehaviour
         float totalElaspedTime = adfgvx.GetTotalElapsedTime();
 
         //입력 차단
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         //파트 가시
         VisiblePart();
@@ -151,17 +151,20 @@ public class VerificationPanelPart : MonoBehaviour
 
         //종료
         yield return new WaitForSeconds(4f);
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 0 ,2);
         adfgvx.InformUpdate(adfgvx.ReturnDecodeScore() ? "복호화 데이터 무결성 검증에 성공했습니다" : "복호화 데이터 무결성 검증에 실패했습니다");
 
         //튜토리얼 관련 코드
-        if (adfgvx.GetCurrentTutorialPhase() == 9 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 9 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             Debug.Log(adfgvx.ReturnDecodeScore());
             if (adfgvx.ReturnDecodeScore())
-                adfgvx.MoveToNextTutorialPhase(0f);
+                adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(0f);
             else
-                adfgvx.DisplayTutorialDialog(166, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(166, 0f);
+        }
+        else        
+        {
+           adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 ,2);
         }
     }
 
@@ -208,7 +211,7 @@ public class VerificationPanelPart : MonoBehaviour
         float totalElaspedTime = adfgvx.GetTotalElapsedTime();
 
         //입력 차단
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         //파트 가시
         VisiblePart();
@@ -242,7 +245,7 @@ public class VerificationPanelPart : MonoBehaviour
         }
         else
         {
-            title.SetText("데이터 암호화 작업 성공");
+            title.SetText("데이터 암호화 작업 실패");
             title.ConvertColorTextOnly(3f, new Color(0.76f, 0.28f, 0.28f, 1f));
 
             info = "보안 등급 : " + adfgvx.encodeDataSavePart.GetSecurityLevel() + " '" + adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() + "'을\n";
@@ -265,16 +268,19 @@ public class VerificationPanelPart : MonoBehaviour
 
         //종료
         yield return new WaitForSeconds(4f);
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 0, 2);
         adfgvx.InformUpdate(adfgvx.ReturnDecodeScore() ? "암호화 데이터 무결성 검증에 성공했습니다" : "암호화 데이터 무결성 검증에 실패했습니다");
 
         //튜토리얼 관련 코드
-        if(adfgvx.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
+        if(adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
         {
             if (adfgvx.ReturnEncodeScore())
-                adfgvx.MoveToNextTutorialPhase(0f);
+                adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(0f);
             else
-                adfgvx.DisplayTutorialDialog(67, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(67, 0f);
+        }
+        else
+        {
+            adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2);
         }
     }
 

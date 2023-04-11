@@ -7,7 +7,7 @@ public class Chat_VoightKampff : Chat
     [Header("게임 매니저")]
     public GameManager_VoightKampff GameManager;
 
-    protected override void SetLayerDefault()
+    protected override void SetLayerAtEnd()
     {
         GameManager.SetLayer(0, 0, 0, 0, 0, 0, 0);
     }

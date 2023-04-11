@@ -50,21 +50,21 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         UpdateADFGVXArray();
     }
 
-    public void SetLayer(int layer)//하위 요소의 입력 제어
+    public void SetLayer(int BiliteralSubstitution, int ArrayPlusMinusButton, int Delete, int Clear)//하위 요소의 입력 제어
     {
         for(int i=0;i<6;i++)
         {
-            ADFGVXTable.transform.GetChild(i).gameObject.layer = layer;
-            ADFGVXTable.transform.GetChild(6+i).gameObject.layer = layer;
+            ADFGVXTable.transform.GetChild(i).gameObject.layer = BiliteralSubstitution;
+            ADFGVXTable.transform.GetChild(6+i).gameObject.layer = BiliteralSubstitution;
         }
         for(int i=0;i<36;i++)
         {
-            ADFGVXTable.transform.GetChild(12+i).gameObject.layer = layer;
+            ADFGVXTable.transform.GetChild(12+i).gameObject.layer = BiliteralSubstitution;
         }
-        delete.gameObject.layer = layer;
-        clear.gameObject.layer = layer;
-        arrayMinus.gameObject.layer = layer;
-        arrayPlus.gameObject.layer = layer;
+        delete.gameObject.layer = Delete;
+        clear.gameObject.layer = Clear;
+        arrayMinus.gameObject.layer = ArrayPlusMinusButton;
+        arrayPlus.gameObject.layer = ArrayPlusMinusButton;
     }
 
     public TextMeshPro GetRowText()//행의 입력값을 반환
@@ -85,15 +85,15 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     public void OnEncElementDown(int row, int line)//복호화 모드에서 테이블 원소 클릭
     {
         //튜토리얼 관련 코드
-        if(adfgvx.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
+        if(adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
         {
             if (adfgvx.biliteralsubstitutionpart.currentADFGVXArrayNum != 0)
             {
-                adfgvx.DisplayTutorialDialog(44, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(44, 0f);
                 return;
             }
             else
-                adfgvx.MoveToNextTutorialPhase(2.0f);
+                adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(2.0f);
         }
 
         char[] array = new char[6] { 'A', 'D', 'F', 'G', 'V', 'X' };
@@ -120,65 +120,65 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             lineButtons[decodeLine].ConvertClickSpriteColor(lineButtons[decodeLine].Exit);
 
             //튜토리얼 관련 코드
-            if (adfgvx.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+            if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                adfgvx.DisplayTutorialDialog(144, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(144, 0f);
                 decodeRow = 6;
                 decodeLine = 6;
                 return;
             }
-            if (adfgvx.GetCurrentTutorialPhase() == 7 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+            if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 7 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (decodeRow == 0 && decodeLine == 1 && currentADFGVXArrayNum == 0)
-                    adfgvx.MoveToNextTutorialPhase(2.0f);
+                    adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(2.0f);
                 else if (currentADFGVXArrayNum != 0)
                 {
-                    adfgvx.DisplayTutorialDialog(147, 0f);
+                    adfgvx.chat_ADFGVX.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
                 else
                 {
-                    adfgvx.DisplayTutorialDialog(133, 0f);
+                    adfgvx.chat_ADFGVX.DisplayTutorialDialog(133, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
             }
-            if (adfgvx.GetCurrentTutorialPhase() == 6 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+            if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 6 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (decodeRow == 0 && decodeLine == 2 && currentADFGVXArrayNum == 0)
-                    adfgvx.MoveToNextTutorialPhase(2.0f);
+                    adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(2.0f);
                 else if (currentADFGVXArrayNum != 0)
                 {
-                    adfgvx.DisplayTutorialDialog(147, 0f);
+                    adfgvx.chat_ADFGVX.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
                 else
                 {
-                    adfgvx.DisplayTutorialDialog(127, 0f);
+                    adfgvx.chat_ADFGVX.DisplayTutorialDialog(127, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
             }
-            if (adfgvx.GetCurrentTutorialPhase() == 5 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+            if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 5 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (decodeRow == 5 && decodeLine == 4 && currentADFGVXArrayNum == 0)
-                    adfgvx.MoveToNextTutorialPhase(2.0f);
+                    adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(2.0f);
                 else if (currentADFGVXArrayNum != 0)
                 {
-                    adfgvx.DisplayTutorialDialog(147, 0f);
+                    adfgvx.chat_ADFGVX.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
                 else
                 {
-                    adfgvx.DisplayTutorialDialog(121, 0f);
+                    adfgvx.chat_ADFGVX.DisplayTutorialDialog(121, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
@@ -211,65 +211,65 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             rowButtons[decodeRow].ConvertClickSpriteColor(rowButtons[decodeRow].Exit);
 
             //튜토리얼 관련 코드
-            if (adfgvx.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+            if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                adfgvx.DisplayTutorialDialog(144, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(144, 0f);
                 decodeRow = 6;
                 decodeLine = 6;
                 return;
             }
-            if (adfgvx.GetCurrentTutorialPhase() == 7 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+            if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 7 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (decodeRow == 0 && decodeLine == 1 && currentADFGVXArrayNum == 0)
-                    adfgvx.MoveToNextTutorialPhase(2.0f);
+                    adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(2.0f);
                 else if (currentADFGVXArrayNum != 0)
                 {
-                    adfgvx.DisplayTutorialDialog(147, 0f);
+                    adfgvx.chat_ADFGVX.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
                 else
                 {
-                    adfgvx.DisplayTutorialDialog(133, 0f);
+                    adfgvx.chat_ADFGVX.DisplayTutorialDialog(133, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
             }
-            if (adfgvx.GetCurrentTutorialPhase() == 6 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+            if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 6 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (decodeRow == 0 && decodeLine == 2 && currentADFGVXArrayNum == 0)
-                    adfgvx.MoveToNextTutorialPhase(2.0f);
+                    adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(2.0f);
                 else if (currentADFGVXArrayNum != 0)
                 {
-                    adfgvx.DisplayTutorialDialog(147, 0f);
+                    adfgvx.chat_ADFGVX.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
                 else
                 {
-                    adfgvx.DisplayTutorialDialog(127, 0f);
+                    adfgvx.chat_ADFGVX.DisplayTutorialDialog(127, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
             }
-            if (adfgvx.GetCurrentTutorialPhase() == 5 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+            if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 5 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
                 if (decodeRow == 5 && decodeLine == 4 && currentADFGVXArrayNum == 0)
-                    adfgvx.MoveToNextTutorialPhase(2.0f);
+                    adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(2.0f);
                 else if (currentADFGVXArrayNum != 0)
                 {
-                    adfgvx.DisplayTutorialDialog(147, 0f);
+                    adfgvx.chat_ADFGVX.DisplayTutorialDialog(147, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
                 }
                 else
                 {
-                    adfgvx.DisplayTutorialDialog(121, 0f);
+                    adfgvx.chat_ADFGVX.DisplayTutorialDialog(121, 0f);
                     decodeRow = 6;
                     decodeLine = 6;
                     return;
@@ -284,7 +284,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
 
     private void UpdateADFGVXArray()//currentADFGVXArrayNum에 따라서 ADFGVX 테이블 원소의 텍스트를 변경한다
     {
-        string FilePath = "Assets/Resources/Text/Array_" + currentADFGVXArrayNum + ".txt";
+        string FilePath = "Assets/Resources/Text/EncodeDecode/Array/Array_" + currentADFGVXArrayNum + ".txt";
         FileInfo TxtFile = new FileInfo(FilePath);
         string value = "";
 
@@ -309,9 +309,9 @@ public class BiliteralSubstitutionPart : MonoBehaviour
 
     public void ArrayPlus()//ADFGVX 테이블 번호 +1
     {
-        if (adfgvx.GetCurrentTutorialPhase()==4 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase()==4 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            adfgvx.MoveToNextTutorialPhase(3.0f);
+            adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(3.0f);
         }
 
         currentADFGVXArrayNum++;
@@ -322,9 +322,9 @@ public class BiliteralSubstitutionPart : MonoBehaviour
 
     public void ArrayMinus()//ADFGVX 테이블 번호 -1
     {
-        if (adfgvx.GetCurrentTutorialPhase() == 4 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 4 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            adfgvx.MoveToNextTutorialPhase(3.0f);
+            adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(3.0f);
         }
 
         currentADFGVXArrayNum--;

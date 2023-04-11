@@ -108,6 +108,7 @@ public class TranspositionPart : MonoBehaviour
             result += " ";
         }
 
+        //전치 비움
         ClearTransposition();
 
         float pos_x = transform.GetChild(0).localPosition.x + (2.5f * (place.Length - 1));
@@ -125,33 +126,33 @@ public class TranspositionPart : MonoBehaviour
         keyword.SetIsFlash(false);
 
         //튜토리얼 관련 코드
-        if (adfgvx.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             if (EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString()) != "SUKHOI")
             {
-                adfgvx.DisplayTutorialDialog(85, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(85, 0f);
                 return;
             }
         }
-        if (adfgvx.GetCurrentTutorialPhase() == 2 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 2 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             if (EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString()).Length != 7)
             {
-                adfgvx.DisplayTutorialDialog(73, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(73, 0f);
                 return;
             }
             else
-                adfgvx.MoveToNextTutorialPhase(2.0f);
+                adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(2.0f);
         }
-        if (adfgvx.GetCurrentTutorialPhase() == 1 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 1 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             if (EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString()) != "HELLO")
             {
-                adfgvx.DisplayTutorialDialog(41, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(41, 0f);
                 return;
             }
             else
-                adfgvx.MoveToNextTutorialPhase(2.0f);
+                adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(2.0f);
         }
     
         //에러 발생
@@ -177,7 +178,7 @@ public class TranspositionPart : MonoBehaviour
         }
 
         //입력 차단
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         //전치 비움
         ClearTransposition();
@@ -208,17 +209,15 @@ public class TranspositionPart : MonoBehaviour
         adfgvx.SoundFlow(rowLength + lineLength, 0.1f * (rowLength + lineLength));
 
         //튜토리얼 관련 코드
-        if (adfgvx.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             if (EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString()) == "SUKHOI")
-                adfgvx.MoveToNextTutorialPhase(0.1f * (rowLength + lineLength));
+                adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(0.1f * (rowLength + lineLength));
         }
     }
 
     public void OnTransposeReverseDown()//키 순위에 따른 행렬 역전치
     {
-        //입력 차단
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
         keyword.SetIsReadyForInput(false);
         keyword.SetIsFlash(false);
 
@@ -244,6 +243,10 @@ public class TranspositionPart : MonoBehaviour
             return;
         }
 
+        //입력 차단
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+
+        //전치 비움
         ClearTransposition();
 
         string Chiper = EditStirng.CollectEnglishUpperAlphabet(adfgvx.beforeEncodingPart.GetInputField_Data().GetInputString());
@@ -265,9 +268,9 @@ public class TranspositionPart : MonoBehaviour
         adfgvx.SoundFlow(rowLength + lineLength, 0.1f * (rowLength + lineLength));
 
         //튜토리얼 관련 코드
-        if(adfgvx.GetCurrentTutorialPhase() == 2 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
+        if(adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 2 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
         {
-            adfgvx.MoveToNextTutorialPhase(0.1f * (rowLength + lineLength));
+            adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(0.1f * (rowLength + lineLength));
         }
     }
 
@@ -311,7 +314,7 @@ public class TranspositionPart : MonoBehaviour
         if(flowLine == lineLength - 1 && FlowRow == rowLength)//마지막 출력 종료
         {
             //입력 회복
-            adfgvx.SetPartLayerWaitForSec(0f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            adfgvx.SetPartLayerWaitForSec(0f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
             adfgvx.InformUpdate("키 순위 전치 프로토콜 종료 : 총 작업 시간 " + (0.1f * (rowLength + lineLength)).ToString() + "s");
             yield break;
         }
