@@ -12,6 +12,9 @@ public class Chat : MonoBehaviour
     public float Delay;
     [Header("바로 실행 여부")]
     public bool PlayOnAwake;
+    [Header("튜토리얼 실행 여부")]
+    // <summary> 체크되어 있으면 바로 실행 여부와 관계없이 바로 실행
+    public bool PlayAsTutorial;
     [Header("다시보기 줄 프리펩")]
     public GameObject pastLine;
     [Header("다시보기 단락 프리펩")]
@@ -27,6 +30,10 @@ public class Chat : MonoBehaviour
     private bool lastFlowTextStatus;
     /// <summary> 다음 줄 로드 가능 여부 </summary>
     private bool isAbleToMoveNextLine;
+    /// <summary> 튜토리얼 단계 배열 </summary>
+    private int[] tutorialPhaseArray;
+    /// <summary> 현재 튜토리얼 단계 </summary>
+    private int currentTutorialPhase;
 
     private AudioSource audioSource;
     private GameObject button_Choice_0;
@@ -73,9 +80,21 @@ public class Chat : MonoBehaviour
         button_Skip.SetActive(false);
         button_Remind.SetActive(false);
 
+        //튜토리얼 실행
+        if (PlayAsTutorial)
+        {
+            tutorialPhaseArray = GetArrayOfTutorialPhase();
+            currentTutorialPhase = -1;
+            MoveToNextTutorialPhase(0f);
+            return;
+        }
+
         //바로 실행
         if (PlayOnAwake)
+        {
             LoadLine(1);
+            return;
+        }
     }
 
     private void Update()
@@ -127,13 +146,11 @@ public class Chat : MonoBehaviour
         }
     }
 
-
     ///<summary> Invoke용으로, 지정 시간 Delay 이후에 다음 줄을 로드 가능하게 만들어준다 </summary>
     private void SetTrueIsAbleToNextLine()//Invoke 용
     {
         isAbleToMoveNextLine = true;
     }
-
 
     ///<summary> 다시보기 창에 줄 정보를 추가한다 </summary>
     ///<param name="speaker"> 추가하고자 하는 발화자 정보 </param>
@@ -159,7 +176,6 @@ public class Chat : MonoBehaviour
         one.transform.localScale = new Vector3(1,1,1);
     }
 
-
     ///<summary> 다시보기 창에 단락 정보를 추가한다 </summary>
     ///<param name="paragraph"> 추가하고자 하는 단락 정보 </param>
     private void AddParagraphToRemindPanel(string paragraph)
@@ -173,7 +189,6 @@ public class Chat : MonoBehaviour
         //아무튼 필요했나 봄
         one.transform.localScale = new Vector3(1,1,1);
     }
-
 
     ///<summary> 선택지 버튼이 눌리는 이벤트가 발생했다 </summary>
     ///<param name="choiceNumber"> 몇번 선택지 버튼이 눌렸는가? </param>
@@ -196,7 +211,6 @@ public class Chat : MonoBehaviour
         AddLineToRemindPanel(currentLineData["Speaker"].ToString(), currentLineData["Belong"].ToString(), currentLineData["Choice_" + choiceNumber.ToString()].ToString());
         LoadLine(currentLineNumber);
     }
-
 
     /// <summary> 다시보기 버튼이 눌리는 이벤트가 발생했다 </summary>
     /// <remarks> 이 함수는 Chat 스크립트에서는 호출하지 않는다. ChatButton_Remind 스크립트에서 다시보기 관련 버튼이 눌리는 이벤트가 발생했을 때 호출된다 </remarks>
@@ -229,7 +243,6 @@ public class Chat : MonoBehaviour
         }
     }
 
-
     /// <summary> 스킵 버튼이 눌리는 이벤트가 발생했다 </summary>
     /// <remarks> 이 함수는 Chat 스크립트에서는 호출하지 않는다. ChatButton_Skip 스크립트에서 건너뛰기 관련 버튼이 눌리는 이벤트가 발생했을 때 호출된다 </remarks>
     public void OnSkipDown()
@@ -249,7 +262,6 @@ public class Chat : MonoBehaviour
             panel_Skip.SetActive(true);
         }
     }
-
 
     /// <summary> 채팅 타입 End를 만나거나 채팅 타입 C2, C3를 만나기 전 줄까지 대화를 건너뛴다 </summary>
     /// <remarks> 이 함수는 Chat 스크립트에서는 호출하지 않는다. ChatButton_ExecuteSkip 스크립트에서 건너뛰기 실행 관련 버튼이 눌리는 이벤트가 발생했을 때 호출된다 </remarks>
@@ -328,7 +340,6 @@ public class Chat : MonoBehaviour
         } 
     }
 
-
     /// <summary> Assets/Resources/Chat에서 새로운 CSV 파일을 data에 로드한다 </summary>
     /// <param name="CSVFileName"> 새롭게 로드할 파일의 이름 </param>
     public void LoadData(string CSVFileName)
@@ -339,7 +350,6 @@ public class Chat : MonoBehaviour
         else
             Debug.Log("Load CSV File '" + CSVFileName + "'");
     }
-
 
     /// <summary> data의 특정 줄로 이동하여 채팅 타입에 따라 여러 작업을 수행한다 </summary>
     /// <param name="line"> 작업을 수행하고 싶은 특정 줄 번호 </param> 
@@ -492,9 +502,19 @@ public class Chat : MonoBehaviour
         }
     }
 
+    /// <summary> 채팅 타입 End를 만나 채팅창이 닫힐 때, 입력을 제어한다 </summary>
+    /// <remarks> 현재에는 EncodeDecode 미니게임의 튜토리얼 구현에 사용되고 있음 </remarks>
+    protected virtual void SetLayerAtEnd()
+    {
+        
+    }
+
+
+
+
 
     /// <summary> data 전체를 순회한 후에 각 튜토리얼 단계의 줄 번호 정보가 담긴 배열을 반환한다 </summary> 
-    public int[] GetArrayOfTutorialPhase()
+    private int[] GetArrayOfTutorialPhase()
     {
         List<int> tutorialPhaseList = new List<int>();
 
@@ -509,12 +529,72 @@ public class Chat : MonoBehaviour
         return tutorialPhaseList.ToArray();
     }
 
-
-    /// <summary> 채팅 타입 End를 만나 채팅창이 닫힐 때, 입력을 제어한다 </summary>
-    /// <remarks> 현재에는 EncodeDecode 미니게임의 튜토리얼 구현에 사용되고 있음 </remarks>
-    protected virtual void SetLayerAtEnd()
+    /// <summary> 현재 튜토리얼 단계를 반환한다 </summary>
+    public int GetCurrentTutorialPhase()
     {
-        
+        return currentTutorialPhase;
     }
-    
+
+    /// <summary> 지정 시간을 대기한 후, 다음 튜토리얼 단계로 넘어간다 </summary>
+    /// <param name="endTime"> 대기할 시간 </param>
+    public void MoveToNextTutorialPhase(float endTime)
+    {
+        if (!PlayAsTutorial)
+            return;
+        currentTutorialPhase++;
+        Debug.Log("Start TutorialPhase : " + currentTutorialPhase);
+        StartCoroutine(MoveToNextTutorialPhase_IE(0, endTime));
+    }
+
+    private IEnumerator<WaitForSeconds> MoveToNextTutorialPhase_IE(float currentTime, float endTime)//MoveToNextTutorialPhase_IEnumerator
+    {
+        if(endTime == 0f)
+        {
+            DisplayTutorialDialog(tutorialPhaseArray[currentTutorialPhase], 0f);
+            yield break;
+        }
+
+        currentTime += endTime / 100;
+        if (currentTime > endTime)
+        {
+            DisplayTutorialDialog(tutorialPhaseArray[currentTutorialPhase], 0f);
+            yield break;
+        }
+
+        yield return new WaitForSeconds(endTime / 100);
+        StartCoroutine(MoveToNextTutorialPhase_IE(currentTime, endTime));
+    }
+
+    /// <summary> 지정 시간을 대기한 후, 지정한 줄의 튜토리얼 대화를 표시한다 </summary>
+    /// <param name="line"> 이동할 줄 번호 </param>
+    /// <param name="endTime"> 대기할 시간 </param>
+    public void DisplayTutorialDialog(int line, float endTime)
+    {
+        if (!PlayAsTutorial)
+            return;
+        StartCoroutine(DisplayTutorialDialog_IE(line, 0, endTime));
+    }
+
+    private IEnumerator<WaitForSeconds> DisplayTutorialDialog_IE(int line, float currentTime, float endTime)//DisplayTutorialDialog_IEnumerator
+    {
+        if(endTime == 0f)
+        {
+            LoadLine(line);
+            yield break;
+        }
+
+        currentTime += endTime / 100;
+        if(currentTime>endTime)
+        {
+            LoadLine(line);
+            yield break;
+        }
+
+        yield return new WaitForSeconds(endTime / 100);
+        StartCoroutine(DisplayTutorialDialog_IE(line, currentTime, endTime));
+    }
+
+
+
+
 }

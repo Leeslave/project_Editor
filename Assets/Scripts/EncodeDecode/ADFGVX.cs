@@ -9,13 +9,6 @@ public class ADFGVX : MonoBehaviour
 
     [Header("현재 ADFGVX 모드")]
     public mode CurrentMode;
-
-    [Header("튜토리얼 실행여부")]
-    public bool PlayAsTutorial;
-    private int[] DecodeTutorialPhaseArray;
-    private int[] EncodeTutorialPhaseArray;
-    private int currentTutorialPhase;
-
     [Header("메인메뉴로 나가는 버튼")]
     public Button_ADFGVX_Quit quitButton;
     [Header("디버그 로그 창")]
@@ -66,17 +59,6 @@ public class ADFGVX : MonoBehaviour
             encodeDataSavePart.gameObject.transform.localPosition = new Vector3(70.7f, -67.9f, 0);
         }
 
-        //튜토리얼 활성
-        if (PlayAsTutorial)
-        {
-            if(CurrentMode == mode.Decoding)
-                DecodeTutorialPhaseArray = chat_ADFGVX.GetArrayOfTutorialPhase();
-            else if(CurrentMode == mode.Encoding)
-                EncodeTutorialPhaseArray = chat_ADFGVX.GetArrayOfTutorialPhase();
-            currentTutorialPhase = -1;
-            MoveToNextTutorialPhase(0f);
-        }
-
         InformUpdate("아츠토츠카 표준 암호 체계 V7 가동 상태 정상");
     }
 
@@ -85,6 +67,19 @@ public class ADFGVX : MonoBehaviour
         UpdateStopWatch();
     }
 
+    /// <param name="endTime"> 지정 시간 </param>
+    /// <param name="quitGame"> 미니 게임 아웃 버튼 </param>
+    /// <param name="BiliteralSubstitution"> 이중 문자 치환 키보드 </param>
+    /// <param name="ArrayPlusMinus"> 치환 배열 전환 </param>
+    /// <param name="Delete"> 삭제 버튼 </param>
+    /// <param name="Clear"> 비움 버튼 </param>
+    /// <param name="Transposition"> 키 순위 전치 파트 </param>
+    /// <param name="AfterDecoding"> 복호화 후 파트 </param>
+    /// <param name="BeforeEncoding"> 암호화 전 파트 </param>
+    /// <param name="EncodeDataSave"> 암호화 데이터 저장 파트 </param>
+    /// <param name="EncodeDataLoad"> 복호화 데이터 로드 파트 </param>
+    /// <param name="Verification"> 검증 파트 </param>
+    /// <param name="DebugLog"> 디버그 로그 파트 </param>
     public void SetPartLayerWaitForSec(float endTime, int quitGame, int BiliteralSubstitution, int ArrayPlusMinus, int Delete, int Clear, int Transposition, int AfterDecoding, 
         int BeforeEncoding, int EncodeDataSave, int EncodeDataLoad, int Verification, int DebugLog)//모든 파트의 입력 제어
     {
@@ -208,67 +203,4 @@ public class ADFGVX : MonoBehaviour
 
 
 
-
-    //튜토리얼 관련 코드
-    public int GetCurrentTutorialPhase()//현재 튜토리얼 페이즈 반환
-    {
-        return currentTutorialPhase;
-    }
-
-    public void MoveToNextTutorialPhase(float endTime)//endTime을 대기한 후 다음 튜토리얼 페이즈로 이동
-    {
-        if (!PlayAsTutorial)
-            return;
-        currentTutorialPhase++;
-        Debug.Log("Start TutorialPhase : " + currentTutorialPhase);
-        StartCoroutine(MoveToNextTutorialPhase_IE(0, endTime));
-    }
-
-    public IEnumerator<WaitForSeconds> MoveToNextTutorialPhase_IE(float currentTime, float endTime)//MoveToNextTutorialPhase_IEnumerator
-    {
-        if(endTime == 0f)
-        {
-            int phase = CurrentMode == ADFGVX.mode.Decoding ? DecodeTutorialPhaseArray[currentTutorialPhase] : EncodeTutorialPhaseArray[currentTutorialPhase];
-            DisplayTutorialDialog(phase, 0f);
-            yield break;
-        }
-
-        currentTime += endTime / 100;
-        if (currentTime > endTime)
-        {
-            int phase = CurrentMode == ADFGVX.mode.Decoding ? DecodeTutorialPhaseArray[currentTutorialPhase] : EncodeTutorialPhaseArray[currentTutorialPhase];
-            DisplayTutorialDialog(phase, 0f);
-            yield break;
-        }
-
-        yield return new WaitForSeconds(endTime / 100);
-        StartCoroutine(MoveToNextTutorialPhase_IE(currentTime, endTime));
-    }
-
-    public void DisplayTutorialDialog(int line, float endTime)//endTime을 대기한 후 다음 튜토리얼 대화를 표시
-    {
-        if (!PlayAsTutorial)
-            return;
-        SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
-        StartCoroutine(DisplayTutorialDialog_IE(line, 0, endTime));
-    }
-
-    public IEnumerator<WaitForSeconds> DisplayTutorialDialog_IE(int line, float currentTime, float endTime)//DisplayTutorialDialog_IEnumerator
-    {
-        if(endTime == 0f)
-        {
-            chat_ADFGVX.LoadLine(line);
-            yield break;
-        }
-
-        currentTime += endTime / 100;
-        if(currentTime>endTime)
-        {
-            chat_ADFGVX.LoadLine(line);
-            yield break;
-        }
-
-        yield return new WaitForSeconds(endTime / 100);
-        StartCoroutine(DisplayTutorialDialog_IE(line, currentTime, endTime));
-    }
 }

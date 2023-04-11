@@ -87,9 +87,9 @@ public class EncodeDataLoadPart : MonoBehaviour
         if (!TxtFile.Exists)
         {
             //튜토리얼 관련 코드
-            if (adfgvx.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+            if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                adfgvx.DisplayTutorialDialog(11, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(11, 0f);
             }
 
             adfgvx.InformError("'" + filePath.GetInputString() + "' " + "로드 실패 : 유효하지 않은 파일 경로");
@@ -98,12 +98,12 @@ public class EncodeDataLoadPart : MonoBehaviour
         }
 
         //튜토리얼 관련 코드
-        if (adfgvx.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             if (filePath.GetInputString() == "SI-XI-I")
-                adfgvx.MoveToNextTutorialPhase(3f);
+                adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(3f);
             else
-                adfgvx.DisplayTutorialDialog(14, 3.2f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(14, 3.2f);
         }
         else
         {

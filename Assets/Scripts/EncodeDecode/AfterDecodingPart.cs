@@ -75,20 +75,20 @@ public class AfterDecodingPart : MonoBehaviour
         TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetLineText();
 
         //튜토리얼 관련 코드
-        if(adfgvx.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        if(adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             if (row.text == "F" && line.text == "G" && adfgvx.biliteralsubstitutionpart.GetCurrentADFGVXArrayNum() == 0)
-                adfgvx.MoveToNextTutorialPhase(2.0f);
+                adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(2.0f);
             else if(adfgvx.biliteralsubstitutionpart.GetCurrentADFGVXArrayNum() != 0)
             {
-                adfgvx.DisplayTutorialDialog(175, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(175, 0f);
                 row.text = "-";
                 line.text = "-";
                 return;
             }
             else
             {
-                adfgvx.DisplayTutorialDialog(141, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(141, 0f);
                 row.text = "-";
                 line.text = "-";
                 return;

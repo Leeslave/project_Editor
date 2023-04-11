@@ -154,13 +154,13 @@ public class VerificationPanelPart : MonoBehaviour
         adfgvx.InformUpdate(adfgvx.ReturnDecodeScore() ? "복호화 데이터 무결성 검증에 성공했습니다" : "복호화 데이터 무결성 검증에 실패했습니다");
 
         //튜토리얼 관련 코드
-        if (adfgvx.GetCurrentTutorialPhase() == 9 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 9 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             Debug.Log(adfgvx.ReturnDecodeScore());
             if (adfgvx.ReturnDecodeScore())
-                adfgvx.MoveToNextTutorialPhase(0f);
+                adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(0f);
             else
-                adfgvx.DisplayTutorialDialog(166, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(166, 0f);
         }
         else        
         {
@@ -271,12 +271,12 @@ public class VerificationPanelPart : MonoBehaviour
         adfgvx.InformUpdate(adfgvx.ReturnDecodeScore() ? "암호화 데이터 무결성 검증에 성공했습니다" : "암호화 데이터 무결성 검증에 실패했습니다");
 
         //튜토리얼 관련 코드
-        if(adfgvx.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
+        if(adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
         {
             if (adfgvx.ReturnEncodeScore())
-                adfgvx.MoveToNextTutorialPhase(0f);
+                adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(0f);
             else
-                adfgvx.DisplayTutorialDialog(67, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(67, 0f);
         }
         else
         {
