@@ -3,46 +3,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
+
+//Bullet Object Pooling
 public class BulletManager : MonoBehaviour
 {
     [SerializeField]
-    public GameObject BR;
-    public GameObject BL;
-    static GameObject[] BRL;
-    static GameObject[] BLL;
+    public GameObject Bm;
+    public GameObject Bl;
+    static GameObject[] BM;
+    static GameObject[] BL;
     static GameObject[] Pool;
 
     private void Awake()
     {
-        BLL = new GameObject[100];
-        BRL = new GameObject[100];
-        for(int i = 0; i<BRL.Length; i++)
+        BM = new GameObject[300];
+        BL = new GameObject[50];
+        for(int i = 0; i<BM.Length; i++)
         {
-            BRL[i] = Instantiate(BR);
-            BRL[i].SetActive(false);
+            BM[i] = Instantiate(Bm);
+            BM[i].SetActive(false);
         }
-        for(int i = 0; i<BLL.Length; i++)
+        for(int i =0; i < BL.Length; i++)
         {
-            BLL[i] = Instantiate(BL);
-            BLL[i].SetActive(false);
+            BL[i] = Instantiate(Bl);
+            BL[i].SetActive(false);
         }
     }
 
-    public GameObject MakeBul(string Dir)
+    public GameObject MakeSmallBul(Vector2 Dir1, Vector2 Dir2)
     {
-       if(Dir == "L")
-        {
-            Pool = BLL;
-        }
-        else
-        {
-            Pool = BRL;
-        }
+        Pool = BM;
         for (int i = 0; i < Pool.Length; i++)
         {
             if (!Pool[i].activeSelf)
             {
                 Pool[i].SetActive(true);
+                Pool[i].GetComponent<Rigidbody2D>().AddForce(Dir1, ForceMode2D.Impulse);
+                Pool[i].GetComponent<Rigidbody2D>().AddForce(Dir2, ForceMode2D.Impulse);
+                return Pool[i];
+            }
+        }
+        return null;
+    }
+    public GameObject MakeBigBul(Vector2 Dir1, Vector2 Dir2, bool Pattern)
+    {
+        Pool = BL;
+        for (int i = 0; i < Pool.Length; i++)
+        {
+            if (!Pool[i].activeSelf)
+            {
+                Pool[i].SetActive(true);
+                Pool[i].GetComponent<Rigidbody2D>().AddForce(Dir1, ForceMode2D.Impulse);
+                Pool[i].GetComponent<Rigidbody2D>().AddForce(Dir2, ForceMode2D.Impulse);
+                if(Pattern)Pool[i].GetComponent<BulletMove>().BigBullet(GetComponent<BulletManager>());
                 return Pool[i];
             }
         }
@@ -50,10 +63,13 @@ public class BulletManager : MonoBehaviour
     }
     public void DelBul()
     {
-        for(int i = 0; i< 100; i++)
+        foreach(var a in BM)
         {
-            BLL[i].SetActive(false);
-            BRL[i].SetActive(false);
+            a.SetActive(false);
+        }
+        foreach(var a in BL)
+        {
+            a.SetActive(false);
         }
     }
 

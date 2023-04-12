@@ -81,15 +81,15 @@ public class EncodeDataLoadPart : MonoBehaviour
         string ReceiverUI = "";
         string Receiver = "";
 
-        FilePath = "Assets/Resources/Chiper/" + filePath.GetInputString() + ".txt";
+        FilePath = "Assets/Resources/Text/EncodeDecode/Key/" + filePath.GetInputString() + ".txt";
         TxtFile = new FileInfo(FilePath);
 
         if (!TxtFile.Exists)
         {
             //튜토리얼 관련 코드
-            if (adfgvx.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+            if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
             {
-                adfgvx.DisplayTutorialDialog(11, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(11, 0f);
             }
 
             adfgvx.InformError("'" + filePath.GetInputString() + "' " + "로드 실패 : 유효하지 않은 파일 경로");
@@ -98,12 +98,17 @@ public class EncodeDataLoadPart : MonoBehaviour
         }
 
         //튜토리얼 관련 코드
-        if (adfgvx.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
+        if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
             if (filePath.GetInputString() == "SI-XI-I")
-                adfgvx.MoveToNextTutorialPhase(3f);
+                adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(3f);
             else
-                adfgvx.DisplayTutorialDialog(14, 3.01f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(14, 3.2f);
+        }
+        else
+        {
+            //입력 회복
+            adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
             
         StreamReader Reader = new StreamReader(FilePath, System.Text.Encoding.UTF8);
@@ -122,10 +127,7 @@ public class EncodeDataLoadPart : MonoBehaviour
         Reader.Close();
 
         //입력 차단
-        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2);
-
-        //입력 회복
-        adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
 
         adfgvx.InformUpdate("'" + filePath.GetInputString() + "' " + "로드 성공 : 총 작업 시간 1ms 이하");
 

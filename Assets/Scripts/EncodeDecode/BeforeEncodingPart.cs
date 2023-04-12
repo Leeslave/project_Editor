@@ -41,15 +41,15 @@ public class BeforeEncodingPart : MonoBehaviour
     public void AddInputField_Data(string value)//데이터 입력창에 value 추가
     {
         //튜토리얼 관련 코드
-        if(adfgvx.GetCurrentTutorialPhase() == 1 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
+        if(adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 1 && adfgvx.CurrentMode == ADFGVX.mode.Encoding)
         {
             if (adfgvx.biliteralsubstitutionpart.GetCurrentADFGVXArrayNum() != 0)
             {
-                adfgvx.DisplayTutorialDialog(44, 0f);
+                adfgvx.chat_ADFGVX.DisplayTutorialDialog(44, 0f);
                 return;
             }
             else
-                adfgvx.MoveToNextTutorialPhase(2.0f);
+                adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(2.0f);
         }
 
         char[] array = new char[6] { 'A', 'D', 'F', 'G', 'V', 'X' };
