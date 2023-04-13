@@ -12,9 +12,25 @@ public class PlayerDataManager : MonoBehaviour
     * SavePlayerData
     * LoadPlayerData
     */
+
+    // 싱글톤화
+    private static PlayerDataManager _instance;
+    public static PlayerDataManager Instance { get { return _instance; } }
+    private void Awake() {
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+        else 
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
+
+
     public static string savefilePath = "/Resources/Save/";    // 세이브 파일 경로
     public static string worldfilePath = "Prefab/MainWorld/";  // 월드 프리팹 경로
-
 
     private class PlayerData
     {
