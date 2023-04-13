@@ -20,6 +20,7 @@ public class PlayerDataManager : MonoBehaviour
         if (_instance == null)
         {
             _instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else 
         {
@@ -27,7 +28,6 @@ public class PlayerDataManager : MonoBehaviour
             return;
         }
     }
-
 
     public static string savefilePath = "/Resources/Save/";    // 세이브 파일 경로
     public static string worldfilePath = "Prefab/MainWorld/";  // 월드 프리팹 경로
@@ -40,9 +40,7 @@ public class PlayerDataManager : MonoBehaviour
         *   - 위치 데이터
         *   - 현재 명성치
         */
-        public int year;
-        public int month;
-        public int day;
+        public Date date;
         public int time;
         public string location;
         public int renown;
@@ -115,9 +113,9 @@ public class PlayerDataManager : MonoBehaviour
     */
     private static void asyncPlayerPrefs()
     {
-        PlayerPrefs.SetInt("Year", playerData.year);
-        PlayerPrefs.SetInt("Month", playerData.month);
-        PlayerPrefs.SetInt("Day", playerData.day);
+        PlayerPrefs.SetInt("Year", playerData.date.year);
+        PlayerPrefs.SetInt("Month", playerData.date.month);
+        PlayerPrefs.SetInt("Day", playerData.date.day);
         PlayerPrefs.SetInt("Time", playerData.time);
         PlayerPrefs.SetString("Location", playerData.location);
         PlayerPrefs.SetInt("Renown", playerData.renown);
@@ -128,9 +126,9 @@ public class PlayerDataManager : MonoBehaviour
     */
     private static void asyncPlayerData()
     {
-        playerData.year = PlayerPrefs.GetInt("Year");
-        playerData.month = PlayerPrefs.GetInt("Month");
-        playerData.day = PlayerPrefs.GetInt("Day");
+        playerData.date.year = PlayerPrefs.GetInt("Year");
+        playerData.date.month = PlayerPrefs.GetInt("Month");
+        playerData.date.day = PlayerPrefs.GetInt("Day");
         playerData.time = PlayerPrefs.GetInt("Time");
         playerData.location = PlayerPrefs.GetString("Location");
         playerData.renown = PlayerPrefs.GetInt("Renown");
