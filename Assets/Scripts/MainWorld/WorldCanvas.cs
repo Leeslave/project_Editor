@@ -108,7 +108,7 @@ public class WorldCanvas : MonoBehaviour
         if (nextWorld != "" && nextWorld != location)
         {
             PlayerPrefs.SetString("Location", nextWorld);
-            PlayerDataManager.asyncSceneData();
+            PlayerDataManager.asyncWorldCanvas();
         }
     }
 }

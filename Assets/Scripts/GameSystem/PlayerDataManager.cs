@@ -13,9 +13,35 @@ public class PlayerDataManager : MonoBehaviour
     * LoadPlayerData
     */
 
+    [SerializeField]
+    private string savefilePath = "/Resources/Save/";    // 세이브 파일 경로
+
     // 싱글톤화
     private static PlayerDataManager _instance;
     public static PlayerDataManager Instance { get { return _instance; } }
+
+    [SerializeField]
+    public PlayerData playerData = new PlayerData();     // 플레이어 데이터 필드
+
+    [System.Serializable]
+    public class PlayerData
+    {
+        /**
+        * 플레이어 데이터 클래스
+        *   데이터 저장을 위한 직렬화 
+        *   - 게임데이터 인덱스
+        *   - 날짜 데이터 (YYYY:DD:MM - Time)
+        *   - 위치 데이터
+        *   - 현재 명성치
+        */
+        public int index;
+        public Date date;
+        public int time;
+        public string location;
+        public int renown;
+    }
+
+    /// 에디터 상 DontDestroy설정
     private void Awake() {
         if (_instance == null)
         {
@@ -28,41 +54,13 @@ public class PlayerDataManager : MonoBehaviour
             return;
         }
     }
-
-    public static string savefilePath = "/Resources/Save/";    // 세이브 파일 경로
-    public static string worldfilePath = "Prefab/MainWorld/";  // 월드 프리팹 경로
-
-    private class PlayerData
-    {
-        /**
-        * 플레이어 데이터 클래스
-        *   - 날짜 데이터 (YYYY:DD:MM - Time)
-        *   - 위치 데이터
-        *   - 현재 명성치
-        */
-        public Date date;
-        public int time;
-        public string location;
-        public int renown;
-    }
-    private static PlayerData playerData = new PlayerData();   // PlayerPrefs와 데이터 연동
-
-
-    // 데이터 초기 설정
-    public static void InitNewPlayerData()
-    {   
-        LoadPlayerData(savefilePath+"initial.json");
-        asyncPlayerPrefs();
-    }
-
+    
     /// <summary>
     /// 플레이어 데이터 JSON 저장
     /// </summary>
     /// <param name="SaveFileName">저장 경로 내 파일명</param>
-    public static void SavePlayerData(string saveFileName)
+    public void SavePlayerData(string saveFileName)
     {
-        asyncPlayerData();
-
         string jsonObjectData = JsonUtility.ToJson(playerData);
         
         FileStream fileStream = new FileStream(Application.dataPath + savefilePath + saveFileName + ".json", FileMode.Create);
@@ -72,10 +70,10 @@ public class PlayerDataManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 플레이어 데이터 JSON 로드
+    /// 플레이어 데이터 JSON에서 로드
     /// </summary>
     /// <param name=SaveFileName>저장 경로 내 파일명</param>
-    public static void LoadPlayerData(string saveFileName)
+    public void LoadPlayerData(string saveFileName)
     { 
         FileStream fileStream = new FileStream(Application.dataPath + savefilePath + saveFileName + ".json", FileMode.Open);
         byte[] data = new byte[fileStream.Length];
@@ -84,53 +82,32 @@ public class PlayerDataManager : MonoBehaviour
 
         string jsonObjectData = Encoding.UTF8.GetString(data);
         playerData = JsonUtility.FromJson<PlayerData>(jsonObjectData);
-
-        asyncPlayerPrefs();
     }
-    
-    
 
+    // 데이터 초기 설정
+    public void InitNewPlayerData()
+    {   
+        LoadPlayerData(savefilePath+"default.json");
+    }
+
+
+    ///////////////////////////////////////////////////////////
+
+    public static string worldfilePath = "Prefab/MainWorld/";  // 월드 프리팹 경로
+    // TODO: MainWorldSceneManager로 이동
     /// <summary>
     /// 플레이어의 위치와 활성화 월드 동기화
     /// </summary>
     /// <remarks>씬 내 WorldCanvas 객체 삭제 후 새로 생성</remarks>
-    public static void asyncSceneData()
+    public static void asyncWorldCanvas()
     {
-        asyncPlayerData();
 
         var existWorld = GameObject.FindObjectOfType<WorldCanvas>();
         if (existWorld != null)
         {
             Destroy(existWorld.gameObject);
         }
-        GameObject newWorldCanvas = Instantiate(Resources.Load<GameObject>(worldfilePath + playerData.location + "Canvas"));
-        Debug.Log("New Worlc Loaded: " + newWorldCanvas.ToString());
+        // GameObject newWorldCanvas = Instantiate(Resources.Load<GameObject>(worldfilePath + playerData.location + "Canvas"));
     }
-
-    
-    /**
-    * PlayerData -> PlayerPrefs 데이터 동기화
-    */
-    private static void asyncPlayerPrefs()
-    {
-        PlayerPrefs.SetInt("Year", playerData.date.year);
-        PlayerPrefs.SetInt("Month", playerData.date.month);
-        PlayerPrefs.SetInt("Day", playerData.date.day);
-        PlayerPrefs.SetInt("Time", playerData.time);
-        PlayerPrefs.SetString("Location", playerData.location);
-        PlayerPrefs.SetInt("Renown", playerData.renown);
-    }
-
-    /**
-    * PlayerPrefs -> PlayerData 데이터 동기화
-    */
-    private static void asyncPlayerData()
-    {
-        playerData.date.year = PlayerPrefs.GetInt("Year");
-        playerData.date.month = PlayerPrefs.GetInt("Month");
-        playerData.date.day = PlayerPrefs.GetInt("Day");
-        playerData.time = PlayerPrefs.GetInt("Time");
-        playerData.location = PlayerPrefs.GetString("Location");
-        playerData.renown = PlayerPrefs.GetInt("Renown");
-    }
+    //////////////////////////////////////////////////////////////////
 }

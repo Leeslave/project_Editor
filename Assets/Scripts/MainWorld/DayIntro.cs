@@ -72,6 +72,6 @@ public class DayIntro : MonoBehaviour
 
         //종료 및 WorldCanvas 설정
         gameObject.SetActive(false);
-        PlayerDataManager.asyncSceneData();
+        PlayerDataManager.asyncWorldCanvas();
     }
 }
