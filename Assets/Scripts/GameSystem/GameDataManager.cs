@@ -8,8 +8,8 @@ public class GameDataManager : MonoBehaviour
 {
     /**
     * 게임 내 데이터를 로드
-    * 하루 
-    * load GameData 
+    * 하루동안 필요한 데이터 로드 및 관리
+    * 날짜 넘어갈때마다 데이터 갱신
     */
 
     // 싱글톤화
@@ -35,9 +35,7 @@ public class GameDataManager : MonoBehaviour
     [System.Serializable]
     class Wrapper { public List<DailyData> dailyDataList = new List<DailyData>(); }     // JsonUtility용 Wrapper
 
-    private static List<DailyData> dailyData;       // 각 Day들의 정보를 저장하는 리스트
-    public static DailyData todayData;
-
+    public static List<DailyData> dailyData;       // 각 Day들의 정보를 저장하는 리스트
 
     /// JSON으로부터 게임 데이터를 로드
     private void LoadGameData()
@@ -47,19 +45,9 @@ public class GameDataManager : MonoBehaviour
         fileStream.Read(data, 0, data.Length);
         fileStream.Close();
 
-
         string jsonObjectData = Encoding.UTF8.GetString(data);
         Wrapper wrapper = null;
         wrapper = JsonUtility.FromJson<Wrapper>(jsonObjectData);
         dailyData = wrapper.dailyDataList;
     }
-
-    private void Update()
-    {
-        
-    }
-
-    ////////////////TEST AREA/////////////////////
-
-    ////////////////TEST AREA/////////////////////
 }

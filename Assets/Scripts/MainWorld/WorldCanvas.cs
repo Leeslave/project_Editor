@@ -43,7 +43,7 @@ public class WorldCanvas : MonoBehaviour
     /// </summary>
     /// <remarks>- "이름_순서_시간대.png"</remarks>
     /// <remarks>- 다른 파일 없으면 기본 값 유지 </remarks>
-    private void asyncWorldTime()
+    public void asyncWorldTime()
     {
         for(int idx = 0; idx < transform.childCount; idx++)
         {
@@ -99,6 +99,7 @@ public class WorldCanvas : MonoBehaviour
         }
     }
 
+    /// TODO: WorldSceneManager로 이동
     /// <summary>
     /// 다른 월드로 이동
     /// </summary>
