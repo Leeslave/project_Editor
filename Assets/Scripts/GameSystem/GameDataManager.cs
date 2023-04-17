@@ -35,7 +35,16 @@ public class GameDataManager : MonoBehaviour
     [System.Serializable]
     class Wrapper { public List<DailyData> dailyDataList = new List<DailyData>(); }     // JsonUtility용 Wrapper
 
-    public static List<DailyData> dailyData;       // 각 Day들의 정보를 저장하는 리스트
+    private List<DailyData> dailyData ;       // 각 Day들의 정보를 저장하는 리스트
+
+    /// 오늘 날짜의 데이터
+    public DailyData todayData
+    { 
+        get
+        { 
+            return dailyData[PlayerDataManager.Instance.playerData.index];
+        }
+    }     
 
     /// JSON으로부터 게임 데이터를 로드
     private void LoadGameData()

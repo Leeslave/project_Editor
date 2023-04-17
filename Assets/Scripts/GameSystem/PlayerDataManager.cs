@@ -91,5 +91,4 @@ public class PlayerDataManager : MonoBehaviour
         }
         // GameObject newWorldCanvas = Instantiate(Resources.Load<GameObject>(worldfilePath + playerData.location + "Canvas"));
     }
-    //////////////////////////////////////////////////////////////////
 }

@@ -16,9 +16,10 @@ using UnityEngine.UI;
 */
 public class WorldCanvas : MonoBehaviour
 {
-    public string location;     //해당 World의 위치명
+    public string locationName;     //해당 World의 위치명
     public List<Image> sceneList;    // 배경컷 리스트
 
+    [SerializeField]
     private int currentPosition = 0;    // 현재 배경컷 위치
 
 
@@ -29,13 +30,13 @@ public class WorldCanvas : MonoBehaviour
 
     private void Start() {
         asyncWorldTime();
-        ActiveCurrentScene();
+        ActiveScene();
     }
     /// 활성화될때마다 월드 내 시간 동기화
     void OnEnabled()
     {
         asyncWorldTime();
-        ActiveCurrentScene();
+        ActiveScene();
     }
 
     /// <summary>
@@ -47,8 +48,7 @@ public class WorldCanvas : MonoBehaviour
     {
         for(int idx = 0; idx < transform.childCount; idx++)
         {
-            // TODO: 날짜별 CSV로 최적화 필요
-            Sprite newImage = Resources.Load<Sprite>($"{location}_{idx}_{PlayerPrefs.GetInt("Time")}.png");
+            Sprite newImage = Resources.Load<Sprite>($"{locationName}_{idx}_{PlayerDataManager.Instance.playerData.time}.png");
             if (newImage != null)
                 sceneList[idx].sprite = newImage;
             // 날짜/시간별 특수 오브젝트 활성화, 비활성화
@@ -58,7 +58,7 @@ public class WorldCanvas : MonoBehaviour
     /// <summary>
     /// 현재 위치 활성화
     /// </summary>
-    public void ActiveCurrentScene()
+    public void ActiveScene()
     {
         for(int idx = 0; idx < transform.childCount; idx++)
         {
@@ -69,7 +69,7 @@ public class WorldCanvas : MonoBehaviour
     /// <summary>
     /// 모든 씬 페이지 비활성화
     /// </summary>
-    public void DeactivateCurrentScene()
+    public void DeactiveScene()
     {
         for(int idx = 0; idx < transform.childCount; idx++)
         {
@@ -88,28 +88,14 @@ public class WorldCanvas : MonoBehaviour
             case "LEFT":
                 if (currentPosition > 0)
                     currentPosition -= 1;
-                ActiveCurrentScene();
+                ActiveScene();
                 return;
             case "RIGHT":
                 if (currentPosition < sceneList.Count)
                     currentPosition += 1; 
-                ActiveCurrentScene();
+                ActiveScene();
                 return;
             // TODO: case UP,DOWN
-        }
-    }
-
-    /// TODO: WorldSceneManager로 이동
-    /// <summary>
-    /// 다른 월드로 이동
-    /// </summary>
-    /// <param name="nextWorld">이동할 월드명</param>
-    public void MoveNextWorld(string nextWorld)
-    {
-        if (nextWorld != "" && nextWorld != location)
-        {
-            PlayerPrefs.SetString("Location", nextWorld);
-            PlayerDataManager.asyncWorldCanvas();
         }
     }
 }
