@@ -15,27 +15,22 @@ public class DayIntro : MonoBehaviour
     public float textOnDelay;   // 시작부터 글자 활성화까지의 딜레이
     public float textOnDuration;    //글자 활성화 지속시간
     public TMP_Text dayText;      //글자 활성화용 텍스트 오브젝트
-    private string hour;        // 시간대 프리셋으로 시간 문자열
 
     /**
     * 시간대 문자열 설정 함수
     - (0: 출근전, 1: 업무전, 2: 업무후, 3: 퇴근 후)
     */ 
-    private void setHour(int timeOffset)
+    private string setHour(int timeOffset)
     {
         switch(timeOffset) {
             case 1:
-                hour = "09:00 AM";
-                break;
+                return "09:00 AM";
             case 2:
-                hour = "05:00 PM";
-                break;
+                return "05:00 PM";
             case 3:
-                hour = "07:30 PM";
-                break;
+                return "07:30 PM";
             case 0:default:
-                hour = "06:30 AM";
-                break;
+                return "06:30 AM";
         }
     }
 
@@ -48,7 +43,7 @@ public class DayIntro : MonoBehaviour
     // 인트로 시작
     private void Start() 
     {
-        Debug.Log("Current Renown: " + PlayerPrefs.GetInt("Renown").ToString());
+        Debug.Log("Current Renown: " + PlayerDataManager.Instance.playerData.renown);
         StartCoroutine("DayCountIntro");
     }    
 
@@ -60,9 +55,10 @@ public class DayIntro : MonoBehaviour
     IEnumerator DayCountIntro() {
         dayText.gameObject.SetActive(false);
 
+        PlayerData playerData = PlayerDataManager.Instance.playerData;
+
         // 텍스트 세팅
-        setHour(PlayerPrefs.GetInt("Time"));
-        dayText.text = $"제국력 {PlayerPrefs.GetInt("Year")}년 {PlayerPrefs.GetInt("Month")}월 {PlayerPrefs.GetInt("Day")}일\n\n{hour}";
+        dayText.text = $"제국력 {playerData.date.year}년 {playerData.date.month}월 {playerData.date.day}일\n\n{setHour(playerData.time)}";
         yield return new WaitForSeconds(textOnDelay);
 
         //날짜 활성화 애니메이션, 효과음
@@ -71,7 +67,7 @@ public class DayIntro : MonoBehaviour
         yield return new WaitForSeconds(textOnDuration);
 
         //종료 및 WorldCanvas 설정
+        FindObjectOfType<WorldSceneManager>().asyncWorldCanvas();
         gameObject.SetActive(false);
-        PlayerDataManager.asyncWorldCanvas();
     }
 }

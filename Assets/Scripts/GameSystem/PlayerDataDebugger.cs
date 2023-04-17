@@ -11,16 +11,8 @@ public class PlayerDataDebugger : MonoBehaviour
     public string location;
     public int renown;
 
-    private void Awake()
+    private void Start()
     {
         PlayerDataManager.Instance.LoadPlayerData(debugSaveData);
-    }
-
-    private void Update()
-    {
-        date = $"제국력 {PlayerDataManager.Instance.playerData.date.year}년 {PlayerDataManager.Instance.playerData.date.month}/{PlayerDataManager.Instance.playerData.date.day}";
-        time = PlayerDataManager.Instance.playerData.time;
-        location = PlayerDataManager.Instance.playerData.location;
-        renown = PlayerDataManager.Instance.playerData.renown;
     }
 }

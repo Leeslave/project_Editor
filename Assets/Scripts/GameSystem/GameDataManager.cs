@@ -30,7 +30,8 @@ public class GameDataManager : MonoBehaviour
         }
     }
 
-    public static string datafilePath = "/Resources/GameData/Main/dailyData.json";     // 게임 데이터 파일 경로
+    [SerializeField]
+    private string datafilePath = "/Resources/GameData/Main/dailyData.json";     // 게임 데이터 파일 경로
 
     [System.Serializable]
     class Wrapper { public List<DailyData> dailyDataList = new List<DailyData>(); }     // JsonUtility용 Wrapper
@@ -38,6 +39,7 @@ public class GameDataManager : MonoBehaviour
     private List<DailyData> dailyData ;       // 각 Day들의 정보를 저장하는 리스트
 
     /// 오늘 날짜의 데이터
+    [SerializeField]
     public DailyData todayData
     { 
         get
@@ -59,4 +61,8 @@ public class GameDataManager : MonoBehaviour
         wrapper = JsonUtility.FromJson<Wrapper>(jsonObjectData);
         dailyData = wrapper.dailyDataList;
     }
+
+    //////////////////////////////////////////////
+    /// 게임 데이터 에셋 생성용 빌드 함수
+    /////////////////////////////////////////////
 }

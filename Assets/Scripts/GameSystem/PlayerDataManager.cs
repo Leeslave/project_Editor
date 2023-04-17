@@ -8,9 +8,8 @@ public class PlayerDataManager : MonoBehaviour
 {
     /**
     * 플레이어 데이터를 저장, 로드
-    * initNewPlayerData
-    * SavePlayerData
-    * LoadPlayerData
+    * 플레이어의 유지 데이터들 저장
+        인덱스, 날짜, 시간, 장소, 명성치 
     */
 
     [SerializeField]
@@ -70,25 +69,5 @@ public class PlayerDataManager : MonoBehaviour
     public void InitNewPlayerData()
     {   
         LoadPlayerData(savefilePath+"default.json");
-    }
-
-
-    ///////////////////////////////////////////////////////////
-
-    public static string worldfilePath = "Prefab/MainWorld/";  // 월드 프리팹 경로
-    // TODO: MainWorldSceneManager로 이동
-    /// <summary>
-    /// 플레이어의 위치와 활성화 월드 동기화
-    /// </summary>
-    /// <remarks>씬 내 WorldCanvas 객체 삭제 후 새로 생성</remarks>
-    public static void asyncWorldCanvas()
-    {
-
-        var existWorld = GameObject.FindObjectOfType<WorldCanvas>();
-        if (existWorld != null)
-        {
-            Destroy(existWorld.gameObject);
-        }
-        // GameObject newWorldCanvas = Instantiate(Resources.Load<GameObject>(worldfilePath + playerData.location + "Canvas"));
     }
 }
