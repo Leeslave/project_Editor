@@ -14,5 +14,6 @@ public class PlayerDataDebugger : MonoBehaviour
     private void Start()
     {
         PlayerDataManager.Instance.LoadPlayerData(debugSaveData);
+        GameDataManager.Instance.CreateGameData();
     }
 }

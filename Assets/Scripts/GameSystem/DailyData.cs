@@ -12,7 +12,7 @@ public class DailyData
     *     (특수이벤트도 컷신 데이터 포함된 이동 월드로 구현)
     */
 
-    public Date date;   // 날짜 정보
+    public Date date;   // 날짜 정보     
     public Dictionary<string, int> workData;    // 업무 정보 <업무명, 스테이지>
     public Dictionary<string, Dictionary<int, string>> moveWorldData;   // 월드 이동 데이터 <문 이름, <시간대, 이동 월드>>
 }

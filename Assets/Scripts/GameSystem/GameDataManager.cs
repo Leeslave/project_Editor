@@ -65,4 +65,43 @@ public class GameDataManager : MonoBehaviour
     //////////////////////////////////////////////
     /// 게임 데이터 에셋 생성용 빌드 함수
     /////////////////////////////////////////////
+    public void CreateGameData()
+    {
+        Wrapper newGameDataWrapper = new Wrapper();
+
+        List<DailyData> newGameDataList = new List<DailyData>();
+
+        for(int i = 0; i < 10; i++)
+        {
+            DailyData newData = new DailyData();
+            newData.date = new Date(23, 12, 23);
+
+            {
+                newData.workData = new Dictionary<string, int>();
+                newData.workData.Add("Dodge", 1);
+                newData.workData.Add("Encode", 1);
+                newData.workData.Add("Decode", 1);
+            }
+
+
+            newData.moveWorldData = new Dictionary<string, Dictionary<int, string>>();
+            Dictionary<int, string> newWorldData = new Dictionary<int, string>();
+            for (int j = 0; j<4; j++)
+            {
+                newWorldData.Add(j, "MoveWorldName");
+            }
+            newData.moveWorldData.Add("DoorName", newWorldData);
+
+            newGameDataList.Add(newData);
+        }
+
+        newGameDataWrapper.dailyDataList = newGameDataList;
+         
+        string jsonString = JsonUtility.ToJson(newGameDataWrapper);
+
+        FileStream fileStream = new FileStream(Application.dataPath + datafilePath + "dailyDataAsset" + ".json", FileMode.Create);
+        byte[] data = Encoding.UTF8.GetBytes(jsonString);
+        fileStream.Write(data, 0, data.Length);
+        fileStream.Close();
+    }
 }
