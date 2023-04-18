@@ -26,7 +26,7 @@ public class WorldSceneManager : MonoBehaviour
         {
             Destroy(currentWorld.gameObject);
         }
-        GameObject newWorldObject = Instantiate(Resources.Load<GameObject>(worldfilePath + PlayerDataManager.Instance.playerData.location + "Canvas"));
+        GameObject newWorldObject = Instantiate(Resources.Load<GameObject>(worldfilePath + PlayerDataManager.Instance.playerData.location + "Canvas"), transform);
         currentWorld = newWorldObject.GetComponent<WorldCanvas>();
     }
 
@@ -45,24 +45,5 @@ public class WorldSceneManager : MonoBehaviour
         }
         GameObject newWorldObject = Instantiate(Resources.Load<GameObject>(worldfilePath + worldName + "Canvas"));
         currentWorld = newWorldObject.GetComponent<WorldCanvas>();
-    }
-
-    /// <summary>
-    /// 다른 월드로 이동하는 문
-    /// </summary>
-    /// <param name="doorName">문의 이름</param>
-    /// <remarks>문의 이름으로 이동 월드 정보를 불러와서 이동>
-    public void MoveWorld(string doorName)
-    {
-        PlayerData playerData = PlayerDataManager.Instance.playerData;
-        if (doorName != "")
-        {
-            asyncWorldCanvas(GameDataManager.Instance.todayData.moveWorldData[doorName][playerData.time]);
-        }
-        // TODO: 현재 이동가능한 월드가 없을 시
-        else
-        {
-
-        }
     }
 }

@@ -9,10 +9,9 @@ using UnityEngine.UI;
     
     (활성화될때마다 자동으로)
     - 시간대 변경 -> 배경 이미지 변경
-    - 현재 위치 활성화 -> 첫 로드때, 컷씬&스크린에서 돌아오기
 
+    - 현재 위치 활성화 -> 첫 로드때, 컷씬&스크린에서 돌아오기
     - 위치 내 이동 -> 카메라 이동, 좌우버튼
-    - 다음 위치로 이동하기 -> 오브젝트 파괴, 다음 위치 프리팹 생성
 */
 public class WorldCanvas : MonoBehaviour
 {
@@ -97,5 +96,19 @@ public class WorldCanvas : MonoBehaviour
                 return;
             // TODO: case UP,DOWN
         }
+    }
+
+    /// <summary>
+    /// 월드 이동 이벤트함수
+    /// </summary>
+    /// 
+
+    public void MoveWorldDoor(string doorName)
+    {
+        DailyData todayData = GameDataManager.Instance.todayData;
+
+        string nextWorld = todayData.moveWorldData[doorName][PlayerDataManager.Instance.playerData.time];
+
+        transform.parent.GetComponent<WorldSceneManager>().asyncWorldCanvas(nextWorld);
     }
 }
