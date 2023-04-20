@@ -14,5 +14,5 @@ public class DailyData
 
     public Date date;   // 날짜 정보     
     public Dictionary<string, int> workData;    // 업무 정보 <업무명, 스테이지>
-    public Dictionary<string, Dictionary<int, string>> moveWorldData;   // 월드 이동 데이터 <문 이름, <시간대, 이동 월드>>
+    public Dictionary<string, List<string>> moveWorldData;   // 월드 이동 데이터 <문 이름, 이동 월드 with 시간대>
 }
