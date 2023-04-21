@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 public class GameDataManager : MonoBehaviour
 {
@@ -34,7 +35,7 @@ public class GameDataManager : MonoBehaviour
         {
             _instance = this;
             DontDestroyOnLoad(gameObject);
-            LoadGameData();     // 첫 로드시 게임 데이터 자동 로드
+            //TODO: LoadGameData();     // 첫 로드시 게임 데이터 자동 로드
         }
         else
         {
@@ -69,7 +70,6 @@ public class GameDataManager : MonoBehaviour
         public Date date;
         public List<string> workDataKey;
         public List<int> workDataValue;
-
         public List<string> doorDataKey;
         public List<List<string>> doorDataValue;
     }
@@ -84,25 +84,13 @@ public class GameDataManager : MonoBehaviour
         // 날짜 할당
         resultWrapper.date = data.date;
 
-        // 업무 키, 데이터 리스트 작성
-        resultWrapper.workDataKey = new List<string>();
-        resultWrapper.workDataValue = new List<int>();
-        // 키, 데이터 분리 저장
-        foreach(var key in data.workData.Keys)
-        {
-            resultWrapper.workDataKey.Add(key);
-            resultWrapper.workDataValue.Add(data.workData[key]);
-        }
+        // 업무 키, 데이터 리스트
+        resultWrapper.workDataKey = data.workData.Keys.ToList();
+        resultWrapper.workDataValue = data.workData.Values.ToList();
 
         // 월드 이동 키, 데이터 리스트 작성
-        resultWrapper.doorDataKey = new List<string>();
-        resultWrapper.doorDataValue = new List<List<string>>();
-
-        foreach(var key in data.moveWorldData.Keys)
-        {
-            resultWrapper.doorDataKey.Add(key);
-            resultWrapper.doorDataValue.Add(data.moveWorldData[key]);
-        }
+        resultWrapper.doorDataKey = data.moveWorldData.Keys.ToList();
+        resultWrapper.doorDataValue = data.moveWorldData.Values.ToList();
 
         return resultWrapper;  
     }
@@ -110,14 +98,18 @@ public class GameDataManager : MonoBehaviour
     private DailyData WrapDailyData(DailyWrapper wrapper)
     {
         DailyData resultData = new DailyData();
+
+        // 날짜 할당
         resultData.date= wrapper.date;
 
+        // 업무 키, 데이터 리스트로 딕셔너리 생성
         resultData.workData = new Dictionary<string, int>();
         for(int i = 0; i < wrapper.workDataKey.Count; i++)
         {
             resultData.workData.Add(wrapper.workDataKey[i], wrapper.workDataValue[i]);
         }
 
+        // 월드 이동 키, 데이터 리스트로 딕셔너리 생성
         resultData.moveWorldData = new Dictionary<string, List<string>>();
         for(int i = 0; i < wrapper.doorDataKey.Count; i++)
         {
@@ -128,11 +120,9 @@ public class GameDataManager : MonoBehaviour
     }
 
 
-
     //////////////////////////////////////////////
     /// 게임 데이터 에셋 생성용 빌드 함수
     /////////////////////////////////////////////
-
 
     public void CreateGameData()
     {
@@ -140,37 +130,36 @@ public class GameDataManager : MonoBehaviour
 
         List<DailyWrapper> newWrapperList = new List<DailyWrapper>();
 
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 2; i++)
         {
+            DailyData newDailyData = new DailyData();
             // 날짜 생성
-            DailyData newData = new DailyData();
-            newData.date = new Date(23, 12, 23);
+            newDailyData.date = new Date(23, 12, 23);
 
             // 미니게임 생성
             {
-                newData.workData = new Dictionary<string, int>();
-                newData.workData.Add("Dodge", 1);
-                newData.workData.Add("Encode", 1);
-                newData.workData.Add("Decode", 1);
+                newDailyData.workData = new Dictionary<string, int>();
+                newDailyData.workData.Add("Dodge", 1);
+                newDailyData.workData.Add("Encode", 1);
+                newDailyData.workData.Add("Decode", 1);
             }
 
             // 월드 이동 데이터
-            newData.moveWorldData = new Dictionary<string, List<string>>();
-            List<string> newWorldData = new List<string>();
+            newDailyData.moveWorldData = new Dictionary<string, List<string>>();
+            List<string> newMoveWorldValue = new List<string>();
             for (int j = 0; j<4; j++)
             {
-                newWorldData.Add("MoveWorldName1");
-                newWorldData.Add("MoveWorldName2");
+                newMoveWorldValue.Add("MoveWorldName" + j.ToString());
             }
-            newData.moveWorldData.Add("DoorName", newWorldData);
+            newDailyData.moveWorldData.Add("DoorName1", newMoveWorldValue);
+            newDailyData.moveWorldData.Add("DoorName2", newMoveWorldValue);
 
-            newWrapperList.Add(WrapDailyData(newData));
+            newWrapperList.Add(WrapDailyData(newDailyData));
         }
 
-        newGameDataWrapper.dailyDataList = newWrapperList;
-         
-        string jsonString = JsonUtility.ToJson(newGameDataWrapper);
+        newGameDataWrapper.dailyDataList = newWrapperList;        
 
+        string jsonString = JsonUtility.ToJson(newGameDataWrapper);
         FileStream fileStream = new FileStream(Application.dataPath + datafilePath + "dailyDataAsset" + ".json", FileMode.Create);
         byte[] data = Encoding.UTF8.GetBytes(jsonString);
         fileStream.Write(data, 0, data.Length);
