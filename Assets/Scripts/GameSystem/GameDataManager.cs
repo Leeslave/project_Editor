@@ -15,10 +15,8 @@ public class GameDataManager : MonoBehaviour
 
     // 데이터 리스트
     [SerializeField]
-    private string datafilePath = "/Resources/GameData/Main/dailyData.json";     // 게임 데이터 파일 경로
-    private static GameDataManager _instance;
-    public static GameDataManager Instance { get { return _instance; } }
-    private List<DailyData> dailyData ;       // 각 Day들의 정보를 저장하는 리스트
+    private string dataFile = "/Resources/GameData/Main/dailyData.json";     // 게임 데이터 파일 경로
+    private List<DailyData> dailyData = new List<DailyData>();       // 각 Day들의 정보를 저장하는 리스트
 
     [SerializeField]
     public DailyData todayData      ///오늘 날짜의 데이터
@@ -30,12 +28,14 @@ public class GameDataManager : MonoBehaviour
     }  
 
     /////////////// 에디터 상 DontDestroy설정
+    private static GameDataManager _instance;
+    public static GameDataManager Instance { get { return _instance; } }
     private void Awake() {
         if (_instance == null)
         {
             _instance = this;
             DontDestroyOnLoad(gameObject);
-            //TODO: LoadGameData();     // 첫 로드시 게임 데이터 자동 로드
+            LoadGameData();     // 첫 로드시 게임 데이터 자동 로드
         }
         else
         {
@@ -47,15 +47,18 @@ public class GameDataManager : MonoBehaviour
     /// JSON으로부터 게임 데이터를 로드
     private void LoadGameData()
     {
-        FileStream fileStream = new FileStream(Application.dataPath + datafilePath, FileMode.Open);
+        FileStream fileStream = new FileStream(Application.dataPath + dataFile, FileMode.Open);
         byte[] data = new byte[fileStream.Length];
         fileStream.Read(data, 0, data.Length);
         fileStream.Close();
 
+        // jsonString 읽어오기
         string jsonObjectData = Encoding.UTF8.GetString(data);
-        Wrapper wrapper = null;
-        wrapper = JsonUtility.FromJson<Wrapper>(jsonObjectData);
-        
+
+        //Wrapper로 파싱
+        Wrapper wrapper = JsonUtility.FromJson<Wrapper>(jsonObjectData);
+
+        // Wrapper를 DailyData로 전환
         foreach(DailyWrapper element in wrapper.dailyDataList)
         {
             dailyData.Add(WrapDailyData(element));
@@ -65,18 +68,9 @@ public class GameDataManager : MonoBehaviour
 
     ////////////// 데이터 저장/로드를 위한 직렬 클래스
     [System.Serializable]
-    class DailyWrapper  // 하루 데이터 Wrapper
-    { 
-        public Date date;
-        public List<string> workDataKey;
-        public List<int> workDataValue;
-        public List<string> doorDataKey;
-        public List<List<string>> doorDataValue;
-    }
-
-    [System.Serializable]
     class Wrapper { public List<DailyWrapper> dailyDataList = new List<DailyWrapper>(); }     // JsonUtility용 Wrapper
 
+    /// DailyData를 DailyWrapper로 Wrapping
     private DailyWrapper WrapDailyData(DailyData data)
     {
         DailyWrapper resultWrapper = new DailyWrapper();
@@ -88,13 +82,10 @@ public class GameDataManager : MonoBehaviour
         resultWrapper.workDataKey = data.workData.Keys.ToList();
         resultWrapper.workDataValue = data.workData.Values.ToList();
 
-        // 월드 이동 키, 데이터 리스트 작성
-        resultWrapper.doorDataKey = data.moveWorldData.Keys.ToList();
-        resultWrapper.doorDataValue = data.moveWorldData.Values.ToList();
-
         return resultWrapper;  
     }
 
+    /// DailyWrapper를 DailyData로 UnWrapping
     private DailyData WrapDailyData(DailyWrapper wrapper)
     {
         DailyData resultData = new DailyData();
@@ -109,13 +100,6 @@ public class GameDataManager : MonoBehaviour
             resultData.workData.Add(wrapper.workDataKey[i], wrapper.workDataValue[i]);
         }
 
-        // 월드 이동 키, 데이터 리스트로 딕셔너리 생성
-        resultData.moveWorldData = new Dictionary<string, List<string>>();
-        for(int i = 0; i < wrapper.doorDataKey.Count; i++)
-        {
-            resultData.moveWorldData.Add(wrapper.doorDataKey[i], wrapper.doorDataValue[i]);
-        }
-
         return resultData;
     }
 
@@ -123,7 +107,6 @@ public class GameDataManager : MonoBehaviour
     //////////////////////////////////////////////
     /// 게임 데이터 에셋 생성용 빌드 함수
     /////////////////////////////////////////////
-
     public void CreateGameData()
     {
         Wrapper newGameDataWrapper = new Wrapper();
@@ -136,7 +119,7 @@ public class GameDataManager : MonoBehaviour
             // 날짜 생성
             newDailyData.date = new Date(23, 12, 23);
 
-            // 미니게임 생성
+            // 날짜별 업무 생성
             {
                 newDailyData.workData = new Dictionary<string, int>();
                 newDailyData.workData.Add("Dodge", 1);
@@ -144,23 +127,13 @@ public class GameDataManager : MonoBehaviour
                 newDailyData.workData.Add("Decode", 1);
             }
 
-            // 월드 이동 데이터
-            newDailyData.moveWorldData = new Dictionary<string, List<string>>();
-            List<string> newMoveWorldValue = new List<string>();
-            for (int j = 0; j<4; j++)
-            {
-                newMoveWorldValue.Add("MoveWorldName" + j.ToString());
-            }
-            newDailyData.moveWorldData.Add("DoorName1", newMoveWorldValue);
-            newDailyData.moveWorldData.Add("DoorName2", newMoveWorldValue);
-
             newWrapperList.Add(WrapDailyData(newDailyData));
         }
 
         newGameDataWrapper.dailyDataList = newWrapperList;        
 
         string jsonString = JsonUtility.ToJson(newGameDataWrapper);
-        FileStream fileStream = new FileStream(Application.dataPath + datafilePath + "dailyDataAsset" + ".json", FileMode.Create);
+        FileStream fileStream = new FileStream(Application.dataPath + dataFile + "dailyDataAsset" + ".json", FileMode.Create);
         byte[] data = Encoding.UTF8.GetBytes(jsonString);
         fileStream.Write(data, 0, data.Length);
         fileStream.Close();

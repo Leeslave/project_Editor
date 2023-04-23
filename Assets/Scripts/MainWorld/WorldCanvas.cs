@@ -90,7 +90,7 @@ public class WorldCanvas : MonoBehaviour
                 ActiveScene();
                 return;
             case "RIGHT":
-                if (currentPosition < sceneList.Count)
+                if (currentPosition < sceneList.Count - 1)
                     currentPosition += 1; 
                 ActiveScene();
                 return;
@@ -101,14 +101,8 @@ public class WorldCanvas : MonoBehaviour
     /// <summary>
     /// 월드 이동 이벤트함수
     /// </summary>
-    /// 
-
-    public void MoveWorldDoor(string doorName)
+    public void MoveWorldDoor(string nextWorld)
     {
-        DailyData todayData = GameDataManager.Instance.todayData;
-
-        string nextWorld = todayData.moveWorldData[doorName][PlayerDataManager.Instance.playerData.time];
-
         transform.parent.GetComponent<WorldSceneManager>().asyncWorldCanvas(nextWorld);
     }
 }

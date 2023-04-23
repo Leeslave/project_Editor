@@ -172,7 +172,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1704265644
 GameObject:
@@ -203,7 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d54eceb6864588b48a40b347f65e243a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  datafilePath: /Resources/GameData/Main/dailyData.json
+  dataFile: /Resources/GameData/Main/dailyData.json
 --- !u!4 &1704265646
 Transform:
   m_ObjectHideFlags: 0
@@ -287,10 +287,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugSaveData: debugsave_1
-  date: 
-  time: 0
-  location: 
-  renown: 0
+  CreateNewGameData: 0
+  LoadPlayerData: 1
+  date:
+    year: 0
+    month: 0
+    day: 0
+  todayWorks: []
+  stageNumber: 
 --- !u!1 &1863535829
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,7 +361,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2055273566 stripped
 GameObject:
@@ -531,7 +535,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3274669247606693199, guid: b588fd661d2e66e419028c2f9d8c82e7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -3.3000002
+      value: -3.2999992
       objectReference: {fileID: 0}
     - target: {fileID: 3991088266743864805, guid: b588fd661d2e66e419028c2f9d8c82e7, type: 3}
       propertyPath: m_IsActive
@@ -563,7 +567,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3991088267271546237, guid: b588fd661d2e66e419028c2f9d8c82e7, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3991088267271546237, guid: b588fd661d2e66e419028c2f9d8c82e7, type: 3}
       propertyPath: m_AnchorMax.x
@@ -811,7 +815,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7614243505002567060, guid: b588fd661d2e66e419028c2f9d8c82e7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -50.000015
+      value: -50.00003
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b588fd661d2e66e419028c2f9d8c82e7, type: 3}
@@ -832,7 +836,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4387854034118625760, guid: 681ac0e80a9e3ef46a790ca4c8c77747, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4387854034118625760, guid: 681ac0e80a9e3ef46a790ca4c8c77747, type: 3}
       propertyPath: m_AnchorMax.x

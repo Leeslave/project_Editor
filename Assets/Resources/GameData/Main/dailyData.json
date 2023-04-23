@@ -1,34 +1,43 @@
 {
-    "dailyDataList" : [
+    "dailyDataList": [
     {
         "date": {
-            "year": 23,
-            "month": 12,
-            "day": 23
+            "year":23,
+            "month":12,
+            "day":23
         },
-        "workData": {
-            "Dodge": 1,
-            "Encode": 1
-        },
-        "moveWorldData": {
-            "Office_Door": {"2": "Cafe"},
-            "Cafe": {"2": "NextDay"}
-        }
+        "workDataKey": [
+            "Dodge"
+        ],
+        "workDataValue": [
+            1
+        ]
     },
     {
         "date": {
-            "year": 23,
-            "month": 12,
-            "day": 24
+            "year":23,
+            "month":12,
+            "day":24
         },
-        "workData": {
-            "Dodge": 1,
-            "Decode": 1
+        "workDataKey": [
+            "Dodge"
+        ],
+        "workDataValue": [
+            1
+        ]
+    },
+    {
+        "date": {
+            "year":23,
+            "month":12,
+            "day":25
         },
-        "moveWorldData": {
-            "Office_Door": {"2": "Cafe"},
-            "Cafe": {"3": "NextDay"}
-        }
+        "workDataKey": [
+            "Encode"
+        ],
+        "workDataValue": [
+            1
+        ]
     }
     ]
 }

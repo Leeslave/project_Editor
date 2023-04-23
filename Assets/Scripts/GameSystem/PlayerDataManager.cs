@@ -14,15 +14,12 @@ public class PlayerDataManager : MonoBehaviour
 
     [SerializeField]
     private string savefilePath = "/Resources/Save/";    // 세이브 파일 경로
-
-    // 싱글톤화
-    private static PlayerDataManager _instance;
-    public static PlayerDataManager Instance { get { return _instance; } }
-
     [SerializeField]
     public PlayerData playerData = new PlayerData();     // 플레이어 데이터 필드
 
     /// 에디터 상 DontDestroy설정
+    private static PlayerDataManager _instance;
+    public static PlayerDataManager Instance { get { return _instance; } }
     private void Awake() {
         if (_instance == null)
         {
