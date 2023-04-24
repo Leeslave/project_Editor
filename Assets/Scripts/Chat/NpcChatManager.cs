@@ -21,23 +21,11 @@ public class NpcChatManager : MonoBehaviour
         chatObject = GameObject.FindObjectOfType<Chat>();
     }
 
-    private void Start() {
-        asyncChatFile();
-    }
-
-    /// 활성화 될때마다 날짜 갱신 (추가 정보 있으면 갱신 필요)
-    private void OnEnable() {
-        asyncChatFile();
-    }
-
-    private void asyncChatFile() {
-        chatFileName = NPCName + "_" + PlayerPrefs.GetInt("Day").ToString() + "_" + PlayerPrefs.GetInt("Time").ToString() + ".csv";
-    }
-
     /// <summary>
     /// 대화 시작 이벤트 함수
     /// </summary>
     public void OnChatStart(Action CallBackFunc = null) {
+        // 대화 
         if (chatFileName != "")
             chatObject.LoadData(chatFileName);
         chatObject.LoadLine(1);
