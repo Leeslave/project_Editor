@@ -44,6 +44,11 @@ public class GameDataManager : MonoBehaviour
         }
     }
 
+    ///<summary>
+    /// 게임 내 시간 전환
+    ///</summary>
+    ///<param name="dateIndex">전환
+
     /// JSON으로부터 게임 데이터를 로드
     private void LoadGameData()
     {
@@ -66,7 +71,7 @@ public class GameDataManager : MonoBehaviour
     }
 
 
-    ////////////// 데이터 저장/로드를 위한 직렬 클래스
+    ////////////// 데이터 저장/로드를 위한 직렬 클래스 //////////////////
     [System.Serializable]
     class Wrapper { public List<DailyWrapper> dailyDataList = new List<DailyWrapper>(); }     // JsonUtility용 Wrapper
 
