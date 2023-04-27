@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1551032468058353369}
   - component: {fileID: 1551032468058353368}
   - component: {fileID: 1551032468058353191}
-  - component: {fileID: 8085863412922763252}
   m_Layer: 5
   m_Name: human
   m_TagString: Untagged
@@ -122,7 +121,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8085863412922763252}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Chat, Assembly-CSharp
         m_MethodName: 
         m_Mode: 3
@@ -134,17 +133,3 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
---- !u!114 &8085863412922763252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1551032468058353189}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 921c98655bb016649bfbbe1c15af79b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  NPCName: 
-  talkCount: 0
