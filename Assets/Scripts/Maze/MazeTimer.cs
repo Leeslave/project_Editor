@@ -7,10 +7,11 @@ using UnityEngine.UI;
 public class MazeTimer : MonoBehaviour
 {
     public GameObject Warning;
+    public GameObject Player;
 
     TMP_Text Timer;
     RectTransform Rect;
-    double NowTime = 20;
+    public double NowTime = 20;
     bool warning = false;
 
     private void Awake()
@@ -39,14 +40,20 @@ public class MazeTimer : MonoBehaviour
     {
         WaitForSeconds WF = new WaitForSeconds(1);
         Image s = Warning.GetComponent<Image>();
+        Color ss = new Color(0, 0, 0, 0.1f);
 
         while (NowTime > 0)
         {
-            Rect.localScale = Rect.localScale * 1.1f;
-            s.color += new Color(0,0,0,0.06f);
             yield return WF;
+            Rect.localScale *= 1.1f;
+            s.color += ss;
         }
         Timer.text = "Game\nOver";
+        Destroy(Player);
     }
 
+    private void OnDisable ()
+    {
+        Warning.SetActive(false);
+    }
 }

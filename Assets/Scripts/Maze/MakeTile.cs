@@ -13,9 +13,12 @@ public class MakeTile : MonoBehaviour
     public GameObject RWall;
     public GameObject Player;
     public GameObject Key;
+    public GameObject Fire;
+    public GameObject Compass;
     public MazeMap Maze_Inf;
     public GameObject Clear;
     public GameObject Fog;
+    public MazeTimer Timer;
     public List<List<GameObject>> Fogs = new List<List<GameObject>>();
     public List<List<bool>> IsFog = new List<List<bool>>();
 
@@ -34,7 +37,7 @@ public class MakeTile : MonoBehaviour
         Maze_Inf.MazeMaking(Col, Row);
         Player.transform.position = new Vector3(Maze_Inf.Player_X * Move_X + 5, Maze_Inf.Player_Y * Move_Y + 5f, 0);
         CreateLevel();
-        MakeKey();
+        MakeItems();
     }
 
     void GetDifficulty()
@@ -44,13 +47,13 @@ public class MakeTile : MonoBehaviour
             switch (PlayerPrefs.GetString("Difficulty"))
             {
                 case "1":
-                    Col = 10; Row = 10; KeyNum = 1; KeyWeight = 1;
+                    Col = 10; Row = 10; KeyNum = 1; KeyWeight = 10; Timer.NowTime = 50;
                     break;
                 case "2":
-                    Col = 15; Row = 15; KeyNum = 2; KeyWeight = 3;
+                    Col = 15; Row = 15; KeyNum = 2; KeyWeight = 30; Timer.NowTime = 100;
                     break;
                 case "3":
-                    Col = 20; Row = 20; KeyNum = 3; KeyWeight = 5;
+                    Col = 20; Row = 20; KeyNum = 3; KeyWeight = 50; Timer.NowTime = 200;
                     break;
             }
         }
@@ -114,13 +117,13 @@ public class MakeTile : MonoBehaviour
     // Key 생성
     // 모든 Key의 위치가 겹치지 않으며, 플레이어와 특정 거리 이상의 위치에서 생성되도록 함.
 
-    void MakeKey()
+    void MakeItems()
     {
         List<Tuple<int, int>> Cnt = new List<Tuple<int, int>>() { };
         Vector3 CCnt = new Vector3(Maze_Inf.Player_X, Maze_Inf.Player_Y);
         Tuple<int,int> a;
         double z = 0;
-        for (int i = 0; i < KeyNum; i++)
+        for (int i = 0; i < KeyNum + 2; i++)
         {
             do
             {
@@ -136,5 +139,7 @@ public class MakeTile : MonoBehaviour
         {
             Instantiate(Key).transform.position = new Vector3(Cnt[i].Item1 * Move_X + 5, Cnt[i].Item2 * Move_Y + 5, 0);
         }
+        Instantiate(Fire).transform.position = new Vector3(Cnt[KeyNum].Item1 * Move_X + 5, Cnt[KeyNum].Item2 * Move_Y + 5, 0);
+        Instantiate(Compass).transform.position = new Vector3(Cnt[KeyNum+1].Item1 * Move_X + 5, Cnt[KeyNum+1].Item2 * Move_Y + 5, 0);
     }
 }

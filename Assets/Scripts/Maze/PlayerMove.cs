@@ -26,6 +26,14 @@ public class PlayerMove : MonoBehaviour
     // Clear 시 띄울 문구
     public GameObject Clear;
 
+    public GameObject Timer;
+
+    public GameObject DirIcon;
+
+    public GameObject DirMark;
+
+    public GameObject FireIcon;
+
     // 휙득한 Key들의 Object를 저장하는 List
     // 이 때 추후 계산 상의 편의를 위해 Player Object를 0번에 저장한다.
     List<GameObject> KeyTrain = new List<GameObject>();
@@ -48,6 +56,12 @@ public class PlayerMove : MonoBehaviour
     // 플레이어의 이동 방향을 담을 임시 변수
     Vector3 Dir;
 
+    Vector3 VCnt;
+
+    bool IsFire = false;
+
+    bool IsCom = false;
+
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -65,7 +79,7 @@ public class PlayerMove : MonoBehaviour
         KeyText.text = $"{KeyTrain.Count - 1}/{MT.KeyNum}";
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (MoveAble && MS)
         {
@@ -112,19 +126,33 @@ public class PlayerMove : MonoBehaviour
                     }
                 }
                 rayHit = Physics2D.Raycast(transform.position, Dir, 10, LayerMask.GetMask("Default"));
-                if(rayHit.collider != null && IsMoveNext) if (rayHit.collider.tag == "Key")     // Key의 휙득을 탐지.
+                if (rayHit.collider != null && IsMoveNext)
+                {
+                    switch (rayHit.collider.name)
                     {
-                        // 플레이어의 뒤를 따라오는 Key의 특성 상, 플레이어와 충돌할 수 있음으로, 해당 연산에 영향을 받지 않는 tag 및 layer로 변경.
-                        KeyTrain.Add(rayHit.collider.gameObject);
-                        rayHit.collider.tag = "Untagged";
-                        rayHit.collider.gameObject.layer = 6;
-                        // 현재 맨 뒤의 Object의 직전 이동 위치로 Key의 위치를 정함
-                        rayHit.collider.gameObject.transform.position = LastTrans;
-
-                        KeyText.text = $"{KeyTrain.Count - 1}/{MT.KeyNum}";
+                        case "Key(Clone)":
+                            // 플레이어의 뒤를 따라오는 Key의 특성 상, 플레이어와 충돌할 수 있음으로, 해당 연산에 영향을 받지 않는 tag 및 layer로 변경.
+                            KeyTrain.Add(rayHit.collider.gameObject);
+                            rayHit.collider.tag = "Untagged";
+                            rayHit.collider.gameObject.layer = 6;
+                            // 현재 맨 뒤의 Object의 직전 이동 위치로 Key의 위치를 정함
+                            rayHit.collider.gameObject.transform.position = LastTrans;
+                            KeyText.text = $"{KeyTrain.Count - 1}/{MT.KeyNum}";
+                            break;
+                        case "Compass(Clone)":
+                            Destroy(rayHit.collider.gameObject);
+                            IsCom = true;
+                            DirMark.SetActive(true);
+                            DirIcon.SetActive(true);
+                            break;
+                        case "Fire(Clone)":
+                            Destroy(rayHit.collider.gameObject);
+                            IsFire = true;
+                            FireIcon.SetActive(true);
+                            Invoke("FireOff", 30);
+                            break;
                     }
-
-
+                }
                 if (IsMoveNext)
                 {
                     LastTrans = KeyTrain[KeyTrain.Count-1].transform.position;
@@ -135,6 +163,12 @@ public class PlayerMove : MonoBehaviour
                     transform.Translate(new Vector3(NX, NY, 0));
                     maincam.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
                     CalcFog();
+                    if (IsCom)
+                    {
+                        VCnt = (MT.Clear.transform.position - transform.position).normalized;
+                        DirMark.transform.position = transform.position + (VCnt) * 7;
+                        DirMark.transform.rotation = Quaternion.Euler(0,0,Mathf.Atan2(VCnt.y,VCnt.x) * Mathf.Rad2Deg);
+                    }
                 }
                 // 플레이어의 수직 혹은 수평 이동키가 입력 되었을 경우 InputDelay 전까진 다음 입력을 받을 수 없게 함
                 MoveAble = false;
@@ -149,6 +183,7 @@ public class PlayerMove : MonoBehaviour
     // 이 후 문에 들어가면 게임이 클리어 됨.
     IEnumerator ClearGame()
     {
+        Timer.SetActive(false);
         Time.timeScale = 2;
         MS = false;
         for (int i = KeyTrain.Count - 1; i > 0; i--)
@@ -203,18 +238,27 @@ public class PlayerMove : MonoBehaviour
                         Vector3 RayVec = new Vector3(x * Move_X + 5 - 2.5f + 5 * b, y * Move_Y + 5 - 2.5f + 5 * a, 0) - transform.position;
                         float S = Vector3.Magnitude(RayVec) / Move_X;
                         if (S > Sight) continue;
-                        rayHit = Physics2D.Raycast(transform.position, RayVec, S * Move_X, LayerMask.GetMask("Plat"));
 
-                        // 충돌시 안개 제거
-                        if (rayHit.collider == null)
+                        if (IsFire)
                         {
                             MT.Fogs[dy][dx].GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
                             MT.IsFog[dy][dx] = true;
                         }
-                        // 
                         else
                         {
-                            if (MT.IsFog[dy][dx] == true) MT.Fogs[dy][dx].GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f);
+                            rayHit = Physics2D.Raycast(transform.position, RayVec, S * Move_X, LayerMask.GetMask("Plat"));
+
+                            // 충돌시 안개 제거
+                            if (rayHit.collider == null)
+                            {
+                                MT.Fogs[dy][dx].GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
+                                MT.IsFog[dy][dx] = true;
+                            }
+                            // 
+                            else
+                            {
+                                if (MT.IsFog[dy][dx] == true) MT.Fogs[dy][dx].GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f);
+                            }
                         }
                     }
             }
@@ -281,5 +325,11 @@ public class PlayerMove : MonoBehaviour
     void AbleMove()
     {
         MoveAble = true;
+    }
+
+    void FireOff()
+    {
+        IsFire = false;
+        FireIcon.SetActive(false);
     }
 }
