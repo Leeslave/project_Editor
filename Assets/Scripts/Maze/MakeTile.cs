@@ -90,22 +90,22 @@ public class MakeTile : MonoBehaviour
                 if (!Maze_Inf.Maze[x, Y].Left)     // 哭率 寒 积己 咯何
                 {
                     GameObject cnt = Instantiate(CWall,new Vector3(x * 10,y * 10 + 5,0),transform.rotation);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.left) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f); cnt.tag = "ExitWall"; }
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.left) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
                 }
                 if (!Maze_Inf.Maze[x, Y].Right)     // 坷弗率 寒 积己 咯何
                 {
                     GameObject cnt = Instantiate(CWall, new Vector3(x * 10 +10, y* 10 + 5, 0), new Quaternion(0,0,90,0));
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.right) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f); cnt.tag = "ExitWall"; }
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.right) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
                 }
                 if (!Maze_Inf.Maze[x, Y].Down)     // 酒贰率 寒 积己 咯何
                 {
                     GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10, 0), transform.rotation);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.down) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f); cnt.tag = "ExitWall"; }
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.down) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
                 }
                 if (!Maze_Inf.Maze[x, Y].Up)     // 困率 寒 积己 咯何
                 {
                     GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10+10, 0), transform.rotation);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.up) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f); cnt.tag = "ExitWall"; }
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.up) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
                 }
             }
         }

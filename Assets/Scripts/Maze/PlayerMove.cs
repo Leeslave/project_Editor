@@ -149,6 +149,7 @@ public class PlayerMove : MonoBehaviour
     // 이 후 문에 들어가면 게임이 클리어 됨.
     IEnumerator ClearGame()
     {
+        Time.timeScale = 2;
         MS = false;
         for (int i = KeyTrain.Count - 1; i > 0; i--)
         {
@@ -157,7 +158,7 @@ public class PlayerMove : MonoBehaviour
                 KeyTrain[i].transform.Translate(0,0.1f,0);
                 yield return new WaitForSeconds(0.01f);
             }
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.5f);
             Vector3 cnt = (MT.Clear.transform.position - KeyTrain[i].transform.position).normalized;
             while (Vector3.Magnitude(MT.Clear.transform.position - KeyTrain[i].transform.position) > 1)
             {
@@ -166,10 +167,11 @@ public class PlayerMove : MonoBehaviour
             }
             yield return new WaitForSeconds(0.25f);
             KeyTrain[i].SetActive(false);
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.5f);
         }
         MT.Clear.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0,0);
         MS = true; IsEnd = true;
+        Time.timeScale = 1;
     }
 
     // 플레이어의 시야 범위를 계산함 ( Instantiate, SetActive가 아닌 투명도 조절로 진행한다.)
