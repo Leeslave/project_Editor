@@ -13,6 +13,8 @@ public class Container:MonoBehaviour
     public HanoiManager HM;
     // 현재 Container에 쌓인 박스들의 리스트
     public List<GameObject> Boxes = new List<GameObject>();
+    [HideInInspector]
+    public int BoxSize = 0;
     // 현재 Container가 갖는 Index
     public int Ind;
     // Image Component를 담는데 사용될 변수
@@ -34,7 +36,15 @@ public class Container:MonoBehaviour
         // 현재 상자를 집은 상태고, 해당 상자를 현재 Container로 옮길 수 있다면, 하이라이트한다.
         if (HM.IsPick) { if (CompareTop(HM.PickedBox)) sr.sprite = Clicked; }
         // 현재 상자를 집지 않은 상태면 하이라이트한다.
-        else sr.sprite = Clicked;
+        else
+        {
+            if (Boxes.Count != 0) 
+            {
+                if (!Boxes[Boxes.Count - 1].GetComponent<Box>().CanPick()) sr.sprite = NonClicked;
+                else sr.sprite = Clicked;
+            }
+            else sr.sprite = NonClicked;
+        }
     }
     // 포인터가 벗어났을 때 호출되는 함수
     // 포인터가 벗어나면 하이라이트를 중지한다.
@@ -59,7 +69,7 @@ public class Container:MonoBehaviour
         {
             // 현재 상자를 집지 않은 경우
             // 비어있는 Container를 선택한 것이 아니라면 Container의 최상단 상자를 가져오며, 상자를 집은 상태로 바꾼다.
-            HM.PickedBox = ReturnTop();
+            HM.PickedBox = ReturnTop(false);
             if (HM.PickedBox != null)
             {
                 HM.PickedBox.GetComponent<SpriteRenderer>().sortingOrder = 2;
@@ -67,6 +77,7 @@ public class Container:MonoBehaviour
                 HM.CurCon = Ind;
             }
         }
+        OnPoint(null);
     }
 
     // 매게 변수로 들어온 상자와, 현재 Container간의 상태를 비교한다.
@@ -77,20 +88,23 @@ public class Container:MonoBehaviour
     {
         if (A == null) return true;
         if (Boxes.Count == 0) return true;
-        if (A.GetComponent<Box>().Weight <= Boxes[Boxes.Count - 1].GetComponent<Box>().Weight) return true;
+        if (A.GetComponent<Box>().CanAdd(Boxes[Boxes.Count - 1].GetComponent<Box>())) return true;
         else return false;
     }
 
     // 현재 Container의 최상단의 상자를 반환한다.
     // 비어있다면 null을 반환한다.
     // Output : 현재 Container 최상단의 상자.(비어있다면 null)
-    public GameObject ReturnTop()
+    public GameObject ReturnTop(bool IsBack)
     {
         if(Boxes.Count == 0) return null;
         else
         {
             GameObject cnt = Boxes[Boxes.Count - 1];
+            if (IsBack) cnt.GetComponent<Box>().DuraChange(1);
+            if (!cnt.GetComponent<Box>().CanPick()) return null;
             Boxes.RemoveAt(Boxes.Count - 1);
+            BoxSize--;
             return cnt;
         }
     }
@@ -105,7 +119,7 @@ public class Container:MonoBehaviour
         if (Boxes.Count == 0)
         {
             tmp = gameObject.transform.position;
-            tmp.y = -3;
+            tmp.y = -190;
         }
         // Container가 비어있지 않으면, 최상단에 있던 상자 바로 위에 위치시킨다.
         else
@@ -115,6 +129,7 @@ public class Container:MonoBehaviour
         }
         // Container의 Box List에 추가한다.
         Boxes.Add(cnt);
+        BoxSize++;
         cnt.transform.position = tmp;
     }
 

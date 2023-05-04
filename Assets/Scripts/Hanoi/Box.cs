@@ -1,19 +1,49 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 
 // 박스의 정보를 저장(아직 무게만 사용)
 public class Box : MonoBehaviour
 {
-    public int Weight;
+    
     public int MaxDurability;
-    public int CurDurability;
+    public int Weight;
 
-    public void InitBox(int _Weight, int _Durability)
+    bool IsBreakAble = false;
+    int CurDurability = 0;
+    TMP_Text Dura;
+
+    private void Awake()
     {
-        Weight = _Weight;
-        MaxDurability = _Durability;
-        CurDurability = _Durability;
+        if (Random.Range(0,2)== 0)
+        {
+            CurDurability = MaxDurability;
+            Dura = transform.GetChild(0).GetComponent<TMP_Text>();
+            Dura.text = CurDurability.ToString();
+            Dura.gameObject.SetActive(true);
+            IsBreakAble = true;
+        }
     }
+
+    public bool CanAdd(Box B)
+    {
+        if (B.Weight < Weight) return false;
+        return true;
+    }
+    public bool CanPick()
+    {
+        if (IsBreakAble) return CurDurability != 0;
+        return true;
+    }
+
+    public void DuraChange(int change)
+    {
+        if (IsBreakAble)
+        {
+            CurDurability += change;
+            Dura.text = CurDurability.ToString();
+        }
+    }
+
+
 }

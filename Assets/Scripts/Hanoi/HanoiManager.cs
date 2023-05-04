@@ -76,6 +76,7 @@ public class HanoiManager : MonoBehaviour
                 }
                 // 해당 변경 사항을 Back 스택에 넣고, Try 횟수를 갱신한다.
                 Back.Push(new Tuple<int, int>(CurCon, a));
+                PickedBox.GetComponent<Box>().DuraChange(-1);
                 Try.text = $"{++TryCount} Try";
             }
             // 현재 상자의 무게가 선택된 Container 최상단의 박스보다 무겁다면, 원래 Container로 되돌린다.
@@ -91,7 +92,7 @@ public class HanoiManager : MonoBehaviour
         {
             Try.text = $"{--TryCount} Try";
             var cnt = Back.Pop();
-            Containers[cnt.Item1].AddTop(Containers[cnt.Item2].ReturnTop());
+            Containers[cnt.Item1].AddTop(Containers[cnt.Item2].ReturnTop(true));
 
             // 되돌린 명령을 Go 스택에 넣으며, Go 스택의 크기가 0이었다면 다시 실행 버튼을 활성화한다(SetActive아님)
             if(Go.Count == 0)
@@ -116,7 +117,7 @@ public class HanoiManager : MonoBehaviour
         {
             Try.text = $"{++TryCount} Try";
             var cnt = Go.Pop();
-            Containers[cnt.Item1].AddTop(Containers[cnt.Item2].ReturnTop());
+            Containers[cnt.Item1].AddTop(Containers[cnt.Item2].ReturnTop(false));
 
             // 다시 실행한 명령을 Back 스택에 넣으며, Back 스택의 크기가 0이었다면 되돌리기 버튼을 활성화한다.
             if (Back.Count == 0)
