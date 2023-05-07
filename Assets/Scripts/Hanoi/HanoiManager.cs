@@ -134,4 +134,14 @@ public class HanoiManager : MonoBehaviour
             }
         }
     }
+
+    public void ErrorEvent()
+    {
+
+    }
+
+    public void ClearEvent()
+    {
+
+    }
 }

@@ -72,7 +72,7 @@ public class Container:MonoBehaviour
             HM.PickedBox = ReturnTop(false);
             if (HM.PickedBox != null)
             {
-                HM.PickedBox.GetComponent<SpriteRenderer>().sortingOrder = 2;
+                HM.PickedBox.transform.SetAsLastSibling();
                 HM.IsPick = true;
                 HM.CurCon = Ind;
             }
@@ -114,7 +114,6 @@ public class Container:MonoBehaviour
     public void AddTop(GameObject cnt)
     {
         Vector3 tmp;
-        cnt.GetComponent<SpriteRenderer>().sortingOrder = 1;
         // 현재 Container가 비어있으면 특정 위치에 Box를 이동시킨다.
         if (Boxes.Count == 0)
         {
