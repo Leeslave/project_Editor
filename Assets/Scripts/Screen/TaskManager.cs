@@ -14,16 +14,20 @@ public class TaskManager : MonoBehaviour
 
     public AnimationController taskConsoleAnimation;
     public bool taskClear = false;
-    
-    private void Awake()
-    {
-        taskConsoleAnimation.anims[0].Clear();
-        taskConsoleAnimation.Play(0);
-    }
 
-    private void OnEnabled()
+    private void OnEnable()
     {
-        taskConsoleAnimation.anims[0].Clear();
-        taskConsoleAnimation.Play(0);
+        if (taskClear)
+        {
+            taskConsoleAnimation.anims[1].Clear();
+            taskConsoleAnimation.Play(1);
+        }
+        else
+        {
+            taskConsoleAnimation.anims[0].Clear();
+            Debug.Log($"{taskConsoleAnimation.anims[0].ToString()}");
+            taskConsoleAnimation.Play(0);
+        }
+        Debug.Log($"Task Animation Start : Clear={taskClear}, CurrentText={taskConsoleAnimation.anims[0].GUITextCtrl.text}");
     }
 }

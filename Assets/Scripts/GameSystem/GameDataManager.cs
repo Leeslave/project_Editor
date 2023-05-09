@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System.Text;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class GameDataManager : MonoBehaviour
 {
@@ -48,6 +49,14 @@ public class GameDataManager : MonoBehaviour
     /// 게임 내 시간 전환
     ///</summary>
     ///<param name="dateIndex">전환
+    public void progressDate(int dateIndex = -1)
+    {
+        if (dateIndex < 0)
+            PlayerDataManager.Instance.playerData.index++;
+        else
+            PlayerDataManager.Instance.playerData.index = dateIndex;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
 
     /// JSON으로부터 게임 데이터를 로드
     private void LoadGameData()

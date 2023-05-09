@@ -7,8 +7,8 @@ public class PlayerDataDebugger : MonoBehaviour
 {
     public string debugSaveData;
 
-    public bool CreateNewGameData;
-    public bool LoadPlayerData;
+    public bool isCreateNewGameData;
+    public bool isLoadPlayerData;
 
     [SerializeField]
     private Date date;
@@ -19,9 +19,9 @@ public class PlayerDataDebugger : MonoBehaviour
 
     private void Start()
     {
-        if (LoadPlayerData)
+        if (isLoadPlayerData)
             PlayerDataManager.Instance.LoadPlayerData(debugSaveData);
-        if (CreateNewGameData)
+        if (isCreateNewGameData)
             GameDataManager.Instance.CreateGameData();
     }
 
