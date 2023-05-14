@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerDataManager : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class PlayerDataManager : MonoBehaviour
     [SerializeField]
     private string savefilePath = "/Resources/Save/";    // 세이브 파일 경로
     [SerializeField]
-    public PlayerData playerData = new PlayerData();     // 플레이어 데이터 필드
+    public SaveData saveData = new SaveData();     // 플레이어 데이터 필드
 
     /// 에디터 상 DontDestroy설정
     private static PlayerDataManager _instance;
@@ -39,7 +40,7 @@ public class PlayerDataManager : MonoBehaviour
     /// <param name="SaveFileName">저장 경로 내 파일명</param>
     public void SavePlayerData(string saveFileName)
     {
-        string jsonObjectData = JsonUtility.ToJson(playerData);
+        string jsonObjectData = JsonUtility.ToJson(saveData);
         
         FileStream fileStream = new FileStream(Application.dataPath + savefilePath + saveFileName + ".json", FileMode.Create);
         byte[] data = Encoding.UTF8.GetBytes(jsonObjectData);
@@ -59,7 +60,7 @@ public class PlayerDataManager : MonoBehaviour
         fileStream.Close();
 
         string jsonObjectData = Encoding.UTF8.GetString(data);
-        playerData = JsonUtility.FromJson<PlayerData>(jsonObjectData);
+        saveData = JsonUtility.FromJson<SaveData>(jsonObjectData);
     }
 
     // 데이터 초기 설정

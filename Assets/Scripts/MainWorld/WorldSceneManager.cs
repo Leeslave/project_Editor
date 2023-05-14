@@ -26,7 +26,7 @@ public class WorldSceneManager : MonoBehaviour
         {
             Destroy(currentWorld.gameObject);
         }
-        GameObject newWorldObject = Instantiate(Resources.Load<GameObject>(worldfilePath + PlayerDataManager.Instance.playerData.location + "Canvas"));
+        GameObject newWorldObject = Instantiate(Resources.Load<GameObject>(worldfilePath + PlayerDataManager.Instance.saveData.location + "Canvas"));
         newWorldObject.transform.SetParent(transform);
         currentWorld = newWorldObject.GetComponent<WorldCanvas>();
     }
@@ -38,7 +38,7 @@ public class WorldSceneManager : MonoBehaviour
     /// <remarks>플레이어 데이터 설정 후 씬 내 WorldCanvas 객체 삭제 및 새로 생성</remarks>
     public void asyncWorldCanvas(string worldName)
     {
-        PlayerDataManager.Instance.playerData.location = worldName;
+        PlayerDataManager.Instance.saveData.location = worldName;
         
         asyncWorldCanvas();
     }

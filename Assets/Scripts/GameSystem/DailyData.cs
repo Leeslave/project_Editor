@@ -7,8 +7,6 @@ public class DailyData
     * json 로드를 위한 직렬화
     *   - 날짜 정보
     *   - 업무 - 스테이지번호 데이터    
-    *   
-    * 
     */
 
     public Date date;   // 날짜 정보     

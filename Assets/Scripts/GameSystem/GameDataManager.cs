@@ -24,7 +24,7 @@ public class GameDataManager : MonoBehaviour
     { 
         get
         { 
-            return dailyData[PlayerDataManager.Instance.playerData.index];
+            return dailyData[PlayerDataManager.Instance.saveData.dateIndex];
         }
     }  
 
@@ -52,9 +52,9 @@ public class GameDataManager : MonoBehaviour
     public void progressDate(int dateIndex = -1)
     {
         if (dateIndex < 0)
-            PlayerDataManager.Instance.playerData.index++;
+            PlayerDataManager.Instance.saveData.dateIndex++;
         else
-            PlayerDataManager.Instance.playerData.index = dateIndex;
+            PlayerDataManager.Instance.saveData.dateIndex = dateIndex;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 

@@ -47,7 +47,7 @@ public class WorldCanvas : MonoBehaviour
     {
         for(int idx = 0; idx < transform.childCount; idx++)
         {
-            Sprite newImage = Resources.Load<Sprite>($"{locationName}_{idx}_{PlayerDataManager.Instance.playerData.time}.png");
+            Sprite newImage = Resources.Load<Sprite>($"{locationName}_{idx}_{PlayerDataManager.Instance.saveData.time}.png");
             if (newImage != null)
                 sceneList[idx].sprite = newImage;
             // 날짜/시간별 특수 오브젝트 활성화, 비활성화
