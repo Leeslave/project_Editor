@@ -5,9 +5,10 @@ using TMPro;
 // 박스의 정보를 저장(아직 무게만 사용)
 public class Box : MonoBehaviour
 {
-    
     public int MaxDurability;
     public int Weight;
+    public int BoxNum;
+    public HanoiManager HM;
 
     bool IsBreakAble = false;
     int CurDurability = 0;
@@ -42,6 +43,7 @@ public class Box : MonoBehaviour
         {
             CurDurability += change;
             Dura.text = CurDurability.ToString();
+            if (CurDurability == 0) HM.ErrorEvent(BoxNum);
         }
     }
 

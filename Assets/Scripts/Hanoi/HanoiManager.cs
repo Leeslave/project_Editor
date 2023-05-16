@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -28,6 +29,12 @@ public class HanoiManager : MonoBehaviour
     // 다시 실행, 되돌리기 버튼
     public GoBack GoB;
     public GoBack BackB;
+    // Error
+    public GameObject Error;
+    public TMP_Text ErrorMessage;
+    // 3번 컨테이너에 다음에 추가 되어야 하는 Box
+    int NextBox = 5;
+    int LastCon = 0;
 
     private void Awake()
     {
@@ -60,6 +67,7 @@ public class HanoiManager : MonoBehaviour
     // Input : 이동 전 Container의 Index
     public void AddEvent(int a)
     {
+        LastCon = a;
         // 동일 Container간의 이동이라면 다시 상자를 원래 콘테이너에 넣는다.
         if (a == CurCon) Containers[a].AddTop(PickedBox);
         else
@@ -135,9 +143,16 @@ public class HanoiManager : MonoBehaviour
         }
     }
 
-    public void ErrorEvent()
+    public void ErrorEvent(int num)
     {
-
+        if (num == NextBox && LastCon == 2)
+        {
+            NextBox--;
+            if (NextBox == 0) ClearEvent(); 
+            return;
+        }
+        Error.SetActive(true);
+        ErrorMessage.text = $"{num}번 Box의\n내구도가 0입니다.";
     }
 
     public void ClearEvent()
