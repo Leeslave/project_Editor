@@ -12,11 +12,11 @@ public class WorldSceneManager : MonoBehaviour
     *   - 월드캔버스간 이동
     */
 
-    public string worldfilePath = "Prefab/MainWorld/";  // 월드 프리팹 경로
+    public string worldPath = "Prefab/MainWorld/";  // 월드 프리팹 경로
     public WorldCanvas currentWorld = null;    // 현재 월드 오브젝트
 
     /// <summary>
-    /// 플레이어의 위치와 활성화 월드 동기화
+    /// 세이브 위치와 활성화 월드 동기화
     /// </summary>
     /// <remarks>씬 내 WorldCanvas 객체 삭제 후 새로 생성</remarks>
     public void asyncWorldCanvas()
@@ -26,7 +26,7 @@ public class WorldSceneManager : MonoBehaviour
         {
             Destroy(currentWorld.gameObject);
         }
-        GameObject newWorldObject = Instantiate(Resources.Load<GameObject>(worldfilePath + PlayerDataManager.Instance.saveData.location + "Canvas"));
+        GameObject newWorldObject = Instantiate(Resources.Load<GameObject>(worldPath + PlayerDataManager.Instance.saveData.location + "Canvas"));
         newWorldObject.transform.SetParent(transform);
         currentWorld = newWorldObject.GetComponent<WorldCanvas>();
     }
