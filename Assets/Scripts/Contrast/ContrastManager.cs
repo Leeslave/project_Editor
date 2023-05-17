@@ -11,9 +11,9 @@ public class ContrastManager : MonoBehaviour
     public GameObject CurReport = null;
     public GameObject CurContrast = null;
 
-    public GameObject Report;
-    public GameObject Card;
-    public GameObject Work;
+    public MakingReport Report;
+    public MakingContrast Card;
+    public MakingContrast Work;
     public GameObject Map;
     public GameObject Fog;
 
@@ -37,14 +37,14 @@ public class ContrastManager : MonoBehaviour
         GetExternalData(new int[] { 2020, 12, 18 }, "People1");
         foreach(var a in Data)
         {
-            Report.GetComponent<MakingReport>().Making(a);
+            Report.Making(a);
             switch (a["Type"])
             {
                 case "Card":
-                    Card.GetComponent<MakingContrast>().Making(a);
+                    Card.Making(a);
                     break;
                 case "Work":
-                    Work.GetComponent<MakingContrast>().Making(a["Time"].ToString(),Date);
+                    Work.Making(a["Time"].ToString(),Date);
                     break;
                 case "Map":
                     break;
@@ -55,7 +55,7 @@ public class ContrastManager : MonoBehaviour
     public void GetExternalData(int[] _Date, string Name)
     {
         Date = _Date;
-        Data = MyUi.CSVReader.Read($"Csv/Report_Proof/{Name}/{Date[1]}{Date[2]}");
+        Data = MyUi.CSVReader.Read($"Contrast/{Name}/{Date[1]}{Date[2]}");
     }
 
     public void StartJudge()
