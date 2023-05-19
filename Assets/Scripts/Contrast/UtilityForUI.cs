@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -41,6 +42,23 @@ public static class MyUi
         if (OutPointer != null) AddEvent(eventTrigger, EventTriggerType.PointerExit, OutPointer);
 
         if (ClickPointer != null) AddEvent(eventTrigger, EventTriggerType.PointerClick, ClickPointer);
+    }
+
+    public static void textReader(string fileDir, ref List<string> a)
+    {
+        TextAsset textFile = Resources.Load(fileDir) as TextAsset;
+        if (textFile == null)
+        {
+            return;
+        }
+        StringReader stringReader = new StringReader(textFile.text);
+        while (stringReader != null)
+        {
+            string line = stringReader.ReadLine();
+            if (line == null) break;
+            a.Add(line);
+        }
+        stringReader.Close();
     }
 
     public static class CSVReader
