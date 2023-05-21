@@ -21,10 +21,10 @@ public class GameSystem : MonoBehaviour
     private string dailySavePath = "/Resources/GameData/Main/dailyData.json";   // 게임 데이터 파일 경로
 
     [SerializeField] 
-    public SaveData saveData;      // 세이브 데이터 핃드
+    public SaveData player;      // 세이브 데이터 핃드
     public List<DailyData> daily;     // 날짜별 데이터 필드
     [SerializeField] 
-    public DailyData todayData { get { return daily[saveData.dateIndex]; } }    // 오늘 날짜 데이터 필드
+    public DailyData todayData { get { return daily[player.dateIndex]; } }    // 오늘 날짜 데이터 필드
 
     [System.Serializable]
     class Wrapper { public List<DailyWrapper> dailyDataList = new List<DailyWrapper>(); }     // JsonUtility용 Wrapper
@@ -59,12 +59,12 @@ public class GameSystem : MonoBehaviour
         if (date < 0)
         {
             // 다음 날짜로 이동
-            saveData.dateIndex++;   
+            player.dateIndex++;   
         }
         else 
         {
             // 특정 날짜로 이동
-            saveData.dateIndex = date;
+            player.dateIndex = date;
         }
         ChangeTime(0);
     }
@@ -78,14 +78,14 @@ public class GameSystem : MonoBehaviour
         if (time >= 0 && time <= 4)
         {
             // 특정 시간대로 이동
-            saveData.time = time;
+            player.time = time;
         }
         else
         {
-            time++;
-            if (time > 4)
+            player.time++;
+            if (player.time > 4)
             {
-                time = 0;
+                player.time = 0;
                 ChangeDate();
             }
         }
@@ -101,6 +101,9 @@ public class GameSystem : MonoBehaviour
 
         // jsonString 읽어오기
         string jsonObjectData = Encoding.UTF8.GetString(data);
+
+        // daily 초기화
+        daily = new List<DailyData>();
 
         //Wrapper로 파싱
         Wrapper wrapper = JsonUtility.FromJson<Wrapper>(jsonObjectData);
@@ -124,7 +127,8 @@ public class GameSystem : MonoBehaviour
     /// <param name="SaveFileName">저장 경로 내 파일명</param>
     public void SavePlayerData(string saveFileName)
     {
-        string jsonObjectData = JsonUtility.ToJson(saveData);
+        // json String으로 파싱
+        string jsonObjectData = JsonUtility.ToJson(player);
         
         FileStream fileStream = new FileStream(Application.dataPath + playerSavePath + saveFileName + ".json", FileMode.Create);
         byte[] data = Encoding.UTF8.GetBytes(jsonObjectData);
@@ -143,8 +147,9 @@ public class GameSystem : MonoBehaviour
         fileStream.Read(data, 0, data.Length);
         fileStream.Close();
 
+        // SaveData로 파싱
         string jsonObjectData = Encoding.UTF8.GetString(data);
-        saveData = JsonUtility.FromJson<SaveData>(jsonObjectData);
+        player = JsonUtility.FromJson<SaveData>(jsonObjectData);
     }
 
     /// DailyData를 DailyWrapper로 Wrapping
