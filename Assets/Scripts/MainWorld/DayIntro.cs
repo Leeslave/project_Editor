@@ -12,8 +12,33 @@ public class DayIntro : MonoBehaviour
     public float textOnDelay;   // 시작부터 글자 활성화까지의 딜레이
     public float textOnDuration;    //글자 활성화 지속시간
     public TMP_Text dayText;      //글자 활성화용 텍스트 오브젝트
-
     public bool isFinished;
+
+    private static DayIntro _instance;
+    public static DayIntro Instance
+    {
+        get { return _instance; }
+    }
+
+    // 싱글톤 설정 및 컴포넌트 불러오기
+    private void Awake()
+    {
+        if (!_instance)
+        {
+            _instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        _awakeSfx = GetComponent<AudioSource>();
+    }
+
+    void OnEnable()
+    {
+        StartCoroutine(DayCountIntro());
+    }
 
     /**
     * 시간대 문자열 설정 함수
@@ -31,12 +56,6 @@ public class DayIntro : MonoBehaviour
             case 0:default:
                 return "06:30 AM";
         }
-    }
-
-    // 컴포넌트 불러오기
-    private void Awake()
-    {
-        _awakeSfx = GetComponent<AudioSource>();
     }
 
     /// <summary>
@@ -61,7 +80,7 @@ public class DayIntro : MonoBehaviour
         yield return new WaitForSeconds(textOnDuration);
 
         //종료 및 flag 설정
-        gameObject.SetActive(false);
         isFinished = true;
+        gameObject.SetActive(false);
     }
 }

@@ -14,6 +14,7 @@ public class ScreenManager : MonoBehaviour
     *   업무 착수 및 관리
         - 당일 할당된 업무들 플레이
     *   메일 및 기타 PC 업무
+    *   업무 완료 확인 후 종료 (시간대 이동)
     */
     
     public WorldCanvas worldObject;   //스크린이 활성화 된 world
