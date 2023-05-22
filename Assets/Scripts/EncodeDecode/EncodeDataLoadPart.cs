@@ -105,11 +105,6 @@ public class EncodeDataLoadPart : MonoBehaviour
             else
                 adfgvx.chat_ADFGVX.DisplayTutorialDialog(14, 3.2f);
         }
-        else
-        {
-            //입력 회복
-            adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-        }
             
         StreamReader Reader = new StreamReader(FilePath, System.Text.Encoding.UTF8);
         SecurityLevel = Reader.ReadLine();
@@ -128,6 +123,10 @@ public class EncodeDataLoadPart : MonoBehaviour
 
         //입력 차단
         adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
+
+        //입력 회복
+        if(!adfgvx.chat_ADFGVX.PlayAsTutorial)
+            adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         adfgvx.InformUpdate("'" + filePath.GetInputString() + "' " + "로드 성공 : 총 작업 시간 1ms 이하");
 
