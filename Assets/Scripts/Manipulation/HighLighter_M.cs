@@ -41,6 +41,7 @@ public class HighLighter_M : MonoBehaviour
 
     private void Touch(PointerEventData Event)
     {
+        if (!In.IsTouchAble()) return;
         Clicker.color = ColorOn;
         Selected = true;
         In.TouchManager(gameObject,IsFolder);
