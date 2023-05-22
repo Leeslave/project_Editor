@@ -211,7 +211,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 40333239}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -255,6 +255,8 @@ MonoBehaviour:
   BackB: {fileID: 83694807}
   Error: {fileID: 197050499}
   ErrorMessage: {fileID: 1980002606}
+  TouchAble: 1
+  NextBox: 5
 --- !u!1 &71788764
 GameObject:
   m_ObjectHideFlags: 0
@@ -1472,7 +1474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1102c17722a46c14bad9f55be778ddab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxDurability: 17
+  MaxDurability: 16
   Weight: 1
   BoxNum: 1
   HM: {fileID: 40333245}
@@ -1866,7 +1868,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1102c17722a46c14bad9f55be778ddab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxDurability: 3
+  MaxDurability: 2
   Weight: 4
   BoxNum: 4
   HM: {fileID: 40333245}
@@ -2028,7 +2030,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1102c17722a46c14bad9f55be778ddab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxDurability: 5
+  MaxDurability: 4
   Weight: 3
   BoxNum: 3
   HM: {fileID: 40333245}
@@ -2719,6 +2721,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 40333245}
+        m_TargetAssemblyTypeName: HanoiManager, Assembly-CSharp
+        m_MethodName: TouchAbleChange
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1888508929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2897,7 +2911,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1102c17722a46c14bad9f55be778ddab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxDurability: 9
+  MaxDurability: 8
   Weight: 2
   BoxNum: 2
   HM: {fileID: 40333245}
@@ -3242,7 +3256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1102c17722a46c14bad9f55be778ddab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxDurability: 2
+  MaxDurability: 1
   Weight: 5
   BoxNum: 5
   HM: {fileID: 40333245}

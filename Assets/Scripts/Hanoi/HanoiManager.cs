@@ -32,8 +32,11 @@ public class HanoiManager : MonoBehaviour
     // Error
     public GameObject Error;
     public TMP_Text ErrorMessage;
+    // Judge
+    public bool TouchAble = true;
+
     // 3번 컨테이너에 다음에 추가 되어야 하는 Box
-    int NextBox = 5;
+    public int NextBox = 5;
     int LastCon = 0;
 
     private void Awake()
@@ -68,6 +71,7 @@ public class HanoiManager : MonoBehaviour
     public void AddEvent(int a)
     {
         LastCon = a;
+        IsPick = false;
         // 동일 Container간의 이동이라면 다시 상자를 원래 콘테이너에 넣는다.
         if (a == CurCon) Containers[a].AddTop(PickedBox);
         else
@@ -84,6 +88,13 @@ public class HanoiManager : MonoBehaviour
                 }
                 // 해당 변경 사항을 Back 스택에 넣고, Try 횟수를 갱신한다.
                 Back.Push(new Tuple<int, int>(CurCon, a));
+
+                if (Go.Count != 0)
+                {
+                    Go.Clear();
+                    GoB.IsActive = false;
+                    GoB.gameObject.GetComponent<Image>().color = new Color(0.4f, 0.4f, 0.4f, 1);
+                }
                 PickedBox.GetComponent<Box>().DuraChange(-1);
                 Try.text = $"{++TryCount} Try";
             }
@@ -100,7 +111,7 @@ public class HanoiManager : MonoBehaviour
         {
             Try.text = $"{--TryCount} Try";
             var cnt = Back.Pop();
-            Containers[cnt.Item1].AddTop(Containers[cnt.Item2].ReturnTop(true));
+            Containers[cnt.Item1].AddTop(Containers[cnt.Item2].ReturnTop(1));
 
             // 되돌린 명령을 Go 스택에 넣으며, Go 스택의 크기가 0이었다면 다시 실행 버튼을 활성화한다(SetActive아님)
             if(Go.Count == 0)
@@ -125,7 +136,7 @@ public class HanoiManager : MonoBehaviour
         {
             Try.text = $"{++TryCount} Try";
             var cnt = Go.Pop();
-            Containers[cnt.Item1].AddTop(Containers[cnt.Item2].ReturnTop(false));
+            Containers[cnt.Item1].AddTop(Containers[cnt.Item2].ReturnTop(-1));
 
             // 다시 실행한 명령을 Back 스택에 넣으며, Back 스택의 크기가 0이었다면 되돌리기 버튼을 활성화한다.
             if (Back.Count == 0)
@@ -143,6 +154,8 @@ public class HanoiManager : MonoBehaviour
         }
     }
 
+
+    // Redo, Undo시 NextBox 변경되는 이벤트 추가 필요
     public void ErrorEvent(int num)
     {
         if (num == NextBox && LastCon == 2)
@@ -153,10 +166,16 @@ public class HanoiManager : MonoBehaviour
         }
         Error.SetActive(true);
         ErrorMessage.text = $"{num}번 Box의\n내구도가 0입니다.";
+        TouchAble = false;
     }
 
     public void ClearEvent()
     {
 
+    }
+
+    public void TouchAbleChange()
+    {
+        TouchAble = !TouchAble;
     }
 }

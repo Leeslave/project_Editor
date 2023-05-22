@@ -41,6 +41,7 @@ public class Box : MonoBehaviour
     {
         if (IsBreakAble)
         {
+            if (change > 0 && HM.NextBox < BoxNum) HM.NextBox = BoxNum;
             CurDurability += change;
             Dura.text = CurDurability.ToString();
             if (CurDurability == 0) HM.ErrorEvent(BoxNum);

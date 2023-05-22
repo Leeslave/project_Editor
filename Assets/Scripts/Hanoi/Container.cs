@@ -33,6 +33,7 @@ public class Container:MonoBehaviour
     // Input : 호출된 상태에서 Pointer의 상태를 담은 Class(해당 함수에서는 미사용)
     void OnPoint(PointerEventData data)
     {
+        if (!HM.TouchAble) return;
         // 현재 상자를 집은 상태고, 해당 상자를 현재 Container로 옮길 수 있다면, 하이라이트한다.
         if (HM.IsPick) { if (CompareTop(HM.PickedBox)) sr.sprite = Clicked; }
         // 현재 상자를 집지 않은 상태면 하이라이트한다.
@@ -51,6 +52,7 @@ public class Container:MonoBehaviour
     // Input : 호출된 상태에서 Pointer의 상태를 담은 Class(해당 함수에서는 미사용)
     public void OutPoint(PointerEventData data)
     {
+        if (!HM.TouchAble) return;
         sr.sprite = NonClicked;
     }
     // 포인터로 해당 Object를 클릭했을 때 호출되는 함수.
@@ -58,6 +60,7 @@ public class Container:MonoBehaviour
     // Input : 호출된 상태에서 Pointer의 상태를 담은 Class(해당 함수에서는 미사용)
     void Click(PointerEventData data)
     {
+        if (!HM.TouchAble) return;
         // 현재 상자를 집은 상태일 경우, Container와 해당 상자간의 상태를 비교하고 추가할 것인지 정한다.
         // HanoiManager.cs 참조
         if (HM.IsPick)
@@ -69,7 +72,7 @@ public class Container:MonoBehaviour
         {
             // 현재 상자를 집지 않은 경우
             // 비어있는 Container를 선택한 것이 아니라면 Container의 최상단 상자를 가져오며, 상자를 집은 상태로 바꾼다.
-            HM.PickedBox = ReturnTop(false);
+            HM.PickedBox = ReturnTop(0);
             if (HM.PickedBox != null)
             {
                 HM.PickedBox.transform.SetAsLastSibling();
@@ -95,13 +98,13 @@ public class Container:MonoBehaviour
     // 현재 Container의 최상단의 상자를 반환한다.
     // 비어있다면 null을 반환한다.
     // Output : 현재 Container 최상단의 상자.(비어있다면 null)
-    public GameObject ReturnTop(bool IsBack)
+    public GameObject ReturnTop(int DuraCh)
     {
         if(Boxes.Count == 0) return null;
         else
         {
             GameObject cnt = Boxes[Boxes.Count - 1];
-            if (IsBack) cnt.GetComponent<Box>().DuraChange(1);
+            if (DuraCh != 0) cnt.GetComponent<Box>().DuraChange(DuraCh);
             if (!cnt.GetComponent<Box>().CanPick()) return null;
             Boxes.RemoveAt(Boxes.Count - 1);
             BoxSize--;
