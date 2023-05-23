@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System;
+using Unity.VisualScripting;
 
 public class InfChange : MonoBehaviour
 {
@@ -18,8 +19,10 @@ public class InfChange : MonoBehaviour
     public GameObject Faces;
     public GameObject Drager;
     public GameObject Drager_Image;
+    public GameObject Terminal_Folder;
     public Image ImageDrager;
     public TabManager_M TM;
+    public TMP_Text Terminal;
 
     public int s = 0;
 
@@ -102,13 +105,15 @@ public class InfChange : MonoBehaviour
 
     public void OpenFolder(HighLighter_M ss)
     {
-        CloseFolder();
         if(ss == null)
         {
             Folders.SetActive(true);
             Files.SetActive(false);
+            CloseFolder();
             return;
         }
+        Terminal.text = $"> {ss.gameObject.name}";
+        Terminal_Folder.SetActive(true);
         GameObject cnt;
         for(int i = 0; i < ss.Files.Count; i++)
         {
@@ -119,10 +124,12 @@ public class InfChange : MonoBehaviour
         }
         Folders.SetActive(false);
         Files.SetActive(true);
+        
     }
 
     public void CloseFolder()
     {
+        Terminal_Folder.SetActive(false);
         GameObject cnt;
         for(int i = 0; i < Files.transform.childCount; i++)
         {

@@ -39,6 +39,7 @@ public class Tab_M : Buttons_M
         image.color = SelectColor;
         IsSelected = true;
         TM.ChangeTab(TabNum);
+        In.CloseFolder();
         In.OpenFolder(CurFolder);
     }
     private void OnEnable()

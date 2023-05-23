@@ -41,7 +41,8 @@ public class Drager_M : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.Log("!");
         IsTouch = false;
-        transform.parent.SetAsLastSibling();
+        transform.SetAsLastSibling();
     }
 }
