@@ -192,14 +192,13 @@ public class PatternManager : MonoBehaviour
             CurRazer = Instantiate(Razer);
             // 플랫폼 생성
             GameObject cnt = Instantiate(Plat);
-            cnt.GetComponent<Transform>().localScale = new Vector3(1.5f,0.1f);
+            cnt.GetComponent<Transform>().localScale = new Vector3(2f,0.1f);
             PlatL.Add(cnt);
 
             // 플랫폼을 오른쪽에서, 레이저를 위에서 생성되게 함.
             if (a1 == 0)
             {
                 BM.MakeSmallBul(Vector2.left * 3, Vector2.zero).transform.position = SPRE[Random.Range(0, 5)].position;
-                BM.MakeSmallBul(Vector2.left * 3, Vector2.zero).transform.position = SPRE[Random.Range(0,5)].position;
                 cnt.transform.position = new Vector3(SPLE[4].position.x + 1,MidY,0);
                 cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.right * 3, ForceMode2D.Impulse);
                 CurRazer.transform.position = new Vector3(0, -3, 0);
@@ -207,7 +206,6 @@ public class PatternManager : MonoBehaviour
             // 플랫폼을 왼쪽에서, 레이저를 아래에서 생성되게 함.
             else
             {
-                BM.MakeSmallBul(Vector2.right * 3, Vector2.zero).transform.position = SPLE[Random.Range(5, 10)].position;
                 BM.MakeSmallBul(Vector2.right * 3, Vector2.zero).transform.position = SPLE[Random.Range(5, 10)].position;
                 cnt.transform.position = new Vector3(SPRE[4].position.x - 1, MidY, 0);
                 cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.left * 3, ForceMode2D.Impulse);
