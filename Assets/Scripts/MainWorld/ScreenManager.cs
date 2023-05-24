@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,16 +22,17 @@ public class ScreenManager : MonoBehaviour
 
     /// 스크린내 기본 요소 (에디터 할당)
     public GameObject screen;      // 스크린 오브젝트
-    public GameObject bootPanel;    //부팅 패널
     public GameObject desktop;      // 바탕화면 패널
+    public GameObject bootPanel;    //부팅 패널
+    private GameObject bootCLI;     //부팅 콘솔 텍스트창 TODO:Text으로 전환 -> .gameObject.SetActive로 최적화
     private ScreenMode currentBootStatus;    //현 부팅 상태
-
-    /// 부팅 패널 요소 (find)
-    private GameObject bootCLI;     //부팅 콘솔 텍스트창
 
     /// 부팅 애니메이션 설정값
     public AnimationController bootAnimation;   //부팅 애니메이션
     public float logoOnSeconds;     //로고 이미지 활성 시간
+
+    /// 업무 관리 데이터 <(업무명, 스테이지), 완료 여부>
+    public Dictionary<Tuple<string, int>, bool> works;
 
 
     /// 스크린 모드
@@ -43,21 +45,47 @@ public class ScreenManager : MonoBehaviour
         GetOff
     }
 
-
-
+    // 싱글톤
+    private static ScreenManager _instance;
+    public static ScreenManager Instance
+    {
+        get { return _instance; }
+    }
+    void Awake()
+    {
+        if(!_instance)
+        {
+            _instance = this;
+            bootCLI = bootPanel.transform.GetChild(1).gameObject;
+            bootCLI.GetComponent<Text>().text = "";
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     /// 컴포넌트 설정, 부팅 초기값 off
-    private void Start() {
-        /// 부팅 오브젝트 할당
-        bootCLI = bootPanel.transform.GetChild(1).gameObject;
-        bootCLI.GetComponent<Text>().text = "";
-
+    void Start() 
+    {
         /// 부팅 대기 화면으로 설정
         desktop.SetActive(false);
         bootPanel.SetActive(true);
         bootCLI.SetActive(false);
 
         currentBootStatus = ScreenMode.Off;
+    }
+
+    /// TODO: 오늘 업무 불러오기 및 초기화
+    public void GetWorks()
+    {
+
+    }
+
+    /// TODO: 업무 입력시 해당 업무 시작, 씬 이동
+    public void OnWorkEnter()
+    {
+
     }
 
     /// <summary>
