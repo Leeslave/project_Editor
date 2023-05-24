@@ -146,6 +146,7 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.tag == "Bullet")
         {
+            PM.MusicOff();
             rigid.velocity = new Vector2(0, 0);
             MoveAble = false;
             PM.EndPT(true);

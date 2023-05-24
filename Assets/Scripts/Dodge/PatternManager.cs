@@ -35,6 +35,7 @@ public class PatternManager : MonoBehaviour
 
     List<List<int[]>> PTLE = new List<List<int[]>>();       // 패턴들의 List
     GameObject CurRazer = null;
+    AudioSource AL;
 
     // 좌우 소환 위치(히든용)
     public Transform SPCNT;
@@ -61,6 +62,7 @@ public class PatternManager : MonoBehaviour
 
     private void Awake()
     {
+        AL = GetComponent<AudioSource>();
         for (int i = 0; i < 26; i++)            // SPCNT의 x를 기준으로 x를 1씩 증가시키며 해당 위치를 SPT(상), SPB(하)에 저장함. 이 떄 상과 하 사이의 y축 간격은 18
         {
             SPT[i] = new Vector2(SPCNT.position.x + i, SPCNT.position.y);
@@ -283,11 +285,17 @@ public class PatternManager : MonoBehaviour
     public void StartPT(int i)      
     {
         EndPT(false);
+        AL.Play();
         switch (i)
         {
             case 0: StartCoroutine(ChangePT(MakeEasyPattern())); break;
             case 1: StartCoroutine(ChangePT(PatternN1())); break;
         }
+    }
+
+    public void MusicOff()
+    {
+        AL.Stop();
     }
     
     // 현재 실행중인 패턴을 중지하며, 인수에 따라 패턴의 부산물을 지울 것인지 아닌지를 정함
