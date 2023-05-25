@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Button_VoightKampff : Button
+public class Button_VoightKampff : Button_Game
 {
     protected GameManager_VoightKampff GameManager;
 

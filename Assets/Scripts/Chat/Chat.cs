@@ -16,9 +16,9 @@ public class Chat : MonoBehaviour
     // <summary> 체크되어 있으면 바로 실행 여부와 관계없이 바로 실행
     public bool PlayAsTutorial;
     [Header("다시보기 줄 프리펩")]
-    public GameObject pastLine;
+    public GameObject RemindLine;
     [Header("다시보기 단락 프리펩")]
-    public GameObject pastParagraph;
+    public GameObject RemindParagraph;
 
     /// <summary> CSV 데이터 </summary>
     protected List<Dictionary<string, object>> data;
@@ -34,51 +34,58 @@ public class Chat : MonoBehaviour
     private int[] tutorialPhaseArray;
     /// <summary> 현재 튜토리얼 단계 </summary>
     private int currentTutorialPhase;
+    /// <summary> SRT전환기 </summary>
+    private STRConverter m_SRTConverter;
 
     private AudioSource audioSource;
-    private GameObject button_Choice_0;
-    private GameObject button_Choice_1;
-    private GameObject button_Choice_2;
-    private GameObject button_Skip;
-    private GameObject button_Remind;
-    private GameObject panel_Choice;
-    private GameObject panel_Dialog;
-    private GameObject panel_Remind;
-    private GameObject panel_Skip;
-    private TextFieldProUGUI belong;
-    private TextFieldProUGUI dialog;
-    private TextFieldProUGUI speaker;
+    private GameObject m_Button_Choice_0;
+    private GameObject m_Button_Choice_1;
+    private GameObject m_Button_Choice_2;
+    private GameObject m_Button_Skip;
+    private GameObject m_Button_Remind;
+    private GameObject m_SpeechBalloon;
+    private GameObject m_PopUp_Choice;
+    private GameObject m_PopUp_Remind;
+    private GameObject m_PopUp_Skip;
+    private TextMeshProUGUI belong;
+    private TextMeshProUGUI dialog;
+    private TextMeshProUGUI speaker;
 
-    private void Start() 
+    private void Awake()
     {
         //시작 CSV 파일 데이터 로드
         LoadData(StartingCSVFileName);
 
         //각 UI요소 접근자
         audioSource = transform.GetChild(0).GetComponent<AudioSource>();
-        panel_Dialog = transform.GetChild(1).gameObject;        
-        panel_Skip = transform.GetChild(2).gameObject;
-        panel_Remind = transform.GetChild(3).gameObject;
-        panel_Choice = transform.GetChild(4).gameObject;
-        button_Skip = transform.GetChild(5).gameObject;
-        button_Remind = transform.GetChild(6).gameObject;
-        button_Choice_0 = transform.GetChild(7).gameObject;
-        button_Choice_1 = transform.GetChild(8).gameObject;
-        button_Choice_2 = transform.GetChild(9).gameObject;
-        speaker = panel_Dialog.transform.GetChild(2).GetComponent<TextFieldProUGUI>();
-        dialog = panel_Dialog.transform.GetChild(3).GetComponent<TextFieldProUGUI>();
-        belong = panel_Dialog.transform.GetChild(4).GetComponent<TextFieldProUGUI>();
+        m_SpeechBalloon = transform.GetChild(1).gameObject;
+        m_Button_Skip = transform.GetChild(2).gameObject;
+        m_Button_Remind = transform.GetChild(3).gameObject;        
+        m_PopUp_Skip = transform.GetChild(4).gameObject;
+        m_PopUp_Remind = transform.GetChild(5).gameObject;
+        m_PopUp_Choice = transform.GetChild(6).gameObject;
+
+        speaker = m_SpeechBalloon.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
+        belong = m_SpeechBalloon.transform.GetChild(4).GetComponent<TextMeshProUGUI>();
+        dialog = m_SpeechBalloon.transform.GetChild(5).GetComponent<TextMeshProUGUI>();
+
+        m_Button_Choice_0 = m_PopUp_Choice.transform.GetChild(0).gameObject;
+        m_Button_Choice_1 = m_PopUp_Choice.transform.GetChild(1).gameObject;
+        m_Button_Choice_2 = m_PopUp_Choice.transform.GetChild(2).gameObject;
 
         //각 UI요소 비활성화
-        panel_Dialog.SetActive(false);
-        panel_Choice.SetActive(false);
-        panel_Skip.SetActive(false);
-        panel_Remind.SetActive(false);
-        button_Choice_0.SetActive(false);
-        button_Choice_1.SetActive(false);
-        button_Choice_2.SetActive(false);
-        button_Skip.SetActive(false);
-        button_Remind.SetActive(false);
+        m_SpeechBalloon.SetActive(false);
+        m_PopUp_Choice.SetActive(false);
+        m_PopUp_Skip.SetActive(false);
+        m_PopUp_Remind.SetActive(false);
+        m_Button_Choice_0.SetActive(false);
+        m_Button_Choice_1.SetActive(false);
+        m_Button_Choice_2.SetActive(false);
+        m_Button_Skip.SetActive(false);
+        m_Button_Remind.SetActive(false);
+
+        //STR전환기 접근자 획득
+        m_SRTConverter = FindObjectOfType<STRConverter>();
 
         //튜토리얼 실행
         if (PlayAsTutorial)
@@ -106,33 +113,33 @@ public class Chat : MonoBehaviour
     private void ControlInput()
     {
         //바쁜 대기로 대화창의 흐름 출력이 끝났는지 확인한다
-        if (lastFlowTextStatus == true && dialog.GetIsNowFlowText() == false)
+        if (lastFlowTextStatus && !m_SRTConverter.GetIsPrintingTMPUGUI(dialog))
         {
             //출력이 끝나면 Delay 이후에 다음으로 넘어갈 수 있게 된다
             Invoke("SetTrueIsAbleToNextLine", Delay);
         }
         //바쁜 대기를 위해서 업데이트
-        lastFlowTextStatus = dialog.GetIsNowFlowText();
+        lastFlowTextStatus = m_SRTConverter.GetIsPrintingTMPUGUI(dialog);
 
         //대화 판넬 활성 && 다시보기 판넬 비활성 && 건너뛰기 판넬 비활성 && 다른 UI 오브젝트 위 아님
         //키보드 스페이스 입력 확인 시 사용한다.
-        bool condition_0 = panel_Dialog.activeSelf && !panel_Remind.activeSelf && !panel_Skip.activeSelf;
+        bool condition_0 = m_SpeechBalloon.activeSelf && !m_PopUp_Remind.activeSelf && !m_PopUp_Skip.activeSelf;
 
         //대화 판넬 활성 && 다시보기 판넬 비활성 && 건너뛰기 판넬 비활성 && 다른 UI 오브젝트 위 아님
         //마우스 왼쪽 버튼 다운 확인 시 사용한다. 키보드 스페이스 입력과는 다르게, 다른 UI 버튼을 누른 것이 아닌지 걸러낼 필요가 있음
-        bool condition_1 = panel_Dialog.activeSelf && !panel_Remind.activeSelf && !panel_Skip.activeSelf && !EventSystem.current.IsPointerOverGameObject();
+        bool condition_1 = m_SpeechBalloon.activeSelf && !m_PopUp_Remind.activeSelf && !m_PopUp_Skip.activeSelf && !EventSystem.current.IsPointerOverGameObject();
 
         //조건을 만족하는 입력이 들어오지 않았다면 리턴
         if (!(Input.GetKeyDown(KeyCode.Space) && condition_0) && !(Input.GetMouseButtonDown(0) && condition_1))
             return;
 
         //흐름 출력 여부를 확인
-        if(dialog.GetIsNowFlowText())   
+        if(m_SRTConverter.GetIsPrintingTMPUGUI(dialog))   
         {
             //흐름 출력을 종료하고 Dialog를 즉시 채운다, 그런데 TE 흐름 출력은 즉시 못 채운다
             if (data[currentLineNumber - 1]["ChatType"].ToString() == "TD")
             {
-                dialog.StopCoroutineFlowTextWithDelay();
+                m_SRTConverter.StopPrintingTMPUGUI(dialog);
                 dialog.SetText(data[currentLineNumber - 1]["Dialog"].ToString());
             }
         }
@@ -159,19 +166,19 @@ public class Chat : MonoBehaviour
     private void AddLineToRemindPanel(string speaker, string belong, string dialog)//다시보기 창에 대화 추가
     {
         //줄 프리펩 생성
-        GameObject one = Instantiate(pastLine);
+        GameObject one = Instantiate(RemindLine);
         //줄 프리펩의 텍스트 업데이트
-        one.GetComponentsInChildren<TextMeshProUGUI>()[0].text = belong;
-        one.GetComponentsInChildren<TextMeshProUGUI>()[1].text = dialog;
-        one.GetComponentsInChildren<TextMeshProUGUI>()[2].text = speaker;
+        one.GetComponentsInChildren<TextMeshProUGUI>()[0].text = speaker;
+        one.GetComponentsInChildren<TextMeshProUGUI>()[1].text = belong;
+        one.GetComponentsInChildren<TextMeshProUGUI>()[2].text = dialog;
         //캔버스 강제 업데이트
         Canvas.ForceUpdateCanvases();
         //Speaker의 길이에 따라 Belong위치 조정
         float newPosX = one.GetComponentsInChildren<RectTransform>()[3].transform.localPosition.x + one.GetComponentsInChildren<RectTransform>()[3].rect.width + 20;
-        float newPosY = one.GetComponentsInChildren<RectTransform>()[1].transform.localPosition.y;
-        one.GetComponentsInChildren<RectTransform>()[1].transform.localPosition = new Vector3(newPosX, newPosY, 0);
+        float newPosY = one.GetComponentsInChildren<RectTransform>()[4].transform.localPosition.y;
+        one.GetComponentsInChildren<RectTransform>()[4].transform.localPosition = new Vector3(newPosX, newPosY, 0);
         //줄 프리펩을 다시보기 창 스크롤 영역에 추가
-        one.transform.SetParent(panel_Remind.transform.Find("Viewport").transform.Find("Content"));
+        one.transform.SetParent(m_PopUp_Remind.transform.Find("Viewport").transform.Find("Content"));
         //아무튼 필요했나 봄
         one.transform.localScale = new Vector3(1,1,1);
     }
@@ -181,11 +188,11 @@ public class Chat : MonoBehaviour
     private void AddParagraphToRemindPanel(string paragraph)
     {
         //단락 프리펩 생성
-        GameObject one = Instantiate(pastParagraph);
+        GameObject one = Instantiate(RemindParagraph);
         //단락 프리펩의 텍스트 업데이트
         one.GetComponentsInChildren<TextMeshProUGUI>()[0].text = paragraph;
         //단락 프리펩을 다시보기 창 스크롤 영역에 추가
-        one.transform.SetParent(panel_Remind.transform.Find("Viewport").transform.Find("Content"));
+        one.transform.SetParent(m_PopUp_Remind.transform.Find("Viewport").transform.Find("Content"));
         //아무튼 필요했나 봄
         one.transform.localScale = new Vector3(1,1,1);
     }
@@ -216,30 +223,30 @@ public class Chat : MonoBehaviour
     /// <remarks> 이 함수는 Chat 스크립트에서는 호출하지 않는다. ChatButton_Remind 스크립트에서 다시보기 관련 버튼이 눌리는 이벤트가 발생했을 때 호출된다 </remarks>
     public void OnRemindDown()
     {
-        if (panel_Remind.activeSelf)    //다시보기 창이 활성되어 있는 상태, 비활성화한다
+        if (m_PopUp_Remind.activeSelf)    //다시보기 창이 활성되어 있는 상태, 비활성화한다
         {
             if (data[currentLineNumber - 1]["ChatType"].ToString() == "E")  //채팅창이 미사용 중이니 다시보기 버튼만 되돌리면 된다
             {
-                panel_Remind.SetActive(false);
-                button_Remind.SetActive(true);
+                m_PopUp_Remind.SetActive(false);
+                m_Button_Remind.SetActive(true);
             }
             else                                                            //채팅창이 사용 중이니 건너뛰기 버튼과 대화 창도 되돌려야 함
             {
-                panel_Remind.SetActive(false);
-                panel_Dialog.SetActive(true);
-                button_Remind.SetActive(true);
-                button_Skip.SetActive(true);
+                m_PopUp_Remind.SetActive(false);
+                m_SpeechBalloon.SetActive(true);
+                m_Button_Remind.SetActive(true);
+                m_Button_Skip.SetActive(true);
             }
         }
         else                            //다시보기 창이 비활성되어 있는 상태, 활성화한다
         {
-            panel_Remind.SetActive(true);
-            panel_Dialog.SetActive(false);
-            button_Skip.SetActive(false);
-            button_Remind.SetActive(false);
+            m_PopUp_Remind.SetActive(true);
+            m_SpeechBalloon.SetActive(false);
+            m_Button_Skip.SetActive(false);
+            m_Button_Remind.SetActive(false);
 
-            if (panel_Remind.transform.Find("ScrollbarVertical") != null)//스크롤바를 가장 최근 대화로 이동
-                panel_Remind.transform.Find("ScrollbarVertical").GetComponent<Scrollbar>().value = 0.01f;
+            if (m_PopUp_Remind.transform.Find("ScrollbarVertical") != null)//스크롤바를 가장 최근 대화로 이동
+                m_PopUp_Remind.transform.Find("ScrollbarVertical").GetComponent<Scrollbar>().value = 0.01f;
         }
     }
 
@@ -247,19 +254,19 @@ public class Chat : MonoBehaviour
     /// <remarks> 이 함수는 Chat 스크립트에서는 호출하지 않는다. ChatButton_Skip 스크립트에서 건너뛰기 관련 버튼이 눌리는 이벤트가 발생했을 때 호출된다 </remarks>
     public void OnSkipDown()
     {
-        if (panel_Skip.activeSelf)
+        if (m_PopUp_Skip.activeSelf)
         {
-            panel_Dialog.SetActive(true);
-            button_Skip.SetActive(true);
-            button_Remind.SetActive(false);
-            panel_Skip.SetActive(false);
+            m_SpeechBalloon.SetActive(true);
+            m_Button_Skip.SetActive(true);
+            m_Button_Remind.SetActive(false);
+            m_PopUp_Skip.SetActive(false);
         }
         else
         {
-            panel_Dialog.SetActive(false);
-            button_Skip.SetActive(false);
-            button_Remind.SetActive(false);
-            panel_Skip.SetActive(true);
+            m_SpeechBalloon.SetActive(false);
+            m_Button_Skip.SetActive(false);
+            m_Button_Remind.SetActive(false);
+            m_PopUp_Skip.SetActive(true);
         }
     }
 
@@ -286,12 +293,12 @@ public class Chat : MonoBehaviour
         //건너뛰기가 정상적으로 실행었음을 알린다
         Debug.Log("건너뛰기를 실행합니다!");
 
-        panel_Skip.SetActive(false);
-        button_Skip.SetActive(false);
-        button_Remind.SetActive(true);
+        m_PopUp_Skip.SetActive(false);
+        m_Button_Skip.SetActive(false);
+        m_Button_Remind.SetActive(true);
 
         //현재 흐름 출력 중인 텍스트을 강제 중지
-        dialog.StopCoroutineFlowTextWithDelay();
+        m_SRTConverter.StopPrintingTMPUGUI(dialog);
 
         //건너뛰기가 중지되는 조건은 오직 채팅 타입 End에 도달하거나 다음 줄의 채팅타입이 C2, C3인 경우이다
         for(;;tempLineNumber++)
@@ -304,7 +311,7 @@ public class Chat : MonoBehaviour
                 //헷갈릴 수도 있지만 tempLineNumber 그대로 넣는 것이 맞다
                 LoadLine(tempLineNumber);
                 //어차피 tempLineNumber의 대화에서는 바로 다시 건너뛰기 할 수 없으므로, 건너뛰기 버튼을 일시적으로 비활성화
-                button_Skip.SetActive(false);
+                m_Button_Skip.SetActive(false);
                 return;
             }
 
@@ -340,11 +347,11 @@ public class Chat : MonoBehaviour
         } 
     }
 
-    /// <summary> Assets/Resources/Chat에서 새로운 CSV 파일을 data에 로드한다 </summary>
+    /// <summary> Assets/Resources/CSV에서 새로운 CSV 파일을 data에 로드한다 </summary>
     /// <param name="CSVFileName"> 새롭게 로드할 파일의 이름 </param>
     public void LoadData(string CSVFileName)
     {
-        data = CSVReader.Read("Assets/Resources/Chat/" + CSVFileName + ".csv");
+        data = CSVReader.Read("Assets/Resources/CSV/" + CSVFileName + ".csv");
         if(data==null)
             Debug.LogWarning("Coundn't Find CSV File '" + CSVFileName + "'");
         else
@@ -381,107 +388,109 @@ public class Chat : MonoBehaviour
 
         //만약 다음 줄의 채팅 타입이 C2, C3라면 건너뛰기를 실행할 수 없도록 막아야 한다
         if((data[currentLineNumber]["ChatType"].ToString() == "C2")||(data[currentLineNumber]["ChatType"].ToString() == "C3"))
-            button_Skip.SetActive(false);
+            m_Button_Skip.SetActive(false);
 
         //현재 줄의 채팅 타입에 따라서 다른 작업을 수행
         switch (currentLineData["ChatType"].ToString())
         {
             case "TD":
                 //Delay에 따라 대화 출력 작업 수행
-                panel_Dialog.SetActive(true);
-                panel_Choice.SetActive(false);
-                panel_Remind.SetActive(false);
-                button_Choice_0.SetActive(false);
-                button_Choice_1.SetActive(false);
-                button_Choice_2.SetActive(false);
-                button_Remind.SetActive(true);
-                button_Skip.SetActive(true);
+                m_SpeechBalloon.SetActive(true);
+                m_PopUp_Choice.SetActive(false);
+                m_PopUp_Remind.SetActive(false);
+                m_Button_Choice_0.SetActive(false);
+                m_Button_Choice_1.SetActive(false);
+                m_Button_Choice_2.SetActive(false);
+                m_Button_Remind.SetActive(true);
+                m_Button_Skip.SetActive(true);
 
                 //delay값 결정
                 float delay = currentLineData["Time"].ToString() != "" ? float.Parse(currentLineData["Time"].ToString()) : 0.03f;
-                dialog.FlowTextWithDelay(currentLineData["Dialog"].ToString(), delay);
+                m_SRTConverter.PrintTMPUGUIByDelay(delay, currentLineData["Dialog"].ToString(), dialog);
 
                 //화자와 소속 텍스트 업데이트
                 speaker.SetText(currentLineData["Speaker"].ToString());
                 belong.SetText(currentLineData["Belong"].ToString());
-                belong.transform.localPosition = new Vector3(speaker.transform.localPosition.x + speaker.GetWidth() + 20, belong.transform.localPosition.y, 0);
+                Canvas.ForceUpdateCanvases();
+                belong.transform.localPosition = new Vector3(speaker.transform.localPosition.x + speaker.GetComponent<RectTransform>().rect.width + 20, belong.transform.localPosition.y, 0);
                 
                 //다시보기 창에 이번 대화 내용을 추가
                 AddLineToRemindPanel(currentLineData["Speaker"].ToString(), currentLineData["Belong"].ToString(), currentLineData["Dialog"].ToString());
                 break;
             case "TE":
                 //EndTime에 따라 대화 출력 작업 수행
-                panel_Dialog.SetActive(true);
-                panel_Choice.SetActive(false);
-                panel_Remind.SetActive(false);
-                button_Choice_0.SetActive(false);
-                button_Choice_1.SetActive(false);
-                button_Choice_2.SetActive(false);
-                button_Remind.SetActive(true);
-                button_Skip.SetActive(true);
+                m_SpeechBalloon.SetActive(true);
+                m_PopUp_Choice.SetActive(false);
+                m_PopUp_Remind.SetActive(false);
+                m_Button_Choice_0.SetActive(false);
+                m_Button_Choice_1.SetActive(false);
+                m_Button_Choice_2.SetActive(false);
+                m_Button_Remind.SetActive(true);
+                m_Button_Skip.SetActive(true);
 
-                //endTime값 결정
-                float endTime = currentLineData["Time"].ToString() != "" ? float.Parse(currentLineData["Time"].ToString()) : 2.0f;
-                dialog.FlowTextWithEndTime(currentLineData["Dialog"].ToString(), endTime);
+                //duration값 결정
+                float duration = currentLineData["Time"].ToString() != "" ? float.Parse(currentLineData["Time"].ToString()) : 2.0f;
+                m_SRTConverter.PrintTMPUGUIByDuration(duration, currentLineData["Dialog"].ToString(), dialog);
 
                 //화자와 소속 텍스트 업데이트
                 speaker.SetText(currentLineData["Speaker"].ToString());
                 belong.SetText(currentLineData["Belong"].ToString());
-                belong.transform.localPosition = new Vector3(speaker.transform.localPosition.x + speaker.GetWidth() + 20, belong.transform.localPosition.y, 0);
+                Canvas.ForceUpdateCanvases();
+                belong.transform.localPosition = new Vector3(speaker.transform.localPosition.x + speaker.GetComponent<RectTransform>().rect.width + 20, belong.transform.localPosition.y, 0);
 
                 //다시보기 창에 이번 대화 내용을 추가
                 AddLineToRemindPanel(currentLineData["Speaker"].ToString(), currentLineData["Belong"].ToString(), currentLineData["Dialog"].ToString());
                 break;
             case "A":
                 //대답형 연출 출력 작업 수행
-                panel_Dialog.SetActive(false);
-                panel_Choice.SetActive(true);
-                button_Choice_0.SetActive(true);
-                button_Skip.SetActive(false);
-                button_Remind.SetActive(false);
+                m_SpeechBalloon.SetActive(false);
+                m_PopUp_Choice.SetActive(true);
+                m_Button_Choice_0.SetActive(true);
+                m_Button_Skip.SetActive(false);
+                m_Button_Remind.SetActive(false);
 
                 //0번 선택지 버튼의 텍스트를 업데이트
-                button_Choice_0.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_0"].ToString();
+                m_Button_Choice_0.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_0"].ToString();
 
                 //0번 선택지 버튼을 화면 정중앙에 배치
-                button_Choice_0.transform.localPosition = new Vector3(0,0,0);
+                m_Button_Choice_0.transform.localPosition = new Vector3(0,0,0);
                 break;
             case "C2":
                 //2개 선택지 출력 작업 수행
-                panel_Dialog.SetActive(false);
-                panel_Choice.SetActive(true);
-                button_Choice_0.SetActive(true);
-                button_Choice_1.SetActive(true);
-                button_Skip.SetActive(false);
-                button_Remind.SetActive(false);
+                m_SpeechBalloon.SetActive(false);
+                m_PopUp_Choice.SetActive(true);
+                m_Button_Choice_0.SetActive(true);
+                m_Button_Choice_1.SetActive(true);
+                m_Button_Skip.SetActive(false);
+                m_Button_Remind.SetActive(false);
 
                 //0번 선택지 버튼과 1번 선택지 버튼의 텍스트를 업데이트
-                button_Choice_0.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_0"].ToString();
-                button_Choice_1.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_1"].ToString();
+                m_Button_Choice_0.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_0"].ToString();
+                m_Button_Choice_1.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_1"].ToString();
 
                 //2개의 선택지 버튼을 화면 중앙에 위아래로 배치
-                button_Choice_0.transform.localPosition = new Vector3(0,75,0);
-                button_Choice_1.transform.localPosition = new Vector3(0,-75,0);
+                m_Button_Choice_0.transform.localPosition = new Vector3(0,75,0);
+                m_Button_Choice_1.transform.localPosition = new Vector3(0,-75,0);
                 break;
             case "C3":
                 //3개 선택지 출력 작업 수행
-                panel_Dialog.SetActive(false);
-                panel_Choice.SetActive(true);
-                button_Choice_0.SetActive(true);
-                button_Choice_1.SetActive(true);
-                button_Choice_2.SetActive(true);
-                button_Skip.SetActive(false);
-                button_Remind.SetActive(false);
+                m_SpeechBalloon.SetActive(false);
+                m_PopUp_Choice.SetActive(true);
+                m_Button_Choice_0.SetActive(true);
+                m_Button_Choice_1.SetActive(true);
+                m_Button_Choice_2.SetActive(true);
+                m_Button_Skip.SetActive(false);
+                m_Button_Remind.SetActive(false);
 
                 //0번 선택지 버튼, 1번 선택지 버튼 그리고 2번 선택지 버튼의 텍스트를 업데이트하고, 화면 중앙에 위아래로 배치
-                button_Choice_0.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_0"].ToString();
-                button_Choice_1.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_1"].ToString();
-                button_Choice_2.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_2"].ToString();
+                m_Button_Choice_0.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_0"].ToString();
+                m_Button_Choice_1.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_1"].ToString();
+                m_Button_Choice_2.GetComponentInChildren<TextMeshProUGUI>().text = currentLineData["Choice_2"].ToString();
 
                 //3개의 선택지 버튼을 화면 중앙에 위아래로 배치
-                button_Choice_0.transform.localPosition = new Vector3(0,150,0);
-                button_Choice_1.transform.localPosition = new Vector3(0,0,0);
-                button_Choice_2.transform.localPosition = new Vector3(0,-150,0);
+                m_Button_Choice_0.transform.localPosition = new Vector3(0,150,0);
+                m_Button_Choice_1.transform.localPosition = new Vector3(0,0,0);
+                m_Button_Choice_2.transform.localPosition = new Vector3(0,-150,0);
                 break;
             case "J":
                 //점프할 줄 번호를 파싱하여 LoadLine 함수 호출
@@ -489,13 +498,13 @@ public class Chat : MonoBehaviour
                 break;
             case "E":
                 //채팅창 숨김 작업 수행
-                panel_Dialog.SetActive(false);
-                panel_Choice.SetActive(false);
-                button_Choice_0.SetActive(false);
-                button_Choice_1.SetActive(false);
-                button_Choice_2.SetActive(false);
-                button_Remind.SetActive(true);
-                button_Skip.SetActive(false);
+                m_SpeechBalloon.SetActive(false);
+                m_PopUp_Choice.SetActive(false);
+                m_Button_Choice_0.SetActive(false);
+                m_Button_Choice_1.SetActive(false);
+                m_Button_Choice_2.SetActive(false);
+                m_Button_Remind.SetActive(true);
+                m_Button_Skip.SetActive(false);
 
                 SetLayerAtEnd();
                 break;
