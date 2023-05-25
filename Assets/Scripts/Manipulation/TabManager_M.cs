@@ -28,12 +28,19 @@ public class TabManager_M : MonoBehaviour
 
     public void DeleteTab(int TabInd)
     {
-        for(int i = TabInd+1; i < ActiveTab-1; i++)
+        for (int i = TabInd; i < ActiveTab - 1; i++)
         {
             Texts[i].text = Texts[i + 1].text;
+            Tabs_M[i].ChangeFolder(Tabs_M[i + 1].ReturnMyFolder());
         }
         Tabs[--ActiveTab].SetActive(false);
         if (!Adder.activeSelf) Adder.SetActive(true);
+        if (TabInd == CurTab)
+        {
+            if (ActiveTab == TabInd) CurTab = TabInd - 1;
+            else CurTab = TabInd;
+            Tabs_M[CurTab].ClickByOther();
+        }
     }
     public void ChangeTab(int ChangeNum)
     {

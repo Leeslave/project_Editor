@@ -11,6 +11,7 @@ public class PeopleIndex
     public string country;
     public string key;
     public string age;
+    public int face;
 }
 
 public class Peoples

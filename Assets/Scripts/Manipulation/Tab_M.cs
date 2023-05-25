@@ -35,7 +35,7 @@ public class Tab_M : Buttons_M
     }
     protected override void Click(PointerEventData Data)
     {
-        if (!In.IsTouchAble() && IsSelected) return;
+        if (!In.IsTouchAble() || IsSelected) return;
         image.color = SelectColor;
         IsSelected = true;
         TM.ChangeTab(TabNum);
@@ -47,9 +47,20 @@ public class Tab_M : Buttons_M
         CurFolder = null;
         IsSelected = false;
     }
+    public void ClickByOther()
+    {
+        image.color = SelectColor;
+        IsSelected = true;
+        In.CloseFolder();
+        In.OpenFolder(CurFolder);
+    }
     public void ChangeFolder(HighLighter_M cnt)
     {
         CurFolder = cnt;
+    }
+    public HighLighter_M ReturnMyFolder()
+    {
+        return CurFolder;
     }
     public void Deselect()
     {
