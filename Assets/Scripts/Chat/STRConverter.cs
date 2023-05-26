@@ -284,6 +284,8 @@ public class STRConverter : MonoBehaviour
     ///<summary> targetTMP의 출력을 강제 종료합니다 </summary>
     public void StopPrintingTMP(TextMeshPro targetTMP)
     {
+        if(!m_TMPPrintCoroutines.ContainsKey(targetTMP))
+            return;
         StopCoroutine(m_TMPPrintCoroutines[targetTMP]);
         m_TMPPrintCoroutines.Remove(targetTMP);
         return;
