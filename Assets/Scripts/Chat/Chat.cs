@@ -351,7 +351,7 @@ public class Chat : MonoBehaviour
     /// <param name="CSVFileName"> 새롭게 로드할 파일의 이름 </param>
     public void LoadData(string CSVFileName)
     {
-        data = CSVReader.Read("Assets/Resources/CSV/" + CSVFileName + ".csv");
+        data = CSVReader.Read("Assets/Resources/Chat/" + CSVFileName + ".csv");
         if(data==null)
             Debug.LogWarning("Coundn't Find CSV File '" + CSVFileName + "'");
         else
