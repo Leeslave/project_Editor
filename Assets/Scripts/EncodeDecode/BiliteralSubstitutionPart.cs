@@ -30,7 +30,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     private int currentADFGVXArrayNum;
     private const int ArrayNum_MAX = 4;
 
-    private void Start()
+    private void Awake()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 

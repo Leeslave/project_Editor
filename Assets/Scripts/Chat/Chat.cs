@@ -53,9 +53,6 @@ public class Chat : MonoBehaviour
 
     private void Awake()
     {
-        //시작 CSV 파일 데이터 로드
-        LoadData(StartingCSVFileName);
-
         //각 UI요소 접근자
         audioSource = transform.GetChild(0).GetComponent<AudioSource>();
         m_SpeechBalloon = transform.GetChild(1).gameObject;
@@ -90,6 +87,9 @@ public class Chat : MonoBehaviour
         //튜토리얼 실행
         if (PlayAsTutorial)
         {
+            //시작 CSV 파일 데이터 로드
+            LoadData(StartingCSVFileName);
+            
             tutorialPhaseArray = GetArrayOfTutorialPhase();
             currentTutorialPhase = -1;
             MoveToNextTutorialPhase(0f);
@@ -99,6 +99,9 @@ public class Chat : MonoBehaviour
         //바로 실행
         if (PlayOnAwake)
         {
+            //시작 CSV 파일 데이터 로드
+            LoadData(StartingCSVFileName);
+            
             LoadLine(1);
             return;
         }

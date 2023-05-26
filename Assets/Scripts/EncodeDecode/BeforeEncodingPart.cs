@@ -11,7 +11,7 @@ public class BeforeEncodingPart : MonoBehaviour
     private TextField primeFactor;
     private Button_ADFGVX_Retranspose reTranspose;
 
-    private void Start()
+    private void Awake()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 

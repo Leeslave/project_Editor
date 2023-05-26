@@ -381,7 +381,7 @@ public class STRConverter : MonoBehaviour
     ///<summary> duration에 따라서 targetTMPUGUI에 value를 출력합니다 </summary>
     public void PrintTMPUGUIByDuration(float duration, string value, TextMeshProUGUI targetTMPUGUI)
     {
-         if(m_TMPUGUIPrintCoroutines.ContainsKey(targetTMPUGUI))
+        if(m_TMPUGUIPrintCoroutines.ContainsKey(targetTMPUGUI))
         {
             if(m_TMPUGUIPrintCoroutines[targetTMPUGUI] != null)
                 StopCoroutine(m_TMPUGUIPrintCoroutines[targetTMPUGUI]);
@@ -457,6 +457,8 @@ public class STRConverter : MonoBehaviour
     ///<summary> targetTMPUGUI의 출력을 강제 종료합니다 </summary>
     public void StopPrintingTMPUGUI(TextMeshProUGUI targetTMPUGUI)
     {
+        if(!m_TMPUGUIColorCoroutines.ContainsKey(targetTMPUGUI))
+            return;
         StopCoroutine(m_TMPUGUIPrintCoroutines[targetTMPUGUI]);
         m_TMPUGUIPrintCoroutines.Remove(targetTMPUGUI);
         return;

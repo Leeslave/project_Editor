@@ -23,7 +23,7 @@ public class KeyboardInput : MonoBehaviour
     [Header("마우스 클릭 오디오 클립 - 랜덤 재생")]
     public AudioClip[] MouseClickAudioClips;
 
-    private void Start()
+    private void Awake()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 

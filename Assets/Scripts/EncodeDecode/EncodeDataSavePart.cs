@@ -15,7 +15,7 @@ public class EncodeDataSavePart : MonoBehaviour
     private TextField senderUI;
     private Button_ADFGVX_SaveEncodedData save;
 
-    private void Start()
+    private void Awake()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 

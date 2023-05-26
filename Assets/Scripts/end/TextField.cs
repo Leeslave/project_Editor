@@ -7,17 +7,12 @@ public class TextField : MonoBehaviour
 {
 
     private TextMeshPro markText;
-    private SpriteRenderer guideSprite;
 
     private bool isNowFlowText;
 
-    private void Start()
+    private void Awake()
     {
-        if (transform.Find("MarkText") != null)
-            markText = transform.Find("MarkText").GetComponent<TextMeshPro>();
-
-        if (transform.Find("GuideText") != null)
-            guideSprite = transform.Find("GuideText").GetComponent<SpriteRenderer>();
+        markText = transform.GetChild(0).GetComponent<TextMeshPro>();
     }
 
     public string GetText()

@@ -44,7 +44,7 @@ public class ADFGVX : MonoBehaviour
 
     private float totalElapsedTime;
 
-    private void Start()
+    private void Awake()
     {
         //현재 모드에 따라 창 배치
         if (CurrentMode == mode.Decoding)

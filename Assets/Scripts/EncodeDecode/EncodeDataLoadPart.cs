@@ -20,7 +20,7 @@ public class EncodeDataLoadPart : MonoBehaviour
 
     private string DecodedChiper = "";  //복호화 정답
 
-    private void Start()
+    private void Awake()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 

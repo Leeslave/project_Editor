@@ -24,7 +24,7 @@ public class Button_Game : MonoBehaviour
     //버튼 색 전환 코루틴 - 색 전환 중단 용
     private Coroutine colorConvertCoroutine;
 
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         Init();
     }

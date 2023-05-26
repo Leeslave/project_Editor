@@ -13,9 +13,9 @@ public class InputField_ADFGVX : Button_ADFGVX
     public int InputFieldMaxLength;
     public string InputFieldName;
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
 
         inputString = "";
         isFlash = false;

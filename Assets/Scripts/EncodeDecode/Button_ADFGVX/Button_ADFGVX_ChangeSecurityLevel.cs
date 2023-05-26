@@ -6,9 +6,9 @@ public class Button_ADFGVX_ChangeSecurityLevel : Button_ADFGVX
 {
     private int securityLevel;
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
         securityLevel = 3;
         SetSecurityLevel(securityLevel);
     }

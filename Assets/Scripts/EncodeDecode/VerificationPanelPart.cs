@@ -18,7 +18,7 @@ public class VerificationPanelPart : MonoBehaviour
     private Log log;
     private Button_ADFGVX_QuitVerificationPanel quit;
 
-    private void Start()
+    private void Awake()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 

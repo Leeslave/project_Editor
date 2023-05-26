@@ -19,7 +19,7 @@ public class TranspositionPart : MonoBehaviour
     private TextMeshPro[] lines;                        //전치된 행렬이 출력되는 텍스트
     private SpriteRenderer transposedMatrixGuide;       //전치된 행렬를 둘러싸는 스프라이트
 
-    private void Start()
+    private void Awake()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 

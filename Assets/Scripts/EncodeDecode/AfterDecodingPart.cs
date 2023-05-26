@@ -15,7 +15,7 @@ public class AfterDecodingPart : MonoBehaviour
     private TextField sender;
     private GameObject button_DecodeSave;
 
-    private void Start()
+    private void Awake()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 
