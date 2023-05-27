@@ -31,10 +31,6 @@ public class ScreenManager : MonoBehaviour
     public AnimationController bootAnimation;   //부팅 애니메이션
     public float logoOnSeconds;     //로고 이미지 활성 시간
 
-    /// 업무 관리 데이터 <(업무명, 스테이지), 완료 여부>
-    public Dictionary<Tuple<string, int>, bool> works;
-
-
     /// 스크린 모드
     public enum ScreenMode{
         Deactivate,

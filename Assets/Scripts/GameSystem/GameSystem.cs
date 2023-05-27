@@ -21,7 +21,7 @@ public class GameSystem : MonoBehaviour
     private string dailySavePath = "/Resources/GameData/Main/dailyData.json";   // 게임 데이터 파일 경로
 
     [SerializeField] 
-    public SaveData player;      // 세이브 데이터 핃드
+    public SaveData player;      // 세이브 데이터 필드
     public List<DailyData> daily;     // 날짜별 데이터 필드
     [SerializeField] 
     public DailyData todayData { get { return daily[player.dateIndex]; } }    // 오늘 날짜 데이터 필드
@@ -150,37 +150,5 @@ public class GameSystem : MonoBehaviour
         // SaveData로 파싱
         string jsonObjectData = Encoding.UTF8.GetString(data);
         player = JsonUtility.FromJson<SaveData>(jsonObjectData);
-    }
-
-    /// DailyData를 DailyWrapper로 Wrapping
-    private DailyWrapper WrapDailyData(DailyData data)
-    {
-        DailyWrapper resultWrapper = new DailyWrapper();
-
-        // 날짜 할당
-        resultWrapper.date = data.date;
-
-        // 업무 키, 데이터 리스트
-        resultWrapper.workDataKey = data.workData.Keys.ToList();
-        resultWrapper.workDataValue = data.workData.Values.ToList();
-
-        return resultWrapper;  
-    }
-
-    /// DailyWrapper를 DailyData로 UnWrapping
-    private DailyData WrapDailyData(DailyWrapper wrapper)
-    {
-        DailyData resultData = new DailyData();
-
-        // 날짜 할당
-        resultData.date= wrapper.date;
-
-        // 업무 키, 데이터 리스트로 딕셔너리 생성
-        resultData.workData = new Dictionary<string, int>();
-        for(int i = 0; i < wrapper.workDataKey.Count; i++)
-        {
-            resultData.workData.Add(wrapper.workDataKey[i], wrapper.workDataValue[i]);
-        }
-        return resultData;
     }
 }

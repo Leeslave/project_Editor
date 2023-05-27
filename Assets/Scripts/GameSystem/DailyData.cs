@@ -1,27 +1,64 @@
+using System;
 using System.Collections.Generic;
 
 public class DailyData
 {
     /**
-    * 하루 루틴동안의 게임 데이터
-    * json 로드를 위한 직렬화
+    * 하루 루틴동안의 인게임 데이터
     *   - 날짜 정보
     *   - 업무 - 스테이지번호 데이터    
     */
 
     public Date date;   // 날짜 정보     
-    public Dictionary<string, int> workData;    // 업무 정보 <업무명, 스테이지>
+    public Dictionary<Tuple<string, int>, bool> workData;    // 업무 정보 <업무명, 스테이지>
+
+    /// DailyData를 DailyWrapper로 Wrapping
+    private DailyWrapper WrapDailyData()
+    {
+        DailyWrapper resultWrapper = new DailyWrapper();
+
+        // 날짜 할당
+        resultWrapper.date = date;
+
+        // 업무 키, 데이터 리스트
+        foreach (var elem in workData)
+        {
+            resultWrapper.workList.Add(elem.Key.Item1);
+            resultWrapper.workStageList.Add(elem.Key.Item2);
+        }
+
+        return resultWrapper;  
+    }
+
+    /// DailyWrapper를 DailyData로 UnWrapping
+    private DailyData WrapDailyData(DailyWrapper wrapper)
+    {
+        DailyData resultData = new DailyData();
+
+        // 날짜 할당
+        resultData.date= wrapper.date;
+
+        // 업무 키, 데이터 리스트로 딕셔너리 생성
+        resultData.workData = new Dictionary<Tuple<string, int>, bool>();
+        for(int i = 0; i < wrapper.workList.Count; i++)
+        {
+            resultData.workData.Add(new Tuple<string, int>(wrapper.workList[i], wrapper.workStageList[i]), false);
+        }
+        return resultData;
+    }
     
 }
 
 [System.Serializable]
 class DailyWrapper
 { 
-    /** 하루 데이터 Wrapper
+    /** 
+    * 하루 데이터 Wrapper
+        저장되는 데이터 Wrap
     */
     public Date date;
-    public List<string> workDataKey;
-    public List<int> workDataValue;
+    public List<string> workList;
+    public List<int> workStageList;
 }
 
 [System.Serializable]
