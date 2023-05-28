@@ -19,6 +19,21 @@ public class TabManager_M : MonoBehaviour
         for(int i = 0; i < 4; i++) Tabs_M[i] = Tabs[i].GetComponent<Tab_M>();
     }
 
+    private void OnEnable()
+    {
+        for(int i = 3; i >= 1; i++)
+        {
+            if (Tabs[i].activeSelf) DeleteTab(i);
+        }
+        if(Texts[0].text != "Main")
+        {
+            Texts[0].text = "Main";
+            Tabs_M[0].ChangeFolder(null);
+            Tabs_M[0].ClickByOther();
+        }
+
+    }
+
     public bool AddTab()
     {
         Texts[ActiveTab].text = "Main";

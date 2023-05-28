@@ -8,14 +8,21 @@ public class Searching_M : MonoBehaviour
     public DB_M DB;
     public TMP_InputField Name;
     public TMP_InputField Key;
-    public SpriteRenderer Image;
-    public Animator ImageAnim;
+    public GameObject Search;
+    public GameObject Imagee;
+    public GameObject Success;
     public GameObject[] Progress;
     public TMP_Text Text;
-    public Sprite Warning;
+    public GameObject Searching;
+    public GameObject Portal;
+    public InfChange Inf;
+    public GameObject Detail;
 
 
     private PeopleIndex FindPeople;
+    int ErrorCount = 3;
+    bool IsError = false;
+    bool IsInput = false;
 
 
     string[] Out =
@@ -40,17 +47,52 @@ public class Searching_M : MonoBehaviour
         2.5f
     };
 
+    private void OnEnable()
+    {
+        Name.text = "";
+        Key.text = "";
+        Portal.SetActive(true);
+        Searching.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (IsInput)
+        {
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                if (IsError)
+                {
+                    Searching.SetActive(false);
+                    Portal.SetActive(true);
+                    IsError = false;
+                }
+                else
+                {
+                    Detail.gameObject.SetActive(true);
+                    Inf.ChangeInf(FindPeople);
+                    gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
     public void SearchStart()
     {
+        foreach (GameObject a in Progress) a.SetActive(false);
+        Search.SetActive(true);
+        Success.SetActive(false);
+        Imagee.SetActive(false);
         StartCoroutine(EA());
         StartCoroutine(BA());
     }
 
     void FindingError()
     {
-        Image.sprite = Warning;
-        ImageAnim.SetBool("Error", true);
-        Text.text = "Information mismatch!";
+        Search.SetActive(false);
+        Imagee.SetActive(true);
+        Text.text = "Information mismatch! Enter To Continue";
+        IsError = true;
     }
 
     IEnumerator EA()
@@ -71,7 +113,13 @@ public class Searching_M : MonoBehaviour
                 }
             }
         }
-        if(i == Out.Length-1)Text.text = Out[7];
+        if (i == Out.Length - 1)
+        {
+            Success.SetActive(true);
+            Search.SetActive(false);
+            Text.text = Out[7];
+        }
+        IsInput = true;
     }
     IEnumerator BA()
     {

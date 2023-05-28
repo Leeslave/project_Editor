@@ -41,15 +41,6 @@ public class InfChange : MonoBehaviour
     Peoples PeopleList;
     PeopleIndex CurPeople;
 
-    void Awake()
-    {
-        TextAsset textAsset = Resources.Load<TextAsset>("Manipulation/People");
-        PeopleList = JsonUtility.FromJson<Peoples>(textAsset.text);
-        foreach (PeopleIndex a in PeopleList.PL) FaceImages.Add(a.name_e,Resources.LoadAll<Sprite>("Manipulation/" + a.name_e));
-        /*CurPeople = PeopleList.PL[2];*/
-        /*ChangeInf(CurPeople);*/
-    }
-
     public void TouchManager(GameObject cnt, int Type)
     {
         switch (Type)
@@ -78,7 +69,7 @@ public class InfChange : MonoBehaviour
                     {
                         Drager.name = CurFile.transform.GetSiblingIndex().ToString();
                         Drager_Image.transform.GetChild(1).GetComponent<Image>().sprite
-                            = FaceImages[CurPeople.name_e][CurFile.transform.GetSiblingIndex()];
+                            = DB.FaceImages[CurPeople.name_e][CurFile.transform.GetSiblingIndex()];
                         Drager_Image.SetActive(true);
                     }
                     CurFile = null;
@@ -133,13 +124,13 @@ public class InfChange : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < FaceImages[CurPeople.name_e].Length; i++)
+            for (int i = 0; i < DB.FaceImages[CurPeople.name_e].Length; i++)
             {
                 cnt = Faces.transform.GetChild(i).gameObject;
                 cnt.SetActive(true);
                 cnt.name = $"Face{i+1}";
                 cnt.transform.GetChild(2).GetComponent<TMP_Text>().text = $"Face{i + 1}";
-                cnt.transform.GetChild(1).GetComponent<Image>().sprite = FaceImages[CurPeople.name_e][i];
+                cnt.transform.GetChild(1).GetComponent<Image>().sprite = DB.FaceImages[CurPeople.name_e][i];
             }
             Faces.SetActive(true);
         }
@@ -164,21 +155,20 @@ public class InfChange : MonoBehaviour
 
     public void ChangeInf(PeopleIndex FindPeople)
     {
+        CurPeople = FindPeople;
         Name.text = "name : " + FindPeople.name_k;
         Age.text = "Age : " + FindPeople.age;
         Sex.text = "Sex : " + FindPeople.sex;
         Country.text = "Country : " + FindPeople.country;
         Job.text = "Job : " + FindPeople.job;
-        Face.sprite = FaceImages[FindPeople.name_e][FaceNum];
+        Face.sprite = DB.FaceImages[FindPeople.name_e][FaceNum];
     }
 
     public void SaveChange()
     {
-        var s = Country.transform.GetChild(0).GetComponent<TMP_Text>().text.Split(' ');
-        CurPeople.country = s[s.Length-1];
-        s = Job.transform.GetChild(0).GetComponent<TMP_Text>().text.Split(' ');
-        CurPeople.job = s[s.Length - 1];
-        CurPeople.face = FaceNum;
+        var s = Country.text.Split(' ');
+        var s2 = Job.text.Split(' ');
+        DB.ChangeInfo(CurPeople.name_e, s[s.Length - 1], s2[s2.Length-1],CurPeople.face-1);
     }
 
     public bool IsTouchAble() { return TouchAble; }
