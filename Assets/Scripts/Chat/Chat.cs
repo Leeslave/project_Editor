@@ -143,7 +143,7 @@ public class Chat : MonoBehaviour
             if (data[currentLineNumber - 1]["ChatType"].ToString() == "TD")
             {
                 m_SRTConverter.StopPrintingTMPUGUI(dialog);
-                dialog.SetText(data[currentLineNumber - 1]["Dialog"].ToString());
+                m_SRTConverter.PrintTMPUGUIByDuration(0.0f, data[currentLineNumber - 1]["Dialog"].ToString(), dialog);
             }
         }
         else
