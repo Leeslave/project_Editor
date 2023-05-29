@@ -10,9 +10,9 @@ public class GameSystem : MonoBehaviour
 {
     /**
     * 게임 내 데이터 관리 시스템
-    * 플레이어 데이터를 저장, 로드
-    * 게임 데이터를 로드, 관리
-    * 날짜, 시간대, 진행상황 적용
+        플레이어 데이터를 저장, 로드
+        게임 데이터를 로드, 관리
+        날짜, 시간대, 진행상황 적용
     */
 
     [SerializeField]
@@ -110,8 +110,8 @@ public class GameSystem : MonoBehaviour
 
         // Wrapper를 DailyData로 전환
         foreach(DailyWrapper element in wrapper.dailyDataList)
-        {
-            daily.Add(WrapDailyData(element));
+        { 
+            daily.Add(new DailyData(element));
         }
     }
 

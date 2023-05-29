@@ -12,10 +12,9 @@ public class ScreenManager : MonoBehaviour
         - 전원 켜기 (부팅 애니메이션)
         - 전원 끄기 (한번 더 눌러서 전원 끔)
         - 리셋 버튼 (초기화 밑 재부팅)
-    *   업무 착수 및 관리
-        - 당일 할당된 업무들 플레이
-    *   메일 및 기타 PC 업무
-    *   업무 완료 확인 후 종료 (시간대 이동)
+    *   데스크탑 상호작용 기능
+        - TaskManager 
+        - MailManager
     */
     
     public WorldCanvas worldObject;   //스크린이 활성화 된 world
@@ -53,7 +52,6 @@ public class ScreenManager : MonoBehaviour
         {
             _instance = this;
             bootCLI = bootPanel.transform.GetChild(1).gameObject;
-            bootCLI.GetComponent<Text>().text = "";
         }
         else
         {
@@ -61,27 +59,17 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
+    /// 스크린 초기 상태 설정
     /// 컴포넌트 설정, 부팅 초기값 off
     void Start() 
     {
         /// 부팅 대기 화면으로 설정
         desktop.SetActive(false);
         bootPanel.SetActive(true);
+        bootCLI.GetComponent<Text>().text = "";
         bootCLI.SetActive(false);
 
         currentBootStatus = ScreenMode.Off;
-    }
-
-    /// TODO: 오늘 업무 불러오기 및 초기화
-    public void GetWorks()
-    {
-
-    }
-
-    /// TODO: 업무 입력시 해당 업무 시작, 씬 이동
-    public void OnWorkEnter()
-    {
-
     }
 
     /// <summary>

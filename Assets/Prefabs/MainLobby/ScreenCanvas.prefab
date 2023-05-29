@@ -140,7 +140,19 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4273214252734753585}
+        m_TargetAssemblyTypeName: TaskManager, Assembly-CSharp
+        m_MethodName: OnWorkEnter
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -1061,8 +1073,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worldObject: {fileID: 0}
   screen: {fileID: 3991088266743864805}
-  bootPanel: {fileID: 3991088268743153919}
   desktop: {fileID: 3991088267888744400}
+  bootPanel: {fileID: 3991088268743153919}
   bootAnimation: {fileID: 1767026123508570286}
   logoOnSeconds: 1
 --- !u!1 &3991088267522730266
@@ -1280,7 +1292,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34.15
+  m_fontSize: 23.8
   m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1549,7 +1561,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 34.15
+  m_fontSize: 23.8
   m_fontSizeBase: 23.15
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2982,7 +2994,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7130885962493533214, guid: f5fa9e3046f534347b859d6dc0c8e447, type: 3}
       propertyPath: m_fontSize
-      value: 16.1
+      value: 11.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5fa9e3046f534347b859d6dc0c8e447, type: 3}
@@ -3005,6 +3017,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   taskConsoleAnimation: {fileID: 6741999561648299640}
   taskClear: 0
+  consoleInput: {fileID: 3311262721884168026}
 --- !u!224 &3991088267397771957 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7130885960824092625, guid: f5fa9e3046f534347b859d6dc0c8e447, type: 3}

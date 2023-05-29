@@ -13,7 +13,7 @@ public class DailyData
     public Dictionary<Tuple<string, int>, bool> workData;    // 업무 정보 <업무명, 스테이지>
 
     /// DailyData를 DailyWrapper로 Wrapping
-    private DailyWrapper WrapDailyData()
+    public DailyWrapper WrapDailyData()
     {
         DailyWrapper resultWrapper = new DailyWrapper();
 
@@ -31,26 +31,23 @@ public class DailyData
     }
 
     /// DailyWrapper를 DailyData로 UnWrapping
-    private DailyData WrapDailyData(DailyWrapper wrapper)
+    public DailyData(DailyWrapper wrapper)
     {
-        DailyData resultData = new DailyData();
-
         // 날짜 할당
-        resultData.date= wrapper.date;
+        date= wrapper.date;
 
         // 업무 키, 데이터 리스트로 딕셔너리 생성
-        resultData.workData = new Dictionary<Tuple<string, int>, bool>();
+        workData = new Dictionary<Tuple<string, int>, bool>();
         for(int i = 0; i < wrapper.workList.Count; i++)
         {
-            resultData.workData.Add(new Tuple<string, int>(wrapper.workList[i], wrapper.workStageList[i]), false);
+            workData.Add(new Tuple<string, int>(wrapper.workList[i], wrapper.workStageList[i]), false);
         }
-        return resultData;
     }
     
 }
 
 [System.Serializable]
-class DailyWrapper
+public class DailyWrapper
 { 
     /** 
     * 하루 데이터 Wrapper
