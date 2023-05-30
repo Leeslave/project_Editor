@@ -19,7 +19,17 @@ public class TaskManager : MonoBehaviour
     [SerializeField]
     List<Tuple<string, string>> workCodes = new List<Tuple<string, string>>();
     public AnimationController taskConsoleAnimation;
-    public bool taskClear = false;
+    public bool taskClear
+    {
+        get { 
+            bool taskResult = true;
+            foreach(var isClear in GameSystem.Instance.todayData.workData.Values)
+            {
+                taskResult = taskResult & isClear;
+            }
+            return taskResult;
+        }
+    }
     public TMP_InputField consoleInput;
 
     ///////// 업무 코드명 /////////
