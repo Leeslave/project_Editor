@@ -62,9 +62,9 @@ public class Chat : MonoBehaviour
         m_PopUp_Remind = transform.GetChild(5).gameObject;
         m_PopUp_Choice = transform.GetChild(6).gameObject;
 
-        speaker = m_SpeechBalloon.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
-        belong = m_SpeechBalloon.transform.GetChild(4).GetComponent<TextMeshProUGUI>();
-        dialog = m_SpeechBalloon.transform.GetChild(5).GetComponent<TextMeshProUGUI>();
+        speaker = m_SpeechBalloon.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        belong = m_SpeechBalloon.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+        dialog = m_SpeechBalloon.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
 
         m_Button_Choice_0 = m_PopUp_Choice.transform.GetChild(1).gameObject;
         m_Button_Choice_1 = m_PopUp_Choice.transform.GetChild(2).gameObject;
@@ -177,9 +177,9 @@ public class Chat : MonoBehaviour
         //캔버스 강제 업데이트
         Canvas.ForceUpdateCanvases();
         //Speaker의 길이에 따라 Belong위치 조정
-        float newPosX = one.GetComponentsInChildren<RectTransform>()[4].transform.localPosition.x + one.GetComponentsInChildren<RectTransform>()[4].rect.width + 20;
-        float newPosY = one.GetComponentsInChildren<RectTransform>()[5].transform.localPosition.y;
-        one.GetComponentsInChildren<RectTransform>()[5].transform.localPosition = new Vector3(newPosX, newPosY, 0);
+        float newPosX = one.GetComponentsInChildren<RectTransform>()[2].transform.localPosition.x + one.GetComponentsInChildren<RectTransform>()[2].rect.width + 20;
+        float newPosY = one.GetComponentsInChildren<RectTransform>()[3].transform.localPosition.y;
+        one.GetComponentsInChildren<RectTransform>()[3].transform.localPosition = new Vector3(newPosX, newPosY, 0);
         //줄 프리펩을 다시보기 창 스크롤 영역에 추가
         one.transform.SetParent(m_PopUp_Remind.transform.Find("Viewport").transform.Find("Content"));
         //아무튼 필요했나 봄

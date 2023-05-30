@@ -185,7 +185,7 @@ PrefabInstance:
     - target: {fileID: 6618409151156959060, guid: fbadd2337f7c48543a6e9b8951dc298d, type: 3}
       propertyPath: chat_ADFGVX
       value: 
-      objectReference: {fileID: 939126205}
+      objectReference: {fileID: 2009856550}
     - target: {fileID: 6618409151156959060, guid: fbadd2337f7c48543a6e9b8951dc298d, type: 3}
       propertyPath: currentmode
       value: 1
@@ -451,7 +451,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 939126203}
+  - {fileID: 2009856549}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -517,36 +517,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5045089744459364239, guid: 7c497c31291ff0a4b90d922be4335b34, type: 3}
+    - {fileID: 7750893876913909591, guid: 7c497c31291ff0a4b90d922be4335b34, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7c497c31291ff0a4b90d922be4335b34, type: 3}
---- !u!4 &939126203 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5045089744459364238, guid: 7c497c31291ff0a4b90d922be4335b34, type: 3}
-  m_PrefabInstance: {fileID: 939126202}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &939126204 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5045089744459364233, guid: 7c497c31291ff0a4b90d922be4335b34, type: 3}
-  m_PrefabInstance: {fileID: 939126202}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &939126205
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 939126204}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9834ae48dce18cf44a389b3fb35049b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  StartingCSVFileName: DecodeChiper_0
-  Delay: 0.2
-  PlayOnAwake: 0
-  PlayAsTutorial: 1
-  RemindLine: {fileID: 7604379533932318895, guid: bb0968b6c1914d7459c1f80ee8513c98, type: 3}
-  RemindParagraph: {fileID: 1815825206389876201, guid: 1fb999dff6d39bd41b4cd42824b8f135, type: 3}
-  GameManager: {fileID: 94239731}
 --- !u!1 &1715774317
 GameObject:
   m_ObjectHideFlags: 0
@@ -591,3 +563,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4d1a4218b2a5c44589f92e7eeba5558, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2009856548 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7750893876913909585, guid: 7c497c31291ff0a4b90d922be4335b34, type: 3}
+  m_PrefabInstance: {fileID: 939126202}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2009856549 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7750893876913909590, guid: 7c497c31291ff0a4b90d922be4335b34, type: 3}
+  m_PrefabInstance: {fileID: 939126202}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2009856550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2009856548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9834ae48dce18cf44a389b3fb35049b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StartingCSVFileName: DecodeChiper_0
+  Delay: 0.2
+  PlayOnAwake: 0
+  PlayAsTutorial: 1
+  RemindLine: {fileID: 7604379533932318895, guid: bb0968b6c1914d7459c1f80ee8513c98, type: 3}
+  RemindParagraph: {fileID: 1815825206389876201, guid: 1fb999dff6d39bd41b4cd42824b8f135, type: 3}
+  GameManager: {fileID: 94239731}
