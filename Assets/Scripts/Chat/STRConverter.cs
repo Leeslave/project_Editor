@@ -562,4 +562,25 @@ public class STRConverter : MonoBehaviour
         m_TransformPosCoroutines[targetTransform] = StartCoroutine(ConvertTransformPos_IE(duration, startTime, endPos, startPos, targetTransform));
     }
 
+
+
+    public void FillPercentage(float endTime, TextMeshPro targetTMP)
+    {
+        StartCoroutine(FillPercentage_IE(endTime, 0, targetTMP));
+    }
+
+    private IEnumerator FillPercentage_IE(float endTime, float currentendTime, TextMeshPro targetTMP)
+    {
+        currentendTime += endTime / 100;
+        if (currentendTime > endTime)
+            yield break;
+
+        targetTMP.text = Mathf.CeilToInt(currentendTime / endTime * 100).ToString() + "%";
+
+        yield return new WaitForSeconds(endTime / 100);
+        StartCoroutine(FillPercentage_IE(endTime, currentendTime, targetTMP));
+    }
+
+
+
 }

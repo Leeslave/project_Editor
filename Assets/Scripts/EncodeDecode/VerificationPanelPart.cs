@@ -10,10 +10,10 @@ public class VerificationPanelPart : MonoBehaviour
 
     private SpriteRenderer panelBackgroundSprite_D;
     private SpriteRenderer panelGuideSprite;
-    private TextField title;
-    private TextField result;
-    private TextField percentageInfo;
-    private TextField percentage;
+    private TextMeshPro title;
+    private TextMeshPro result;
+    private TextMeshPro percentageInfo;
+    private TextMeshPro percentage;
     private Gauge gauge;
     private Log log;
     private Button_ADFGVX_QuitVerificationPanel quit;
@@ -24,10 +24,10 @@ public class VerificationPanelPart : MonoBehaviour
 
         panelBackgroundSprite_D = transform.GetChild(2).GetComponent<SpriteRenderer>();
         panelGuideSprite = transform.GetChild(3).GetComponent<SpriteRenderer>();
-        title = transform.GetChild(4).GetComponent<TextField>();
-        result = transform.GetChild(5).GetComponent<TextField>();
-        percentageInfo = transform.GetChild(6).GetComponent<TextField>();
-        percentage = transform.GetChild(7).GetComponent<TextField>();
+        title = transform.GetChild(4).GetComponent<TextMeshPro>();
+        result = transform.GetChild(5).GetComponent<TextMeshPro>();
+        percentageInfo = transform.GetChild(6).GetComponent<TextMeshPro>();
+        percentage = transform.GetChild(7).GetComponent<TextMeshPro>();
         gauge = transform.GetChild(8).GetComponent<Gauge>();
         log = transform.GetChild(9).GetComponent<Log>();
         quit = transform.GetChild(10).GetComponent<Button_ADFGVX_QuitVerificationPanel>();
@@ -75,30 +75,39 @@ public class VerificationPanelPart : MonoBehaviour
             yield break;
         }
 
+        //파트 가시
+        VisiblePart();
+
         adfgvx.InformUpdate("복호화 무결성 검증 작업 개시…");
 
-        //연출
-        title.SetSizeTextOnly(new Vector2(1,1));
-        title.SetTextColor(Color.white);
-        title.SetText("복호화 무결성 검증 진행 중…");
+        //제목 연출
+        adfgvx.GetSTRConverter().ConvertTMPFontSize(0f, 117.5f, title);
+        adfgvx.GetSTRConverter().ConvertTMPColor(0f, Color.white, title);
+        adfgvx.GetSTRConverter().PrintTMPByDuration(0f, "복호화 무결성 검증 진행 중…", title);
+
+
+
         panelBackgroundSprite_D.size = new Vector2(231.8f, 46.3f);
         panelGuideSprite.size = new Vector2(57.9f, 11.7f);
         gauge.VisibleGaugeImediately();
-        percentage.SetTextColor(Color.white);
-        percentageInfo.SetTextColor(Color.white);
-        result.SetTextColor(Color.clear);
+
+
+
+        adfgvx.GetSTRConverter().ConvertTMPColor(0f, Color.white, percentage);
+        adfgvx.GetSTRConverter().FillPercentage(3f, percentage);
+        
+        adfgvx.GetSTRConverter().ConvertTMPColor(0f, Color.white, percentageInfo);
+        adfgvx.GetSTRConverter().ConvertTMPColor(0f, Color.clear, result);
+        
+        
         log.SetColorText(Color.white);
         gauge.FillGaugeBar(3.0f, new Color(0.13f, 0.67f, 0.28f, 1));
-        percentage.FillPercentage(3.0f);
 
         //걸린 시간
         float totalElaspedTime = adfgvx.GetTotalElapsedTime();
 
         //입력 차단
         adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
-
-        //파트 가시
-        VisiblePart();
 
         //로그 파일 경로
         string filePath = adfgvx.ReturnDecodeScore() ? "DecodeSuccess" : "DecodeFail";
@@ -107,44 +116,47 @@ public class VerificationPanelPart : MonoBehaviour
         //오디오 재생
         adfgvx.PlayAudioSource(ADFGVX.Audio.DataProcessing);
 
-        //연출
+        //대기
         yield return new WaitForSeconds(4f);
-        title.ConvertSizeTextOnly(new Vector2(1.66f,1.66f), 1f);
-        percentage.ConvertColorTextOnly(1f, Color.clear);
-        percentageInfo.ConvertColorTextOnly(1f, Color.clear);
+        
+        //제목 연출
+        adfgvx.GetSTRConverter().ConvertTMPFontSize(0f, 173.5f, title);
+        adfgvx.GetSTRConverter().ConvertTMPColor(1f, Color.clear, percentageInfo);
+        adfgvx.GetSTRConverter().ConvertTMPColor(1f, Color.clear, percentage);
+
         gauge.UnvisibleGauge(1f);
         log.HideTextOnly(1f);
         
         //결과 정보
         string info;
-        string keword;
+        string keyword;
         string time;
         if (adfgvx.ReturnDecodeScore())
         {
-            title.SetText("데이터 복호화 작업 성공");
-            title.ConvertColorTextOnly(3f, new Color(0.1f, 0.35f, 0.85f, 1f));
+            adfgvx.GetSTRConverter().PrintTMPByDuration(0f, "데이터 복호화 작업 성공", title);
+            adfgvx.GetSTRConverter().ConvertTMPColor(3f, new Color(0.1f, 0.35f, 0.85f, 1f), title);
 
             info = "보안 등급 : " + adfgvx.encodeDataLoadPart.GetTextField_SecurityLevel().GetText() + " '" + adfgvx.encodeDataLoadPart.GetInputField_filePath().GetInputString() + "'을\n";
-            keword = "전치 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 복호화에 성공했습니다\n";
+            keyword = "전치 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 복호화에 성공했습니다\n";
         }
         else
         {
-            title.SetText("데이터 복호화 작업 실패");
-            title.ConvertColorTextOnly(3f, new Color(0.76f, 0.28f, 0.28f, 1f));
+            adfgvx.GetSTRConverter().PrintTMPByDuration(0f, "데이터 복호화 작업 실패", title);
+            adfgvx.GetSTRConverter().ConvertTMPColor(3f, new Color(0.76f, 0.28f, 0.28f, 1f), title);
 
             info = "보안 등급 : " + adfgvx.encodeDataLoadPart.GetTextField_SecurityLevel().GetText() + " '" + adfgvx.encodeDataLoadPart.GetInputField_filePath().GetInputString() + "'을\n";
-            keword = "전치 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 복호화에 실패했습니다\n";
+            keyword = "전치 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 복호화에 실패했습니다\n";
         }
         time = "총 작업 시간 : " + Mathf.FloorToInt(totalElaspedTime / 60).ToString("D2") + ":" + Mathf.FloorToInt(totalElaspedTime % 60).ToString("D2");
 
-        ConvertSpriteSize(new Vector2(231.8f, 57.6f), panelBackgroundSprite_D, 1f);
-        ConvertSpriteSize(new Vector2(57.9f, 14.6f), panelGuideSprite, 1f);
+        adfgvx.GetSTRConverter().ConvertSpriteRendererSize(1f, new Vector2(231.8f, 57.6f), panelBackgroundSprite_D);
+        adfgvx.GetSTRConverter().ConvertSpriteRendererSize(1f, new Vector2(57.9f, 14.6f), panelGuideSprite);
 
         //결과 안내
         yield return new WaitForSeconds(1.5f);
-        result.SetTextColor(Color.white);
-        result.SetText("");
-        result.FlowText(info + keword + time, 3f);
+
+        adfgvx.GetSTRConverter().ConvertTMPColor(0f, Color.white, result);
+        adfgvx.GetSTRConverter().PrintTMPByDuration(3f, info + keyword + time, result);
 
         //오디오 재생
         adfgvx.SoundFlow(30, 3f);
@@ -191,30 +203,35 @@ public class VerificationPanelPart : MonoBehaviour
             yield break;
         }
 
+        //파트 가시
+        VisiblePart();
+
         adfgvx.InformUpdate("암호화 무결성 검증 작업 개시…");
 
         //연출
-        title.SetSizeTextOnly(new Vector2(1, 1));
-        title.SetTextColor(Color.white);
-        title.SetText("암호화 무결성 검증 진행 중…");
+        adfgvx.GetSTRConverter().ConvertTMPFontSize(0f, 117.5f, title);
+        adfgvx.GetSTRConverter().ConvertTMPColor(0f, Color.white, title);
+        adfgvx.GetSTRConverter().PrintTMPByDuration(0f, "암호화 무결성 검증 진행 중…", title);
+
         panelBackgroundSprite_D.size = new Vector2(231.8f, 46.3f);
         panelGuideSprite.size = new Vector2(57.9f, 11.7f);
         gauge.VisibleGaugeImediately();
-        percentage.SetTextColor(Color.white);
-        percentageInfo.SetTextColor(Color.white);
-        result.SetTextColor(Color.clear);
+
+
+        adfgvx.GetSTRConverter().ConvertTMPColor(0f, Color.white, percentage);
+        adfgvx.GetSTRConverter().FillPercentage(3f, percentage);
+        
+        adfgvx.GetSTRConverter().ConvertTMPColor(0f, Color.white, percentageInfo);
+        adfgvx.GetSTRConverter().ConvertTMPColor(0f, Color.clear, result);
+        
         log.SetColorText(Color.white);
         gauge.FillGaugeBar(3f, new Color(0.13f, 0.67f, 0.28f, 1f));
-        percentage.FillPercentage(3f);
 
         //걸린 시간
         float totalElaspedTime = adfgvx.GetTotalElapsedTime();
 
         //입력 차단
         adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2);
-
-        //파트 가시
-        VisiblePart();
 
         //로그 파일 경로
         string filePath = adfgvx.ReturnEncodeScore() ? "EncodeSuccess" : "EncodeFail";
@@ -223,11 +240,15 @@ public class VerificationPanelPart : MonoBehaviour
         //오디오 재생
         adfgvx.PlayAudioSource(ADFGVX.Audio.DataProcessing);
 
-        //연출
+        //대기
         yield return new WaitForSeconds(4f);
-        title.ConvertSizeTextOnly(new Vector2(1.66f,1.66f), 1f);
-        percentage.ConvertColorTextOnly(1f, Color.clear);
-        percentageInfo.ConvertColorTextOnly(1f, Color.clear);
+        
+        //제목 연출
+        adfgvx.GetSTRConverter().ConvertTMPFontSize(0f, 173.5f, title);
+        adfgvx.GetSTRConverter().ConvertTMPColor(1f, Color.clear, percentageInfo);
+        adfgvx.GetSTRConverter().ConvertTMPColor(1f, Color.clear, percentage);
+
+
         gauge.UnvisibleGauge(1f);
         log.HideTextOnly(1f);
 
@@ -237,16 +258,16 @@ public class VerificationPanelPart : MonoBehaviour
         string time;
         if (adfgvx.ReturnEncodeScore())
         {
-            title.SetText("데이터 암호화 작업 성공");
-            title.ConvertColorTextOnly(3f, new Color(0.1f, 0.35f, 0.85f, 1f));
+            adfgvx.GetSTRConverter().PrintTMPByDuration(0f, "데이터 암호화 작업 성공", title);
+            adfgvx.GetSTRConverter().ConvertTMPColor(3f, new Color(0.1f, 0.35f, 0.85f, 1f), title);
 
             info = "보안 등급 : " + adfgvx.encodeDataSavePart.GetSecurityLevel() + " '" + adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() + "'을\n";
             keyword = "전치 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 암호화 하는데 성공했습니다\n";
         }
         else
         {
-            title.SetText("데이터 암호화 작업 실패");
-            title.ConvertColorTextOnly(3f, new Color(0.76f, 0.28f, 0.28f, 1f));
+            adfgvx.GetSTRConverter().PrintTMPByDuration(0f, "데이터 암호화 작업 실패", title);
+            adfgvx.GetSTRConverter().ConvertTMPColor(3f, new Color(0.76f, 0.28f, 0.28f, 1f), title);
 
             info = "보안 등급 : " + adfgvx.encodeDataSavePart.GetSecurityLevel() + " '" + adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() + "'을\n";
             keyword = "전치 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 암호화 하는데 실패했습니다\n";
@@ -254,14 +275,14 @@ public class VerificationPanelPart : MonoBehaviour
 
         time = "총 작업 시간 : " + Mathf.FloorToInt(totalElaspedTime / 60).ToString("D2") + ":" + Mathf.FloorToInt(totalElaspedTime % 60).ToString("D2");
         
-        ConvertSpriteSize(new Vector2(231.8f, 57.6f), panelBackgroundSprite_D, 1f);
-        ConvertSpriteSize(new Vector2(57.9f, 14.6f), panelGuideSprite, 1f);
+        adfgvx.GetSTRConverter().ConvertSpriteRendererSize(1f, new Vector2(231.8f, 57.6f), panelBackgroundSprite_D);
+        adfgvx.GetSTRConverter().ConvertSpriteRendererSize(1f, new Vector2(57.9f, 14.6f), panelGuideSprite);
 
         //결과 안내
         yield return new WaitForSeconds(1.5f);
-        result.SetText("");
-        result.SetTextColor(Color.white);
-        result.FlowText(info + keyword + time, 3f);
+
+        adfgvx.GetSTRConverter().ConvertTMPColor(0f, Color.white, result);
+        adfgvx.GetSTRConverter().PrintTMPByDuration(3f, info + keyword + time, result);
 
         //오디오 재생
         adfgvx.SoundFlow(30, 3f);
@@ -282,24 +303,5 @@ public class VerificationPanelPart : MonoBehaviour
         {
             adfgvx.SetPartLayerWaitForSec(0f, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 2);
         }
-    }
-
-    private void ConvertSpriteSize(Vector2 targetSize, SpriteRenderer target, float endTime)
-    {
-        StartCoroutine(ConvertSpriteSize_IE(target.size, target, targetSize, endTime, 0));
-    }
-
-    private IEnumerator ConvertSpriteSize_IE(Vector2 currentSize, SpriteRenderer target, Vector2 targetSize, float endTime, float currentTime)
-    {
-        currentTime += endTime / 100;
-        if (currentTime > endTime)
-            yield break;
-
-        float targetSizeX = currentSize.x + (targetSize.x - currentSize.x) * (currentTime / endTime);
-        float targetSizeY = currentSize.y + (targetSize.y - currentSize.y) * (currentTime / endTime);
-        target.size = new Vector2(targetSizeX, targetSizeY);
-
-        yield return new WaitForSeconds(endTime / 100);
-        StartCoroutine(ConvertSpriteSize_IE(target.size, target, targetSize, endTime, currentTime));
     }
 }

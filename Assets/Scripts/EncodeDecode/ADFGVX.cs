@@ -44,8 +44,12 @@ public class ADFGVX : MonoBehaviour
 
     private float totalElapsedTime;
 
+    private STRConverter m_STRConverter;
+
     private void Awake()
     {
+        m_STRConverter = FindObjectOfType<STRConverter>();
+
         //현재 모드에 따라 창 배치
         if (CurrentMode == mode.Decoding)
         {
@@ -198,7 +202,10 @@ public class ADFGVX : MonoBehaviour
 
 
 
-
+    public STRConverter GetSTRConverter()
+    {
+        return m_STRConverter;
+    }
 
 
 
