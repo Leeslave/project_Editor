@@ -5,9 +5,10 @@ using TMPro;
 
 public class Button_Game : MonoBehaviour
 {
-    private TextMeshPro markText;
+    private STRConverter m_STRConverter;
+    private TextMeshPro m_TMP;
     private SpriteRenderer guideSprite;
-    private SpriteRenderer clickSprite;
+    private SpriteRenderer m_ClickSpriteRenderer;
     
     [Header("Enter Color")]
     public Color Enter;
@@ -21,24 +22,15 @@ public class Button_Game : MonoBehaviour
     //커서 오버 여부
     private bool isCursorOver;
 
-    //버튼 색 전환 코루틴 - 색 전환 중단 용
-    private Coroutine colorConvertCoroutine;
-
     protected virtual void Awake()
     {
-        Init();
-    }
+        m_STRConverter = FindObjectOfType<STRConverter>();
 
-    protected void Init()
-    {
-        if (transform.Find("MarkText") != null)
-            markText = transform.Find("MarkText").GetComponent<TextMeshPro>();
-        if (transform.Find("GuideSprite") != null)
-            guideSprite = transform.Find("GuideSprite").GetComponent<SpriteRenderer>();
-        if (transform.Find("ClickSprite") != null)
-            clickSprite = transform.Find("ClickSprite").GetComponent<SpriteRenderer>();
+        m_TMP = transform.GetChild(0).GetComponent<TextMeshPro>();
+        guideSprite = transform.GetChild(1).GetComponent<SpriteRenderer>();
+        m_ClickSpriteRenderer = transform.GetChild(2).GetComponent<SpriteRenderer>();
 
-        SetClickSpriteColor(Exit);
+        m_ClickSpriteRenderer.color = Exit;
         SetIsCursorOver(false);
     }
 
@@ -50,51 +42,44 @@ public class Button_Game : MonoBehaviour
     protected virtual void OnMouseDown()//버튼 다운
     {
         if (GetIsCursorOver())
-            ConvertClickSpriteColor(Down);
+            m_STRConverter.ConvertSpriteRendererColor(0f, Down, m_ClickSpriteRenderer);
         else
-            ConvertClickSpriteColor(Exit);
+            m_STRConverter.ConvertSpriteRendererColor(0.2f, Exit, m_ClickSpriteRenderer);
     }
 
     protected virtual void OnMouseUp()//버튼 업
     {
         if (GetIsCursorOver())
-            ConvertClickSpriteColor(Up);
+            m_STRConverter.ConvertSpriteRendererColor(0.2f, Up, m_ClickSpriteRenderer);
         else
-            ConvertClickSpriteColor(Exit);
+            m_STRConverter.ConvertSpriteRendererColor(0.2f, Exit, m_ClickSpriteRenderer);
     }
 
     protected virtual void OnMouseEnter()//마우스 엔터
     {
         SetIsCursorOver(true);
-        SetClickSpriteColor(Enter);
+        m_STRConverter.ConvertSpriteRendererColor(0f, Enter, m_ClickSpriteRenderer);
     }
 
     protected virtual void OnMouseExit()//마우스 엑시트
     {
         SetIsCursorOver(false);
-        ConvertColorSprite(clickSprite, 1, Exit);
+        m_STRConverter.ConvertSpriteRendererColor(0.2f, Exit, m_ClickSpriteRenderer);
     }
 
-    public void ConvertClickSpriteColor(Color value)
+    public SpriteRenderer GetClickSprite()
     {
-        ConvertColorSprite(clickSprite, 1, value);
+        return m_ClickSpriteRenderer;
     }
 
-    public void SetMarkText(string value)//MarkText값 설정
+    protected STRConverter GetSTRConverter()
     {
-        markText.text = value;
+        return m_STRConverter;
     }
 
-    public string GetMarkText()//MarkText값 반환
+    public TextMeshPro GetTMP()
     {
-        return markText.text;
-    }
-
-    public void SetClickSpriteColor(Color value)//
-    {
-        if (colorConvertCoroutine != null)
-            StopCoroutine(colorConvertCoroutine);
-        clickSprite.color = value;
+        return m_TMP;
     }
 
     public bool GetIsCursorOver()//IsCursorOver값 반환
@@ -105,28 +90,5 @@ public class Button_Game : MonoBehaviour
     public void SetIsCursorOver(bool value)//IsCursorOver값 설정
     {
         isCursorOver = value;
-    }
-
-    private void ConvertColorSprite(SpriteRenderer target, float endTime, Color targetValue)
-    {
-        if(colorConvertCoroutine!=null)
-           StopCoroutine(colorConvertCoroutine);
-        colorConvertCoroutine =  StartCoroutine(ConvertColorSprite_IE(target, endTime, 0, targetValue));
-    }
-
-    private IEnumerator ConvertColorSprite_IE(SpriteRenderer target, float endTime, float currentTime, Color targetValue)
-    {
-        currentTime += endTime / 100;
-        if (currentTime > endTime)
-            yield break;
-
-        float target_r = target.color.r + (targetValue.r - target.color.r) * (currentTime / endTime);
-        float target_g = target.color.g + (targetValue.g - target.color.g) * (currentTime / endTime);
-        float target_b = target.color.b + (targetValue.b - target.color.b) * (currentTime / endTime);
-        float target_a = target.color.a + (targetValue.a - target.color.a) * (currentTime / endTime);
-        target.color = new Color(target_r, target_g, target_b, target_a);
-
-        yield return new WaitForSeconds(endTime / 100);
-        colorConvertCoroutine = StartCoroutine(ConvertColorSprite_IE(target, endTime, currentTime, targetValue));
     }
 }

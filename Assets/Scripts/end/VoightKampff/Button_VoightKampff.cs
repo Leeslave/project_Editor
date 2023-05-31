@@ -8,7 +8,7 @@ public class Button_VoightKampff : Button_Game
 
     protected override void Awake()
     {
+        base.Awake();
         GameManager = GameObject.Find("GameManager").GetComponent<GameManager_VoightKampff>();
-        Init();
     }
 }

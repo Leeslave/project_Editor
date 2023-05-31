@@ -109,7 +109,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             if (rowButtons[i].Selected == true && i != row)
             {
                 rowButtons[i].Selected = false;
-                rowButtons[i].ConvertClickSpriteColor(rowButtons[i].Exit);
+                adfgvx.GetSTRConverter().ConvertSpriteRendererColor(1f, rowButtons[i].Exit, rowButtons[i].GetClickSprite());
             }
         }
 
@@ -117,7 +117,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         {
             rowButtons[decodeRow].Selected = false;
             lineButtons[decodeLine].Selected = false;
-            lineButtons[decodeLine].ConvertClickSpriteColor(lineButtons[decodeLine].Exit);
+            adfgvx.GetSTRConverter().ConvertSpriteRendererColor(1f, lineButtons[decodeLine].Exit, lineButtons[decodeLine].GetClickSprite());
 
             //튜토리얼 관련 코드
             if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
@@ -200,7 +200,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             if (lineButtons[i].Selected == true && i != line)
             {
                 lineButtons[i].Selected = false;
-                lineButtons[i].ConvertClickSpriteColor(lineButtons[i].Exit);
+                adfgvx.GetSTRConverter().ConvertSpriteRendererColor(1f, lineButtons[i].Exit, lineButtons[i].GetClickSprite());
             }
         }
 
@@ -208,7 +208,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         {
             lineButtons[decodeLine].Selected = false;
             rowButtons[decodeRow].Selected = false;
-            rowButtons[decodeRow].ConvertClickSpriteColor(rowButtons[decodeRow].Exit);
+            adfgvx.GetSTRConverter().ConvertSpriteRendererColor(1f, rowButtons[decodeRow].Exit, rowButtons[decodeRow].GetClickSprite());
 
             //튜토리얼 관련 코드
             if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
@@ -302,7 +302,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         {
             for (int j = 0; j < 6; j++)
             {
-                elementButtons[i * 6 + j].SetMarkText(value[i * 6 + j].ToString());
+                elementButtons[i * 6 + j].GetTMP().text = value[i * 6 + j].ToString();
             }
         }
     }

@@ -56,6 +56,6 @@ public class EncodeDataSavePart : MonoBehaviour
 
     public string GetSecurityLevel()//보안 등급 반환
     {
-        return securityLevel.GetMarkText();
+        return securityLevel.GetTMP().text.ToString();
     }
 }

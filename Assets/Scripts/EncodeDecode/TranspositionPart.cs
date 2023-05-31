@@ -296,7 +296,7 @@ public class TranspositionPart : MonoBehaviour
     {
         flowLine = 0;
         InvokeRepeating("printFlowLine", 0.0f, 0.1f);
-        keyword.SetMarkText(keyword.GetInputString());
+        keyword.GetTMP().text = keyword.GetInputString();
     }
 
     private void printFlowLine()//2차원 열 출력

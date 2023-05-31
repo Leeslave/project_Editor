@@ -120,7 +120,7 @@ public class VerificationPanelPart : MonoBehaviour
         yield return new WaitForSeconds(4f);
         
         //제목 연출
-        adfgvx.GetSTRConverter().ConvertTMPFontSize(0f, 173.5f, title);
+        adfgvx.GetSTRConverter().ConvertTMPFontSize(1f, 173.5f, title);
         adfgvx.GetSTRConverter().ConvertTMPColor(1f, Color.clear, percentageInfo);
         adfgvx.GetSTRConverter().ConvertTMPColor(1f, Color.clear, percentage);
 
@@ -244,7 +244,7 @@ public class VerificationPanelPart : MonoBehaviour
         yield return new WaitForSeconds(4f);
         
         //제목 연출
-        adfgvx.GetSTRConverter().ConvertTMPFontSize(0f, 173.5f, title);
+        adfgvx.GetSTRConverter().ConvertTMPFontSize(1f, 173.5f, title);
         adfgvx.GetSTRConverter().ConvertTMPColor(1f, Color.clear, percentageInfo);
         adfgvx.GetSTRConverter().ConvertTMPColor(1f, Color.clear, percentage);
 

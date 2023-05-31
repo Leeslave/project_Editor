@@ -8,7 +8,7 @@ public class Button_ADFGVX : Button_Game
 
     protected override void Awake()
     {
+        base.Awake();
         GameManager = GameObject.Find("GameManager").GetComponent<ADFGVX>();
-        Init();
     }
 }
