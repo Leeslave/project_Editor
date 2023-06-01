@@ -161,17 +161,17 @@ public class TranspositionPart : MonoBehaviour
             adfgvx.InformError("전치 불가 : 전치 키 공백");
             return;
         }
-        else if (adfgvx.encodeDataLoadPart.GetTextField_Data() == "암호화 데이터를 로드하여 시작…")
+        else if (adfgvx.encodeDataLoadPart.GetEncodeData().text == "암호화 데이터를 로드하여 시작…")
         {
             adfgvx.InformError("전치 불가 : 암호화 데이터 공백");
             return;
         }
-        else if (EditStirng.CollectEnglishUpperAlphabet(adfgvx.encodeDataLoadPart.GetTextField_Data()).Length / place.Length > 12)
+        else if (EditStirng.CollectEnglishUpperAlphabet(adfgvx.encodeDataLoadPart.GetEncodeData().text).Length / place.Length > 12)
         {            
             adfgvx.InformError("전치 불가 : 메모리 용량 초과");
             return;
         }
-        else if (EditStirng.CollectEnglishUpperAlphabet(adfgvx.encodeDataLoadPart.GetTextField_Data()).Length % place.Length != 0)
+        else if (EditStirng.CollectEnglishUpperAlphabet(adfgvx.encodeDataLoadPart.GetEncodeData().text).Length % place.Length != 0)
         {
             adfgvx.InformError("전치 불가 : 메모리 누수 발생");
             return;
@@ -183,7 +183,7 @@ public class TranspositionPart : MonoBehaviour
         //전치 비움
         ClearTransposition();
 
-        string Chiper = EditStirng.CollectEnglishUpperAlphabet(adfgvx.encodeDataLoadPart.GetTextField_Data());
+        string Chiper = EditStirng.CollectEnglishUpperAlphabet(adfgvx.encodeDataLoadPart.GetEncodeData().text);
         int InputPriority = 1;
         lineLength = place.Length;
 

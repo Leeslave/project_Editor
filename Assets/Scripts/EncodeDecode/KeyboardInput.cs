@@ -316,8 +316,8 @@ public class KeyboardInput : MonoBehaviour
 
         if (adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            if (adfgvx.encodeDataLoadPart.GetInputField_filePath().GetIsReadyForInput())
-                adfgvx.encodeDataLoadPart.GetInputField_filePath().AddInputField(value);
+            if (adfgvx.encodeDataLoadPart.GetInputField_FilePath().GetIsReadyForInput())
+                adfgvx.encodeDataLoadPart.GetInputField_FilePath().AddInputField(value);
 
             if (adfgvx.afterDecodingPart.GetInputField_Data().GetIsReadyForInput())
                 adfgvx.afterDecodingPart.AddInputField_Data(value);
@@ -342,8 +342,8 @@ public class KeyboardInput : MonoBehaviour
 
         if (adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            if (adfgvx.encodeDataLoadPart.GetInputField_filePath().GetIsReadyForInput())
-                adfgvx.encodeDataLoadPart.GetInputField_filePath().DeleteInputField(1);
+            if (adfgvx.encodeDataLoadPart.GetInputField_FilePath().GetIsReadyForInput())
+                adfgvx.encodeDataLoadPart.GetInputField_FilePath().DeleteInputField(1);
 
             if (adfgvx.afterDecodingPart.GetInputField_Data().GetIsReadyForInput())
                 adfgvx.afterDecodingPart.GetInputField_Data().DeleteInputField(2);
@@ -368,7 +368,7 @@ public class KeyboardInput : MonoBehaviour
             if(adfgvx.transpositionpart.GetInputField_keyword().GetIsReadyForInput())
                 adfgvx.transpositionpart.OnTransposeDown();
 
-            if (adfgvx.encodeDataLoadPart.GetInputField_filePath().GetIsReadyForInput())
+            if (adfgvx.encodeDataLoadPart.GetInputField_FilePath().GetIsReadyForInput())
                 adfgvx.encodeDataLoadPart.LoadEncodeData();
     
             if(adfgvx.afterDecodingPart.GetInputField_Data().GetIsReadyForInput())

@@ -59,7 +59,7 @@ public class VerificationPanelPart : MonoBehaviour
     private IEnumerator StartDecodeVerification_IE()//StartDecodeVerification_IEnumerator
     {
         //에러 발생
-        if (adfgvx.encodeDataLoadPart.GetTextField_Data() == "암호화 데이터를 로드하여 시작…")
+        if (adfgvx.encodeDataLoadPart.GetEncodeData().text == "암호화 데이터를 로드하여 시작…")
         {
             adfgvx.InformError("복호화 데이터 무결성 검증 불가 : 암호화 데이터 공백");
             yield break;
@@ -136,7 +136,7 @@ public class VerificationPanelPart : MonoBehaviour
             adfgvx.GetSTRConverter().PrintTMPByDuration(0f, "데이터 복호화 작업 성공", title);
             adfgvx.GetSTRConverter().ConvertTMPColor(3f, new Color(0.1f, 0.35f, 0.85f, 1f), title);
 
-            info = "보안 등급 : " + adfgvx.encodeDataLoadPart.GetTextField_SecurityLevel().GetText() + " '" + adfgvx.encodeDataLoadPart.GetInputField_filePath().GetInputString() + "'을\n";
+            info = "보안 등급 : " + adfgvx.encodeDataLoadPart.GetSecurityLevel().text + " '" + adfgvx.encodeDataLoadPart.GetInputField_FilePath().GetInputString() + "'을\n";
             keyword = "전치 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 복호화에 성공했습니다\n";
         }
         else
@@ -144,7 +144,7 @@ public class VerificationPanelPart : MonoBehaviour
             adfgvx.GetSTRConverter().PrintTMPByDuration(0f, "데이터 복호화 작업 실패", title);
             adfgvx.GetSTRConverter().ConvertTMPColor(3f, new Color(0.76f, 0.28f, 0.28f, 1f), title);
 
-            info = "보안 등급 : " + adfgvx.encodeDataLoadPart.GetTextField_SecurityLevel().GetText() + " '" + adfgvx.encodeDataLoadPart.GetInputField_filePath().GetInputString() + "'을\n";
+            info = "보안 등급 : " + adfgvx.encodeDataLoadPart.GetSecurityLevel().text + " '" + adfgvx.encodeDataLoadPart.GetInputField_FilePath().GetInputString() + "'을\n";
             keyword = "전치 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 복호화에 실패했습니다\n";
         }
         time = "총 작업 시간 : " + Mathf.FloorToInt(totalElaspedTime / 60).ToString("D2") + ":" + Mathf.FloorToInt(totalElaspedTime % 60).ToString("D2");
@@ -262,7 +262,7 @@ public class VerificationPanelPart : MonoBehaviour
             adfgvx.GetSTRConverter().ConvertTMPColor(3f, new Color(0.1f, 0.35f, 0.85f, 1f), title);
 
             info = "보안 등급 : " + adfgvx.encodeDataSavePart.GetSecurityLevel() + " '" + adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() + "'을\n";
-            keyword = "전치 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 암호화 하는데 성공했습니다\n";
+            keyword = "전치 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 암호화에 성공했습니다\n";
         }
         else
         {
@@ -270,7 +270,7 @@ public class VerificationPanelPart : MonoBehaviour
             adfgvx.GetSTRConverter().ConvertTMPColor(3f, new Color(0.76f, 0.28f, 0.28f, 1f), title);
 
             info = "보안 등급 : " + adfgvx.encodeDataSavePart.GetSecurityLevel() + " '" + adfgvx.encodeDataSavePart.GetInputField_Title().GetInputString() + "'을\n";
-            keyword = "전치 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 암호화 하는데 실패했습니다\n";
+            keyword = "전치 키 : " + EditStirng.CollectEnglishUpperAlphabet(adfgvx.transpositionpart.GetInputField_keyword().GetInputString()) + "로 암호화에 실패했습니다\n";
         }
 
         time = "총 작업 시간 : " + Mathf.FloorToInt(totalElaspedTime / 60).ToString("D2") + ":" + Mathf.FloorToInt(totalElaspedTime % 60).ToString("D2");

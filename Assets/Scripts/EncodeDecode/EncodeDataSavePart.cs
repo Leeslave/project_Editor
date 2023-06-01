@@ -1,61 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class EncodeDataSavePart : MonoBehaviour
 {
     private ADFGVX adfgvx;
 
-    private Button_ADFGVX_ChangeSecurityLevel securityLevel;
-    private InputField_ADFGVX data;
-    private InputField_ADFGVX title;
-    private TextField date;
-    private TextField dateUI;
-    private TextField sender;
-    private TextField senderUI;
-    private Button_ADFGVX_SaveEncodedData save;
+    private Button_ADFGVX_ChangeSecurityLevel m_SecurityLevel;
+    private InputField_ADFGVX m_EncodedData;
+    private InputField_ADFGVX m_FileTitle;
+    private TextMeshPro m_CreatingDate;
+    private TextMeshPro m_CreatingDateUI;
+    private TextMeshPro m_Creater;
+    private TextMeshPro m_CreaterUI;
+    private Button_ADFGVX_SaveEncodedData m_EncodedDataSave;
 
     private void Awake()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 
-        securityLevel = transform.GetChild(2).GetComponent<Button_ADFGVX_ChangeSecurityLevel>();
-        data = transform.GetChild(3).GetComponent<InputField_ADFGVX>();
-        title = transform.GetChild(4).GetComponent<InputField_ADFGVX>();
-        date = transform.GetChild(5).GetComponent<TextField>();
-        dateUI = transform.GetChild(6).GetComponent<TextField>();
-        sender = transform.GetChild(7).GetComponent<TextField>();
-        senderUI = transform.GetChild(8).GetComponent<TextField>();
-        save = transform.GetChild(9).GetComponent<Button_ADFGVX_SaveEncodedData>();
+        m_CreatingDateUI = transform.GetChild(0).GetComponent<TextMeshPro>();
+        m_CreatingDate = transform.GetChild(1).GetComponent<TextMeshPro>();
+        m_CreaterUI = transform.GetChild(2).GetComponent<TextMeshPro>();
+        m_Creater = transform.GetChild(3).GetComponent<TextMeshPro>();
+        m_SecurityLevel = transform.GetChild(11).GetComponent<Button_ADFGVX_ChangeSecurityLevel>();
+        m_EncodedData = transform.GetChild(12).GetComponent<InputField_ADFGVX>();
+        m_FileTitle = transform.GetChild(13).GetComponent<InputField_ADFGVX>();
+        m_EncodedDataSave = transform.GetChild(14).GetComponent<Button_ADFGVX_SaveEncodedData>();
     }
 
     public void SetLayer(int layer)//하위 요소의 입력 제어
     {
-        title.gameObject.layer = layer;
-        data.gameObject.layer = layer;
-        securityLevel.gameObject.layer = layer;
-        save.transform.gameObject.layer = layer;
+        m_FileTitle.gameObject.layer = layer;
+        m_EncodedData.gameObject.layer = layer;
+        m_SecurityLevel.gameObject.layer = layer;
+        m_EncodedDataSave.transform.gameObject.layer = layer;
         if(layer==2)
         {
-            title.SetIsReadyForInput(false);
-            title.SetIsFlash(false);
-            data.SetIsReadyForInput(false);
-            data.SetIsFlash(false);
+            m_FileTitle.SetIsReadyForInput(false);
+            m_FileTitle.SetIsFlash(false);
+            m_EncodedData.SetIsReadyForInput(false);
+            m_EncodedData.SetIsFlash(false);
         }
     }
 
     public InputField_ADFGVX GetInputField_Title()//제목 입력창 반환
     {
-        return title;
+        return m_FileTitle;
     }
 
     public InputField_ADFGVX GetInputField_Data()//데이터 입력창 반환
     {
-        return data;
+        return m_EncodedData;
     }
 
     public string GetSecurityLevel()//보안 등급 반환
     {
-        return securityLevel.GetTMP().text.ToString();
+        return m_SecurityLevel.GetTMP().text;
     }
 }
