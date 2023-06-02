@@ -7,8 +7,8 @@ public class TranspositionPart : MonoBehaviour
 {
     private ADFGVX adfgvx;
 
-    private InputField_ADFGVX keyword;
-    private TextField priority;
+    private InputField_ADFGVX m_Keyword;
+    private TextMeshPro priority;
 
     //키 순위 전치 관련 변수
     private int[] place;                                //키 순위 저장 배열
@@ -17,7 +17,7 @@ public class TranspositionPart : MonoBehaviour
     private string[] tempLine;                          //일시적으로 행렬 저장
     private int flowLine;                               //2차원 출력 인덱스
     private TextMeshPro[] lines;                        //전치된 행렬이 출력되는 텍스트
-    private SpriteRenderer transposedMatrixGuide;       //전치된 행렬를 둘러싸는 스프라이트
+    private SpriteRenderer m_TransposedLineCover;       //전치된 행렬를 둘러싸는 스프라이트
 
     private void Awake()
     {
@@ -29,29 +29,28 @@ public class TranspositionPart : MonoBehaviour
             lines[i] = GetComponentsInChildren<TextMeshPro>()[i];
             lines[i].text = "";
         }
+        priority = transform.GetChild(10).GetComponent<TextMeshPro>();
+        m_TransposedLineCover = transform.GetChild(13).GetComponent<SpriteRenderer>();
+        m_Keyword = transform.GetChild(17).GetComponent<InputField_ADFGVX>();
 
-        keyword = transform.Find("Keyword").GetComponent<InputField_ADFGVX>();
-        priority = transform.Find("Priority").GetComponent<TextField>();
-        priority.SetText("");
-        
-        transposedMatrixGuide = GetComponentsInChildren<SpriteRenderer>()[0];
-        transposedMatrixGuide.size = new Vector2(0, 0);
+        priority.text = "";
+        m_TransposedLineCover.size = new Vector2(0, 0);
         tempLine = new string[9];
     }
 
     public void SetLayer(int layer)//하위 요소의 입력 제어
     {
-        keyword.gameObject.layer = layer;
+        m_Keyword.gameObject.layer = layer;
         if(layer == 2)
         {
-            keyword.SetIsReadyForInput(false);
-            keyword.SetIsFlash(false);
+            m_Keyword.SetIsReadyForInput(false);
+            m_Keyword.SetIsFlash(false);
         }
     }
 
-    public InputField_ADFGVX GetInputField_keyword()
+    public InputField_ADFGVX GetInputField_Keyword()
     {
-        return keyword;
+        return m_Keyword;
     }
 
     public int[] GetPriority()
@@ -67,20 +66,20 @@ public class TranspositionPart : MonoBehaviour
             return;
         }
 
-        keyword.AddInputField(value + " ");
+        m_Keyword.AddInputField(value + " ");
         UpdatePriority();
     }
 
     public void DeleteKeyword()//전치 키 입력창에 삭제
     {
-        keyword.DeleteInputField(2);
+        m_Keyword.DeleteInputField(2);
         UpdatePriority();
     }
   
     private void UpdatePriority()//키 순위 업데이트
     {
         string result = "";
-        string value = EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString());
+        string value = EditStirng.CollectEnglishUpperAlphabet(m_Keyword.GetInputString());
         place = new int[value.Length];
 
         for(int i = 0; i < value.Length; i++)
@@ -102,7 +101,7 @@ public class TranspositionPart : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < keyword.GetInputString().Length / 2; i++)
+        for (int i = 0; i < m_Keyword.GetInputString().Length / 2; i++)
         {
             result += place[i].ToString();
             result += " ";
@@ -122,13 +121,13 @@ public class TranspositionPart : MonoBehaviour
 
     public void OnTransposeDown()//키 순위에 따른 행렬 전치
     {
-        keyword.SetIsReadyForInput(false);
-        keyword.SetIsFlash(false);
+        m_Keyword.SetIsReadyForInput(false);
+        m_Keyword.SetIsFlash(false);
 
         //튜토리얼 관련 코드
         if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            if (EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString()) != "SUKHOI")
+            if (EditStirng.CollectEnglishUpperAlphabet(m_Keyword.GetInputString()) != "SUKHOI")
             {
                 adfgvx.chat_ADFGVX.DisplayTutorialDialog(85, 0f);
                 return;
@@ -136,7 +135,7 @@ public class TranspositionPart : MonoBehaviour
         }
         if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 2 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            if (EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString()).Length != 7)
+            if (EditStirng.CollectEnglishUpperAlphabet(m_Keyword.GetInputString()).Length != 7)
             {
                 adfgvx.chat_ADFGVX.DisplayTutorialDialog(73, 0f);
                 return;
@@ -146,7 +145,7 @@ public class TranspositionPart : MonoBehaviour
         }
         if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 1 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            if (EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString()) != "HELLO")
+            if (EditStirng.CollectEnglishUpperAlphabet(m_Keyword.GetInputString()) != "HELLO")
             {
                 adfgvx.chat_ADFGVX.DisplayTutorialDialog(41, 0f);
                 return;
@@ -156,7 +155,7 @@ public class TranspositionPart : MonoBehaviour
         }
     
         //에러 발생
-        if (keyword.GetInputString().Length == 0)
+        if (m_Keyword.GetInputString().Length == 0)
         {
             adfgvx.InformError("전치 불가 : 전치 키 공백");
             return;
@@ -211,18 +210,18 @@ public class TranspositionPart : MonoBehaviour
         //튜토리얼 관련 코드
         if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 3 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            if (EditStirng.CollectEnglishUpperAlphabet(keyword.GetInputString()) == "SUKHOI")
+            if (EditStirng.CollectEnglishUpperAlphabet(m_Keyword.GetInputString()) == "SUKHOI")
                 adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(0.1f * (rowLength + lineLength));
         }
     }
 
     public void OnTransposeReverseDown()//키 순위에 따른 행렬 역전치
     {
-        keyword.SetIsReadyForInput(false);
-        keyword.SetIsFlash(false);
+        m_Keyword.SetIsReadyForInput(false);
+        m_Keyword.SetIsFlash(false);
 
         //에러 발생
-        if (keyword.GetInputString().Length == 0)
+        if (m_Keyword.GetInputString().Length == 0)
         {
             adfgvx.InformError("역전치 불가 : 전치 키 공백");
             return;
@@ -296,7 +295,7 @@ public class TranspositionPart : MonoBehaviour
     {
         flowLine = 0;
         InvokeRepeating("printFlowLine", 0.0f, 0.1f);
-        keyword.GetTMP().text = keyword.GetInputString();
+        m_Keyword.GetTMP().text = m_Keyword.GetInputString();
     }
 
     private void printFlowLine()//2차원 열 출력

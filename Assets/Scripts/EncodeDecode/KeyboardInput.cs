@@ -311,7 +311,7 @@ public class KeyboardInput : MonoBehaviour
 
     private void AddInputField(string value)
     {
-        if (adfgvx.transpositionpart.GetInputField_keyword().GetIsReadyForInput())
+        if (adfgvx.transpositionpart.GetInputField_Keyword().GetIsReadyForInput())
             adfgvx.transpositionpart.AddKeyword(value);
 
         if (adfgvx.CurrentMode == ADFGVX.mode.Decoding)
@@ -337,7 +337,7 @@ public class KeyboardInput : MonoBehaviour
 
     private void KeyDown_Backspace()
     {
-        if (adfgvx.transpositionpart.GetInputField_keyword().GetIsReadyForInput())
+        if (adfgvx.transpositionpart.GetInputField_Keyword().GetIsReadyForInput())
             adfgvx.transpositionpart.DeleteKeyword();
 
         if (adfgvx.CurrentMode == ADFGVX.mode.Decoding)
@@ -365,7 +365,7 @@ public class KeyboardInput : MonoBehaviour
     {
         if (adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            if(adfgvx.transpositionpart.GetInputField_keyword().GetIsReadyForInput())
+            if(adfgvx.transpositionpart.GetInputField_Keyword().GetIsReadyForInput())
                 adfgvx.transpositionpart.OnTransposeDown();
 
             if (adfgvx.encodeDataLoadPart.GetInputField_FilePath().GetIsReadyForInput())
@@ -376,7 +376,7 @@ public class KeyboardInput : MonoBehaviour
         }
         else if(adfgvx.CurrentMode == ADFGVX.mode.Encoding)
         {
-            if (adfgvx.transpositionpart.GetInputField_keyword().GetIsReadyForInput())
+            if (adfgvx.transpositionpart.GetInputField_Keyword().GetIsReadyForInput())
                 adfgvx.transpositionpart.OnTransposeReverseDown();
          
             if(adfgvx.beforeEncodingPart.GetInputField_Data().GetIsReadyForInput())

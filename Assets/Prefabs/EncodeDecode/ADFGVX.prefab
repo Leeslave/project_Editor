@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3065231764892326357}
   - component: {fileID: 7789849824379593439}
   m_Layer: 0
-  m_Name: RowText
+  m_Name: TMP_CurrentRow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1220,7 +1220,7 @@ GameObject:
   - component: {fileID: 1185951308410777564}
   - component: {fileID: 8064704902558008544}
   m_Layer: 0
-  m_Name: ArrayNumText
+  m_Name: TMP_ArrayNum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1479,7 +1479,7 @@ GameObject:
   - component: {fileID: 2818862152333874362}
   - component: {fileID: 4509605778227815586}
   m_Layer: 0
-  m_Name: RowGuide
+  m_Name: SpriteCurrentRow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2534,14 +2534,15 @@ Transform:
   - {fileID: 3493978753587361029}
   - {fileID: 6840027185581441434}
   - {fileID: 7301447633945088717}
-  - {fileID: 8934051892668039738}
-  - {fileID: 6896909184092301765}
-  - {fileID: 5665881684432344212}
-  - {fileID: 4161825334548633604}
   - {fileID: 3069994215968542944}
+  - {fileID: 5865624254426427109}
+  - {fileID: 4161825334548633604}
+  - {fileID: 6896909184092301765}
+  - {fileID: 8934051892668039738}
+  - {fileID: 4774724126744578246}
+  - {fileID: 5665881684432344212}
   - {fileID: 7470697473101957475}
   - {fileID: 6390122992062861728}
-  - {fileID: 2907557117920789363}
   m_Father: {fileID: 4782908533103926372}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2568,7 +2569,7 @@ GameObject:
   - component: {fileID: 1796717744914539948}
   - component: {fileID: 8099993766419197240}
   m_Layer: 0
-  m_Name: ClickSprite
+  m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3081,7 +3082,7 @@ GameObject:
   - component: {fileID: 8216767420600727019}
   - component: {fileID: 2325729552676769336}
   m_Layer: 0
-  m_Name: PartTitle
+  m_Name: TMP_Tap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3100,7 +3101,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7865946617684432875}
-  m_RootOrder: 10
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3413,52 +3414,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 3522984728210605777}
   m_maskType: 0
---- !u!1 &1457810658829521813
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2907557117920789363}
-  - component: {fileID: 8269146797202290865}
-  m_Layer: 0
-  m_Name: Priority
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2907557117920789363
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1457810658829521813}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 50.932327, y: 21.444626, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5865624254426427109}
-  - {fileID: 4774724126744578246}
-  m_Father: {fileID: 7865946617684432875}
-  m_RootOrder: 16
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8269146797202290865
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1457810658829521813}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f988df9e6ccdd264ebd41eaa9f3db41d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1486531149895864082
 GameObject:
   m_ObjectHideFlags: 0
@@ -3726,7 +3681,7 @@ GameObject:
   - component: {fileID: 5665881684432344212}
   - component: {fileID: 4180914979093091646}
   m_Layer: 0
-  m_Name: PartTitleGuide
+  m_Name: Sprite_Tap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3745,7 +3700,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7865946617684432875}
-  m_RootOrder: 11
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4180914979093091646
 SpriteRenderer:
@@ -4113,7 +4068,7 @@ GameObject:
   - component: {fileID: 2955470640896115127}
   - component: {fileID: 4707956386845597741}
   m_Layer: 0
-  m_Name: Delete
+  m_Name: Button_Delete
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4191,7 +4146,7 @@ GameObject:
   - component: {fileID: 8357200003538385409}
   - component: {fileID: 1401516838191853710}
   m_Layer: 0
-  m_Name: TransposedLine (5)
+  m_Name: TMP_TransposedLine (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4963,7 +4918,7 @@ GameObject:
   - component: {fileID: 2223625204530411135}
   - component: {fileID: 7043070944392238962}
   m_Layer: 0
-  m_Name: PriorityUI
+  m_Name: TMP_PriorityUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4982,7 +4937,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7865946617684432875}
-  m_RootOrder: 13
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5386,7 +5341,7 @@ GameObject:
   - component: {fileID: 5520931418225551731}
   - component: {fileID: 8903874302493371406}
   m_Layer: 0
-  m_Name: ScreenBlurSprite
+  m_Name: Sprite_ScreenBlur
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5643,7 +5598,7 @@ GameObject:
   - component: {fileID: 3426174468466527122}
   - component: {fileID: 8798196730301972406}
   m_Layer: 0
-  m_Name: ArrayPlus
+  m_Name: Button_ArrayPlus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5850,7 +5805,7 @@ GameObject:
   - component: {fileID: 2299722530725867641}
   - component: {fileID: 2440703223503062716}
   m_Layer: 0
-  m_Name: MarkSprite
+  m_Name: TMP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6255,7 +6210,7 @@ GameObject:
   - component: {fileID: 1069621910298909865}
   - component: {fileID: 4180031586172173841}
   m_Layer: 0
-  m_Name: TransposedLine (1)
+  m_Name: TMP_TransposedLine (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6499,39 +6454,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &2790946645057940735
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2697835484439652274}
-  m_Layer: 0
-  m_Name: Tap
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2697835484439652274
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2790946645057940735}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 48.815643, y: 29.234434, z: 5.4723644}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5777653433200971356}
-  - {fileID: 4026074555363999787}
-  m_Father: {fileID: 3642818442129119900}
-  m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2795267279059165090
 GameObject:
   m_ObjectHideFlags: 0
@@ -6715,7 +6637,7 @@ GameObject:
   - component: {fileID: 1429843169468696220}
   - component: {fileID: 5899360402823296505}
   m_Layer: 0
-  m_Name: GuideSprite
+  m_Name: Sprite_PartGuideLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6968,7 +6890,7 @@ GameObject:
   - component: {fileID: 1886651779222885214}
   - component: {fileID: 2168668372219562520}
   m_Layer: 0
-  m_Name: TransposedLine (4)
+  m_Name: TMP_TransposedLine (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7497,12 +7419,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3159795732939890106}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 77.51987, y: 16.6, z: -5.4723644}
+  m_LocalPosition: {x: 126.33551, y: 45.834435, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2697835484439652274}
-  m_RootOrder: 1
+  m_Father: {fileID: 3642818442129119900}
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8809842066150918865
 SpriteRenderer:
@@ -8036,7 +7958,7 @@ GameObject:
   - component: {fileID: 8887327970730041784}
   - component: {fileID: 5222195580336324643}
   m_Layer: 0
-  m_Name: LineText
+  m_Name: TMP_CurrentLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8208,7 +8130,7 @@ GameObject:
   - component: {fileID: 1171337988127112935}
   - component: {fileID: 142469533160845642}
   m_Layer: 0
-  m_Name: KeyWordUI
+  m_Name: TMP_KeyWordUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8227,7 +8149,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7865946617684432875}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -8525,7 +8447,7 @@ GameObject:
   - component: {fileID: 1767949716193355479}
   - component: {fileID: 8242431203643252437}
   m_Layer: 0
-  m_Name: PanelBackgroundSprite_D
+  m_Name: Sprite_TapDownSide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8865,7 +8787,7 @@ GameObject:
   - component: {fileID: 7185809063615581544}
   - component: {fileID: 5621448025919979226}
   m_Layer: 0
-  m_Name: GuideSprite
+  m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9545,7 +9467,7 @@ GameObject:
   - component: {fileID: 8923703922651696636}
   - component: {fileID: 9100585650712234725}
   m_Layer: 0
-  m_Name: BiliteralSubstitutionPartGuide
+  m_Name: Sprite_PartGuideLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9708,7 +9630,7 @@ GameObject:
   - component: {fileID: 2697543041366387821}
   - component: {fileID: 4859187191543218184}
   m_Layer: 0
-  m_Name: TransposedLine (3)
+  m_Name: TMP_TransposedLine (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10684,7 +10606,7 @@ GameObject:
   - component: {fileID: 6443742389759473323}
   - component: {fileID: 3403295384600086242}
   m_Layer: 0
-  m_Name: PanelGuideSprite
+  m_Name: Sprite_PartGuideLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12061,7 +11983,7 @@ GameObject:
   - component: {fileID: 2190023202311137874}
   - component: {fileID: 3884269351147326022}
   m_Layer: 0
-  m_Name: PartTitleText
+  m_Name: TMP_Tap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12232,7 +12154,7 @@ GameObject:
   - component: {fileID: 4027779952514599124}
   - component: {fileID: 2588319077496620278}
   m_Layer: 0
-  m_Name: PanelBackgroundSprite_U
+  m_Name: Sprite_TapUpSide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12493,7 +12415,7 @@ GameObject:
   - component: {fileID: 3861876581160846341}
   - component: {fileID: 9002663728172895240}
   m_Layer: 0
-  m_Name: MarkText
+  m_Name: TMP_Priority
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12511,12 +12433,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2907557117920789363}
-  m_RootOrder: 0
+  m_Father: {fileID: 7865946617684432875}
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -95.94, y: -20.074629}
+  m_AnchoredPosition: {x: -45.007675, y: 1.369997}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &3861876581160846341
@@ -12836,7 +12758,7 @@ GameObject:
   - component: {fileID: 8934051892668039738}
   - component: {fileID: 7984224654215786678}
   m_Layer: 0
-  m_Name: TransposedLineGuide
+  m_Name: Sprite_TransposedLineCover
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12855,7 +12777,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7865946617684432875}
-  m_RootOrder: 9
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7984224654215786678
 SpriteRenderer:
@@ -13191,16 +13113,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5835783658783536134}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.8177392}
+  m_LocalPosition: {x: 0, y: 0, z: 3.6546252}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2697835484439652274}
-  m_RootOrder: 0
+  m_Father: {fileID: 3642818442129119900}
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -17.815643, y: 10.465569}
+  m_AnchoredPosition: {x: 31, y: 39.700005}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &7083521634671276043
@@ -13857,7 +13779,7 @@ GameObject:
   - component: {fileID: 739015335058132199}
   - component: {fileID: 8775307512218639249}
   m_Layer: 0
-  m_Name: TransposedLine (6)
+  m_Name: TMP_TransposedLine (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14575,7 +14497,7 @@ GameObject:
   - component: {fileID: 1348400118923293954}
   - component: {fileID: 7868589481307439264}
   m_Layer: 0
-  m_Name: TransposedLine (8)
+  m_Name: TMP_TransposedLine (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14999,7 +14921,7 @@ GameObject:
   - component: {fileID: 6291605139631037507}
   - component: {fileID: 9020203868126361998}
   m_Layer: 0
-  m_Name: TransposedLine (7)
+  m_Name: TMP_TransposedLine (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15255,7 +15177,7 @@ GameObject:
   - component: {fileID: 1197709103255074879}
   - component: {fileID: 824012560410512458}
   m_Layer: 0
-  m_Name: TransposedLine (0)
+  m_Name: TMP_TransposedLine (0)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15990,7 +15912,7 @@ GameObject:
   - component: {fileID: 5479029932888269474}
   - component: {fileID: 2894017829791973226}
   m_Layer: 0
-  m_Name: Clear
+  m_Name: Button_Clear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16174,7 +16096,7 @@ Transform:
   - {fileID: 1365739126150464606}
   - {fileID: 744131700727562827}
   m_Father: {fileID: 7865946617684432875}
-  m_RootOrder: 15
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8648090915524555534
 MonoBehaviour:
@@ -16660,7 +16582,7 @@ GameObject:
   - component: {fileID: 8201230453075037435}
   - component: {fileID: 7858957126909530833}
   m_Layer: 0
-  m_Name: TransposedLine (2)
+  m_Name: TMP_TransposedLine (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16916,7 +16838,7 @@ GameObject:
   - component: {fileID: 2918387312180605467}
   - component: {fileID: 4275843317166238674}
   m_Layer: 0
-  m_Name: QuitButton
+  m_Name: Button_Quit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17804,7 +17726,7 @@ GameObject:
   - component: {fileID: 3922161304305145047}
   - component: {fileID: 6023546395854166233}
   m_Layer: 0
-  m_Name: ArrayMinus
+  m_Name: Button_ArrayMinus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18763,7 +18685,7 @@ GameObject:
   - component: {fileID: 5983074491053884911}
   - component: {fileID: 4729677011231433568}
   m_Layer: 0
-  m_Name: LineGuide
+  m_Name: SpriteCurrentLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19210,7 +19132,8 @@ Transform:
   - {fileID: 4929120072665769912}
   - {fileID: 1377962544196865224}
   - {fileID: 6179639626421689358}
-  - {fileID: 2697835484439652274}
+  - {fileID: 5777653433200971356}
+  - {fileID: 4026074555363999787}
   m_Father: {fileID: 4782908533103926372}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -19576,7 +19499,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9070738066657220712}
   m_Layer: 0
-  m_Name: ArrayKeyboard
+  m_Name: ADFGVXTable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -19657,7 +19580,7 @@ GameObject:
   - component: {fileID: 6797588701019986650}
   - component: {fileID: 5810996016588214527}
   m_Layer: 0
-  m_Name: PartTitleGuide
+  m_Name: Sprite_Tap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20313,7 +20236,7 @@ GameObject:
   - component: {fileID: 7470697473101957475}
   - component: {fileID: 1324499586454882069}
   m_Layer: 0
-  m_Name: PartGuideSprite
+  m_Name: Sprite_PartGuideLine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20332,7 +20255,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7865946617684432875}
-  m_RootOrder: 14
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1324499586454882069
 SpriteRenderer:
@@ -20397,7 +20320,7 @@ GameObject:
   - component: {fileID: 4774724126744578246}
   - component: {fileID: 598353561007793816}
   m_Layer: 0
-  m_Name: GuideSprite
+  m_Name: Sprite_Priority
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20411,12 +20334,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9194255833878343064}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -84.782326, y: -20.684628, z: 0}
+  m_LocalPosition: {x: -33.85, y: 0.7599983, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2907557117920789363}
-  m_RootOrder: 1
+  m_Father: {fileID: 7865946617684432875}
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &598353561007793816
 SpriteRenderer:

@@ -18,14 +18,14 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     [Header("ADFGVX 테이블 열")]
     public Button_ADFGVX_Line[] lineButtons = new Button_ADFGVX_Line[6];
 
-    private TextMeshPro rowText;
-    private TextMeshPro lineText;
-    private TextMeshPro arrayNumText;
-    private GameObject ADFGVXTable;
-    private Button_ADFGVX_Delete delete;
-    private Button_ADFGVX_ArrayMinus arrayMinus;
-    private Button_ADFGVX_ArrayPlus arrayPlus;
-    private Button_ADFGVX_Clear clear;
+    private TextMeshPro m_CurrentRow;
+    private TextMeshPro m_CurrentLine;
+    private TextMeshPro m_ArrayNum;
+    private GameObject m_ADFGVXTable;
+    private Button_ADFGVX_Delete m_Delete;
+    private Button_ADFGVX_ArrayMinus m_ArrayMinus;
+    private Button_ADFGVX_ArrayPlus m_ArrayPlus;
+    private Button_ADFGVX_Clear m_Clear;
 
     private int currentADFGVXArrayNum;
     private const int ArrayNum_MAX = 4;
@@ -34,14 +34,16 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 
-        rowText = transform.GetChild(5).GetComponent<TextMeshPro>();
-        lineText = transform.GetChild(6).GetComponent<TextMeshPro>();
-        arrayNumText = transform.GetChild(7).GetComponent<TextMeshPro>();
-        ADFGVXTable = transform.GetChild(8).gameObject;
-        delete = transform.GetChild(9).GetComponent<Button_ADFGVX_Delete>();
-        arrayMinus = transform.GetChild(10).GetComponent<Button_ADFGVX_ArrayMinus>();
-        arrayPlus = transform.GetChild(11).GetComponent<Button_ADFGVX_ArrayPlus>();
-        clear = transform.GetChild(12).GetComponent<Button_ADFGVX_Clear>();
+        m_CurrentRow = transform.GetChild(5).GetComponent<TextMeshPro>();
+        m_CurrentLine = transform.GetChild(6).GetComponent<TextMeshPro>();
+        m_ArrayNum = transform.GetChild(7).GetComponent<TextMeshPro>();
+
+
+        m_ADFGVXTable = transform.GetChild(8).gameObject;
+        m_Delete = transform.GetChild(9).GetComponent<Button_ADFGVX_Delete>();
+        m_ArrayMinus = transform.GetChild(10).GetComponent<Button_ADFGVX_ArrayMinus>();
+        m_ArrayPlus = transform.GetChild(11).GetComponent<Button_ADFGVX_ArrayPlus>();
+        m_Clear = transform.GetChild(12).GetComponent<Button_ADFGVX_Clear>();
 
         decodeRow = 6;
         decodeLine = 6;
@@ -54,27 +56,27 @@ public class BiliteralSubstitutionPart : MonoBehaviour
     {
         for(int i=0;i<6;i++)
         {
-            ADFGVXTable.transform.GetChild(i).gameObject.layer = BiliteralSubstitution;
-            ADFGVXTable.transform.GetChild(6+i).gameObject.layer = BiliteralSubstitution;
+            m_ADFGVXTable.transform.GetChild(i).gameObject.layer = BiliteralSubstitution;
+            m_ADFGVXTable.transform.GetChild(6+i).gameObject.layer = BiliteralSubstitution;
         }
         for(int i=0;i<36;i++)
         {
-            ADFGVXTable.transform.GetChild(12+i).gameObject.layer = BiliteralSubstitution;
+            m_ADFGVXTable.transform.GetChild(12+i).gameObject.layer = BiliteralSubstitution;
         }
-        delete.gameObject.layer = Delete;
-        clear.gameObject.layer = Clear;
-        arrayMinus.gameObject.layer = ArrayPlusMinusButton;
-        arrayPlus.gameObject.layer = ArrayPlusMinusButton;
+        m_Delete.gameObject.layer = Delete;
+        m_ArrayMinus.gameObject.layer = ArrayPlusMinusButton;
+        m_ArrayPlus.gameObject.layer = ArrayPlusMinusButton;
+        m_Clear.gameObject.layer = Clear;
     }
 
-    public TextMeshPro GetRowText()//행의 입력값을 반환
+    public TextMeshPro GetCurrentRow()//행의 입력값을 반환
     {
-        return rowText;
+        return m_CurrentRow;
     }
 
-    public TextMeshPro GetLineText()//열의 입력값을 반환
+    public TextMeshPro GetCurrentLine()//열의 입력값을 반환
     {
-        return lineText;
+        return m_CurrentLine;
     }
 
     public int GetCurrentADFGVXArrayNum()//현재 ADFGVX 테이블 번호 반환
@@ -316,7 +318,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
 
         currentADFGVXArrayNum++;
         currentADFGVXArrayNum %= ArrayNum_MAX;
-        arrayNumText.text = "ADFGVX\nARRAY\nNo." + currentADFGVXArrayNum.ToString();
+        m_ArrayNum.text = "ADFGVX\nARRAY\nNo." + currentADFGVXArrayNum.ToString();
         UpdateADFGVXArray();
     }
 
@@ -330,7 +332,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         currentADFGVXArrayNum--;
         if (currentADFGVXArrayNum < 0)
             currentADFGVXArrayNum = ArrayNum_MAX - 1;
-        arrayNumText.text = "ADFGVX\nARRAY\nNo." + currentADFGVXArrayNum.ToString();
+        m_ArrayNum.text = "ADFGVX\nARRAY\nNo." + currentADFGVXArrayNum.ToString();
         UpdateADFGVXArray();
     }
 }

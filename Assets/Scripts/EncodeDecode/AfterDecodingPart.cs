@@ -55,8 +55,8 @@ public class AfterDecodingPart : MonoBehaviour
 
     public void AddInputField_Data(string value)//데이터 입력창에 value 추가
     {
-        TextMeshPro row = adfgvx.biliteralsubstitutionpart.GetRowText();
-        TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetLineText();
+        TextMeshPro row = adfgvx.biliteralsubstitutionpart.GetCurrentRow();
+        TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetCurrentLine();
 
         if (value == "A" || value == "D" || value == "F" || value == "G" || value == "V" || value == "X")
         {
@@ -79,8 +79,8 @@ public class AfterDecodingPart : MonoBehaviour
 
     public void ReturnInputField()//데이터 입력창의 값을 토대로 변환
     {
-        TextMeshPro row = adfgvx.biliteralsubstitutionpart.GetRowText();
-        TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetLineText();
+        TextMeshPro row = adfgvx.biliteralsubstitutionpart.GetCurrentRow();
+        TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetCurrentLine();
 
         //튜토리얼 관련 코드
         if(adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)

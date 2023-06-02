@@ -150,7 +150,7 @@ public class ADFGVX : MonoBehaviour
     public bool ReturnEncodeScore()//암호화 결과 반환
     {
         string original = EditStirng.CollectEnglishUpperAlphabet(beforeEncodingPart.GetInputField_Data().GetInputString());
-        string keyword = EditStirng.CollectEnglishUpperAlphabet(transpositionpart.GetInputField_keyword().GetInputString());
+        string keyword = EditStirng.CollectEnglishUpperAlphabet(transpositionpart.GetInputField_Keyword().GetInputString());
         int[] place = new int[keyword.Length];
         place = transpositionpart.GetPriority();
 
