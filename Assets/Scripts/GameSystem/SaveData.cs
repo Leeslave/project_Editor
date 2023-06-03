@@ -12,4 +12,12 @@ public class SaveData
     public int time;
     public string location;
     public int renown;
+
+    public SaveData()
+    {
+        dateIndex = 0;
+        time = 0;
+        location = "Office";
+        renown = 0;
+    }
 }

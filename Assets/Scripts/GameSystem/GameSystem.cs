@@ -41,6 +41,7 @@ public class GameSystem : MonoBehaviour
         if (!_instance)
         {
             _instance = this;
+            player = new SaveData();    // 플레이어 데이터 초기화
             LoadGameData();     // 게임 데이터 로드
             DontDestroyOnLoad(gameObject);
         }

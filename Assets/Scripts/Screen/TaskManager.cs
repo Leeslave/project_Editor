@@ -17,15 +17,16 @@ public class TaskManager : MonoBehaviour
     */
 
     [SerializeField]
-    List<Tuple<string, string>> workCodes = new List<Tuple<string, string>>();
-    public AnimationController taskConsoleAnimation;
-    public bool taskClear
+    List<Tuple<string, string>> workCodes = new List<Tuple<string, string>>();  // 업무 코드명
+    public GameObject taskWindow;
+    public AnimationController taskConsoleAnimation;    //업무 대화 콘솔 애니메이션
+    public bool taskClear   // 모든 업무 완료 플래그
     {
         get { 
             bool taskResult = true;
-            foreach(var isClear in GameSystem.Instance.todayData.workData.Values)
+            foreach(var work in GameSystem.Instance.todayData.workData.Keys)
             {
-                taskResult = taskResult & isClear;
+                taskResult = taskResult & GameSystem.Instance.todayData.workData[work];
             }
             return taskResult;
         }
@@ -38,26 +39,35 @@ public class TaskManager : MonoBehaviour
         
     }
 
-    // 창이 새로 열릴때마다 초기화 및 실행
-    private void OnEnable()
+    /// 창 열고 닫기
+    public void ActiveTaskWindow()
     {
-        // InputField 비활성화
-        consoleInput.gameObject.SetActive(false);
-        // 콘솔 초기화
-        if (taskClear)
+        if (!taskWindow.activeSelf)
         {
-            StartCoroutine(TaskConsoleAnimation(1));
+            Debug.Log(GameSystem.Instance.todayData.workData);
+            foreach(var work in GameSystem.Instance.todayData.workData.Keys)
+            {
+                Debug.Log($"Work-{work.Item1} Clear: {GameSystem.Instance.todayData.workData[work]}");
+            }
+            Debug.Log($"All Work: {taskClear}");
+            taskWindow.SetActive(true);
+            // InputField 비활성화
+            consoleInput.gameObject.SetActive(false);
+            // 콘솔 초기화
+            if (taskClear)
+            {
+                StartCoroutine(TaskConsoleAnimation(1));
+            }
+            else
+            {
+                StartCoroutine(TaskConsoleAnimation(0));
+            }
         }
         else
         {
-            StartCoroutine(TaskConsoleAnimation(0));
+            StopAllCoroutines();
+            taskWindow.SetActive(false);
         }
-    }
-
-    // 창 종료시 모든 코루틴 종료
-    private void OnDisable()
-    {
-        StopAllCoroutines();
     }
 
     /// 텍스트 출력 후 InputField 설정
@@ -81,6 +91,7 @@ public class TaskManager : MonoBehaviour
             if(work.Item1 == consoleInput.text)
             {
                 SceneManager.LoadScene(consoleInput.text);
+                return;
             }
         }
     }

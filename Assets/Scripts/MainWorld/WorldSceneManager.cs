@@ -59,8 +59,12 @@ public class WorldSceneManager : MonoBehaviour
         {
             Destroy(currentWorld.gameObject);
         }
-        // 새 월드 생성 및 적용
-        GameObject newWorldObject = Instantiate(Resources.Load<GameObject>(worldPath + GameSystem.Instance.player.location + "Canvas"));
+        // 새 월드 생성
+        GameObject newWorld = Resources.Load<GameObject>(worldPath + GameSystem.Instance.player.location + "Canvas");
+        if (newWorld == null) newWorld = Resources.Load<GameObject>(worldPath + "OfficeCanvas");    // 새 월드 오류시 Office 기본값
+        // 새 월드 적용
+        Debug.Log($"New WorldCanvas Loaded : {newWorld.name}");
+        GameObject newWorldObject = Instantiate(newWorld);
         newWorldObject.transform.SetParent(transform);
         currentWorld = newWorldObject.GetComponent<WorldCanvas>();
     }

@@ -49,9 +49,7 @@ public class AnimationController : MonoBehaviour
     /// 리스트 내 애니메이션만 순서대로 출력
     IEnumerator PlayAnimEach(int index)
     {
-        Debug.Log("Anim Each Play");
         yield return StartCoroutine(anims[index].Play());
-        Debug.Log("Anim Each Over");
         isFinished = true;
     }
 }
