@@ -12,9 +12,6 @@ public class ScreenManager : MonoBehaviour
         - 전원 켜기 (부팅 애니메이션)
         - 전원 끄기 (한번 더 눌러서 전원 끔)
         - 리셋 버튼 (초기화 밑 재부팅)
-    *   데스크탑 상호작용 기능
-        - TaskManager 
-        - MailManager
     */
     
     public WorldCanvas worldObject;   //스크린이 활성화 된 world
@@ -23,7 +20,7 @@ public class ScreenManager : MonoBehaviour
     public GameObject screen;      // 스크린 오브젝트
     public GameObject desktop;      // 바탕화면 패널
     public GameObject bootPanel;    //부팅 패널
-    private GameObject bootCLI;     //부팅 콘솔 텍스트창 TODO:Text으로 전환 -> .gameObject.SetActive로 최적화
+    private Text bootCLI;     //부팅 콘솔 텍스트
     private ScreenMode currentBootStatus;    //현 부팅 상태
 
     /// 부팅 애니메이션 설정값
@@ -51,7 +48,7 @@ public class ScreenManager : MonoBehaviour
         if(!_instance)
         {
             _instance = this;
-            bootCLI = bootPanel.transform.GetChild(1).gameObject;
+            bootCLI = bootPanel.transform.GetChild(1).GetComponent<Text>();
         }
         else
         {
@@ -66,8 +63,8 @@ public class ScreenManager : MonoBehaviour
         /// 부팅 대기 화면으로 설정
         desktop.SetActive(false);
         bootPanel.SetActive(true);
-        bootCLI.GetComponent<Text>().text = "";
-        bootCLI.SetActive(false);
+        bootCLI.text = "";
+        bootCLI.gameObject.SetActive(false);
 
         currentBootStatus = ScreenMode.Off;
     }
@@ -96,8 +93,8 @@ public class ScreenManager : MonoBehaviour
                 desktop.SetActive(false);
 
                 bootPanel.SetActive(true);
-                bootCLI.GetComponent<Text>().text = "";
-                bootCLI.SetActive(false);
+                bootCLI.text = "";
+                bootCLI.gameObject.SetActive(false);
                 break;
             case ScreenMode.On:
                 // 전원 On 상태
@@ -116,8 +113,8 @@ public class ScreenManager : MonoBehaviour
                 if (desktop.activeSelf == true)
                     desktop.SetActive(false);
                 bootPanel.SetActive(true);
-                bootCLI.GetComponent<Text>().text = "";
-                bootCLI.SetActive(true);
+                bootCLI.text = "";
+                bootCLI.gameObject.SetActive(true);
                 break;
             case ScreenMode.TryOff:
                 // 부탕 종료 시도 상태
@@ -127,8 +124,8 @@ public class ScreenManager : MonoBehaviour
                 if (desktop.activeSelf == true)
                     desktop.SetActive(false);
                 bootPanel.SetActive(true);
-                bootCLI.GetComponent<Text>().text = "";
-                bootCLI.SetActive(true);
+                bootCLI.text = "";
+                bootCLI.gameObject.SetActive(true);
                 break;  
         }
         currentBootStatus = screenMode;
@@ -162,8 +159,11 @@ public class ScreenManager : MonoBehaviour
     /// </summary>
     public void OnResetClicked()
     {
-        StopAllCoroutines();
-        StartCoroutine("BootScreen");
+        if (currentBootStatus == ScreenMode.On)
+        {
+            StopAllCoroutines();
+            StartCoroutine("BootScreen");
+        }
     }
 
     /**
@@ -202,7 +202,7 @@ public class ScreenManager : MonoBehaviour
         SetScreen(ScreenMode.TryOff);
 
         // 3초 내 종료 대기
-        bootCLI.GetComponent<Text>().text = "\n\n3초 내로 전원 버튼을 다시 눌러 전원 끄기...";
+        bootCLI.text = "\n\n3초 내로 전원 버튼을 다시 눌러 전원 끄기...";
         for(var i = 0; i<6; i++)
         {
             // 종료

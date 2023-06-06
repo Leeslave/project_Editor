@@ -16,10 +16,9 @@ public class TaskManager : MonoBehaviour
     *   - 하루 업무 클리어
     */
 
-    [SerializeField]
-    List<Tuple<string, string>> workCodes = new List<Tuple<string, string>>();  // 업무 코드명
-    public GameObject taskWindow;
+    public GameObject taskWindow;       // 업무 프로그램 창
     public AnimationController taskConsoleAnimation;    //업무 대화 콘솔 애니메이션
+    public TMP_InputField consoleInput;     // 업무 입력 창
     public bool taskClear   // 모든 업무 완료 플래그
     {
         get { 
@@ -31,25 +30,13 @@ public class TaskManager : MonoBehaviour
             return taskResult;
         }
     }
-    public TMP_InputField consoleInput;
-
-    ///////// 업무 코드명 /////////
-    void Awake()
-    {
-        
-    }
 
     /// 창 열고 닫기
     public void ActiveTaskWindow()
     {
         if (!taskWindow.activeSelf)
         {
-            Debug.Log(GameSystem.Instance.todayData.workData);
-            foreach(var work in GameSystem.Instance.todayData.workData.Keys)
-            {
-                Debug.Log($"Work-{work.Item1} Clear: {GameSystem.Instance.todayData.workData[work]}");
-            }
-            Debug.Log($"All Work: {taskClear}");
+            // 업무 창 활성화
             taskWindow.SetActive(true);
             // InputField 비활성화
             consoleInput.gameObject.SetActive(false);
@@ -65,6 +52,7 @@ public class TaskManager : MonoBehaviour
         }
         else
         {
+            taskConsoleAnimation.Pause();
             StopAllCoroutines();
             taskWindow.SetActive(false);
         }
@@ -78,6 +66,7 @@ public class TaskManager : MonoBehaviour
         taskConsoleAnimation.Play(idx);
         yield return new WaitUntil(() => taskConsoleAnimation.isFinished);
 
+        // 텍스트 출력 후 입력창 활성화
         consoleInput.gameObject.SetActive(true);
         EventSystem.current.SetSelectedGameObject(consoleInput.gameObject);
     }
@@ -85,11 +74,11 @@ public class TaskManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        Debug.Log($"Work Entered! : {consoleInput.text}");
         foreach(var work in GameSystem.Instance.todayData.workData.Keys)
         {
             if(work.Item1 == consoleInput.text)
             {
+                Debug.Log($"Work Entered! : {consoleInput.text}");
                 SceneManager.LoadScene(consoleInput.text);
                 return;
             }
