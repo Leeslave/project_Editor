@@ -9,4 +9,6 @@ public class AnimBase : MonoBehaviour {
     public UnityEngine.UI.Text GUITextCtrl;
 
     public virtual IEnumerator Play() { yield return 0; }
+
+    public void Clear() { GUITextCtrl.text = ""; }
 }

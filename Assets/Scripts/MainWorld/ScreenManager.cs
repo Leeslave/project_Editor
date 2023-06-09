@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,26 +12,20 @@ public class ScreenManager : MonoBehaviour
         - 전원 켜기 (부팅 애니메이션)
         - 전원 끄기 (한번 더 눌러서 전원 끔)
         - 리셋 버튼 (초기화 밑 재부팅)
-    *   업무 착수 및 관리
-        - 당일 할당된 업무들 플레이
-    *   메일 및 기타 PC 업무
     */
     
     public WorldCanvas worldObject;   //스크린이 활성화 된 world
 
     /// 스크린내 기본 요소 (에디터 할당)
     public GameObject screen;      // 스크린 오브젝트
-    public GameObject bootPanel;    //부팅 패널
     public GameObject desktop;      // 바탕화면 패널
+    public GameObject bootPanel;    //부팅 패널
+    private Text bootCLI;     //부팅 콘솔 텍스트
     private ScreenMode currentBootStatus;    //현 부팅 상태
-
-    /// 부팅 패널 요소 (find)
-    private GameObject bootCLI;     //부팅 콘솔 텍스트창
 
     /// 부팅 애니메이션 설정값
     public AnimationController bootAnimation;   //부팅 애니메이션
     public float logoOnSeconds;     //로고 이미지 활성 시간
-
 
     /// 스크린 모드
     public enum ScreenMode{
@@ -42,19 +37,34 @@ public class ScreenManager : MonoBehaviour
         GetOff
     }
 
+    // 싱글톤
+    private static ScreenManager _instance;
+    public static ScreenManager Instance
+    {
+        get { return _instance; }
+    }
+    void Awake()
+    {
+        if(!_instance)
+        {
+            _instance = this;
+            bootCLI = bootPanel.transform.GetChild(1).GetComponent<Text>();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
-
-
+    /// 스크린 초기 상태 설정
     /// 컴포넌트 설정, 부팅 초기값 off
-    private void Start() {
-        /// 부팅 오브젝트 할당
-        bootCLI = bootPanel.transform.GetChild(1).gameObject;
-        bootCLI.GetComponent<Text>().text = "";
-
+    void Start() 
+    {
         /// 부팅 대기 화면으로 설정
         desktop.SetActive(false);
         bootPanel.SetActive(true);
-        bootCLI.SetActive(false);
+        bootCLI.text = "";
+        bootCLI.gameObject.SetActive(false);
 
         currentBootStatus = ScreenMode.Off;
     }
@@ -83,8 +93,8 @@ public class ScreenManager : MonoBehaviour
                 desktop.SetActive(false);
 
                 bootPanel.SetActive(true);
-                bootCLI.GetComponent<Text>().text = "";
-                bootCLI.SetActive(false);
+                bootCLI.text = "";
+                bootCLI.gameObject.SetActive(false);
                 break;
             case ScreenMode.On:
                 // 전원 On 상태
@@ -103,8 +113,8 @@ public class ScreenManager : MonoBehaviour
                 if (desktop.activeSelf == true)
                     desktop.SetActive(false);
                 bootPanel.SetActive(true);
-                bootCLI.GetComponent<Text>().text = "";
-                bootCLI.SetActive(true);
+                bootCLI.text = "";
+                bootCLI.gameObject.SetActive(true);
                 break;
             case ScreenMode.TryOff:
                 // 부탕 종료 시도 상태
@@ -114,8 +124,8 @@ public class ScreenManager : MonoBehaviour
                 if (desktop.activeSelf == true)
                     desktop.SetActive(false);
                 bootPanel.SetActive(true);
-                bootCLI.GetComponent<Text>().text = "";
-                bootCLI.SetActive(true);
+                bootCLI.text = "";
+                bootCLI.gameObject.SetActive(true);
                 break;  
         }
         currentBootStatus = screenMode;
@@ -149,8 +159,11 @@ public class ScreenManager : MonoBehaviour
     /// </summary>
     public void OnResetClicked()
     {
-        StopAllCoroutines();
-        StartCoroutine("BootScreen");
+        if (currentBootStatus == ScreenMode.On)
+        {
+            StopAllCoroutines();
+            StartCoroutine("BootScreen");
+        }
     }
 
     /**
@@ -189,7 +202,7 @@ public class ScreenManager : MonoBehaviour
         SetScreen(ScreenMode.TryOff);
 
         // 3초 내 종료 대기
-        bootCLI.GetComponent<Text>().text = "\n\n3초 내로 전원 버튼을 다시 눌러 전원 끄기...";
+        bootCLI.text = "\n\n3초 내로 전원 버튼을 다시 눌러 전원 끄기...";
         for(var i = 0; i<6; i++)
         {
             // 종료
