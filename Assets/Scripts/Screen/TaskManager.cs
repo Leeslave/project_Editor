@@ -79,9 +79,21 @@ public class TaskManager : MonoBehaviour
             if(work.Item1 == consoleInput.text)
             {
                 Debug.Log($"Work Entered! : {consoleInput.text}");
-                SceneManager.LoadScene(consoleInput.text);
+                consoleInput.text = "업무 로딩중...\n";
+                StartCoroutine(LoadWorkAsync(work.Item1));
                 return;
             }
+        }
+    }
+
+    /// 씬 비동기 로딩
+    IEnumerator LoadWorkAsync(string sceneName)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
         }
     }
 }

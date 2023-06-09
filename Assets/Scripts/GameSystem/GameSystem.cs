@@ -116,12 +116,6 @@ public class GameSystem : MonoBehaviour
         }
     }
 
-    // 세이브 데이터 초기 설정
-    public void InitNewPlayerData()
-    {   
-        LoadPlayerData(playerSavePath + "default.json");
-    }
-
     /// <summary>
     /// 플레이어 데이터 JSON 저장
     /// </summary>

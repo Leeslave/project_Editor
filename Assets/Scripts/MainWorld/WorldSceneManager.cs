@@ -62,10 +62,18 @@ public class WorldSceneManager : MonoBehaviour
         // 새 월드 생성
         GameObject newWorld = Resources.Load<GameObject>(worldPath + GameSystem.Instance.player.location + "Canvas");
         if (newWorld == null) newWorld = Resources.Load<GameObject>(worldPath + "OfficeCanvas");    // 새 월드 오류시 Office 기본값
-        // 새 월드 적용
         Debug.Log($"New WorldCanvas Loaded : {newWorld.name}");
         GameObject newWorldObject = Instantiate(newWorld);
         newWorldObject.transform.SetParent(transform);
+
+        // 새 월드 적용 및 위치 설정
         currentWorld = newWorldObject.GetComponent<WorldCanvas>();
+        currentWorld.currentPosition = GameSystem.Instance.player.position;
+
+        // 확인 후 스크린 활성화
+        if(PlayerPrefs.GetInt("isScreenOn", 0) == 1)
+        {
+            ScreenManager.Instance.gameObject.SetActive(true);
+        }
     }
 }
