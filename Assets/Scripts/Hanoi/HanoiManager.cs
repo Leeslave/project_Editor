@@ -154,8 +154,9 @@ public class HanoiManager : MonoBehaviour
         }
     }
 
-
-    // Redo, Undo시 NextBox 변경되는 이벤트 추가 필요
+    // 현재 박스가 3번 Container로 이동한 것이 아니며, 다음 이동 순번이 아닌 경우 에러 출력
+    // ex) 0 (2,3) (4)이며 3번 박스의 내구도가 1인 상태에서 1번으로 옮기는 경우
+    // 위와 같은 상황에서 2번 박스의 내구도가 1인 상태에서 3번으로 옮기는 경우
     public void ErrorEvent(int num)
     {
         if (num == NextBox && LastCon == 2)

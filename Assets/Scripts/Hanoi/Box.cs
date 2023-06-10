@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 
 
-// 박스의 정보를 저장(아직 무게만 사용)
+// 박스의 정보를 저장
 public class Box : MonoBehaviour
 {
     public int MaxDurability;
@@ -14,6 +14,10 @@ public class Box : MonoBehaviour
     int CurDurability = 0;
     TMP_Text Dura;
 
+    /// <summary>
+    /// Box Object Awake시 랜덤으로 내구도를 부여할 것인지 정함
+    /// TODO : 스테이지 별 정해진 개수별로 내구도 부여
+    /// </summary>
     private void Awake()
     {
         if (Random.Range(0,2)== 0)
@@ -26,17 +30,29 @@ public class Box : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 현재 박스를 B박스 위에 놓을 수 있는가 여부 반환.
+    /// </summary>
+    /// <param name="B">현재 놓으려는 Container 최상단의 Box</param>
+    /// <returns></returns>
     public bool CanAdd(Box B)
     {
         if (B.Weight < Weight) return false;
         return true;
     }
+    /// <summary>
+    /// 현재 박스를 집을 수 있는지 여부 반환(내구도)
+    /// </summary>
+    /// <returns></returns>
     public bool CanPick()
     {
         if (IsBreakAble) return CurDurability != 0;
         return true;
     }
-
+    /// <summary>
+    /// 현재 박스의 내구도를 변환함
+    /// </summary>
+    /// <param name="change">변화량</param>
     public void DuraChange(int change)
     {
         if (IsBreakAble)
