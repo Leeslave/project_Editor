@@ -25,15 +25,14 @@ public class PlayerMove : MonoBehaviour
     public TMP_Text KeyText;
     // Clear 시 띄울 문구
     public GameObject Clear;
-
+    // Timer
     public GameObject Timer;
-
+    // 우측 상단에 띄울 Icon(나침반)
     public GameObject DirIcon;
-
+    // 출구 위치를 나타내주는 화살표
     public GameObject DirMark;
-
+    // 우측 상단에 띄울 Icon(횟불)
     public GameObject FireIcon;
-
     // 휙득한 Key들의 Object를 저장하는 List
     // 이 때 추후 계산 상의 편의를 위해 Player Object를 0번에 저장한다.
     List<GameObject> KeyTrain = new List<GameObject>();
@@ -58,6 +57,7 @@ public class PlayerMove : MonoBehaviour
 
     Vector3 VCnt;
 
+    // 현재 아이템을 먹었는지 여부
     bool IsFire = false;
 
     bool IsCom = false;
@@ -125,7 +125,9 @@ public class PlayerMove : MonoBehaviour
                         }
                     }
                 }
+                // RayCast로 아이템 감지
                 rayHit = Physics2D.Raycast(transform.position, Dir, 10, LayerMask.GetMask("Default"));
+                
                 if (rayHit.collider != null && IsMoveNext)
                 {
                     switch (rayHit.collider.name)
@@ -139,12 +141,14 @@ public class PlayerMove : MonoBehaviour
                             rayHit.collider.gameObject.transform.position = LastTrans;
                             KeyText.text = $"{KeyTrain.Count - 1}/{MT.KeyNum}";
                             break;
+                        // 나침반 아이템을 먹었을 경우, 출구의 위치를 표시하는 화살표 생성
                         case "Compass(Clone)":
                             Destroy(rayHit.collider.gameObject);
                             IsCom = true;
                             DirMark.SetActive(true);
                             DirIcon.SetActive(true);
                             break;
+                        // 횟불 아이템을 먹었을 경우, 30초간 무조건 시야 범위 안의 모든 안개를 걷어낸다.
                         case "Fire(Clone)":
                             Destroy(rayHit.collider.gameObject);
                             IsFire = true;
@@ -254,7 +258,7 @@ public class PlayerMove : MonoBehaviour
                                 MT.Fogs[dy][dx].GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
                                 MT.IsFog[dy][dx] = true;
                             }
-                            // 
+                            // 이동했던 부분 반대편의 경우, 한번 안개를 걷은 적이 있음으로, 흐린 안개로 표시.
                             else
                             {
                                 if (MT.IsFog[dy][dx] == true) MT.Fogs[dy][dx].GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f);

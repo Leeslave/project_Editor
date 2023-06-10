@@ -5,6 +5,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
+
+/// <summary>
+/// Maze의 Scene이동을 담당하는 Script
+/// ToDo : 싱글턴 방식이 완벽히 정해지면 갈아 엎을 예정
+/// </summary>
 public class Maze_Scene : MonoBehaviour
 {
     string SceneName;
@@ -23,7 +28,6 @@ public class Maze_Scene : MonoBehaviour
     }
     void NextScene(PointerEventData Data)
     {
-        
         PlayerPrefs.SetString("Difficulty",name);
         SceneManager.LoadScene(SceneName);
     }
