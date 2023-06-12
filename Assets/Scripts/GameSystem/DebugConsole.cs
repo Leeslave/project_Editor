@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class DebugConsole : MonoBehaviour
 {
     public GameObject console;
-    public Text consoleText;
-    public InputField input;
+    public TMP_Text consoleText;
+    public TMP_InputField input;
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -46,6 +47,14 @@ public class DebugConsole : MonoBehaviour
             case "help" :
                 output += $"todayData: show today's Date, Work Status\n";
                 output += $"playerData: show current date Index, location, time and renown\n";
+                output += $"clear: clear all today works\n";
+                break;
+            case "clear" :
+                foreach(var work in GameSystem.Instance.todayData.workData.Keys)
+                {
+                    GameSystem.Instance.todayData.workData[work] = true;
+                }
+                SceneManager.LoadScene("MainWorld");
                 break;
         }
 

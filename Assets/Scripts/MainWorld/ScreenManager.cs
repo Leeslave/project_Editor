@@ -82,14 +82,17 @@ public class ScreenManager : MonoBehaviour
                 // 비활성화 상태
                 // 월드 활성화 상태
                 screen.SetActive(false);
+                PlayerPrefs.SetInt("IsScreenOn", 0);
                 worldObject.gameObject.SetActive(true);
                 break;
             case ScreenMode.Off:
                 // 전원 off 상태
                 // 부팅 전 화면
                 if (screen.activeSelf == false)
+                {
                     screen.SetActive(true);
-
+                    PlayerPrefs.SetInt("IsScreenOn", 1);
+                }
                 desktop.SetActive(false);
 
                 bootPanel.SetActive(true);
@@ -100,16 +103,22 @@ public class ScreenManager : MonoBehaviour
                 // 전원 On 상태
                 // 부팅패널 off, 바탕화면 활성화
                 if (screen.activeSelf == false)
+                {
                     screen.SetActive(true);
-                bootPanel.SetActive(false);
-
+                    PlayerPrefs.SetInt("IsScreenOn", 1);
+                }
                 desktop.SetActive(true);
+
+                bootPanel.SetActive(false);
                 break;
             case ScreenMode.OnBoot:
                 // 부팅 시작 상태
                 // 부팅 패널 활성화
                 if (screen.activeSelf == false)
+                {
                     screen.SetActive(true);
+                    PlayerPrefs.SetInt("IsScreenOn", 1);
+                }
                 if (desktop.activeSelf == true)
                     desktop.SetActive(false);
                 bootPanel.SetActive(true);
@@ -120,7 +129,10 @@ public class ScreenManager : MonoBehaviour
                 // 부탕 종료 시도 상태
                 // 바탕화면 비활성화, 부팅 패널 활성화
                 if (screen.activeSelf == false)
+                {
                     screen.SetActive(true);
+                    PlayerPrefs.SetInt("IsScreenOn", 1);
+                }
                 if (desktop.activeSelf == true)
                     desktop.SetActive(false);
                 bootPanel.SetActive(true);

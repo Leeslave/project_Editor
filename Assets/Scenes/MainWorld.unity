@@ -163,6 +163,7 @@ MonoBehaviour:
     dateIndex: 0
     time: 0
     location: 
+    position: 0
     renown: 0
 --- !u!4 &450701633
 Transform:
@@ -385,6 +386,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 424912135762650564, guid: 54087aa72a764804987465198f41b4e1, type: 3}
+      propertyPath: m_text
+      value: "\u200B"
+      objectReference: {fileID: 0}
     - target: {fileID: 2676285752922911987, guid: 54087aa72a764804987465198f41b4e1, type: 3}
       propertyPath: m_Name
       value: Console
@@ -492,7 +497,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3274669247606693199, guid: b588fd661d2e66e419028c2f9d8c82e7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -3.2999983
+      value: -3.2999973
       objectReference: {fileID: 0}
     - target: {fileID: 3991088266743864805, guid: b588fd661d2e66e419028c2f9d8c82e7, type: 3}
       propertyPath: m_IsActive

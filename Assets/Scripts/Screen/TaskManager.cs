@@ -31,6 +31,15 @@ public class TaskManager : MonoBehaviour
         }
     }
 
+    /// 업무 완료 확인 TODO: 업무 클리어 후 돌아올때 확인으로 수정 필요
+    void OnEnable()
+    {
+        if (taskClear == true)
+        {
+            GameSystem.Instance.ChangeTime();
+        }
+    }
+
     /// 창 열고 닫기
     public void ActiveTaskWindow()
     {
