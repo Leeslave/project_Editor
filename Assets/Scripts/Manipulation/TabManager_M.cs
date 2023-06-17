@@ -10,18 +10,14 @@ public class TabManager_M : MonoBehaviour
     public TMP_Text[] Texts;
     public GameObject Adder;
 
+    [SerializeField]
     Tab_M[] Tabs_M = new Tab_M[4];
     int ActiveTab = 1;
     int CurTab = 0;
 
-    private void Awake()
-    {
-        for(int i = 0; i < 4; i++) Tabs_M[i] = Tabs[i].GetComponent<Tab_M>();
-    }
-
     private void OnEnable()
     {
-        for(int i = 3; i >= 1; i++)
+        for(int i = 3; i >= 1; i--)
         {
             if (Tabs[i].activeSelf) DeleteTab(i);
         }

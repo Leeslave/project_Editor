@@ -67,7 +67,7 @@ public class InfChange : MonoBehaviour
                     }
                     else
                     {
-                        Drager.name = CurFile.transform.GetSiblingIndex().ToString();
+                        Drager_Image.name = CurFile.transform.GetSiblingIndex().ToString();
                         Drager_Image.transform.GetChild(1).GetComponent<Image>().sprite
                             = DB.FaceImages[CurPeople.name_e][CurFile.transform.GetSiblingIndex()];
                         Drager_Image.SetActive(true);
@@ -161,14 +161,14 @@ public class InfChange : MonoBehaviour
         Sex.text = "Sex : " + FindPeople.sex;
         Country.text = "Country : " + FindPeople.country;
         Job.text = "Job : " + FindPeople.job;
-        Face.sprite = DB.FaceImages[FindPeople.name_e][FaceNum];
+        Face.sprite = DB.FaceImages[FindPeople.name_e][FindPeople.face];
     }
 
     public void SaveChange()
     {
         var s = Country.text.Split(' ');
         var s2 = Job.text.Split(' ');
-        DB.ChangeInfo(CurPeople.name_e, s[s.Length - 1], s2[s2.Length-1],CurPeople.face-1);
+        DB.ChangeInfo(CurPeople.name_e, s[s.Length - 1], s2[s2.Length-1],FaceNum);
     }
 
     public bool IsTouchAble() { return TouchAble; }

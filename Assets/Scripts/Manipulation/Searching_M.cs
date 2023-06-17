@@ -30,7 +30,7 @@ public class Searching_M : MonoBehaviour
         "Accessing To DB",
         "Checking Credential",
         "Comparing Name",
-        "Gatehring Informaiton",
+        "Gathering Informaiton",
         "Comparing Key",
         "Decoding Information",
         "Configuring Information",

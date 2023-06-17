@@ -17,7 +17,7 @@ public class DB_M : MonoBehaviour
     {
         foreach(PeopleIndex a in PeopleList.PL)
         {
-            if ((a.name_e == name || a.name_k == name) && a.key == key) return a;
+            if ((a.name_e.ToLower() == name.ToLower() || a.name_k == name) && a.key == key) return a;
         }
         return null;
     }
