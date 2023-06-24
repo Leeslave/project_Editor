@@ -12,12 +12,14 @@ public class ScreenManager : MonoBehaviour
         - 전원 켜기 (부팅 애니메이션)
         - 전원 끄기 (한번 더 눌러서 전원 끔)
         - 리셋 버튼 (초기화 밑 재부팅)
+    *   desktop 관리
+        - 로그인 기능 (TODO)
+        - 특수 컷씬 기능 (+a)
     */
     
     public WorldCanvas worldObject;   //스크린이 활성화 된 world
 
     /// 스크린내 기본 요소 (에디터 할당)
-    public GameObject screen;      // 스크린 오브젝트
     public GameObject desktop;      // 바탕화면 패널
     public GameObject bootPanel;    //부팅 패널
     private Text bootCLI;     //부팅 콘솔 텍스트
@@ -29,12 +31,10 @@ public class ScreenManager : MonoBehaviour
 
     /// 스크린 모드
     public enum ScreenMode{
-        Deactivate,
         Off,
         OnBoot,
         On,
-        TryOff,
-        GetOff
+        TryOff
     }
 
     // 싱글톤
@@ -69,6 +69,8 @@ public class ScreenManager : MonoBehaviour
         currentBootStatus = ScreenMode.Off;
     }
 
+    /// 
+
     /// <summary>
     /// 스크린 현재 모드 설정
     /// </summary>
@@ -76,69 +78,21 @@ public class ScreenManager : MonoBehaviour
     /// <param name=screenMode>전환할 스크린 모드</param>
     public void SetScreen(ScreenMode screenMode) 
     {
-        switch(screenMode)
+        if (screenMode == ScreenMode.On)
         {
-            case ScreenMode.Deactivate:
-                // 비활성화 상태
-                // 월드 활성화 상태
-                screen.SetActive(false);
-                PlayerPrefs.SetInt("IsScreenOn", 0);
-                worldObject.gameObject.SetActive(true);
-                break;
-            case ScreenMode.Off:
-                // 전원 off 상태
-                // 부팅 전 화면
-                if (screen.activeSelf == false)
-                {
-                    screen.SetActive(true);
-                    PlayerPrefs.SetInt("IsScreenOn", 1);
-                }
-                desktop.SetActive(false);
-
-                bootPanel.SetActive(true);
-                bootCLI.text = "";
-                bootCLI.gameObject.SetActive(false);
-                break;
-            case ScreenMode.On:
-                // 전원 On 상태
-                // 부팅패널 off, 바탕화면 활성화
-                if (screen.activeSelf == false)
-                {
-                    screen.SetActive(true);
-                    PlayerPrefs.SetInt("IsScreenOn", 1);
-                }
-                desktop.SetActive(true);
-
-                bootPanel.SetActive(false);
-                break;
-            case ScreenMode.OnBoot:
-                // 부팅 시작 상태
-                // 부팅 패널 활성화
-                if (screen.activeSelf == false)
-                {
-                    screen.SetActive(true);
-                    PlayerPrefs.SetInt("IsScreenOn", 1);
-                }
-                if (desktop.activeSelf == true)
-                    desktop.SetActive(false);
-                bootPanel.SetActive(true);
-                bootCLI.text = "";
-                bootCLI.gameObject.SetActive(true);
-                break;
-            case ScreenMode.TryOff:
-                // 부탕 종료 시도 상태
-                // 바탕화면 비활성화, 부팅 패널 활성화
-                if (screen.activeSelf == false)
-                {
-                    screen.SetActive(true);
-                    PlayerPrefs.SetInt("IsScreenOn", 1);
-                }
-                if (desktop.activeSelf == true)
-                    desktop.SetActive(false);
-                bootPanel.SetActive(true);
-                bootCLI.text = "";
-                bootCLI.gameObject.SetActive(true);
-                break;  
+            //바탕화면 활성화
+            desktop.SetActive(true);
+            // 부팅패널 비활성화
+            bootPanel.SetActive(false);
+        }
+        else
+        {
+            // 바탕화면 비활성화
+            desktop.SetActive(false);
+            // 부팅패널 활성화
+            bootPanel.SetActive(true);
+            bootCLI.text = "";
+            bootCLI.gameObject.SetActive(true);
         }
         currentBootStatus = screenMode;
     }
@@ -161,7 +115,7 @@ public class ScreenManager : MonoBehaviour
                 StartCoroutine("OffScreen");
                 break;
             case ScreenMode.TryOff:
-                SetScreen(ScreenMode.GetOff);
+                SetScreen(ScreenMode.Off);
                 break;
         }
     }
@@ -218,9 +172,9 @@ public class ScreenManager : MonoBehaviour
         for(var i = 0; i<6; i++)
         {
             // 종료
-            if(currentBootStatus == ScreenMode.GetOff)
+            if(currentBootStatus == ScreenMode.Off)
             {
-                SetScreen(ScreenMode.Deactivate);
+                SetScreen(ScreenMode.Off);
                 // TODO: desktop 초기화 (종료)
                 yield break;
             }

@@ -16,7 +16,7 @@ public class WorldSceneManager : MonoBehaviour
 
     public string worldPath = "Prefab/MainWorld/";  // 월드 프리팹 경로
     public WorldCanvas currentWorld = null;    // 현재 월드 오브젝트
-    public GameObject introObject;
+    public GameObject introObject;      // 인트로 오브젝트
 
     void Start()
     {
