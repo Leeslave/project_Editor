@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ScreenManager : MonoBehaviour
 {
@@ -16,10 +17,9 @@ public class ScreenManager : MonoBehaviour
         - 로그인 기능 (TODO)
         - 특수 컷씬 기능 (+a)
     */
-    
-    public WorldCanvas worldObject;   //스크린이 활성화 된 world
 
     /// 스크린내 기본 요소 (에디터 할당)
+    public GameObject returnButton;     // 스크린 탈출 버튼
     public GameObject desktop;      // 바탕화면 패널
     public GameObject bootPanel;    //부팅 패널
     private Text bootCLI;     //부팅 콘솔 텍스트
@@ -48,7 +48,7 @@ public class ScreenManager : MonoBehaviour
         if(!_instance)
         {
             _instance = this;
-            bootCLI = bootPanel.transform.GetChild(1).GetComponent<Text>();
+            bootCLI = bootPanel.transform.GetChild(0).GetComponent<Text>();
         }
         else
         {
@@ -66,10 +66,8 @@ public class ScreenManager : MonoBehaviour
         bootCLI.text = "";
         bootCLI.gameObject.SetActive(false);
 
-        currentBootStatus = ScreenMode.Off;
+        SetScreen(ScreenMode.Off);
     }
-
-    /// 
 
     /// <summary>
     /// 스크린 현재 모드 설정
@@ -84,9 +82,13 @@ public class ScreenManager : MonoBehaviour
             desktop.SetActive(true);
             // 부팅패널 비활성화
             bootPanel.SetActive(false);
+            // 탈출 버튼 비활성화
+            returnButton.SetActive(false);
         }
         else
         {
+            // 탈출 버튼 활성화
+            returnButton.SetActive(true);
             // 바탕화면 비활성화
             desktop.SetActive(false);
             // 부팅패널 활성화
@@ -125,11 +127,10 @@ public class ScreenManager : MonoBehaviour
     /// </summary>
     public void OnResetClicked()
     {
-        if (currentBootStatus == ScreenMode.On)
-        {
-            StopAllCoroutines();
-            StartCoroutine("BootScreen");
-        }
+        if (currentBootStatus != ScreenMode.On)
+            return;
+        StopAllCoroutines();
+        StartCoroutine("BootScreen");
     }
 
     /**
@@ -183,5 +184,12 @@ public class ScreenManager : MonoBehaviour
 
         // 종료 취소 및 스크린 재개
         SetScreen(ScreenMode.On);
+    }
+
+    public void OnReturnClicked(string sceneName)
+    {
+        if (sceneName == null || sceneName == "")
+            sceneName = "MainWorld";
+        SceneManager.LoadScene(sceneName);
     }
 }

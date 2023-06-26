@@ -22,7 +22,7 @@ public class GameSystem : MonoBehaviour
 
     [SerializeField] 
     public SaveData player;      // 세이브 데이터 필드
-    public List<DailyData> daily;     // 날짜별 데이터 필드
+    private List<DailyData> daily;     // 날짜별 데이터 필드
     [SerializeField] 
     public DailyData todayData { get { return daily[player.dateIndex]; } }    // 오늘 날짜 데이터 필드
 
