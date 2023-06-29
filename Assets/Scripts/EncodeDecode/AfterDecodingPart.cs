@@ -6,26 +6,34 @@ public class AfterDecodingPart : MonoBehaviour
 {
     private ADFGVX adfgvx;
 
-    private TextField title;
+    private TextMeshPro m_FilePath;
+    private TextMeshPro m_FileTitle;
+    private TextMeshPro m_SecurityLevel;
+    private TextMeshPro m_ReceptionDateUI;
+    private TextMeshPro m_ReceptionDate;
+    private TextMeshPro m_ReceiverUI;
+    private TextMeshPro m_Receiver;
+
     private InputField_ADFGVX data;
-    private TextField securityLevel;
-    private TextField dateUI;
-    private TextField date;
-    private TextField senderUI;
-    private TextField sender;
+
+
     private GameObject button_DecodeSave;
 
-    private void Start()
+    private void Awake()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 
-        title = transform.Find("Title").GetComponent<TextField>();
+        m_FilePath = transform.GetChild(0).GetComponent<TextMeshPro>();
+        m_FileTitle = transform.GetChild(1).GetComponent<TextMeshPro>();
+        m_SecurityLevel = transform.GetChild(2).GetComponent<TextMeshPro>();
+        m_ReceptionDateUI = transform.GetChild(3).GetComponent<TextMeshPro>();
+        m_ReceptionDate = transform.GetChild(4).GetComponent<TextMeshPro>();
+        m_ReceiverUI = transform.GetChild(5).GetComponent<TextMeshPro>();
+        m_Receiver = transform.GetChild(6).GetComponent<TextMeshPro>();
+
+
         data = transform.Find("Data").GetComponent<InputField_ADFGVX>();
-        securityLevel = transform.Find("SecurityLevel").GetComponent<TextField>();
-        dateUI = transform.Find("DateUI").GetComponent<TextField>();
-        date = transform.Find("Date").GetComponent<TextField>();
-        senderUI = transform.Find("SenderUI").GetComponent<TextField>();
-        sender = transform.Find("Sender").GetComponent<TextField>();
+
         button_DecodeSave = GameObject.Find("DecodeSave");
     }
 
@@ -47,8 +55,8 @@ public class AfterDecodingPart : MonoBehaviour
 
     public void AddInputField_Data(string value)//데이터 입력창에 value 추가
     {
-        TextMeshPro row = adfgvx.biliteralsubstitutionpart.GetRowText();
-        TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetLineText();
+        TextMeshPro row = adfgvx.biliteralsubstitutionpart.GetCurrentRow();
+        TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetCurrentLine();
 
         if (value == "A" || value == "D" || value == "F" || value == "G" || value == "V" || value == "X")
         {
@@ -71,8 +79,8 @@ public class AfterDecodingPart : MonoBehaviour
 
     public void ReturnInputField()//데이터 입력창의 값을 토대로 변환
     {
-        TextMeshPro row = adfgvx.biliteralsubstitutionpart.GetRowText();
-        TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetLineText();
+        TextMeshPro row = adfgvx.biliteralsubstitutionpart.GetCurrentRow();
+        TextMeshPro line = adfgvx.biliteralsubstitutionpart.GetCurrentLine();
 
         //튜토리얼 관련 코드
         if(adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
@@ -117,33 +125,38 @@ public class AfterDecodingPart : MonoBehaviour
         line.text = "-";
     }
 
-    public TextField GetSecurityLevel()
+    public TextMeshPro GetFilePath()
     {
-        return securityLevel;
+        return m_FilePath;
     }
 
-    public TextField GetTitle()
+    public TextMeshPro GetFileTitle()
     {
-        return title;
+        return m_FileTitle;
     }
 
-    public TextField GetDateUI()
+    public TextMeshPro GetSecurityLevel()
     {
-        return dateUI;
+        return m_SecurityLevel;
     }
 
-    public TextField GetDate()
+    public TextMeshPro GetReceptionDateUI()
     {
-        return date;
+        return m_ReceptionDateUI;
     }
 
-    public TextField GetSenderUI()
+    public TextMeshPro GetReceptionDate()
     {
-        return senderUI;
+        return m_ReceptionDate;
     }
 
-    public TextField GetSender()
+    public TextMeshPro GetReceiverUI()
     {
-        return sender;
+        return m_ReceiverUI;
+    }
+
+    public TextMeshPro GetReceiver()
+    {
+        return m_Receiver;
     }
 }

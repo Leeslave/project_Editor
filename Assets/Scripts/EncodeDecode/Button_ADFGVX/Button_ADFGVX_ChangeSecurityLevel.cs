@@ -6,9 +6,9 @@ public class Button_ADFGVX_ChangeSecurityLevel : Button_ADFGVX
 {
     private int securityLevel;
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
         securityLevel = 3;
         SetSecurityLevel(securityLevel);
     }
@@ -25,6 +25,6 @@ public class Button_ADFGVX_ChangeSecurityLevel : Button_ADFGVX
     private void SetSecurityLevel(int level)
     {
         string[] korean = { "[특급 기밀]", "[1급 기밀]", "[2급 기밀]", "[3급 기밀]"};
-        SetMarkText(korean[level]);
+        GetTMP().text = korean[level];
     }
 }

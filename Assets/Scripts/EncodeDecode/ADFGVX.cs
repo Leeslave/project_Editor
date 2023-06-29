@@ -44,7 +44,8 @@ public class ADFGVX : MonoBehaviour
 
     private float totalElapsedTime;
 
-    private void Start()
+
+    private void Awake()
     {
         //현재 모드에 따라 창 배치
         if (CurrentMode == mode.Decoding)
@@ -146,7 +147,7 @@ public class ADFGVX : MonoBehaviour
     public bool ReturnEncodeScore()//암호화 결과 반환
     {
         string original = EditStirng.CollectEnglishUpperAlphabet(beforeEncodingPart.GetInputField_Data().GetInputString());
-        string keyword = EditStirng.CollectEnglishUpperAlphabet(transpositionpart.GetInputField_keyword().GetInputString());
+        string keyword = EditStirng.CollectEnglishUpperAlphabet(transpositionpart.GetInputField_Keyword().GetInputString());
         int[] place = new int[keyword.Length];
         place = transpositionpart.GetPriority();
 
@@ -194,8 +195,6 @@ public class ADFGVX : MonoBehaviour
         yield return new WaitForSeconds(endTime / length);
         StartCoroutine(SoundFlowIEnumerator(length, idx + 1, endTime));
     }
-
-
 
 
 

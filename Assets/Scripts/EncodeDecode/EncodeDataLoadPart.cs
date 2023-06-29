@@ -8,69 +8,60 @@ public class EncodeDataLoadPart : MonoBehaviour
 {
     private ADFGVX adfgvx;
 
-    private TextField securityLevel;
-    private TextField title;
-    private TextField data;
-    private TextField sender;
-    private TextField senderUI;
-    private TextField date;
-    private TextField dateUI;
-    private InputField_ADFGVX filePath;
+    private TextMeshPro m_SecurityLevel;
+    private TextMeshPro m_FileTitle;
+    private TextMeshPro m_EncodeData;
+    private TextMeshPro m_Sender;
+    private TextMeshPro m_SenderUI;
+    private TextMeshPro m_SendingDate;
+    private TextMeshPro m_SendingDateUI;
+    private InputField_ADFGVX m_FilePath;
     private Button_ADFGVX_Load load;
 
     private string DecodedChiper = "";  //복호화 정답
 
-    private void Start()
+    private void Awake()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 
-        securityLevel = transform.GetChild(2).GetComponent<TextField>();
-        title = transform.GetChild(3).GetComponent<TextField>();
-        data = transform.GetChild(4).GetComponent<TextField>();
-        date = transform.GetChild(5).GetComponent<TextField>();
-        dateUI = transform.GetChild(6).GetComponent<TextField>();
-        sender = transform.GetChild(7).GetComponent<TextField>();
-        senderUI = transform.GetChild(8).GetComponent<TextField>();
-        filePath = transform.GetChild(9).GetComponent<InputField_ADFGVX>();
-        load = transform.GetChild(10).GetComponent<Button_ADFGVX_Load>();
+        m_SecurityLevel = transform.GetChild(0).GetComponent<TextMeshPro>();
+        m_FileTitle = transform.GetChild(1).GetComponent<TextMeshPro>();
+        m_EncodeData = transform.GetChild(2).GetComponent<TextMeshPro>();
+        m_SendingDateUI = transform.GetChild(3).GetComponent<TextMeshPro>();
+        m_SendingDate = transform.GetChild(4).GetComponent<TextMeshPro>();
+        m_SenderUI = transform.GetChild(5).GetComponent<TextMeshPro>();
+        m_Sender = transform.GetChild(6).GetComponent<TextMeshPro>();
+        m_FilePath = transform.GetChild(17).GetComponent<InputField_ADFGVX>();
+        load = transform.GetChild(18).GetComponent<Button_ADFGVX_Load>();
     }
 
     public void SetLayer(int layer)//하위 요소의 입력 제어
     {
-        filePath.gameObject.layer = layer;
+        m_FilePath.gameObject.layer = layer;
         load.gameObject.layer = layer;
         if(layer == 2)
         {
-            filePath.SetIsReadyForInput(false);
-            filePath.SetIsFlash(false);
+            m_FilePath.SetIsReadyForInput(false);
+            m_FilePath.SetIsFlash(false);
         }
-    }
-
-    public InputField_ADFGVX GetInputField_filePath()//파일 경로 입력창 반환
-    {
-        return filePath;
-    }
-
-    public TextField GetTextField_SecurityLevel()//보안 등급 텍스트창 반환
-    {
-        return securityLevel;
     }
 
     public void LoadEncodeData()//암호화된 데이터를 로드
     {
-        if (date.GetIsNowFlowText() || sender.GetIsNowFlowText())//출력 중이 아니었다면
+        if(STRConverter.instance.GetIsPrintingTMP(m_SendingDate) || STRConverter.instance.GetIsPrintingTMP(m_Sender))
         {
             adfgvx.InformError("현재 암호화 데이터 로드 중 : 종료 시까지 대기 요망");
             return;
         }
 
         //깜박임 종료
-        filePath.StopFlashInputField();
+        m_FilePath.StopFlashInputField();
+        
 
         string FilePath = "";
         FileInfo TxtFile = null;
         string SecurityLevel = "";
-        string Title = "";
+        string FileTitle = "";
         string Data = "";
         string SendingDateUI = "";
         string SendingDate = "";
@@ -81,7 +72,7 @@ public class EncodeDataLoadPart : MonoBehaviour
         string ReceiverUI = "";
         string Receiver = "";
 
-        FilePath = "Assets/Resources/Text/EncodeDecode/Key/" + filePath.GetInputString() + ".txt";
+        FilePath = "Assets/Resources/Text/EncodeDecode/Key/" + m_FilePath.GetInputString() + ".txt";
         TxtFile = new FileInfo(FilePath);
 
         if (!TxtFile.Exists)
@@ -92,15 +83,15 @@ public class EncodeDataLoadPart : MonoBehaviour
                 adfgvx.chat_ADFGVX.DisplayTutorialDialog(11, 0f);
             }
 
-            adfgvx.InformError("'" + filePath.GetInputString() + "' " + "로드 실패 : 유효하지 않은 파일 경로");
-            filePath.DisplayErrorInInputField("파일 경로 오류!");
+            adfgvx.InformError("'" + m_FilePath.GetInputString() + "' " + "로드 실패 : 유효하지 않은 파일 경로");
+            m_FilePath.DisplayErrorInInputField("파일 경로 오류!");
             return;
         }
 
         //튜토리얼 관련 코드
         if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 0 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
         {
-            if (filePath.GetInputString() == "SI-XI-I")
+            if (m_FilePath.GetInputString() == "SI-XI-I")
                 adfgvx.chat_ADFGVX.MoveToNextTutorialPhase(3f);
             else
                 adfgvx.chat_ADFGVX.DisplayTutorialDialog(14, 3.2f);
@@ -108,7 +99,7 @@ public class EncodeDataLoadPart : MonoBehaviour
             
         StreamReader Reader = new StreamReader(FilePath, System.Text.Encoding.UTF8);
         SecurityLevel = Reader.ReadLine();
-        Title = Reader.ReadLine();
+        FileTitle = Reader.ReadLine();
         Data = Reader.ReadLine();
         SendingDateUI = Reader.ReadLine();
         SendingDate = Reader.ReadLine();
@@ -128,33 +119,24 @@ public class EncodeDataLoadPart : MonoBehaviour
         if(!adfgvx.chat_ADFGVX.PlayAsTutorial)
             adfgvx.SetPartLayerWaitForSec(3f, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-        adfgvx.InformUpdate("'" + filePath.GetInputString() + "' " + "로드 성공 : 총 작업 시간 1ms 이하");
+        adfgvx.InformUpdate("'" + m_FilePath.GetInputString() + "' " + "로드 성공 : 총 작업 시간 1ms 이하");
 
-        //업데이트 전 비움
-        securityLevel.SetText("");
-        title.SetText("");
-        data.SetText("");
-        dateUI.SetText("");
-        date.SetText("");
-        senderUI.SetText("");
-        sender.SetText("");
-
-        //현재 파트 업데이트
-        securityLevel.SetText(SecurityLevel);
-        title.FlowText(Title, 3.0f);
-        data.FlowText(Data, 3.0f);
-        dateUI.SetText(SendingDateUI);
-        date.FlowText(SendingDate, 3.0f);
-        senderUI.SetText(SenderUI);
-        sender.FlowText(Sender, 3.0f);
+        //암호화 데이터 로드 파트 업데이트
+        STRConverter.instance.PrintTMPByDuration(0f, SecurityLevel, m_SecurityLevel);
+        STRConverter.instance.PrintTMPByDuration(3.0f, FileTitle, m_FileTitle);
+        STRConverter.instance.PrintTMPByDuration(3.0f, Data, m_EncodeData);
+        STRConverter.instance.PrintTMPByDuration(0f, SendingDateUI, m_SendingDateUI);
+        STRConverter.instance.PrintTMPByDuration(3.0f, SendingDate, m_SendingDate);
+        STRConverter.instance.PrintTMPByDuration(0f, SenderUI, m_SenderUI);
+        STRConverter.instance.PrintTMPByDuration(3.0f, Sender, m_Sender);
 
         //복호화 후 파트 업데이트
-        adfgvx.afterDecodingPart.GetSecurityLevel().SetText(SecurityLevel);
-        adfgvx.afterDecodingPart.GetTitle().FlowText(Title, 3.0f);
-        adfgvx.afterDecodingPart.GetDateUI().SetText(ReceptionDateUI);
-        adfgvx.afterDecodingPart.GetDate().FlowText(ReceptionDate, 3.0f);
-        adfgvx.afterDecodingPart.GetSenderUI().SetText(ReceiverUI);
-        adfgvx.afterDecodingPart.GetSender().FlowText(Receiver, 3.0f);
+        STRConverter.instance.PrintTMPByDuration(0f, SecurityLevel, adfgvx.afterDecodingPart.GetSecurityLevel());
+        STRConverter.instance.PrintTMPByDuration(3.0f, FileTitle, adfgvx.afterDecodingPart.GetFileTitle());
+        STRConverter.instance.PrintTMPByDuration(0f, ReceptionDateUI, adfgvx.afterDecodingPart.GetReceptionDateUI());
+        STRConverter.instance.PrintTMPByDuration(3.0f, ReceptionDate, adfgvx.afterDecodingPart.GetReceptionDate());
+        STRConverter.instance.PrintTMPByDuration(0f, ReceiverUI, adfgvx.afterDecodingPart.GetReceiverUI());
+        STRConverter.instance.PrintTMPByDuration(3.0f, Receiver, adfgvx.afterDecodingPart.GetReceiver());
 
         //오디오 재생
         adfgvx.SoundFlow(30, 3f);
@@ -163,9 +145,19 @@ public class EncodeDataLoadPart : MonoBehaviour
         adfgvx.StartStopWatch();
     }
 
-    public string GetTextField_Data()//데이터 표시창 반환
+    public TextMeshPro GetEncodeData()
     {
-        return data.GetText();
+        return m_EncodeData;
+    }
+
+    public TextMeshPro GetSecurityLevel()
+    {
+        return m_SecurityLevel;
+    }
+
+    public InputField_ADFGVX GetInputField_FilePath()
+    {
+        return m_FilePath;
     }
 
     public string GetDecodedChiper()//복호화 정답 반환

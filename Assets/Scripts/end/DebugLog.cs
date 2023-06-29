@@ -11,11 +11,11 @@ public class DebugLog : MonoBehaviour
     private AudioSource audioSource;
     private BoxCollider2D boxCollider2D;
 
-    private void Start()
+    private void Awake()
     {
-        mainLogTextField = transform.Find("MainLogTextField").GetComponent<TextField>();
-        logTextField = transform.Find("LogTextField").GetComponent<TextField>();
-        logGuideSprite = transform.Find("LogGuideSprite").GetComponent<SpriteRenderer>();
+        mainLogTextField = transform.GetChild(0).GetComponent<TextField>();
+        logTextField = transform.GetChild(1).GetComponent<TextField>();
+        logGuideSprite = transform.GetChild(2).GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
         boxCollider2D = GetComponent<BoxCollider2D>();
 

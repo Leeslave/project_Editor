@@ -13,9 +13,9 @@ public class InputField_ADFGVX : Button_ADFGVX
     public int InputFieldMaxLength;
     public string InputFieldName;
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
 
         inputString = "";
         isFlash = false;
@@ -29,8 +29,8 @@ public class InputField_ADFGVX : Button_ADFGVX
         {
             if (isCursorOverInputField && !isReadyForInput)
             {
-                SetClickSpriteColor(Exit);
-                SetMarkText(inputString);
+                GetSTRConverter().ConvertSpriteRendererColor(0f, Exit, GetClickSprite());
+                GetTMP().text = inputString;
                 isReadyForInput = true;
                 isFlash = false;
             }
@@ -59,13 +59,13 @@ public class InputField_ADFGVX : Button_ADFGVX
     protected override void OnMouseEnter()
     {
         if (!isReadyForInput)
-            SetClickSpriteColor(Enter);
+            GetSTRConverter().ConvertSpriteRendererColor(0f, Enter, GetClickSprite());
         isCursorOverInputField = true;
     }
 
     protected override void OnMouseExit()
     {
-        ConvertClickSpriteColor(Exit);
+        GetSTRConverter().ConvertSpriteRendererColor(0.3f, Exit, GetClickSprite());
         isCursorOverInputField = false;
     }
 
@@ -103,7 +103,7 @@ public class InputField_ADFGVX : Button_ADFGVX
         }
 
         inputString += value;
-        SetMarkText(inputString);
+        GetTMP().text = inputString;
         skipOneFlash = true;
 
         GameManager.PlayAudioSource(ADFGVX.Audio.AddChar);
@@ -118,7 +118,7 @@ public class InputField_ADFGVX : Button_ADFGVX
         }
 
         inputString = inputString.Substring(0, inputString.Length - length);
-        SetMarkText(inputString);
+        GetTMP().text = inputString;
         skipOneFlash = true;
 
         GameManager.PlayAudioSource(ADFGVX.Audio.DeleteChar);
@@ -127,7 +127,7 @@ public class InputField_ADFGVX : Button_ADFGVX
     public void ClearInputField()//입력창 비움
     {
         inputString = "";
-        SetMarkText("");
+        GetTMP().text = inputString;
     }
 
     public void ExitInputField()//입력창 탈출
@@ -138,7 +138,7 @@ public class InputField_ADFGVX : Button_ADFGVX
 
     public void DisplayErrorInInputField(string value)//입력창에 에러 메세지 띄움
     {
-        SetMarkText(value);
+        GetTMP().text = value;
         inputString = "";
         isReadyForInput = false;
         isFlash = false;
@@ -146,7 +146,7 @@ public class InputField_ADFGVX : Button_ADFGVX
 
     public void StopFlashInputField()//입력창 깜박임 정지
     {
-        SetMarkText(inputString);
+        GetTMP().text = inputString;
         isReadyForInput = false;
         isFlash = false;
     }
@@ -162,17 +162,17 @@ public class InputField_ADFGVX : Button_ADFGVX
         {
             if (isFlash)
             {
-                SetMarkText(inputString);
+                GetTMP().text = inputString;
                 isFlash = false;
             }
             else
             {
-                SetMarkText(inputString + "…");
+                GetTMP().text = inputString + "…";
                 isFlash = true;
             }
         }
         else if (!isReadyForInput && inputString != "")
-            SetMarkText(inputString);
+            GetTMP().text = inputString;
 
         //한번 깜박임을 건너뛰었다면 다음에는 깜박여야 한다
         skipOneFlash = !skipOneFlash ? false : false;
@@ -183,6 +183,6 @@ public class InputField_ADFGVX : Button_ADFGVX
     private void InitInputField()
     {
         if (inputString == "")
-            SetMarkText("클릭하여 입력…");
+            GetTMP().text = "클릭하여 입력…";
     }
 }

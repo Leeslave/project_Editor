@@ -6,7 +6,7 @@ public class ChatButton_ExecuteSkip : MonoBehaviour
 {
     private Chat chat;
 
-    private void Start()
+    private void Awake()
     {
         chat = GameObject.FindObjectOfType<Chat>();
     }

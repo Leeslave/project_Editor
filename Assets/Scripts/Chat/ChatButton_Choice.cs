@@ -7,7 +7,7 @@ public class ChatButton_Choice : MonoBehaviour
     private Chat chat;
     public int choice;
 
-    private void Start()
+    private void Awake()
     {
         chat = GameObject.FindObjectOfType<Chat>();
     }

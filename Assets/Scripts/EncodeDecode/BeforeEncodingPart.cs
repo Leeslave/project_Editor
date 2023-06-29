@@ -11,7 +11,7 @@ public class BeforeEncodingPart : MonoBehaviour
     private TextField primeFactor;
     private Button_ADFGVX_Retranspose reTranspose;
 
-    private void Start()
+    private void Awake()
     {
         adfgvx = GameObject.Find("GameManager").GetComponent<ADFGVX>();
 
@@ -82,19 +82,19 @@ public class BeforeEncodingPart : MonoBehaviour
 
     private void UpdateRecommendKeyword()//추천 전치 키 글자 수 업데이트
     {
-        string number = ("오리지널 데이터의 글자 수 : " + data.GetMarkText().Length / 3 * 2).ToString();
+        string number = ("오리지널 데이터의 글자 수 : " + data.GetTMP().text.Length / 3 * 2).ToString();
 
         string prime = "추천하는 전치 키의 글자 수 : ";
 
-        if (data.GetMarkText().Length / 3 * 2 == 0)
+        if (data.GetTMP().text.Length / 3 * 2 == 0)
             prime += "NULL";
         else
         {
             prime += "1";
-            int max = ((data.GetMarkText().Length / 3 * 2) < 9) ? (data.GetMarkText().Length / 3 * 2) : 9;
+            int max = ((data.GetTMP().text.Length / 3 * 2) < 9) ? (data.GetTMP().text.Length / 3 * 2) : 9;
             for (int i = 2; i <= max; i++)
             {
-                if ((data.GetMarkText().Length / 3 * 2) % i == 0)
+                if ((data.GetTMP().text.Length / 3 * 2) % i == 0)
                     prime += ", " + i.ToString();
             }
         }
