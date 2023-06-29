@@ -2,35 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System;
 
 ///<summary> STRConverter는 SpriteRenderer, TextMeshPro 및 TextMeshProUGUI, RectTransform 등의 값을 시간에 흐름에 따라서 제어하는 함수를 제공합니다. </summary>
 ///<remarks> 씬에 배치하고 FindObjectOfType를 통해서 각 함수를 호출합니다. 딕셔너리를 이용해서 각기 다른 요청을 구별합니다. </remarks>
 public class STRConverter : MonoBehaviour
 {
-    ///<summary> </summary>
+    public static STRConverter instance = null;
+
+    ///<summary> SpriteRenderer 색 </summary>
     private Dictionary<SpriteRenderer, Coroutine> m_SpriteRendererColorCoroutines = new Dictionary<SpriteRenderer, Coroutine>();
-    ///<summary> </summary>
+    ///<summary> SpriteRenderer 크기 </summary>
     private Dictionary<SpriteRenderer, Coroutine> m_SpriteRendererSizeCoroutines = new Dictionary<SpriteRenderer, Coroutine>();
+    ///<summary> SpriteRenderer 스프라이트 </summary>
+    private Dictionary<SpriteRenderer, Coroutine> m_SpriteRendererSpriteCoroutines = new Dictionary<SpriteRenderer, Coroutine>();
     
-    ///<summary> </summary>
+    ///<summary> TextMeshPro 색 </summary>
     private Dictionary<TextMeshPro, Coroutine> m_TMPColorCoroutines = new Dictionary<TextMeshPro, Coroutine>();
-    ///<summary> </summary>
+    ///<summary> TextMeshPro 폰트 크기 </summary>
     private Dictionary<TextMeshPro, Coroutine> m_TMPFontSizeCoroutines = new Dictionary<TextMeshPro, Coroutine>();
-    ///<summary> </summary>
+    ///<summary> TextMeshPro 텍스트 출력 </summary>
     private Dictionary<TextMeshPro, Coroutine> m_TMPPrintCoroutines = new Dictionary<TextMeshPro, Coroutine>();
 
-    ///<summary> </summary>
+    ///<summary> TextMeshProUGUI 색 </summary>
     private Dictionary<TextMeshProUGUI, Coroutine> m_TMPUGUIColorCoroutines = new Dictionary<TextMeshProUGUI, Coroutine>();
-    ///<summary> </summary>
+    ///<summary> TextMeshProUGUI 폰트 크기 </summary>
     private Dictionary<TextMeshProUGUI, Coroutine> m_TMPUGUIFontSizeCoroutines = new Dictionary<TextMeshProUGUI, Coroutine>();
-    ///<summary> </summary>
+    ///<summary> TextMeshProUGUI 텍스트 출력 </summary>
     private Dictionary<TextMeshProUGUI, Coroutine> m_TMPUGUIPrintCoroutines = new Dictionary<TextMeshProUGUI, Coroutine>();
 
-    ///<summary> </summary>
+    ///<summary> RectTransform 위치 </summary>
     private Dictionary<RectTransform, Coroutine> m_RectTransformPosCoroutines = new Dictionary<RectTransform, Coroutine>();
+    ///<summary> RectTransform 크기 </summary>
+    private Dictionary<RectTransform, Coroutine> m_RectTransformSizeCoroutines = new Dictionary<RectTransform, Coroutine>();
 
-    ///<summary> </summary>
+    ///<summary> Transform 위치 </summary>
     private Dictionary<Transform, Coroutine> m_TransformPosCoroutines = new Dictionary<Transform, Coroutine>();
+    ///<summary> Transform 회전 </summary>
+    private Dictionary<Transform, Coroutine> m_TransformRotationCoroutines = new Dictionary<Transform, Coroutine>();
+    ///<summary> Transform 크기 </summary>
+    private Dictionary<Transform, Coroutine> m_TransformScaleCoroutines = new Dictionary<Transform, Coroutine>();
 
 
     ///<summary> 현재 시간
@@ -38,6 +49,17 @@ public class STRConverter : MonoBehaviour
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            if (instance != this)
+                Destroy(this.gameObject);
+        }
+
         currentTime = 0;
     }
 
@@ -45,6 +67,8 @@ public class STRConverter : MonoBehaviour
     {
         currentTime += Time.deltaTime;
     }
+
+
 
     ///<summary> SpriteRenderer의 color를 duration동안 endColor로 전환 </summary>
     public void ConvertSpriteRendererColor(float duration, Color endColor, SpriteRenderer targetSpriteRenderer)
@@ -125,6 +149,49 @@ public class STRConverter : MonoBehaviour
 
         yield return new WaitForSeconds(0.01f);
         m_SpriteRendererSizeCoroutines[targetSpriteRenderer] = StartCoroutine(ConvertSpriteRendererSize_IE(duration, startTime, endSize, startSize, targetSpriteRenderer));
+    }
+
+    ///<summary> SpriteRenderer의 sprite를 duration동안 페이드아웃하고 newSprite로 전환 </summary>
+    public void SwitchSpriteRendererSprite(float duration, Sprite newSprite, Color endColor, SpriteRenderer targetSpriteRenderer)
+    {
+        if(m_SpriteRendererSpriteCoroutines.ContainsKey(targetSpriteRenderer))
+        {
+            if(m_SpriteRendererSpriteCoroutines[targetSpriteRenderer] != null)
+                StopCoroutine(m_SpriteRendererSpriteCoroutines[targetSpriteRenderer]);
+            m_SpriteRendererSpriteCoroutines[targetSpriteRenderer] = StartCoroutine(SwitchSpriteRendererSprite_IE(duration, currentTime, newSprite, endColor, targetSpriteRenderer.color, targetSpriteRenderer));
+        }
+        else
+        {
+            m_SpriteRendererSpriteCoroutines.Add(targetSpriteRenderer, StartCoroutine(SwitchSpriteRendererSprite_IE(duration, currentTime, newSprite, endColor, targetSpriteRenderer.color, targetSpriteRenderer)));
+        }
+    }
+
+    private IEnumerator SwitchSpriteRendererSprite_IE(float duration, float startTime, Sprite newSprite, Color endColor, Color startColor, SpriteRenderer targetSpriteRenderer)
+    {
+        if(duration == 0f)
+        {
+            targetSpriteRenderer.color = Color.white;
+            targetSpriteRenderer.sprite = newSprite;
+            m_SpriteRendererSpriteCoroutines.Remove(targetSpriteRenderer);
+            yield break;
+        }
+
+        //작업 개시로부터 지난 시간
+        float pastDeltaTime = currentTime - startTime;
+        
+        //타임 아웃
+        if (pastDeltaTime > duration)
+        {
+            targetSpriteRenderer.color = Color.white;
+            targetSpriteRenderer.sprite = newSprite;
+            m_SpriteRendererSpriteCoroutines.Remove(targetSpriteRenderer);
+            yield break;
+        }
+
+        targetSpriteRenderer.color = Color.Lerp(startColor, Color.clear, pastDeltaTime / duration);
+
+        yield return new WaitForSeconds(0.01f);
+        m_SpriteRendererSpriteCoroutines[targetSpriteRenderer] = StartCoroutine(SwitchSpriteRendererSprite_IE(duration, startTime, newSprite, endColor, startColor, targetSpriteRenderer));
     }
 
 
@@ -214,6 +281,7 @@ public class STRConverter : MonoBehaviour
         {
             if(m_TMPPrintCoroutines[targetTMP] != null)
                 StopCoroutine(m_TMPPrintCoroutines[targetTMP]);
+            targetTMP.text = "";
             m_TMPPrintCoroutines[targetTMP] = StartCoroutine(PrintTMPByDuration_IE(duration, 0, value, targetTMP));
         }
         else
@@ -251,6 +319,7 @@ public class STRConverter : MonoBehaviour
         {
             if(m_TMPPrintCoroutines[targetTMP] != null)
                 StopCoroutine(m_TMPPrintCoroutines[targetTMP]);
+            targetTMP.text = "";
             m_TMPPrintCoroutines[targetTMP] = StartCoroutine(PrintTMPByDelay_IE(delay, 0, value, targetTMP));
         }
         else
@@ -383,7 +452,7 @@ public class STRConverter : MonoBehaviour
     ///<summary> duration에 따라서 targetTMPUGUI에 value를 출력합니다 </summary>
     public void PrintTMPUGUIByDuration(float duration, string value, TextMeshProUGUI targetTMPUGUI)
     {
-        if(m_TMPUGUIPrintCoroutines.ContainsKey(targetTMPUGUI))
+         if(m_TMPUGUIPrintCoroutines.ContainsKey(targetTMPUGUI))
         {
             if(m_TMPUGUIPrintCoroutines[targetTMPUGUI] != null)
                 StopCoroutine(m_TMPUGUIPrintCoroutines[targetTMPUGUI]);
@@ -459,7 +528,7 @@ public class STRConverter : MonoBehaviour
     ///<summary> targetTMPUGUI의 출력을 강제 종료합니다 </summary>
     public void StopPrintingTMPUGUI(TextMeshProUGUI targetTMPUGUI)
     {
-        if(!m_TMPUGUIColorCoroutines.ContainsKey(targetTMPUGUI))
+        if(!m_TMPUGUIPrintCoroutines.ContainsKey(targetTMPUGUI))
             return;
         StopCoroutine(m_TMPUGUIPrintCoroutines[targetTMPUGUI]);
         m_TMPUGUIPrintCoroutines.Remove(targetTMPUGUI);
@@ -562,7 +631,83 @@ public class STRConverter : MonoBehaviour
         m_TransformPosCoroutines[targetTransform] = StartCoroutine(ConvertTransformPos_IE(duration, startTime, endPos, startPos, targetTransform));
     }
 
+    ///<summary> Transform의 localRotation을 duration동안 endRotation로 전환 </summary>
+    public void ConvertTransformRotation(float duration, Vector3 endRotation, Transform targetTransform)
+    {
+        if(m_TransformRotationCoroutines.ContainsKey(targetTransform))
+        {
+            if(m_TransformRotationCoroutines[targetTransform] != null)
+                StopCoroutine(m_TransformRotationCoroutines[targetTransform]);
+            m_TransformRotationCoroutines[targetTransform] = StartCoroutine(ConvertTransformRotation_IE(duration, currentTime, endRotation, targetTransform.localRotation.eulerAngles, targetTransform));
+        }
+        else
+        {
+            m_TransformRotationCoroutines.Add(targetTransform, StartCoroutine(ConvertTransformRotation_IE(duration, currentTime, endRotation, targetTransform.localRotation.eulerAngles, targetTransform)));
+        }
+    }
 
+    private IEnumerator ConvertTransformRotation_IE(float duration, float startTime, Vector3 endRotation, Vector3 startRotation, Transform targetTransform)
+    {
+        if(duration == 0f)
+        {
+            targetTransform.localRotation = Quaternion.Euler(endRotation);
+            m_TransformRotationCoroutines.Remove(targetTransform);
+            yield break;
+        }
+
+        float pastDeltaTime = currentTime - startTime;
+        
+        if(pastDeltaTime > duration)
+        {
+            targetTransform.localRotation = Quaternion.Euler(endRotation);
+            m_TransformRotationCoroutines.Remove(targetTransform);
+            yield break;
+        }
+
+        targetTransform.localRotation = Quaternion.Euler(Vector3.Lerp(startRotation, endRotation, pastDeltaTime / duration));
+
+        yield return new WaitForSeconds(0.01f);
+        m_TransformRotationCoroutines[targetTransform] = StartCoroutine(ConvertTransformRotation_IE(duration, startTime, endRotation, startRotation, targetTransform));
+    }
+
+    ///<summary> Transform의 localScale을 duration동안 endScale로 전환 </summary>
+    public void ConvertTransformScale(float duration, Vector3 endScale, Transform targetTransform)
+    {
+        if(m_TransformScaleCoroutines.ContainsKey(targetTransform))
+        {
+            if(m_TransformRotationCoroutines[targetTransform] != null)
+                StopCoroutine(m_TransformScaleCoroutines[targetTransform]);
+            m_TransformScaleCoroutines[targetTransform] = StartCoroutine(ConvertTransformScale_IE(duration, currentTime, endScale, targetTransform.localScale, targetTransform));
+        }
+        else
+        {
+            m_TransformScaleCoroutines.Add(targetTransform, StartCoroutine(ConvertTransformScale_IE(duration, currentTime, endScale, targetTransform.localScale, targetTransform)));
+        }
+    }
+
+    private IEnumerator ConvertTransformScale_IE(float duration, float startTime, Vector3 endScale, Vector3 startScale, Transform targetTransform)
+    {
+        if(duration == 0f)
+        {
+            targetTransform.localScale = endScale;
+            m_TransformScaleCoroutines.Remove(targetTransform);
+            yield break;
+        }
+
+        float pastDeltaTime = currentTime - startTime;
+        
+        if(pastDeltaTime > duration)
+        {
+            targetTransform.localScale = endScale;
+            m_TransformScaleCoroutines.Remove(targetTransform);
+            yield break;
+        }
+
+        targetTransform.localScale = Vector3.Lerp(startScale, endScale, pastDeltaTime / duration);
+
+        yield return new WaitForSeconds(0.01f);
+        m_TransformScaleCoroutines[targetTransform] = StartCoroutine(ConvertTransformScale_IE(duration, startTime, endScale, startScale, targetTransform));
+    }
 
     public void FillPercentage(float endTime, TextMeshPro targetTMP)
     {
@@ -580,7 +725,4 @@ public class STRConverter : MonoBehaviour
         yield return new WaitForSeconds(endTime / 100);
         StartCoroutine(FillPercentage_IE(endTime, currentendTime, targetTMP));
     }
-
-
-
 }

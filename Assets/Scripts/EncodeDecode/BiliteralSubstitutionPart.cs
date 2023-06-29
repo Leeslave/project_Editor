@@ -111,7 +111,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             if (rowButtons[i].Selected == true && i != row)
             {
                 rowButtons[i].Selected = false;
-                adfgvx.GetSTRConverter().ConvertSpriteRendererColor(1f, rowButtons[i].Exit, rowButtons[i].GetClickSprite());
+                STRConverter.instance.ConvertSpriteRendererColor(1f, rowButtons[i].Exit, rowButtons[i].GetClickSprite());
             }
         }
 
@@ -119,7 +119,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         {
             rowButtons[decodeRow].Selected = false;
             lineButtons[decodeLine].Selected = false;
-            adfgvx.GetSTRConverter().ConvertSpriteRendererColor(1f, lineButtons[decodeLine].Exit, lineButtons[decodeLine].GetClickSprite());
+            STRConverter.instance.ConvertSpriteRendererColor(1f, lineButtons[decodeLine].Exit, lineButtons[decodeLine].GetClickSprite());
 
             //튜토리얼 관련 코드
             if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)
@@ -202,7 +202,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
             if (lineButtons[i].Selected == true && i != line)
             {
                 lineButtons[i].Selected = false;
-                adfgvx.GetSTRConverter().ConvertSpriteRendererColor(1f, lineButtons[i].Exit, lineButtons[i].GetClickSprite());
+                STRConverter.instance.ConvertSpriteRendererColor(1f, lineButtons[i].Exit, lineButtons[i].GetClickSprite());
             }
         }
 
@@ -210,7 +210,7 @@ public class BiliteralSubstitutionPart : MonoBehaviour
         {
             lineButtons[decodeLine].Selected = false;
             rowButtons[decodeRow].Selected = false;
-            adfgvx.GetSTRConverter().ConvertSpriteRendererColor(1f, rowButtons[decodeRow].Exit, rowButtons[decodeRow].GetClickSprite());
+            STRConverter.instance.ConvertSpriteRendererColor(1f, rowButtons[decodeRow].Exit, rowButtons[decodeRow].GetClickSprite());
 
             //튜토리얼 관련 코드
             if (adfgvx.chat_ADFGVX.GetCurrentTutorialPhase() == 8 && adfgvx.CurrentMode == ADFGVX.mode.Decoding)

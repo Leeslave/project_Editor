@@ -5,7 +5,6 @@ using TMPro;
 
 public class Button_Game : MonoBehaviour
 {
-    private STRConverter m_STRConverter;
     private TextMeshPro m_TMP;
     private SpriteRenderer guideSprite;
     private SpriteRenderer m_ClickSpriteRenderer;
@@ -24,8 +23,6 @@ public class Button_Game : MonoBehaviour
 
     protected virtual void Awake()
     {
-        m_STRConverter = FindObjectOfType<STRConverter>();
-
         m_TMP = transform.GetChild(0).GetComponent<TextMeshPro>();
         guideSprite = transform.GetChild(1).GetComponent<SpriteRenderer>();
         m_ClickSpriteRenderer = transform.GetChild(2).GetComponent<SpriteRenderer>();
@@ -42,29 +39,29 @@ public class Button_Game : MonoBehaviour
     protected virtual void OnMouseDown()//버튼 다운
     {
         if (GetIsCursorOver())
-            m_STRConverter.ConvertSpriteRendererColor(0f, Down, m_ClickSpriteRenderer);
+            STRConverter.instance.ConvertSpriteRendererColor(0f, Down, m_ClickSpriteRenderer);
         else
-            m_STRConverter.ConvertSpriteRendererColor(0.2f, Exit, m_ClickSpriteRenderer);
+            STRConverter.instance.ConvertSpriteRendererColor(0.2f, Exit, m_ClickSpriteRenderer);
     }
 
     protected virtual void OnMouseUp()//버튼 업
     {
         if (GetIsCursorOver())
-            m_STRConverter.ConvertSpriteRendererColor(0.2f, Up, m_ClickSpriteRenderer);
+            STRConverter.instance.ConvertSpriteRendererColor(0.2f, Up, m_ClickSpriteRenderer);
         else
-            m_STRConverter.ConvertSpriteRendererColor(0.2f, Exit, m_ClickSpriteRenderer);
+            STRConverter.instance.ConvertSpriteRendererColor(0.2f, Exit, m_ClickSpriteRenderer);
     }
 
     protected virtual void OnMouseEnter()//마우스 엔터
     {
         SetIsCursorOver(true);
-        m_STRConverter.ConvertSpriteRendererColor(0f, Enter, m_ClickSpriteRenderer);
+        STRConverter.instance.ConvertSpriteRendererColor(0f, Enter, m_ClickSpriteRenderer);
     }
 
     protected virtual void OnMouseExit()//마우스 엑시트
     {
         SetIsCursorOver(false);
-        m_STRConverter.ConvertSpriteRendererColor(0.2f, Exit, m_ClickSpriteRenderer);
+        STRConverter.instance.ConvertSpriteRendererColor(0.2f, Exit, m_ClickSpriteRenderer);
     }
 
     public SpriteRenderer GetClickSprite()
@@ -74,7 +71,7 @@ public class Button_Game : MonoBehaviour
 
     protected STRConverter GetSTRConverter()
     {
-        return m_STRConverter;
+        return STRConverter.instance;
     }
 
     public TextMeshPro GetTMP()

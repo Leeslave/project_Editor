@@ -48,7 +48,7 @@ public class EncodeDataLoadPart : MonoBehaviour
 
     public void LoadEncodeData()//암호화된 데이터를 로드
     {
-        if(adfgvx.GetSTRConverter().GetIsPrintingTMP(m_SendingDate) || adfgvx.GetSTRConverter().GetIsPrintingTMP(m_Sender))
+        if(STRConverter.instance.GetIsPrintingTMP(m_SendingDate) || STRConverter.instance.GetIsPrintingTMP(m_Sender))
         {
             adfgvx.InformError("현재 암호화 데이터 로드 중 : 종료 시까지 대기 요망");
             return;
@@ -122,21 +122,21 @@ public class EncodeDataLoadPart : MonoBehaviour
         adfgvx.InformUpdate("'" + m_FilePath.GetInputString() + "' " + "로드 성공 : 총 작업 시간 1ms 이하");
 
         //암호화 데이터 로드 파트 업데이트
-        adfgvx.GetSTRConverter().PrintTMPByDuration(0f, SecurityLevel, m_SecurityLevel);
-        adfgvx.GetSTRConverter().PrintTMPByDuration(3.0f, FileTitle, m_FileTitle);
-        adfgvx.GetSTRConverter().PrintTMPByDuration(3.0f, Data, m_EncodeData);
-        adfgvx.GetSTRConverter().PrintTMPByDuration(0f, SendingDateUI, m_SendingDateUI);
-        adfgvx.GetSTRConverter().PrintTMPByDuration(3.0f, SendingDate, m_SendingDate);
-        adfgvx.GetSTRConverter().PrintTMPByDuration(0f, SenderUI, m_SenderUI);
-        adfgvx.GetSTRConverter().PrintTMPByDuration(3.0f, Sender, m_Sender);
+        STRConverter.instance.PrintTMPByDuration(0f, SecurityLevel, m_SecurityLevel);
+        STRConverter.instance.PrintTMPByDuration(3.0f, FileTitle, m_FileTitle);
+        STRConverter.instance.PrintTMPByDuration(3.0f, Data, m_EncodeData);
+        STRConverter.instance.PrintTMPByDuration(0f, SendingDateUI, m_SendingDateUI);
+        STRConverter.instance.PrintTMPByDuration(3.0f, SendingDate, m_SendingDate);
+        STRConverter.instance.PrintTMPByDuration(0f, SenderUI, m_SenderUI);
+        STRConverter.instance.PrintTMPByDuration(3.0f, Sender, m_Sender);
 
         //복호화 후 파트 업데이트
-        adfgvx.GetSTRConverter().PrintTMPByDuration(0f, SecurityLevel, adfgvx.afterDecodingPart.GetSecurityLevel());
-        adfgvx.GetSTRConverter().PrintTMPByDuration(3.0f, FileTitle, adfgvx.afterDecodingPart.GetFileTitle());
-        adfgvx.GetSTRConverter().PrintTMPByDuration(0f, ReceptionDateUI, adfgvx.afterDecodingPart.GetReceptionDateUI());
-        adfgvx.GetSTRConverter().PrintTMPByDuration(3.0f, ReceptionDate, adfgvx.afterDecodingPart.GetReceptionDate());
-        adfgvx.GetSTRConverter().PrintTMPByDuration(0f, ReceiverUI, adfgvx.afterDecodingPart.GetReceiverUI());
-        adfgvx.GetSTRConverter().PrintTMPByDuration(3.0f, Receiver, adfgvx.afterDecodingPart.GetReceiver());
+        STRConverter.instance.PrintTMPByDuration(0f, SecurityLevel, adfgvx.afterDecodingPart.GetSecurityLevel());
+        STRConverter.instance.PrintTMPByDuration(3.0f, FileTitle, adfgvx.afterDecodingPart.GetFileTitle());
+        STRConverter.instance.PrintTMPByDuration(0f, ReceptionDateUI, adfgvx.afterDecodingPart.GetReceptionDateUI());
+        STRConverter.instance.PrintTMPByDuration(3.0f, ReceptionDate, adfgvx.afterDecodingPart.GetReceptionDate());
+        STRConverter.instance.PrintTMPByDuration(0f, ReceiverUI, adfgvx.afterDecodingPart.GetReceiverUI());
+        STRConverter.instance.PrintTMPByDuration(3.0f, Receiver, adfgvx.afterDecodingPart.GetReceiver());
 
         //오디오 재생
         adfgvx.SoundFlow(30, 3f);

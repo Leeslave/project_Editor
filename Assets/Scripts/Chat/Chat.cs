@@ -13,7 +13,6 @@ public class Chat : MonoBehaviour
     [Header("바로 실행 여부")]
     public bool PlayOnAwake;
     [Header("튜토리얼 실행 여부")]
-    // <summary> 체크되어 있으면 바로 실행 여부와 관계없이 바로 실행
     public bool PlayAsTutorial;
     [Header("다시보기 줄 프리펩")]
     public GameObject RemindLine;
@@ -34,8 +33,6 @@ public class Chat : MonoBehaviour
     private int[] tutorialPhaseArray;
     /// <summary> 현재 튜토리얼 단계 </summary>
     private int currentTutorialPhase;
-    /// <summary> SRT전환기 </summary>
-    private STRConverter m_SRTConverter;
 
     private AudioSource audioSource;
     private GameObject m_Button_Choice_0;
@@ -47,9 +44,12 @@ public class Chat : MonoBehaviour
     private GameObject m_PopUp_Choice;
     private GameObject m_PopUp_Remind;
     private GameObject m_PopUp_Skip;
-    private TextMeshProUGUI belong;
-    private TextMeshProUGUI dialog;
-    private TextMeshProUGUI speaker;
+    private TextMeshProUGUI m_Belong;
+    private TextMeshProUGUI m_Dialog;
+    private TextMeshProUGUI m_Speaker;
+
+    public enum ChatStatus { 비활성화, 출력도중, 출력완료, 선택지중, 다시보기팝업, 건너뛰기팝업};
+    private ChatStatus m_CurrentStatus = ChatStatus.비활성화;
 
     private void Awake()
     {
@@ -62,9 +62,9 @@ public class Chat : MonoBehaviour
         m_PopUp_Remind = transform.GetChild(5).gameObject;
         m_PopUp_Choice = transform.GetChild(6).gameObject;
 
-        speaker = m_SpeechBalloon.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-        belong = m_SpeechBalloon.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
-        dialog = m_SpeechBalloon.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
+        m_Speaker = m_SpeechBalloon.transform.GetChild(1).GetComponent<TextMeshProUGUI>();
+        m_Belong = m_SpeechBalloon.transform.GetChild(2).GetComponent<TextMeshProUGUI>();
+        m_Dialog = m_SpeechBalloon.transform.GetChild(3).GetComponent<TextMeshProUGUI>();
 
         m_Button_Choice_0 = m_PopUp_Choice.transform.GetChild(1).gameObject;
         m_Button_Choice_1 = m_PopUp_Choice.transform.GetChild(2).gameObject;
@@ -81,27 +81,19 @@ public class Chat : MonoBehaviour
         m_Button_Skip.SetActive(false);
         m_Button_Remind.SetActive(false);
 
-        //STR전환기 접근자 획득
-        m_SRTConverter = FindObjectOfType<STRConverter>();
-
         //튜토리얼 실행
         if (PlayAsTutorial)
         {
-            //시작 CSV 파일 데이터 로드
-            LoadData(StartingCSVFileName);
-            
+            LoadData(StartingCSVFileName);   
             tutorialPhaseArray = GetArrayOfTutorialPhase();
             currentTutorialPhase = -1;
             MoveToNextTutorialPhase(0f);
             return;
         }
 
-        //바로 실행
         if (PlayOnAwake)
         {
-            //시작 CSV 파일 데이터 로드
             LoadData(StartingCSVFileName);
-            
             LoadLine(1);
             return;
         }
@@ -116,13 +108,16 @@ public class Chat : MonoBehaviour
     private void ControlInput()
     {
         //바쁜 대기로 대화창의 흐름 출력이 끝났는지 확인한다
-        if (lastFlowTextStatus && !m_SRTConverter.GetIsPrintingTMPUGUI(dialog))
+        if (lastFlowTextStatus && !STRConverter.instance.GetIsPrintingTMPUGUI(m_Dialog))
         {
             //출력이 끝나면 Delay 이후에 다음으로 넘어갈 수 있게 된다
             Invoke("SetTrueIsAbleToNextLine", Delay);
+
+            //상태 업데이트
+            m_CurrentStatus = ChatStatus.출력완료;
         }
         //바쁜 대기를 위해서 업데이트
-        lastFlowTextStatus = m_SRTConverter.GetIsPrintingTMPUGUI(dialog);
+        lastFlowTextStatus = STRConverter.instance.GetIsPrintingTMPUGUI(m_Dialog);
 
         //대화 판넬 활성 && 다시보기 판넬 비활성 && 건너뛰기 판넬 비활성 && 다른 UI 오브젝트 위 아님
         //키보드 스페이스 입력 확인 시 사용한다.
@@ -137,13 +132,13 @@ public class Chat : MonoBehaviour
             return;
 
         //흐름 출력 여부를 확인
-        if(m_SRTConverter.GetIsPrintingTMPUGUI(dialog))   
+        if(STRConverter.instance.GetIsPrintingTMPUGUI(m_Dialog))   
         {
             //흐름 출력을 종료하고 Dialog를 즉시 채운다, 그런데 TE 흐름 출력은 즉시 못 채운다
             if (data[currentLineNumber - 1]["ChatType"].ToString() == "TD")
             {
-                m_SRTConverter.StopPrintingTMPUGUI(dialog);
-                m_SRTConverter.PrintTMPUGUIByDuration(0.0f, data[currentLineNumber - 1]["Dialog"].ToString(), dialog);
+                STRConverter.instance.StopPrintingTMPUGUI(m_Dialog);
+                STRConverter.instance.PrintTMPUGUIByDuration(0.0f, data[currentLineNumber - 1]["Dialog"].ToString(), m_Dialog);
             }
         }
         else
@@ -200,6 +195,12 @@ public class Chat : MonoBehaviour
         one.transform.localScale = new Vector3(1,1,1);
     }
 
+    ///<summary> 현재 Chat의 상태를 반환한다 </summary>
+    public ChatStatus GetChatStatus()
+    {
+        return m_CurrentStatus;
+    }
+
     ///<summary> 선택지 버튼이 눌리는 이벤트가 발생했다 </summary>
     ///<param name="choiceNumber"> 몇번 선택지 버튼이 눌렸는가? </param>
     ///<remarks> 이 함수는 Chat 스크립트에서는 호출하지 않는다. ChatButton_Choice 스크립트에서 선택지 버튼이 눌리는 이벤트가 발생했을 때, 선택지 번호를 매개변수로 호출된다 </remarks>
@@ -240,6 +241,9 @@ public class Chat : MonoBehaviour
                 m_Button_Remind.SetActive(true);
                 m_Button_Skip.SetActive(true);
             }
+
+            //상태 업데이트
+            m_CurrentStatus = ChatStatus.출력완료;
         }
         else                            //다시보기 창이 비활성되어 있는 상태, 활성화한다
         {
@@ -250,6 +254,9 @@ public class Chat : MonoBehaviour
 
             if (m_PopUp_Remind.transform.Find("ScrollbarVertical") != null)//스크롤바를 가장 최근 대화로 이동
                 m_PopUp_Remind.transform.Find("ScrollbarVertical").GetComponent<Scrollbar>().value = 0.01f;
+
+            //상태 업데이트
+            m_CurrentStatus = ChatStatus.다시보기팝업;
         }
     }
 
@@ -263,6 +270,9 @@ public class Chat : MonoBehaviour
             m_Button_Skip.SetActive(true);
             m_Button_Remind.SetActive(false);
             m_PopUp_Skip.SetActive(false);
+
+            //상태 업데이트
+            m_CurrentStatus = ChatStatus.출력완료;
         }
         else
         {
@@ -270,6 +280,9 @@ public class Chat : MonoBehaviour
             m_Button_Skip.SetActive(false);
             m_Button_Remind.SetActive(false);
             m_PopUp_Skip.SetActive(true);
+
+            //상태 업데이트
+            m_CurrentStatus = ChatStatus.건너뛰기팝업;
         }
     }
 
@@ -301,7 +314,7 @@ public class Chat : MonoBehaviour
         m_Button_Remind.SetActive(true);
 
         //현재 흐름 출력 중인 텍스트을 강제 중지
-        m_SRTConverter.StopPrintingTMPUGUI(dialog);
+        STRConverter.instance.StopPrintingTMPUGUI(m_Dialog);
 
         //건너뛰기가 중지되는 조건은 오직 채팅 타입 End에 도달하거나 다음 줄의 채팅타입이 C2, C3인 경우이다
         for(;;tempLineNumber++)
@@ -345,6 +358,9 @@ public class Chat : MonoBehaviour
                     //건너뛰기를 모두 수행했으므로 currentLineNumber를 업데이트 하고 리턴
                     currentLineNumber = tempLineNumber + 1;
                     SetLayerAtEnd();
+
+                    //상태 업데이트
+                    m_CurrentStatus = ChatStatus.비활성화;
                     return;
             }
         } 
@@ -372,15 +388,13 @@ public class Chat : MonoBehaviour
             return;
         }
 
-        //currentLineNumber의 업데이트는 ExecuteSkip, OnChoiceDown 함수의 실행을 위해서 필요
-        currentLineNumber = line;
-
-        //현재 줄 데이터를 업데이트
-        currentLineData = data[currentLineNumber - 1];
-
         //오디오 재생
         if(audioSource.clip!=null)
             audioSource.Play();
+
+        //currentLineNumber의 업데이트는 ExecuteSkip, OnChoiceDown 함수의 실행을 위해서 필요
+        currentLineNumber = line;
+        currentLineData = data[currentLineNumber - 1];
 
         //연속으로 다음 라인으로 넘어가는 것 차단
         isAbleToMoveNextLine = false;
@@ -409,16 +423,20 @@ public class Chat : MonoBehaviour
 
                 //delay값 결정
                 float delay = currentLineData["Time"].ToString() != "" ? float.Parse(currentLineData["Time"].ToString()) : 0.03f;
-                m_SRTConverter.PrintTMPUGUIByDelay(delay, currentLineData["Dialog"].ToString(), dialog);
+
+                STRConverter.instance.PrintTMPUGUIByDelay(delay, InsertVariableInDialog(currentLineData["Dialog"].ToString()), m_Dialog);
 
                 //화자와 소속 텍스트 업데이트
-                speaker.SetText(currentLineData["Speaker"].ToString());
-                belong.SetText(currentLineData["Belong"].ToString());
+                m_Speaker.SetText(currentLineData["Speaker"].ToString());
+                m_Belong.SetText(currentLineData["Belong"].ToString());
                 Canvas.ForceUpdateCanvases();
-                belong.transform.localPosition = new Vector3(speaker.transform.localPosition.x + speaker.GetComponent<RectTransform>().rect.width + 20, belong.transform.localPosition.y, 0);
+                m_Belong.transform.localPosition = new Vector3(m_Speaker.transform.localPosition.x + m_Speaker.GetComponent<RectTransform>().rect.width + 20, m_Belong.transform.localPosition.y, 0);
                 
                 //다시보기 창에 이번 대화 내용을 추가
                 AddLineToRemindPanel(currentLineData["Speaker"].ToString(), currentLineData["Belong"].ToString(), currentLineData["Dialog"].ToString());
+
+                //상태 업데이트
+                m_CurrentStatus = ChatStatus.출력도중;
                 break;
             case "TE":
                 //EndTime에 따라 대화 출력 작업 수행
@@ -433,16 +451,19 @@ public class Chat : MonoBehaviour
 
                 //duration값 결정
                 float duration = currentLineData["Time"].ToString() != "" ? float.Parse(currentLineData["Time"].ToString()) : 2.0f;
-                m_SRTConverter.PrintTMPUGUIByDuration(duration, currentLineData["Dialog"].ToString(), dialog);
+                STRConverter.instance.PrintTMPUGUIByDuration(duration, currentLineData["Dialog"].ToString(), m_Dialog);
 
                 //화자와 소속 텍스트 업데이트
-                speaker.SetText(currentLineData["Speaker"].ToString());
-                belong.SetText(currentLineData["Belong"].ToString());
+                m_Speaker.SetText(currentLineData["Speaker"].ToString());
+                m_Belong.SetText(currentLineData["Belong"].ToString());
                 Canvas.ForceUpdateCanvases();
-                belong.transform.localPosition = new Vector3(speaker.transform.localPosition.x + speaker.GetComponent<RectTransform>().rect.width + 20, belong.transform.localPosition.y, 0);
+                m_Belong.transform.localPosition = new Vector3(m_Speaker.transform.localPosition.x + m_Speaker.GetComponent<RectTransform>().rect.width + 20, m_Belong.transform.localPosition.y, 0);
 
                 //다시보기 창에 이번 대화 내용을 추가
                 AddLineToRemindPanel(currentLineData["Speaker"].ToString(), currentLineData["Belong"].ToString(), currentLineData["Dialog"].ToString());
+
+                //상태 업데이트
+                m_CurrentStatus = ChatStatus.출력도중;
                 break;
             case "A":
                 //대답형 연출 출력 작업 수행
@@ -457,6 +478,9 @@ public class Chat : MonoBehaviour
 
                 //0번 선택지 버튼을 화면 정중앙에 배치
                 m_Button_Choice_0.transform.localPosition = new Vector3(0,0,0);
+
+                //상태 업데이트
+                m_CurrentStatus = ChatStatus.선택지중;
                 break;
             case "C2":
                 //2개 선택지 출력 작업 수행
@@ -474,6 +498,9 @@ public class Chat : MonoBehaviour
                 //2개의 선택지 버튼을 화면 중앙에 위아래로 배치
                 m_Button_Choice_0.transform.localPosition = new Vector3(0,75,0);
                 m_Button_Choice_1.transform.localPosition = new Vector3(0,-75,0);
+
+                //상태 업데이트
+                m_CurrentStatus = ChatStatus.선택지중;
                 break;
             case "C3":
                 //3개 선택지 출력 작업 수행
@@ -494,6 +521,9 @@ public class Chat : MonoBehaviour
                 m_Button_Choice_0.transform.localPosition = new Vector3(0,150,0);
                 m_Button_Choice_1.transform.localPosition = new Vector3(0,0,0);
                 m_Button_Choice_2.transform.localPosition = new Vector3(0,-150,0);
+
+                //상태 업데이트
+                m_CurrentStatus = ChatStatus.선택지중;
                 break;
             case "J":
                 //점프할 줄 번호를 파싱하여 LoadLine 함수 호출
@@ -510,8 +540,17 @@ public class Chat : MonoBehaviour
                 m_Button_Skip.SetActive(false);
 
                 SetLayerAtEnd();
+
+                //상태 업데이트
+                m_CurrentStatus = ChatStatus.비활성화;
                 break;
         }
+    }
+
+    //
+    private string InsertVariableInDialog(string original)
+    {
+        return string.Format(original, System.DateTime.Today, System.DateTime.Now);
     }
 
     /// <summary> 채팅 타입 End를 만나 채팅창이 닫힐 때, 입력을 제어한다 </summary>
