@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameSystem : MonoBehaviour
 {
@@ -25,9 +25,6 @@ public class GameSystem : MonoBehaviour
     private List<DailyData> daily;     // 날짜별 데이터 필드
     [SerializeField] 
     public DailyData todayData { get { return daily[player.dateIndex]; } }    // 오늘 날짜 데이터 필드
-
-    [System.Serializable]
-    class Wrapper { public List<DailyWrapper> dailyDataList = new List<DailyWrapper>(); }     // JsonUtility용 Wrapper
 
     // 싱글턴
     private static GameSystem _instance;
@@ -52,7 +49,7 @@ public class GameSystem : MonoBehaviour
     }
 
     ///<summary>
-    /// 게임 내 날짜 전환
+    /// 날짜 전환
     ///</summary>
     ///<param name="dateIndex">전환할 날짜 인덱스(없으면 다음 날짜로), 시간은 무조건 아침</param>
     public void ChangeDate(int date = -1)
@@ -71,7 +68,7 @@ public class GameSystem : MonoBehaviour
     }
 
     ///<summary>
-    /// 게임 내 시간 전환
+    /// 시간 전환
     ///</summary>
     ///<param name="time">전환할 시간(없으면 다음 시간대로, 마지막 시간대면 다음 날짜로)</param>
     public void ChangeTime(int time = -1)
@@ -91,6 +88,43 @@ public class GameSystem : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// 업무 완료 여부 설정
+    /// </summary>
+    /// <param name="workCode">설정할 업무의 코드명</param>
+    /// <param name="isClear">업무 완료 여부</param>
+    public void ClearTask()
+    {
+        string workCode = SceneManager.GetActiveScene().name;
+        if (workCode == null || workCode == "")
+            return;
+        Work currentWork = null;
+        foreach(var work in todayData.workData)
+        {
+            if (work.code == workCode)
+            {
+                currentWork = work;
+                break;
+            }
+        }
+        if (currentWork == null)
+        {
+            Debug.Log("Work doesn't Match");
+            return;
+        }
+        currentWork.isClear = true;
+    }
+
+
+    /*****
+    * 게임 데이터 저장, 로드 시스템
+        - Json 파싱으로 게임 데이터 로드
+        - Json 파싱으로 플레이어 데이터 저장, 로드
+    */
+
+    [System.Serializable]
+    class Wrapper { public List<DailyWrapper> dailyDataList = new List<DailyWrapper>(); }     // JsonUtility용 Wrapper
     
     /// JSON으로부터 게임 데이터를 로드
     private void LoadGameData()

@@ -23,9 +23,9 @@ public class TaskManager : MonoBehaviour
     {
         get { 
             bool taskResult = true;
-            foreach(var work in GameSystem.Instance.todayData.workData.Keys)
+            foreach(var work in GameSystem.Instance.todayData.workData)
             {
-                taskResult = taskResult & GameSystem.Instance.todayData.workData[work];
+                taskResult = taskResult & work.isClear;
             }
             return taskResult;
         }
@@ -83,13 +83,13 @@ public class TaskManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in GameSystem.Instance.todayData.workData.Keys)
+        foreach(var work in GameSystem.Instance.todayData.workData)
         {
-            if(work.Item1 == consoleInput.text)
+            if(work.code == consoleInput.text)
             {
                 Debug.Log($"Work Entered! : {consoleInput.text}");
                 consoleInput.text = "업무 로딩중...\n";
-                StartCoroutine(LoadWorkAsync(work.Item1));
+                StartCoroutine(LoadWorkAsync(work.code));
                 return;
             }
         }

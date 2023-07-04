@@ -9,9 +9,18 @@ public class DebugConsole : MonoBehaviour
     public GameObject console;
     public TMP_Text consoleText;
     public TMP_InputField input;
+    private static DebugConsole _instance;
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        if (_instance == null)
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Update()
@@ -31,9 +40,9 @@ public class DebugConsole : MonoBehaviour
                 DailyData todayData = GameSystem.Instance.todayData;
                 output += $"{todayData.date.year}년 {todayData.date.month}월 {todayData.date.day}일\n";
                 output += $"오늘의 업무 현황\n";
-                foreach(var work in todayData.workData.Keys)
+                foreach(var work in todayData.workData)
                 {
-                    output += $"WORK: {work.Item1}, Stage: {work.Item2} = Done: {todayData.workData[work]}";
+                    output += $"WORK: {work.code}, Stage: {work.stage.ToString()} = Done: {work.isClear.ToString()}";
                 }
                 output += "\n";
                 break;
@@ -50,11 +59,11 @@ public class DebugConsole : MonoBehaviour
                 output += $"clear: clear all today works\n";
                 break;
             case "clear" :
-                foreach(var work in GameSystem.Instance.todayData.workData.Keys)
+                foreach(var work in GameSystem.Instance.todayData.workData)
                 {
-                    GameSystem.Instance.todayData.workData[work] = true;
+                    work.isClear = true;
                 }
-                SceneManager.LoadScene("MainWorld");
+                SceneManager.LoadScene("Screen");
                 break;
         }
 
