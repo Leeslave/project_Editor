@@ -1,16 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class DebugConsole : MonoBehaviour
 {
     public GameObject console;
-    public Text consoleText;
-    public InputField input;
+    public TMP_Text consoleText;
+    public TMP_InputField input;
+    private static DebugConsole _instance;
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        if (_instance == null)
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Update()
@@ -30,9 +40,9 @@ public class DebugConsole : MonoBehaviour
                 DailyData todayData = GameSystem.Instance.todayData;
                 output += $"{todayData.date.year}년 {todayData.date.month}월 {todayData.date.day}일\n";
                 output += $"오늘의 업무 현황\n";
-                foreach(var work in todayData.workData.Keys)
+                foreach(var work in todayData.workData)
                 {
-                    output += $"WORK: {work.Item1}, Stage: {work.Item2} = Done: {todayData.workData[work]}";
+                    output += $"WORK: {work.code}, Stage: {work.stage.ToString()} = Done: {work.isClear.ToString()}";
                 }
                 output += "\n";
                 break;
@@ -46,6 +56,14 @@ public class DebugConsole : MonoBehaviour
             case "help" :
                 output += $"todayData: show today's Date, Work Status\n";
                 output += $"playerData: show current date Index, location, time and renown\n";
+                output += $"clear: clear all today works\n";
+                break;
+            case "clear" :
+                foreach(var work in GameSystem.Instance.todayData.workData)
+                {
+                    work.isClear = true;
+                }
+                SceneManager.LoadScene("Screen");
                 break;
         }
 

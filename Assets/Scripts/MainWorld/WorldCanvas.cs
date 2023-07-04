@@ -17,7 +17,7 @@ public class WorldCanvas : MonoBehaviour
     public List<Image> imageList;    // 배경컷 리스트
 
     [SerializeField]
-    private int currentPosition = 0;    // 현재 배경컷 위치
+    public int currentPosition = 0;    // 현재 배경컷 위치
 
 
     /// 이벤트 카메라 할당

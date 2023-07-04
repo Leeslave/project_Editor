@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ScreenButton : MonoBehaviour
 {
@@ -10,7 +11,6 @@ public class ScreenButton : MonoBehaviour
     *   - down 버튼을 눌러 스크린 비활성화
     */
     public GameObject downButton;   // 취소 버튼 (아래 버튼)
-    private ScreenManager screenObject; // 스크린 매니저
     public float screenZoomMultiplier;  // 스크린 아이콘 확대 배율
 
     private bool isScreenZoomed;
@@ -18,11 +18,6 @@ public class ScreenButton : MonoBehaviour
     private void Awake() {
         isScreenZoomed = false;
         downButton.SetActive(false);
-        screenObject = GameObject.FindObjectOfType<ScreenManager>();
-        if (screenObject == null)
-        {
-            Debug.LogError("Cannot Found Screen");
-        }
     }
 
     /// <summary>
@@ -51,14 +46,10 @@ public class ScreenButton : MonoBehaviour
             return;
         }
 
-        // 스크린 확대 후 -> 스크린 키기, 이전 캔버스 비활성화
+        // 스크린 확대 후 -> 스크린 활성화
         else
         {
-            screenObject.worldObject = transform.parent.parent.GetComponent<WorldCanvas>();    // 월드 캔버스
-            screenObject.SetScreen(ScreenManager.ScreenMode.Off);
-            transform
-                .parent         //월드 페이지들
-                .parent.gameObject.SetActive(false);    // 월드 캔버스
+            SceneManager.LoadScene("Screen");
         }
     }
 
@@ -67,20 +58,25 @@ public class ScreenButton : MonoBehaviour
     /// </summary>
     public void DeactivateScreen()
     {
-        if (isScreenZoomed == true)
-        {
-            Transform roomObject = transform.parent;
-            for (int idx = 0; idx < roomObject.childCount; idx++)
-            {
-                if (roomObject.GetChild(idx) == gameObject)
-                    continue;
-                roomObject.GetChild(idx).gameObject.SetActive(true);
-            }
-            downButton.SetActive(false);
+        // 스크린 비활성화 시 return
+        if (isScreenZoomed == false)
+            return;
 
-            RectTransform rectTransform = GetComponent<RectTransform>();
-            rectTransform.localScale = rectTransform.localScale / screenZoomMultiplier;
-            isScreenZoomed = false;
+        // 현재 위치 오브젝트
+        Transform roomObject = transform.parent;
+        // 해당오브젝트 제외 모든 오브젝트 활성화
+        for (int idx = 0; idx < roomObject.childCount; idx++)
+        {
+            if (roomObject.GetChild(idx) == gameObject)
+                continue;
+            roomObject.GetChild(idx).gameObject.SetActive(true);
         }
+        // 축소 버튼 비활성화
+        downButton.SetActive(false);
+
+        // 스크린 오브젝트 축소
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        rectTransform.localScale /= screenZoomMultiplier;
+        isScreenZoomed = false;
     }
 }
