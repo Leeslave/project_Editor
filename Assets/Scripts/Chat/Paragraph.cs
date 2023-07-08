@@ -4,6 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public class Paragraph
 {
+<<<<<<< HEAD
     string type;    // 대사 타입
     List<CharacterCG> character_L;
     List<CharacterCG> character_R;
@@ -35,4 +36,12 @@ public class CharacterCG
     string name;    // 캐릭터 이름 (파일명)
     int emotion;    // 캐릭터 표정 번호
     int pose;       // 캐릭터 자세 번호
+=======
+    // 대사 타입
+    string type;
+    string[] text;
+    int fontSize;
+    int delay;
+
+>>>>>>> ChatSystemImprove
 }
