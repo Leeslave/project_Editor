@@ -14,8 +14,7 @@ public class Paragraph
         cutScene
     }
     public TalkType type;    // 대사 타입
-    public List<CharacterCG> character_L;  // 왼쪽 캐릭터 CG 리스트
-    public List<CharacterCG> character_R;  // 오른쪽 캐릭터 CG 리스트
+    public List<CharacterCG> characters;  // 캐릭터 CG 리스트
     public string background;  // 배경 이미지
     public string bgm;         // 배경음악
     public string action;  // 대화 후 이벤트
@@ -63,6 +62,8 @@ public class Choice
     public enum ChoiceType
     {
         /// 선택지 타입
+        normal,
+        
     }
     public ChoiceType type;
     public string text;
@@ -74,7 +75,8 @@ public class Choice
 [SerializeField]
 public class CharacterCG
 {
-    public string name;    // 캐릭터 이름 (파일명)
+    public string fileName;    // 캐릭터 파일명
+    public string position; // 왼쪽, 가운데, 오른쪽 CG 위치
     public int emotion;    // 캐릭터 표정 번호
     public int pose;       // 캐릭터 자세 번호
     public bool isHighlight;

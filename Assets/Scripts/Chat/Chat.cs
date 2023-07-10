@@ -31,6 +31,7 @@ public class Chat : MonoBehaviour
         if(!_instance)
         {
             _instance = this;
+            StartChat("Henderson");
         }
         else
         {
@@ -46,10 +47,8 @@ public class Chat : MonoBehaviour
             - 각 Paragraph를 순차로 이동하며 실행
             - 타입에 따라 분류 실행
         */
-        string fileName = $"{chatName}_{GameSystem.Instance.player.dateIndex}_{GameSystem.Instance.player.time}";
+        string fileName = $"{chatName}_0_0";
         LoadChatFile(fileName);
-
-        DebugChatFile();
     }
 
     private void LoadChatFile(string fileName)
@@ -84,12 +83,9 @@ public class Chat : MonoBehaviour
     }
 
     /// 변수 텍스트 적용
-    private string GetVariableValue(string varaibleName)
+    private string GetVariableValue(string variableName)
     {
-        switch(varaibleName)
-        {
-            
-        }
+        // switch(variableName)
         return "";
     }
 
@@ -130,7 +126,7 @@ public class Chat : MonoBehaviour
         }
         Debug.Log($"paragraph 첫 데이터 정보");
         Debug.Log($"타입 : {paragraphs[0].type}");
-        Debug.Log($"캐릭터 CG 정보 : 왼쪽{paragraphs[0].character_L.Count}개, 오른쪽{paragraphs[0].character_R.Count}개");
+        Debug.Log($"캐릭터 CG 정보 : {paragraphs[0].characters.Count}개");
         Debug.Log($"배경 : {paragraphs[0].background}");
         Debug.Log($"이벤트 : {paragraphs[0].action}");
 
