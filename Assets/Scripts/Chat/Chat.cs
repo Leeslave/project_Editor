@@ -47,8 +47,10 @@ public class Chat : MonoBehaviour
             - 각 Paragraph를 순차로 이동하며 실행
             - 타입에 따라 분류 실행
         */
-        string fileName = $"{chatName}_0_0";
+        string fileName = $"{chatName}_0_1";    // debug
         LoadChatFile(fileName);
+
+        DebugChatFile();
     }
 
     private void LoadChatFile(string fileName)
@@ -56,6 +58,7 @@ public class Chat : MonoBehaviour
         string path = Application.dataPath + filePath + fileName + ".json";
         if (!File.Exists(path))
         {
+            Debug.Log("NO FILE EXISTS: " + path);
             paragraphs = null;
             return;
         }
@@ -126,12 +129,20 @@ public class Chat : MonoBehaviour
         }
         Debug.Log($"paragraph 첫 데이터 정보");
         Debug.Log($"타입 : {paragraphs[0].type}");
-        Debug.Log($"캐릭터 CG 정보 : {paragraphs[0].characters.Count}개");
+
+        if (paragraphs[0].characters == null)
+        {
+            Debug.Log("Character 리스트 null");
+        }
+        else    
+            Debug.Log($"캐릭터 CG 정보 : {paragraphs[0].characters.Count}개");
+
         Debug.Log($"배경 : {paragraphs[0].background}");
         Debug.Log($"이벤트 : {paragraphs[0].action}");
 
         if(paragraphs[0].type == Paragraph.TalkType.talk)
         {
+            Debug.Log($"자료형 상태 : {paragraphs[0].GetType().ToString()}");
             NormalParagraph normalParagraph = paragraphs[0] as NormalParagraph;
             if (normalParagraph == null)
             {
