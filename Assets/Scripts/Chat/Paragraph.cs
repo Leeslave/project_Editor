@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 [System.Serializable]
 public class Paragraph
@@ -35,13 +34,28 @@ public class NormalParagraph : Paragraph
     public string text;  // 내용
     public List<VariableReplace> variables; // 변수값
     public int fontSize;   // 글자 크기
-    public int delay;      // 텍스트간 딜레이
+    public float delay;      // 텍스트간 딜레이
 
     [System.Serializable]
     public class VariableReplace
     {
         public string keyword;
-        public string varaibleName;
+        public string variableName;
+    }
+
+    public NormalParagraph()
+    {
+        type = TalkType.talk;
+        characters = new List<CharacterCG>();
+        background = null;
+        bgm = null;
+        action = null;
+        talker = "";
+        talkerInfo = "";
+        text = "";
+        variables = new List<VariableReplace>();
+        fontSize = 16;
+        delay = 0.3f;
     }
 }   
 
