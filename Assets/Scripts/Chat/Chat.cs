@@ -10,16 +10,28 @@ using Newtonsoft.Json;
 
 public class Chat : MonoBehaviour
 {
-
+    /**
+    대사 실행 코드
+    - chat이름으로 대사 파일 불러오기
+        chat이름_날짜index_시간.json
+    - 대사중 버튼을 눌러 다음 대사로 넘어가기
+    - 스킵하기를 눌러서 다음 선택지 or 대사 종료 (이벤트 함수 실행)
+    - 대사 출력 후 로그 텍스트에 1개씩 추가 
+    */
     [Header("UI 요소")]
 
+
     [Header("파일 경로")]
-    public string filePath; // 대사 파일 경로
+    public string chatFilePath; // 대사 파일 경로
+    public string characterFilePath;    // 캐릭터 파일 경로
+    public string backgroundFilePath;   // 배경 CG 파일 경로
     
     [Header("대화 상태")]
+    public bool onTalk;            // 현재 대화 활성화 여부
+    [SerializeField]
+    int paragraphIndex;   // 현재 대화 인덱스
+
     private List<Paragraph> paragraphs; // 대화 리스트
-    bool onTalk;            // 현재 대화 활성화 여부
-    int currentParagraph;   // 현재 대화 인덱스
 
     /// 싱글턴 선언
     private static Chat _instance;
@@ -32,7 +44,8 @@ public class Chat : MonoBehaviour
         if(!_instance)
         {
             _instance = this;
-            StartChat("Henderson");
+            onTalk = false;
+            paragraphIndex = -1;
         }
         else
         {
@@ -45,18 +58,21 @@ public class Chat : MonoBehaviour
     {
         /*
         * 대화
-            - 각 Paragraph를 순차로 이동하며 실행
-            - 타입에 따라 분류 실행
+        - chatName으로 파일 불러오고 Chat 활성화
         */
         string fileName = $"{chatName}_{GameSystem.Instance.player.dateIndex}_{GameSystem.Instance.player.time}";    // debug
         LoadChatFile(fileName);
+        
+        onTalk = true;
+        paragraphIndex = 0;
 
-        DebugChatFile();
+        NextChat(0);
+        
     }
 
     private void LoadChatFile(string fileName)
     {
-        string path = Application.dataPath + filePath + fileName + ".json";
+        string path = Application.dataPath + chatFilePath + fileName + ".json";
         if (!File.Exists(path))
         {
             Debug.Log("NO FILE EXISTS: " + path);
@@ -80,10 +96,30 @@ public class Chat : MonoBehaviour
         paragraphs = wrapper.data;
     }
 
-    /// 대사 진행 코루틴
-    IEnumerator OnParagraph(Paragraph paragraph)
+    ///<summary>
+    ///다음 대사 출력 함수
+    ///</summary>
+    ///<param name="idx">출력할 대사 인덱스</param>
+    public void NextChat(int idx = -1)
     {
-        yield return new WaitForSeconds(1);
+        if (idx == -1)
+        {
+            idx = paragraphIndex +1;
+        }
+
+        // 마지막 대사 이후 or index 오류
+        if (idx >= paragraphs.Count)
+        {
+            Debug.Log($"Chat OFF: INDEX={idx}");
+            gameObject.SetActive(false);    // Chat 종료 및 비활성화
+            return;
+        }
+
+        // 현재 대사 불러오기
+        Paragraph paragraph = paragraphs[idx];
+
+        SetChatUI(paragraph.type);  // 대사 타입에 따라 UI 설정
+        
     }
 
     /// 변수 텍스트 적용
@@ -110,8 +146,6 @@ public class Chat : MonoBehaviour
     {
 
     }
-
-
 
     /////////////////////////////////////////////////////////////////////////////////////
     public void DebugChatFile()
