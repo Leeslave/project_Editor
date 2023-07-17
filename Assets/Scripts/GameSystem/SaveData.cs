@@ -11,6 +11,7 @@ public class SaveData
     public int dateIndex;
     public int time;
     public string location;
+    public int position;
     public int renown;
 
     public SaveData()
@@ -18,6 +19,7 @@ public class SaveData
         dateIndex = 0;
         time = 0;
         location = "Office";
+        position = 0;
         renown = 0;
     }
 }

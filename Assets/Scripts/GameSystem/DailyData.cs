@@ -6,11 +6,15 @@ public class DailyData
     /**
     * 하루 루틴동안의 인게임 데이터
     *   - 날짜 정보
-    *   - 업무 - 스테이지번호 데이터    
+    *   - 업무 데이터   
+            업무 코드명
+            스테이지 번호
+            클리어 여부 
     */
 
-    public Date date;   // 날짜 정보     
-    public Dictionary<Tuple<string, int>, bool> workData;    // 업무 정보 <업무명, 스테이지>
+    public Date date;   // 날짜 정보    
+
+    public List<Work> workData;    // 업무 정보
 
     /// DailyData를 DailyWrapper로 Wrapping
     public DailyWrapper WrapDailyData()
@@ -23,8 +27,8 @@ public class DailyData
         // 업무 키, 데이터 리스트
         foreach (var elem in workData)
         {
-            resultWrapper.workList.Add(elem.Key.Item1);
-            resultWrapper.workStageList.Add(elem.Key.Item2);
+            resultWrapper.workList.Add(elem.code);
+            resultWrapper.workStageList.Add(elem.stage);
         }
 
         return resultWrapper;  
@@ -36,11 +40,11 @@ public class DailyData
         // 날짜 할당
         date= wrapper.date;
 
-        // 업무 키, 데이터 리스트로 딕셔너리 생성
-        workData = new Dictionary<Tuple<string, int>, bool>();
+        // 업무 키, 데이터 리스트로 업무 생성
+        workData = new List<Work>();
         for(int i = 0; i < wrapper.workList.Count; i++)
         {
-            workData.Add(new Tuple<string, int>(wrapper.workList[i], wrapper.workStageList[i]), false);
+            workData.Add(new Work(wrapper.workList[i], wrapper.workStageList[i]));
         }
     }
     
@@ -62,7 +66,7 @@ public class DailyWrapper
 public class Date
 {
     /**
-    * 날짜 정보를 저장  
+    * 날짜 정보  
     */
     public int year;
     public int month;
@@ -75,4 +79,20 @@ public class Date
         day = _day;
     }
 }
+
+public class Work
+    {
+        /**
+        * 업무 정보
+        */
+        public string code;     // 업무 코드명
+        public int stage;       // 스테이지 번호
+        public bool isClear;    // 클리어 여부
+        public Work(string _code, int _stage = 0)
+        {
+            code = _code;
+            stage = _stage;
+            isClear = false;
+        }
+    } 
 

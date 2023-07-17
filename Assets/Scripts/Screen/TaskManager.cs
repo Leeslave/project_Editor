@@ -23,11 +23,20 @@ public class TaskManager : MonoBehaviour
     {
         get { 
             bool taskResult = true;
-            foreach(var work in GameSystem.Instance.todayData.workData.Keys)
+            foreach(var work in GameSystem.Instance.todayData.workData)
             {
-                taskResult = taskResult & GameSystem.Instance.todayData.workData[work];
+                taskResult = taskResult & work.isClear;
             }
             return taskResult;
+        }
+    }
+
+    /// 업무 완료 확인 TODO: 업무 클리어 후 돌아올때 확인으로 수정 필요
+    void OnEnable()
+    {
+        if (taskClear == true)
+        {
+            GameSystem.Instance.ChangeTime();
         }
     }
 
@@ -74,14 +83,26 @@ public class TaskManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in GameSystem.Instance.todayData.workData.Keys)
+        foreach(var work in GameSystem.Instance.todayData.workData)
         {
-            if(work.Item1 == consoleInput.text)
+            if(work.code == consoleInput.text)
             {
                 Debug.Log($"Work Entered! : {consoleInput.text}");
-                SceneManager.LoadScene(consoleInput.text);
+                consoleInput.text = "업무 로딩중...\n";
+                StartCoroutine(LoadWorkAsync(work.code));
                 return;
             }
+        }
+    }
+
+    /// 씬 비동기 로딩
+    IEnumerator LoadWorkAsync(string sceneName)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
         }
     }
 }
