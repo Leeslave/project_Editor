@@ -4,8 +4,13 @@
             "$type": "NormalParagraph, Assembly-CSharp",
             "talker": "핸더슨",
             "talkerInfo": "부장",
-            "text":"오늘 일 수고해라", 
-            "variables":[], 
+            "text":"오늘은 [day]일이네, 수고해라", 
+            "variables":[
+                {
+                    "keyword": "[day]",
+                    "variableName": "day"
+                }
+            ], 
             "fontSize":16,
             "delay":0.3,
             "type":0,

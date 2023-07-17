@@ -237,6 +237,7 @@ public class Chat : MonoBehaviour
                 NormalParagraph normalParagraph = paragraphs[index] as NormalParagraph;
 
                 /// 캐릭터 CG 활성화
+                background.gameObject.SetActive(false); // 배경 비활성화
                 choicePanel.SetActive(false);   // 선택지 패널 비활성화
                 optionPanel.SetActive(true);    // 옵션 패널 활성화 
                 talkPanel.SetActive(true);      // 대화 패널 활성화
@@ -287,8 +288,25 @@ public class Chat : MonoBehaviour
             - delay
             - 변수값 적용
         */
-        text.text = paragraph.text;
-        yield return new WaitForSeconds(0.1f);
+
+        // 변수값 적용
+        foreach(var iter in paragraph.variables)
+        {
+            string keyword = iter.keyword;
+            string variableName = iter.variableName;
+            
+            if (paragraph.text.Contains(keyword))
+            {
+                paragraph.text = paragraph.text.Replace(keyword, GetVariableValue(variableName));
+            }
+        }
+
+        // 한 글자씩 애니메이션
+        for (int i = 0; i < paragraph.text.Length; i++)
+        {
+            text.text += paragraph.text[i];
+            yield return new WaitForSeconds(paragraph.delay / 10);
+        }
     }
 
     /// 함수코드로 이벤트리스터 할당
@@ -300,7 +318,15 @@ public class Chat : MonoBehaviour
     /// 변수 텍스트 적용
     private string GetVariableValue(string variableName)
     {
-        // switch(variableName)
+        switch(variableName)
+        {
+            case "year":
+                return GameSystem.Instance.todayData.date.year.ToString();
+            case "month":
+                return GameSystem.Instance.todayData.date.month.ToString();
+            case "day":
+                return GameSystem.Instance.todayData.date.day.ToString();
+        }
         return "";
     }
 
