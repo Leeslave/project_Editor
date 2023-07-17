@@ -26,6 +26,8 @@ public class GameSystem : MonoBehaviour
     [SerializeField] 
     public DailyData todayData { get { return daily[player.dateIndex]; } }    // 오늘 날짜 데이터 필드
 
+    [System.Serializable]
+    class GameDataWrapper { public List<DailyWrapper> dailyDataList = new List<DailyWrapper>(); }     // JsonUtility용 Wrapper
     // 싱글턴
     private static GameSystem _instance;
     public static GameSystem Instance
@@ -141,7 +143,7 @@ public class GameSystem : MonoBehaviour
         daily = new List<DailyData>();
 
         //Wrapper로 파싱
-        Wrapper wrapper = JsonUtility.FromJson<Wrapper>(jsonObjectData);
+        GameDataWrapper wrapper = JsonUtility.FromJson<GameDataWrapper>(jsonObjectData);
 
         // Wrapper를 DailyData로 전환
         foreach(DailyWrapper element in wrapper.dailyDataList)
