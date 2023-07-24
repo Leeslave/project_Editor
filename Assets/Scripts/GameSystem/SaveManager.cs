@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,14 +14,13 @@ public class SaveManager : MonoBehaviour
         - 세이브 로드 후 씬 전환
     */
 
-    // 저장 데이터 리스트
-    public List<string> saveList = new List<string>(3);
+    [SerializeField]
+    private string saveFile;
+    private List<SaveData> saveList = new List<SaveData>();  // 저장 데이터 리스트
 
-    // TODO:
-    /// 존재하는 세이브 파일들 탐색 및 로딩
-    List<string> FindAllSave()
+    void Awake()
     {
-        return null;
+        LoadPlayerData();
     }
 
     /// <summary>
@@ -27,12 +28,30 @@ public class SaveManager : MonoBehaviour
     /// </summary>
     ///<param name="SaveFileName">저장 데이터의 파일 이름</param>
     ///<remarks>저장 데이터를 불러오고 씬 로딩</remarks>
-    public void SelectSave(string saveFileName)
+    public void SelectSave(int index)
     {
-        if (saveFileName == null)
+        if (index < 0)
             return;
 
-        GameSystem.Instance.LoadPlayerData(saveFileName);
+        GameSystem.Instance.player = saveList[index];
         SceneManager.LoadScene("MainWorld");
+    }
+    
+    /// <summary>
+    /// 플레이어 데이터 JSON에서 로드
+    /// </summary>
+    /// <param name=SaveFileName>저장 경로 내 파일명</param>
+    private void LoadPlayerData()
+    { 
+        FileStream fileStream = new FileStream(Application.dataPath + saveFile + ".json", FileMode.Open);
+        byte[] data = new byte[fileStream.Length];
+        fileStream.Read(data, 0, data.Length);
+        fileStream.Close();
+
+        // SaveData로 파싱
+        string jsonObjectData = Encoding.UTF8.GetString(data);
+        SaveWrapper wrapper = JsonUtility.FromJson<SaveWrapper>(jsonObjectData);
+
+        saveList = wrapper.data;
     }
 }
