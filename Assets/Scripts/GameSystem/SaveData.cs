@@ -23,3 +23,9 @@ public class SaveData
         renown = 0;
     }
 }
+
+[System.Serializable]
+public class SaveWrapper
+{
+    public System.Collections.Generic.List<SaveData> data;
+}

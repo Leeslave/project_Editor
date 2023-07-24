@@ -166,20 +166,4 @@ public class GameSystem : MonoBehaviour
         fileStream.Write(data, 0, data.Length);
         fileStream.Close();
     }
-
-    /// <summary>
-    /// 플레이어 데이터 JSON에서 로드
-    /// </summary>
-    /// <param name=SaveFileName>저장 경로 내 파일명</param>
-    public void LoadPlayerData(string saveFileName)
-    { 
-        FileStream fileStream = new FileStream(Application.dataPath + playerSavePath + saveFileName + ".json", FileMode.Open);
-        byte[] data = new byte[fileStream.Length];
-        fileStream.Read(data, 0, data.Length);
-        fileStream.Close();
-
-        // SaveData로 파싱
-        string jsonObjectData = Encoding.UTF8.GetString(data);
-        player = JsonUtility.FromJson<SaveData>(jsonObjectData);
-    }
 }
