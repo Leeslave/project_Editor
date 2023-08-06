@@ -23,6 +23,7 @@ public class ScreenManager : MonoBehaviour
     public GameObject desktop;      // 바탕화면 패널
     public GameObject bootPanel;    //부팅 패널
     private Text bootCLI;     //부팅 콘솔 텍스트
+    [SerializeField]
     private ScreenMode currentBootStatus;    //현 부팅 상태
 
     /// 부팅 애니메이션 설정값
@@ -48,7 +49,7 @@ public class ScreenManager : MonoBehaviour
         if(!_instance)
         {
             _instance = this;
-            bootCLI = bootPanel.transform.GetChild(0).GetComponent<Text>();
+            bootCLI = bootPanel.transform.GetChild(1).GetComponent<Text>();
         }
         else
         {
