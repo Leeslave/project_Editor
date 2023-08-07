@@ -102,6 +102,6 @@ public class WorldCanvas : MonoBehaviour
     /// </summary>
     public void MoveWorldDoor(string nextWorld)
     {
-        transform.parent.GetComponent<WorldSceneManager>().asyncLocation(nextWorld);
+        transform.parent.GetComponent<WorldSceneManager>().asyncLocation(0);
     }
 }
