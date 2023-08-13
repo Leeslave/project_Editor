@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Dragger_CM : MonoBehaviour
+public class UIDragger : MonoBehaviour
 {
     [SerializeField]
     protected Transform Dragged;

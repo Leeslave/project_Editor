@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ForDrag : Dragger_CM
+public class ForDrag : UIDragger
 {
     public GameObject contrastmanager;
     ContrastManager CM;

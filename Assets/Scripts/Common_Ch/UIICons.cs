@@ -4,12 +4,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIICons : Dragger_CM
+public class UIICons : UIDragger
 {
     protected Sprite image;
     protected Image CntImage;
     protected RectTransform CntRect;
     protected RectTransform MyRect;
+    protected bool DragDoubleCheck = false;
+    [SerializeField] protected bool IsLayer = true;
 
     protected override void Awake()
     {
@@ -24,10 +26,6 @@ public class UIICons : Dragger_CM
 
     protected virtual void ClickEvent(PointerEventData Data)
     {
-        if(Data.clickCount == 2)
-        {
-            print("!");
-        }
     }
 
     protected override void Click(PointerEventData Data)
@@ -39,6 +37,7 @@ public class UIICons : Dragger_CM
     protected override void DragOn(PointerEventData Data)
     {
         base.DragOn(Data);
+        if (Data.clickCount == 2) DragDoubleCheck = true;
         CntImage.sprite = image;
         Dragged.gameObject.SetActive(true);
         CntRect.sizeDelta = MyRect.sizeDelta;
@@ -46,8 +45,26 @@ public class UIICons : Dragger_CM
 
     void DragEnd(PointerEventData Data)
     {
-        MyRect.position = CntRect.position;
         Dragged.gameObject.SetActive(false);
+        if (IsLayer)
+        {
+            float x = CntRect.position.x;
+            if (x <= -400) x = -500;
+            else if (x <= -200) x = -300;
+            else if (x <= 0) x = -100;
+            else if (x <= 200) x = 100;
+            else if (x <= 400) x = 300;
+            else x = 500;
+            float y = CntRect.position.y;
+            if (y <= -320) y = -400;
+            else if (y <= -160) y = -240;
+            else if (y <= 0) y = -80;
+            else if (y <= 160) y = 80;
+            else if (y <= 320) y = 240;
+            else y = 400;
+            MyRect.position = new Vector3(x, y, 0);
+        }
+        else MyRect.position = CntRect.position;
     }
 
 
