@@ -12,7 +12,7 @@ using UnityEngine.Events;
 public class Chat : MonoBehaviour
 {
     /**
-    대사 실행 코드
+    대사 관리 코드
     - chat이름으로 대사 파일 불러오기
         chat이름_날짜index_시간.json
     - 대사중 버튼을 눌러 다음 대사로 넘어가기
@@ -20,6 +20,7 @@ public class Chat : MonoBehaviour
     - 대사 출력 후 로그 텍스트에 1개씩 추가 
     */
     [Header("UI 요소")]
+    private GameObject chatUI;  // chat UI 오브젝트
     [SerializeField]
     private Image background;   // 배경 이미지
     [SerializeField]
@@ -28,6 +29,7 @@ public class Chat : MonoBehaviour
     [SerializeField]
     private TMP_Text talkerInfo;    // 발화자 정보
     public TMP_Text text;           // 대화 내용
+
     [Space(10)]
     [SerializeField]
     private GameObject choicePanel;     // 선택지 패널 (선택지 3개)
@@ -73,7 +75,9 @@ public class Chat : MonoBehaviour
                 choiceEventParam.Add(-1);
             }
 
-            StartChat("Henderson");         ///디버깅
+            // chat UI 초기화
+            chatUI = transform.GetChild(0).gameObject;
+            chatUI.SetActive(false);
         }
         else
         {
@@ -84,7 +88,7 @@ public class Chat : MonoBehaviour
     ///<summary>
     ///대화 시작
     ///</summary>
-    ///<param name="chatName">대사 파일명+날짜및시간으로 파일 탐색</param>
+    ///<param name="chatName">대사 파일명 + 날짜및시간으로 파일 탐색</param>
     ///<remarks>대화 파일 탐색 후 파일 존재시 대화 시작</remarks>
     public void StartChat(string chatName)
     {
@@ -92,11 +96,12 @@ public class Chat : MonoBehaviour
         * 대화
         - chatName으로 파일 불러오고 Chat 활성화
         */
-        string fileName = $"{chatName}_{GameSystem.Instance.player.dateIndex}_{GameSystem.Instance.player.time}";   
+        string fileName = $"{chatName}_{GameSystem.Instance.dateIndex}_{GameSystem.Instance.time}";   
         Debug.Log($"대화 시작 : {fileName}"); 
         isTalk = LoadChatFile(fileName);
         if (isTalk == false)
             return;
+        chatUI.SetActive(true);
         NextChat(0);        
     }
 
@@ -108,7 +113,10 @@ public class Chat : MonoBehaviour
     {       
         // 파일 미할당  
         if (paragraphs == null)
+        {
+            chatUI.SetActive(false);    //UI 비활성화
             return;
+        }
 
         StopAllCoroutines();    // 대사 진행중이면 종료
 
@@ -125,7 +133,7 @@ public class Chat : MonoBehaviour
         {
             Debug.Log($"Chat OFF: INDEX={idx}");
             isTalk = false;
-            gameObject.SetActive(false);    // Chat 종료 및 비활성화
+            chatUI.SetActive(false);    // Chat 종료 및 비활성화
             return;
         }
 
@@ -196,6 +204,12 @@ public class Chat : MonoBehaviour
         {
             case "Jump":
                 _event.AddListener((int num) => { index = num - 1; });
+                break;
+            case "DayChange":
+                _event.AddListener(GameSystem.Instance.ChangeDate);
+                break;
+            case "TimeChange":
+                _event.AddListener(GameSystem.Instance.ChangeTime);
                 break;
         }
     }

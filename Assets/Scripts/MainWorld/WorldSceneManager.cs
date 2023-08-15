@@ -12,8 +12,6 @@ public class WorldSceneManager : MonoBehaviour
     *   - 월드 내 위치 이동
     *   - 월드 간 이동
     */
-    [SerializeField]
-    public World currentWorld;  // 현재 월드
 
     [SerializeField]
     private int currentPosition;    // 현재 월드 내 위치
@@ -26,8 +24,12 @@ public class WorldSceneManager : MonoBehaviour
     {
         // 위치 동기화
         SetLocation((int)GameSystem.Instance.player.location);
-        // 시간대 동기화
-        SetDate(GameSystem.Instance.player.time);
+        // 추가 인트로 실행 (날짜 변경 후 0시에만)
+        if (GameSystem.Instance.time == 0)
+        {
+            if (introObject)
+                introObject.SetActive(true);
+        }
     }
 
     /// <summary>
@@ -50,34 +52,15 @@ public class WorldSceneManager : MonoBehaviour
             if (i == world)
                 worldList[i].SetActive(true);
         }
-        currentWorld = (World)world;
-    }
-
-    /// <summary>
-    /// 시간대, 날짜 동기화
-    /// </summary>
-    /// <remarks>현재 날짜, 시간대에 맞춰 씬 동기화 및 새로고침</remarks>
-    public void SetDate(int time)
-    {
-        if (time < 0 || time > 3)
-            time = GameSystem.Instance.player.time;
-        // TODO: 월드들 시간대 동기화
-        
-        GameSystem.Instance.ChangeTime(time);
-
-        // 추가 인트로 실행 (날짜 변경 후 0시에만)
-        if (time == 0)
-        {
-            if (introObject)
-                introObject.SetActive(true);
-        }
+        GameSystem.Instance.player.location = (World)world;
+        MovePosition(currentPosition);
     }
 
     /// 위치 내 이동
     public void MovePosition(int position)
     {
         // 현재 월드 오브젝트
-        Transform currentWorldObject = worldList[(int)currentWorld].transform;
+        Transform currentWorldObject = worldList[(int)GameSystem.Instance.player.location].transform;
 
         // 월드 내 포지션 설정
         if (position < 0 || currentPosition >= currentWorldObject.childCount)

@@ -15,18 +15,26 @@ public class GameSystem : MonoBehaviour
         날짜, 시간대, 진행상황 적용
     */
 
+    [Header("파일 로드 경로")]
     [SerializeField]
-    private readonly string playerSavePath = "/Resources/Save/";    // 세이브 파일 경로
+    private readonly string playerSavePath = "/Resources/Save/debugsave_1.json";    // 세이브 파일 경로
     [SerializeField]
     private readonly string dailySavePath = "/Resources/GameData/Main/dailyData.json";   // 게임 데이터 파일 경로
 
-    [SerializeField] 
-    public SaveData player;      // 세이브 데이터 필드
-    private List<DailyData> daily;     // 날짜별 데이터 필드
-    [SerializeField] 
-    public DailyData todayData { get { return daily[player.dateIndex]; } }    // 오늘 날짜 데이터 필드
+    [Header("게임 내 데이터")]
+    private List<SaveData> saveList = new();
+    private List<DailyData> daily = new();     // 날짜별 데이터 필드
 
-    [System.Serializable]
+    [Space(10)]
+    public int dateIndex = 0;   // 날짜 인덱스
+    public int time = 0;    // 현재 시간
+    [SerializeField]
+    public SaveData player { get { return saveList[dateIndex]; } }      // 세이브 데이터 필드
+    [SerializeField] 
+    public DailyData todayData { get { return daily[dateIndex]; } }    // 오늘 날짜 데이터 필드
+    
+
+    [Serializable]
     class GameDataWrapper { public List<DailyWrapper> dailyDataList = new(); }     // JsonUtility용 Wrapper
     // 싱글턴
     private static GameSystem _instance;
@@ -40,7 +48,8 @@ public class GameSystem : MonoBehaviour
         if (!_instance)
         {
             _instance = this;
-            player = new SaveData();    // 플레이어 데이터 초기화
+            saveList.Add(new SaveData());
+            LoadSaveData();     // 디버깅 : 세이브 데이터 로드
             LoadGameData();     // 게임 데이터 로드
             DontDestroyOnLoad(gameObject);
         }
@@ -59,33 +68,35 @@ public class GameSystem : MonoBehaviour
         if (date < 0)
         {
             // 다음 날짜로 이동
-            player.dateIndex++;   
+            date = dateIndex + 1;   
         }
-        else 
-        {
-            // 특정 날짜로 이동
-            player.dateIndex = date;
-        }
+
+        // 해당 날짜 불러오기
+        dateIndex = date;
         ChangeTime(0);
+
+        // 메인 월드는 재로드
+        if (SceneManager.GetActiveScene().name == "MainWorld")
+            SceneManager.LoadScene("MainWorld");
     }
 
     ///<summary>
     /// 시간 전환
     ///</summary>
     ///<param name="time">전환할 시간(없으면 다음 시간대로, 마지막 시간대면 다음 날짜로)</param>
-    public void ChangeTime(int time = -1)
+    public void ChangeTime(int nextTime = -1)
     {
-        if (time >= 0 && time <= 4)
+        if (nextTime >= 0 && nextTime <= 4)
         {
             // 특정 시간대로 이동
-            player.time = time;
+            time = nextTime;
         }
         else
         {
-            player.time++;
-            if (player.time > 4)
+            time++;
+            if (time > 4)
             {
-                player.time = 0;
+                time = 0;
                 ChangeDate();
             }
         }
@@ -152,16 +163,28 @@ public class GameSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
+    /// 플레이어 데이터 JSON에서 로드
+    private void LoadSaveData()
+    { 
+        FileStream fileStream = new FileStream(Application.dataPath + playerSavePath, FileMode.Open);
+        byte[] data = new byte[fileStream.Length];
+        fileStream.Read(data, 0, data.Length);
+        fileStream.Close();
+
+        // SaveData로 파싱
+        string jsonObjectData = Encoding.UTF8.GetString(data);
+        SaveWrapper wrapper = JsonUtility.FromJson<SaveWrapper>(jsonObjectData);
+
+        saveList = wrapper.data;
+    }
+
     /// 플레이어 데이터 JSON 저장
-    /// </summary>
-    /// <param name="SaveFileName">저장 경로 내 파일명</param>
-    public void SavePlayerData(string saveFileName)
+    public void SavePlayerData()
     {
         // json String으로 파싱
-        string jsonObjectData = JsonUtility.ToJson(player);
+        string jsonObjectData = JsonUtility.ToJson(saveList);
         
-        FileStream fileStream = new FileStream(Application.dataPath + playerSavePath + saveFileName + ".json", FileMode.Create);
+        FileStream fileStream = new FileStream(Application.dataPath + playerSavePath + playerSavePath, FileMode.Create);
         byte[] data = Encoding.UTF8.GetBytes(jsonObjectData);
         fileStream.Write(data, 0, data.Length);
         fileStream.Close();

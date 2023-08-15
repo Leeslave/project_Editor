@@ -31,7 +31,7 @@ public class ParagraphWrapper
 public class NormalParagraph : Paragraph
 {
     public string talker;  // 발화자
-    public string talkerInfo;    // 발화자 설명
+    public string talkerInfo = "";    // 발화자 설명
     public string text;  // 내용
     public List<VariableReplace> variables = new List<VariableReplace>(); // 변수값
     public int fontSize = 16;   // 글자 크기
