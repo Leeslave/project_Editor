@@ -101,7 +101,7 @@ public class Player : MonoBehaviour
     {
         // RealEnd.Cs 참조.
         EndG.SetActive(true);
-        EndG.GetComponent<RealEnd>().Ending("Game Over", "마음이 꺾였다...");
+        EndG.GetComponent<RealEnd>().Ending(false);
 
         yield return new WaitForSeconds(1);
         // 플레이어가 터지는 듯한 연출을 위해 사용

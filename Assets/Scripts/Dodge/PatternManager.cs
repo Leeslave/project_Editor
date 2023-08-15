@@ -234,7 +234,7 @@ public class PatternManager : MonoBehaviour
         EndPT(false);
         Pl.gameObject.SetActive(false);
         Pl.EndG.SetActive(true);
-        Pl.EndG.GetComponent<RealEnd>().Ending("Game Clear", "당신의 의지가 풍만해진다.");
+        Pl.EndG.GetComponent<RealEnd>().Ending(true);
     }
 
     IEnumerator CamShake()      // 화면을 흔드는 효과를 연출함.
@@ -424,7 +424,7 @@ public class PatternManager : MonoBehaviour
         EndPT(false);
         Pl.gameObject.SetActive(false);
         Pl.EndG.SetActive(true);
-        Pl.EndG.GetComponent<RealEnd>().Ending("Game Clear", "당신의 의지가 풍만해진다.");
+        Pl.EndG.GetComponent<RealEnd>().Ending(true);
     }
 
     
