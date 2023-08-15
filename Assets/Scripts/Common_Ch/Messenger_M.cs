@@ -33,13 +33,13 @@ public class Messenger_M : MonoBehaviour
             "정보부","금일 업무 지시사항",
             "금일 업무 지시사항입니다.\n금일 16시까지 처리 바랍니다.",
             new GameObject[] { test1, test2 },
-            new string[] {"인사이트 뉴스","수정 사항"}
+            new string[] {"뉴스","수정 사항"}
             );
     }
 
     void Test()
     {
-        if (ActiveTab < Tabs.Length) Invoke("Test", Random.Range(1, 10));
+        if (ActiveTab < Tabs.Length-1) Invoke("Test", Random.Range(1, 10));
         NewMessage($"{Random.Range(1,10)}", "!", "??", new GameObject[2], new string[] { "Test1", "Test2"});
     }
 }

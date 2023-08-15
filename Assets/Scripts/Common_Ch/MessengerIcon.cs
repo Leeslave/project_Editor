@@ -4,7 +4,6 @@ using UnityEngine.EventSystems;
 
 public class MessengerIcon : UIICons
 {
-    [SerializeField] GameObject Messenger;
     [SerializeField] TMP_Text Text;
     int NewCount = 0;
     string[] Count = { "¨ç", "¨è", "¨é", "¨ê", "¨ë", "¨ì", "¨í", "¨î", "¨ï" };
@@ -13,16 +12,6 @@ public class MessengerIcon : UIICons
     {
         base.Awake();
 
-    }
-
-    protected override void ClickEvent(PointerEventData Data)
-    {
-        if (DragDoubleCheck)
-        {
-            DragDoubleCheck = false;
-            return;
-        }
-        if (Data.clickCount == 2) Messenger.SetActive(true);
     }
 
     public void ChangeCount(int Change)
