@@ -16,9 +16,9 @@ public class GameSystem : MonoBehaviour
     */
 
     [SerializeField]
-    private string playerSavePath = "/Resources/Save/";    // 세이브 파일 경로
+    private readonly string playerSavePath = "/Resources/Save/";    // 세이브 파일 경로
     [SerializeField]
-    private string dailySavePath = "/Resources/GameData/Main/dailyData.json";   // 게임 데이터 파일 경로
+    private readonly string dailySavePath = "/Resources/GameData/Main/dailyData.json";   // 게임 데이터 파일 경로
 
     [SerializeField] 
     public SaveData player;      // 세이브 데이터 필드
@@ -27,7 +27,7 @@ public class GameSystem : MonoBehaviour
     public DailyData todayData { get { return daily[player.dateIndex]; } }    // 오늘 날짜 데이터 필드
 
     [System.Serializable]
-    class GameDataWrapper { public List<DailyWrapper> dailyDataList = new List<DailyWrapper>(); }     // JsonUtility용 Wrapper
+    class GameDataWrapper { public List<DailyWrapper> dailyDataList = new(); }     // JsonUtility용 Wrapper
     // 싱글턴
     private static GameSystem _instance;
     public static GameSystem Instance

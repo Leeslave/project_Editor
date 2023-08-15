@@ -10,7 +10,7 @@ public class SaveData
     */
     public int dateIndex;
     public int time;
-    public string location;
+    public World location;
     public int position;
     public int renown;
 
@@ -18,10 +18,18 @@ public class SaveData
     {
         dateIndex = 0;
         time = 0;
-        location = "Office";
+        location = World.Street;
         position = 0;
         renown = 0;
     }
+}
+
+[System.Serializable]
+public enum World {
+    Cafe,
+    Bar,
+    Street,
+    Office
 }
 
 [System.Serializable]
