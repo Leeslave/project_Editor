@@ -23,6 +23,7 @@ public class MessengerText : MonoBehaviour
             Attatchs[i].SetActive(true);
             AttatchName[i].text = includesname[i];
         }
+        for (i = includes.Length; i < Attatchs.Length; i++) Attatchs[i].SetActive(false);
         Attatch.text = $"Ã·ºÎ {includes.Length}°³";
         Title.text = title;
         Sender.text = from;

@@ -7,6 +7,7 @@ public class MainText_N : MonoBehaviour
 {
     [SerializeField] TextMannager_N TM;
     [SerializeField] TMP_Text Text;
+    [SerializeField] public int MyInd;
     Outline OL;
     private void Awake()
     {
@@ -21,6 +22,7 @@ public class MainText_N : MonoBehaviour
         {
             TM.InsertIndex = transform.GetSiblingIndex();
             TM.Touched = Text;
+            TM.TouchedIndex = MyInd;
             TM.Sub = OL;
             OL.effectColor = TM.ColorT;
         }

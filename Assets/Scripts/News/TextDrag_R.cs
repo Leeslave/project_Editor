@@ -7,6 +7,7 @@ public class TextDrag_R : UIDragger
 {
     [SerializeField] TextMannager_N TM;
     [SerializeField] TMP_Text ChildText;
+    [SerializeField] int MyInd;
     RectTransform MySize;
     Outline OL;
 
@@ -37,7 +38,7 @@ public class TextDrag_R : UIDragger
     {
         TM.IsDragged = false;
         Dragged.gameObject.SetActive(false);
-        if (TM.EndDrag()) gameObject.SetActive(false);
+        if (TM.EndDrag(MyInd)) gameObject.SetActive(false);
     }
 
     void OnPoint(PointerEventData Data)

@@ -1,6 +1,3 @@
-using JetBrains.Annotations;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -68,7 +65,7 @@ public class UIICons : UIDragger
     {
         if (AN.IsAttatched)
         {
-            if (!CanAttatched) AN.AF.AttatchFail("제한된 파일 형식");
+            if (!CanAttatched) AN.AF.AttatchFail("첨부 실패","제한된 파일 형식");
             else AN.AF.Attatching(image, MyName, gameObject);
         }
         else {

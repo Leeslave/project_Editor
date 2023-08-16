@@ -1,6 +1,5 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using TMPro;
 using UnityEngine;
@@ -20,7 +19,7 @@ public class NewsReader : MonoBehaviour
     int CountM = 0;
     string[] Revise = new string[4];
     int CountR = 0;
-    List<int> Errors = new List<int>(4);
+    [NonSerialized] public List<int> Errors = new List<int>(4);
 
     private void Awake()
     {
