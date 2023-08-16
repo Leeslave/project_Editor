@@ -109,9 +109,12 @@ public class GameSystem : MonoBehaviour
     /// <param name="isClear">업무 완료 여부</param>
     public void ClearTask()
     {
+        // 현재 씬 이름으로 코드 불러오기
         string workCode = SceneManager.GetActiveScene().name;
         if (workCode == null || workCode == "")
             return;
+
+        // 코드에 해당하는 업무 불러오기
         Work currentWork = null;
         foreach(var work in todayData.workData)
         {
@@ -121,14 +124,29 @@ public class GameSystem : MonoBehaviour
                 break;
             }
         }
+
+        // 업무 불일치 오류
         if (currentWork == null)
         {
             Debug.Log("Work doesn't Match");
             return;
         }
+
+        // 업무 완료로 전환
         currentWork.isClear = true;
     }
 
+    /// <summary>
+    /// 게임 내 씬 로드
+    /// </summary>
+    public void LoadGameScene(string sceneName)
+    {
+        Scene newScene = SceneManager.GetSceneByName(sceneName);
+        if (newScene != null)
+        {
+            SceneManager.LoadScene(sceneName);
+        }
+    }
 
     /*****
     * 게임 데이터 저장, 로드 시스템
