@@ -27,7 +27,7 @@ public class WorldSceneManager : MonoBehaviour
     */
 
     [SerializeField]
-    private GameObject[] locationList; // 지역 오브젝트 리스트
+    private GameObject[] locationList;    // 지역 오브젝트 리스트
     [SerializeField]
     private GameObject introObject;      // 인트로 오브젝트
     [SerializeField]
@@ -107,11 +107,27 @@ public class WorldSceneManager : MonoBehaviour
         시간대 변경에 따른 지역들 동기화
         - NPC들 활성화, 위치 동기화
         - 지역들 배경 이미지 변경
+        - 바로 다음 시간대로만 변경
         */
+
+        // 시간대 변경 제한
+        if (time < 1 || time > 4)
+            return;
+        
+        // 해당하는 시간 변경이 아닐 시 종료
+        if (time != GameSystem.Instance.time + 1)
+        {
+            return;
+        }
+
+        // 날짜 변경
         if (time == 4)
         {
             GameSystem.Instance.SetDate();
+            return;
         }
+
+        // 시간 변경
         GameSystem.Instance.SetTime(time);
     }
 }

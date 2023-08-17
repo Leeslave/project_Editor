@@ -48,6 +48,7 @@ public class GameSystem : MonoBehaviour
 
             saveList.Add(new SaveData());
             saveList = GameLoader.LoadSaveData();     // 디버깅 : 세이브 데이터 로드
+            SetDate(0);
             dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드            
         }
         else
