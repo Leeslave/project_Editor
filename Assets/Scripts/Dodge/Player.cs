@@ -97,23 +97,10 @@ public class Player : MonoBehaviour
     }
 
     // 엔딩을 출력
-    IEnumerator RealEnd()
+    void RealEnd()
     {
-        // RealEnd.Cs 참조.
-        EndG.SetActive(true);
+        
         EndG.GetComponent<RealEnd>().Ending(false);
-
-        yield return new WaitForSeconds(1);
-        // 플레이어가 터지는 듯한 연출을 위해 사용
-        foreach(var a in PtL)
-        {
-            a.SetActive(true);
-            a.transform.position = transform.position;
-            a.GetComponent<Rigidbody2D>().gravityScale = 1;
-            a.GetComponent<Rigidbody2D>().AddForce((Vector2.up * Random.Range(5,15) + Vector2.left * Random.Range(-4,5)),ForceMode2D.Impulse);
-        }
-        gameObject.SetActive(false);
-        yield break;
     }
 
     // 부활 했을 때 초기 상태로 돌림
@@ -172,7 +159,9 @@ public class Player : MonoBehaviour
                 else
                 {
                     PM.EndPT(false);
-                    StartCoroutine(RealEnd());
+                    EndG.SetActive(true);
+                    gameObject.SetActive(false);
+                    Invoke("RealEnd",1);
                 }
             }
         }

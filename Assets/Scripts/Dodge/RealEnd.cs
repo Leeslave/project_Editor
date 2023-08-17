@@ -14,10 +14,6 @@ public class RealEnd : MonoBehaviour
     [SerializeField] Sprite sprite2;
     [SerializeField] TMP_Text text;
 
-    private void Start()
-    {
-        Ending(false);
-    }
     // ¿£µù
     // Input
     public void Ending(bool Clear)
