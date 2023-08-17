@@ -24,6 +24,7 @@ public class GameSystem : MonoBehaviour
     public int time = 0;    // 현재 시간
     public World location;  // 현재 지역
     public int position;    // 현재 위치
+    public bool isScreenOn = false; // 스크린 활성화 여부
     
     [SerializeField]
     public SaveData player { get { return saveList[dateIndex]; } }      // 세이브 데이터 필드
