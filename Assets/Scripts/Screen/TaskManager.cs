@@ -23,7 +23,7 @@ public class TaskManager : MonoBehaviour
     {
         get { 
             bool taskResult = true;
-            foreach(var work in GameSystem.Instance.todayData.workData)
+            foreach(var work in GameSystem.Instance.today.workData)
             {
                 taskResult = taskResult & work.isClear;
             }
@@ -36,7 +36,7 @@ public class TaskManager : MonoBehaviour
     {
         if (taskClear == true)
         {
-            GameSystem.Instance.ChangeTime();
+            GameSystem.Instance.SetTime();
         }
     }
 
@@ -83,7 +83,7 @@ public class TaskManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in GameSystem.Instance.todayData.workData)
+        foreach(var work in GameSystem.Instance.today.workData)
         {
             if(work.code == consoleInput.text)
             {

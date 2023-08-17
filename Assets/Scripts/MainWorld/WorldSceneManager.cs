@@ -3,27 +3,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+[System.Serializable]
+public enum World {
+    /**
+    월드 내 지역 목록
+    */
+    Street,
+    Bar,
+    Cafe,
+    Restaurant,
+    Hallway,
+    Office
+}
+
 public class WorldSceneManager : MonoBehaviour 
 {
     /**
     * MainWorld 씬 매니저
-    *   시간대 변경
-    *   - 날짜, 시간대 맞춰서 월드 동기화
-    *   - 월드 내 위치 이동
-    *   - 월드 간 이동
+    *   - 날짜, 시간대 맞춰서 지역 동기화
+    *   - 지역 내 위치 이동
+    *   - 지역 간 이동
     */
 
     [SerializeField]
-    private int currentPosition;    // 현재 월드 내 위치
-    [SerializeField]
-    private GameObject[] worldList; // 월드 오브젝트 리스트
+    private GameObject[] locationList; // 지역 오브젝트 리스트
     [SerializeField]
     private GameObject introObject;      // 인트로 오브젝트
+    [SerializeField]
+    private GameObject[] npcList;     // 모든 지역 NPC 리스트
 
     void Start()
     {
         // 위치 동기화
-        SetLocation((int)GameSystem.Instance.player.location);
+        SetLocation((int)GameSystem.Instance.location);
+
         // 추가 인트로 실행 (날짜 변경 후 0시에만)
         if (GameSystem.Instance.time == 0)
         {
@@ -33,45 +47,71 @@ public class WorldSceneManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 세이브 위치와 활성화 월드 동기화
+    /// 세이브 지역와 활성화 월드 동기화
     /// </summary>
-    /// <param name="WorldName">이동할 월드의 이름 입력</param>
-    /// <remarks>새 월드 오브젝트 활성화</remarks>
-    public void SetLocation(int world)
+    /// <param name="location">이동할 지역의 이름 입력</param>
+    /// <remarks>새 지역 오브젝트 활성화</remarks>
+    public void SetLocation(int location)
     {
-        // 이동할 위치 설정
-        if (!Enum.IsDefined(typeof(World), world))
+        // 이동할 지역 설정
+        if (!Enum.IsDefined(typeof(World), location))
         {
-            world = 0;
+            Debug.Log("Location number ERROR");
+            location = 0;
         }
 
-        // 해당하는 월드만 활성화
-        for(int i = 0; i < worldList.Length; i++)
+        // 해당하는 지역만 활성화
+        for(int i = 0; i < locationList.Length; i++)
         {
-            worldList[i].SetActive(false);
-            if (i == world)
-                worldList[i].SetActive(true);
+            locationList[i].SetActive(false);
+            if (i == location)
+                locationList[i].SetActive(true);
         }
-        GameSystem.Instance.player.location = (World)world;
-        MovePosition(currentPosition);
+
+        // 현재 지역 설정
+        GameSystem.Instance.location = (World)location;
+
+        // 지역 내 위치 동기화
+        SetPosition(GameSystem.Instance.position);
     }
 
     /// 위치 내 이동
-    public void MovePosition(int position)
+    public void SetPosition(int position)
     {
         // 현재 월드 오브젝트
-        Transform currentWorldObject = worldList[(int)GameSystem.Instance.player.location].transform;
+        Transform currentWorldObject = locationList[(int)GameSystem.Instance.location].transform;
 
-        // 월드 내 포지션 설정
-        if (position < 0 || currentPosition >= currentWorldObject.childCount)
+        // 위치값 예외 처리
+        if (position < 0 || GameSystem.Instance.position >= currentWorldObject.childCount)
             position = 0;
         
-        // 해당 포지션 활성화
+        // 해당 위치 활성화
         for(int i = 0; i < currentWorldObject.childCount; i++)
         {
             currentWorldObject.GetChild(i).gameObject.SetActive(false);
             if (i == position)
                 currentWorldObject.GetChild(i).gameObject.SetActive(true);
         }
+
+        // 현재 위치 설정
+        GameSystem.Instance.position = position;
+    }
+
+    /// <summary>
+    /// 시간대 변경
+    /// </summary>
+    /// <remarks>시간대를 변경하고 현재 지역 동기화
+    public void ChangeTime(int time)
+    {
+        /**
+        시간대 변경에 따른 지역들 동기화
+        - NPC들 활성화, 위치 동기화
+        - 지역들 배경 이미지 변경
+        */
+        if (time == 4)
+        {
+            GameSystem.Instance.SetDate();
+        }
+        GameSystem.Instance.SetTime(time);
     }
 }

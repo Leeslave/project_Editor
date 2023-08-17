@@ -181,11 +181,11 @@ public class Chat : MonoBehaviour
         switch(variableName)
         {
             case "year":
-                return GameSystem.Instance.todayData.date.year.ToString();
+                return GameSystem.Instance.today.date.year.ToString();
             case "month":
-                return GameSystem.Instance.todayData.date.month.ToString();
+                return GameSystem.Instance.today.date.month.ToString();
             case "day":
-                return GameSystem.Instance.todayData.date.day.ToString();
+                return GameSystem.Instance.today.date.day.ToString();
         }
         return "";
     }
@@ -206,10 +206,10 @@ public class Chat : MonoBehaviour
                 _event.AddListener((int num) => { index = num - 1; });
                 break;
             case "DayChange":
-                _event.AddListener(GameSystem.Instance.ChangeDate);
+                _event.AddListener(GameSystem.Instance.SetDate);
                 break;
             case "TimeChange":
-                _event.AddListener(GameSystem.Instance.ChangeTime);
+                _event.AddListener(GameSystem.Instance.SetTime);
                 break;
         }
     }
