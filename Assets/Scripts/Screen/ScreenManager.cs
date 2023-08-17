@@ -61,13 +61,24 @@ public class ScreenManager : MonoBehaviour
     /// 컴포넌트 설정, 부팅 초기값 off
     void Start() 
     {
-        /// 부팅 대기 화면으로 설정
-        desktop.SetActive(false);
-        bootPanel.SetActive(true);
-        bootCLI.text = "";
-        bootCLI.gameObject.SetActive(false);
+        if(GameSystem.Instance.isScreenOn)
+        {
+            /// 바탕 화면으로 설정
+            desktop.SetActive(true);
+            bootPanel.SetActive(false);
 
-        SetScreen(ScreenMode.Off);
+            SetScreen(ScreenMode.On);
+        }
+        else
+        {
+            /// 부팅 대기 화면으로 설정
+            desktop.SetActive(false);
+            bootPanel.SetActive(true);
+            bootCLI.text = "";
+            bootCLI.gameObject.SetActive(false);
+
+            SetScreen(ScreenMode.Off);
+        }
     }
 
     /// <summary>
@@ -156,6 +167,7 @@ public class ScreenManager : MonoBehaviour
 
         // 부팅 완료 (콘솔창 초기화)
         SetScreen(ScreenMode.On);
+        GameSystem.Instance.isScreenOn = true;
         // TODO: desktop 초기화 (시작)
     }
 
@@ -177,6 +189,7 @@ public class ScreenManager : MonoBehaviour
             if(currentBootStatus == ScreenMode.Off)
             {
                 SetScreen(ScreenMode.Off);
+                GameSystem.Instance.isScreenOn = false;
                 // TODO: desktop 초기화 (종료)
                 yield break;
             }
