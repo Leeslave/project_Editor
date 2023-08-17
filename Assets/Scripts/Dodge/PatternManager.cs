@@ -29,6 +29,7 @@ public class PatternManager : MonoBehaviour
     public float BulletInterv;      // 한 패턴 내 탄막 간의 간격
     public float PatternInterv;     // 패턴과 패턴 사이의 간격
     public bool IsEnd = false;      // 필사 패턴 여부
+    public int CurPattern = 0;      // 현재 패턴
 
     List<GameObject> PlatL = new List<GameObject>();        // 레이저 패턴 중 사용되는 Platform들을 저장 <- EndPattern에 사용하기 위함.
     int PatternNum = 0;             // Num of Pattern(안 씀)
@@ -90,12 +91,14 @@ public class PatternManager : MonoBehaviour
         TM.MaxTime = TM.TimeToSurvive;
         Pl.gameObject.SetActive(true);
         TM.IsTimeFlow = true;
+        CurPattern = 0;
         StartPT(0);
     }
 
     // EZ
     IEnumerator MakeEasyPattern()     // 1페이즈에 사용되는 패턴을 생성함.
     {
+        this.CurPattern = 0;
         /*PlatTop.SetActive(true); PlatTop.SetActive(true);*/               
         if (TM.time == 0) yield return new WaitForSeconds(1);        // 씬이 시작 됨과 동시에 Pattern이 시작될 때 발생하는 렉 때문에 첫 탄막과 그 다음 탄막 사이의 간격이 생겨 해당 건을 방지하기 위해 1초간 멈춤.
         List<int[]> CurPattern = PTLE[Random.Range(0, PatternNum)];     // 저장된 패턴 중 임의로 1개의 패턴을 가져옴
@@ -123,7 +126,7 @@ public class PatternManager : MonoBehaviour
     // Normal                   N1 -> N2 -> Hard
     IEnumerator PatternN1()       // Play Time : 25s
     {
-
+        CurPattern = 1;
         // 화면에 노이즈 생성
         MakeGlitch(0.1f, 0.5f, 0.7f);
         yield return new WaitForSeconds(1);
@@ -174,6 +177,7 @@ public class PatternManager : MonoBehaviour
 
     IEnumerator PatternN2()
     {
+        CurPattern = 2;
         // 화면에 노이즈 생성
         MakeGlitch(0.1f, 0.5f, 0.7f);
         yield return new WaitForSeconds(1.5f);

@@ -100,7 +100,7 @@ public class Player : MonoBehaviour
     void RealEnd()
     {
         
-        EndG.GetComponent<RealEnd>().Ending(false);
+        EndG.GetComponent<RealEnd>().Ending(PM.CurPattern>=1);
     }
 
     // 부활 했을 때 초기 상태로 돌림
@@ -160,7 +160,7 @@ public class Player : MonoBehaviour
                 {
                     PM.EndPT(false);
                     EndG.SetActive(true);
-                    gameObject.SetActive(false);
+                    gameObject.SetActive(false) ;
                     Invoke("RealEnd",1);
                 }
             }
