@@ -6,18 +6,21 @@ using UnityEngine.UI;
 
 public class AttatchFile_F : MonoBehaviour
 {
-    [SerializeField] protected  AttatchFile_N AN;
-    [SerializeField] protected  List<GameObject> AttatchFields;
-    [SerializeField] protected  List<TMP_Text> AttatchFieldsName;
-    [SerializeField] protected  List<Image> AttatchFieldsImage;
-    [SerializeField] protected  GameObject Border;
-    [SerializeField] protected  GameObject Error;
-    [SerializeField] protected  TMP_Text ErrorMessage;
-    [SerializeField] protected  TMP_Text ErrorReason;
-    protected RectTransform MyRect;
-    protected int AttatchNum = 0;
-    protected List<int> AttatchInd = new List<int>(5);
-    
+    [SerializeField] ClearManager_N CN;
+    [SerializeField] AttatchFile_N AN;
+    [SerializeField] List<GameObject> AttatchFields;
+    [SerializeField] List<TMP_Text> AttatchFieldsName;
+    [SerializeField] List<Image> AttatchFieldsImage;
+    [SerializeField] GameObject Goal;
+    [SerializeField] GameObject Border;
+    [SerializeField] GameObject Error;
+    [SerializeField] TMP_Text ErrorMessage;
+    [SerializeField] TMP_Text ErrorReason;
+    RectTransform MyRect;
+    int AttatchNum = 0;
+    List<int> AttatchInd = new List<int>(5);
+    bool[] GoalAttatched = new bool[5];
+
     private void Awake()
     {
         for (int i = 0; i < 5; i++) AttatchInd.Add(i);
@@ -27,16 +30,26 @@ public class AttatchFile_F : MonoBehaviour
         MyUi.AddEvent(eventTrigger, EventTriggerType.PointerExit, OutPoint);
     }
 
-    protected virtual void OutPoint(PointerEventData Data)
+    private void OutPoint(PointerEventData Data)
     {
         if (AN.IsDragged) AN.IsAttatched = false;
     }
 
-    protected virtual void OnPoint(PointerEventData Data)
+    private void OnPoint(PointerEventData Data)
     {
         if (AN.IsDragged) AN.IsAttatched = true;
     }
-    public virtual void Attatching(Sprite image, string name, GameObject Goal)
+
+    void TestTT()
+    {
+        string z = "";
+        foreach(var a in AttatchInd)
+        {
+            z += a.ToString() + ",";
+        }
+        print(z);
+    }
+    public void Attatching(Sprite image, string name, GameObject Goal)
     {
         if(AttatchNum == 4)
         {
@@ -46,6 +59,11 @@ public class AttatchFile_F : MonoBehaviour
         if (AttatchNum == 0) AttatchFields[0].SetActive(false);
         ++AttatchNum;
         int s = AttatchInd[AttatchNum];
+        if (this.Goal == Goal)
+        {
+            CN.IsGoalAttatched++;
+            GoalAttatched[s] = true;
+        }
         AttatchFields[s].SetActive(true);
         AttatchFieldsName[s].text = name;
         AttatchFieldsImage[s].sprite = image;
@@ -53,7 +71,7 @@ public class AttatchFile_F : MonoBehaviour
         LayoutRebuilder.ForceRebuildLayoutImmediate(MyRect);
     }
 
-    public virtual void AttatchCancle(int num)
+    public void AttatchCancle(int num)
     {
         if(AttatchNum == 1) AttatchFields[0].SetActive(true);
         AttatchFields[num].SetActive(false);
@@ -62,12 +80,17 @@ public class AttatchFile_F : MonoBehaviour
             AttatchFields[num].transform.SetSiblingIndex(AttatchNum);
             AttatchInd.Remove(num);
             AttatchInd.Insert(AttatchNum,num);
+            if (GoalAttatched[num] == true)
+            {
+                GoalAttatched[num] = false;
+                CN.IsGoalAttatched--;
+            }
         }
         AttatchNum--;
         LayoutRebuilder.ForceRebuildLayoutImmediate(MyRect);
     }
     
-    public virtual void AttatchFail(string reason,string message)
+    public void AttatchFail(string reason,string message)
     {
         Border.SetActive(true);
         Error.SetActive(true);
