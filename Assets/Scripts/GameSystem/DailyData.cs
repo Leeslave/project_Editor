@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-[System.Serializable]
+[Serializable]
 public class DailyData
 {
     /**
@@ -51,7 +51,7 @@ public class DailyData
     
 }
 
-[System.Serializable]
+[Serializable]
 public class DailyWrapper
 { 
     /** 
@@ -63,7 +63,7 @@ public class DailyWrapper
     public List<int> workStageList;
 }
 
-[System.Serializable]
+[Serializable]
 public class Date
 {
     /**
