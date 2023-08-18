@@ -15,7 +15,7 @@ public class UIICons : UIDragger
     protected AttatchFile_N AN;
     public string MyName;
 
-    protected override void Awake()
+    protected new virtual void Awake()
     {
         AN = Dragged.GetComponent<AttatchFile_N>();
         base.Awake();
