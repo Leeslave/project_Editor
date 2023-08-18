@@ -13,16 +13,14 @@ public static class MyUi
      public static Vector3 UIPosition(GameObject a) { return a.GetComponent<RectTransform>().anchoredPosition; }    // transform.position -> RectTransform.position
      public static Vector3 UISize(GameObject a) { return a.GetComponent<RectTransform>().sizeDelta; }     // UI 기준의 Size 반환
      public static void ChangeUIPosition(ref GameObject a, Vector3 l) { a.GetComponent<RectTransform>().anchoredPosition = l; }
-     public static GameObject GRay(GraphicRaycaster gr)     // Graphic Raycast
+     public static List<RaycastResult> GRay(GraphicRaycaster gr)     // Graphic Raycast
     {
         var ped = new PointerEventData(null);
         ped.position = Input.mousePosition;
         List<RaycastResult> results = new List<RaycastResult>();
         if (gr == null) return null;
         gr.Raycast(ped, results);
-
-        if (results.Count <= 0) return null;
-        return results[0].gameObject;
+        return results;
     }
     public static void DragUI(GameObject DragingObject, Vector3 AnchorGap) { Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition); mousePos.z = 0; DragingObject.transform.position = mousePos - AnchorGap; }
     public static int StringToInt(string cnt) { int a = 0; foreach (char b in cnt) a = a * 10 + (b - '0'); return a; }

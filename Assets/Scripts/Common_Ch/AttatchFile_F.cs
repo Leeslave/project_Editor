@@ -40,15 +40,6 @@ public class AttatchFile_F : MonoBehaviour
         if (AN.IsDragged) AN.IsAttatched = true;
     }
 
-    void TestTT()
-    {
-        string z = "";
-        foreach(var a in AttatchInd)
-        {
-            z += a.ToString() + ",";
-        }
-        print(z);
-    }
     public void Attatching(Sprite image, string name, GameObject Goal)
     {
         if(AttatchNum == 4)
@@ -59,7 +50,7 @@ public class AttatchFile_F : MonoBehaviour
         if (AttatchNum == 0) AttatchFields[0].SetActive(false);
         ++AttatchNum;
         int s = AttatchInd[AttatchNum];
-        if (this.Goal == Goal)
+        if (this.Goal == Goal && CN!=null)
         {
             CN.IsGoalAttatched++;
             GoalAttatched[s] = true;
@@ -80,7 +71,7 @@ public class AttatchFile_F : MonoBehaviour
             AttatchFields[num].transform.SetSiblingIndex(AttatchNum);
             AttatchInd.Remove(num);
             AttatchInd.Insert(AttatchNum,num);
-            if (GoalAttatched[num] == true)
+            if (GoalAttatched[num] == true && CN!=null)
             {
                 GoalAttatched[num] = false;
                 CN.IsGoalAttatched--;
