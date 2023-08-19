@@ -50,7 +50,22 @@ public class GameSystem : MonoBehaviour
             saveList.Add(new SaveData());
             saveList = GameLoader.LoadSaveData();     // 디버깅 : 세이브 데이터 로드
             SetDate(0);
-            dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드            
+            dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드   
+
+            for(int i = 0; i< 3; i++)
+            {
+                Debug.Log($"{i}시간대 변경점 로그");
+                foreach(var iter in today.npcScheduleList[i])
+                {
+                    if (iter == null)
+                    {
+                        Debug.Log("비어있음");
+                        continue;
+                    }
+                    Debug.Log($"{iter.chat} : {iter.type}");
+                } 
+            }
+                    
         }
         else
         {

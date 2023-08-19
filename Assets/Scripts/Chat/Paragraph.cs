@@ -13,7 +13,7 @@ public class Paragraph
         cutScene // 컷씬 대화
     }
     public TalkType type;    // 대사 타입
-    public List<CharacterCG> characters = new List<CharacterCG>();  // 캐릭터 CG 리스트
+    public List<CharacterCG> characters = new();  // 캐릭터 CG 리스트
     public string background = null;  // 배경 이미지
     public string bgm = null;         // 배경음악
     public string action = null;    // 대화 후 반응
@@ -33,7 +33,7 @@ public class NormalParagraph : Paragraph
     public string talker;  // 발화자
     public string talkerInfo = "";    // 발화자 설명
     public string text;  // 내용
-    public List<VariableReplace> variables = new List<VariableReplace>(); // 변수값
+    public List<VariableReplace> variables = new(); // 변수값
     public int fontSize = 16;   // 글자 크기
     public float textDelay = 0.3f;      // 텍스트간 딜레이
 

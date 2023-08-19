@@ -31,7 +31,7 @@ public class WorldSceneManager : MonoBehaviour
     [SerializeField]
     private GameObject introObject;      // 인트로 오브젝트
     [SerializeField]
-    private List<(GameObject, Schedule)> npcList;     // 모든 지역 NPC 리스트
+    private List<(GameObject, NPCSchedule)> npcList;     // 모든 지역 NPC 리스트
 
     void Start()
     {

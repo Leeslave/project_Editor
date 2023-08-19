@@ -17,6 +17,8 @@ public class DailyData
 
     public List<Work> workData;    // 업무 정보
 
+    public List<NPCSchedule>[] npcScheduleList; // NPC 변경점 리스트
+
     /// DailyData를 DailyWrapper로 Wrapping
     public DailyWrapper WrapDailyData()
     {
@@ -31,6 +33,11 @@ public class DailyData
             resultWrapper.workList.Add(elem.code);
             resultWrapper.workStageList.Add(elem.stage);
         }
+
+        resultWrapper.t0Schedule = npcScheduleList[0];
+        resultWrapper.t1Schedule = npcScheduleList[1];
+        resultWrapper.t2Schedule = npcScheduleList[2];
+        resultWrapper.t3Schedule = npcScheduleList[3];
 
         return resultWrapper;  
     }
@@ -47,6 +54,18 @@ public class DailyData
         {
             workData.Add(new Work(wrapper.workList[i], wrapper.workStageList[i]));
         }
+
+
+        npcScheduleList = new List<NPCSchedule>[4];
+        for(int i = 0; i<4; i++)
+        {
+            npcScheduleList[i] = null;
+        }
+
+        npcScheduleList[0] = wrapper.t0Schedule;
+        npcScheduleList[1] = wrapper.t1Schedule;
+        npcScheduleList[2] = wrapper.t2Schedule;
+        npcScheduleList[3] = wrapper.t3Schedule;
     }
     
 }
@@ -59,8 +78,12 @@ public class DailyWrapper
         저장되는 데이터 Wrap
     */
     public Date date;
-    public List<string> workList;
-    public List<int> workStageList;
+    public List<string> workList = null;
+    public List<int> workStageList = null;
+    public List<NPCSchedule> t0Schedule = new();
+    public List<NPCSchedule> t1Schedule = new();
+    public List<NPCSchedule> t2Schedule = new();
+    public List<NPCSchedule> t3Schedule = new();
 }
 
 [Serializable]
@@ -98,15 +121,15 @@ public class Work
 } 
 
 [Serializable]
-public class Schedule
+public class NPCSchedule
 {
-    public string imageName = null;
-    public string chatName = null;
+    public string image = null;
+    public string chat = null;
     public ChatTriggerType? chatType = null;
     public World? location = null;
-    public int position;
-    public float x;
-    public float y;
+    public int? position = null;
+    public float? x = null;
+    public float? y = null;
 
     public enum ScheduleType
     {
@@ -114,6 +137,7 @@ public class Schedule
         remove,     // 삭제
         change,     // 변경
     }
+    public ScheduleType type;
 }
 
 [Serializable]
