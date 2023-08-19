@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-[System.Serializable]
+[Serializable]
 public enum World {
     /**
     월드 내 지역 목록
@@ -31,10 +31,13 @@ public class WorldSceneManager : MonoBehaviour
     [SerializeField]
     private GameObject introObject;      // 인트로 오브젝트
     [SerializeField]
-    private GameObject[] npcList;     // 모든 지역 NPC 리스트
+    private List<(GameObject, Schedule)> npcList;     // 모든 지역 NPC 리스트
 
     void Start()
     {
+        // npc 리스트 초기화
+        npcList = new();
+
         // 위치 동기화
         SetLocation((int)GameSystem.Instance.location);
 

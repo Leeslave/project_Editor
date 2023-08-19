@@ -82,18 +82,43 @@ public class Date
 }
 
 public class Work
+{
+    /**
+    * 업무 정보
+    */
+    public string code;     // 업무 코드명
+    public int stage;       // 스테이지 번호
+    public bool isClear;    // 클리어 여부
+    public Work(string _code, int _stage = 0)
     {
-        /**
-        * 업무 정보
-        */
-        public string code;     // 업무 코드명
-        public int stage;       // 스테이지 번호
-        public bool isClear;    // 클리어 여부
-        public Work(string _code, int _stage = 0)
-        {
-            code = _code;
-            stage = _stage;
-            isClear = false;
-        }
-    } 
+        code = _code;
+        stage = _stage;
+        isClear = false;
+    }
+} 
 
+[Serializable]
+public class Schedule
+{
+    public string imageName = null;
+    public string chatName = null;
+    public ChatTriggerType? chatType = null;
+    public World? location = null;
+    public int position;
+    public float x;
+    public float y;
+
+    public enum ScheduleType
+    {
+        create,     // 새로 생성
+        remove,     // 삭제
+        change,     // 변경
+    }
+}
+
+[Serializable]
+public enum ChatTriggerType {   
+    OnClick,    // 버튼 누를 시
+    OnStart,    // 활성화시 자동 1회
+    EveryStart, // 매번 활성화마다
+}
