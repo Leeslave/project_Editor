@@ -100,7 +100,6 @@ public class Windows_M : MonoBehaviour
         for(int x = 0; x < NumX; x++) for(int y = 0; y < NumY; y++)
                 if (Occupied[y,x] == false)
                 {
-                    print($"{x},{y}");
                     Occupied[y, x] = true;
                     RectTransform cnt = a.GetComponent<RectTransform>();
                     cnt.position = new Vector3(
@@ -131,5 +130,15 @@ public class Windows_M : MonoBehaviour
                 break;
             }
         }
+    }
+
+    public virtual void RemoveIcon(Tuple<int,int> CallLay)
+    {
+        Occupied[CallLay.Item2,CallLay.Item1] = false;
+    }
+
+    public virtual void ClearIcon(int ind)
+    {
+        IconUseAble[ind] = true;
     }
 }

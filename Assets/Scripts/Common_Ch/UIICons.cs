@@ -41,6 +41,15 @@ public class UIICons : UIDragger
     protected virtual void OnEnable()
     {
         CurLay = WM.BatchByCreate(gameObject);
+        print(name);
+    }
+    protected virtual void OnDisable()
+    {
+        WM.RemoveIcon(CurLay);
+    }
+    public virtual void ClearIcon()
+    {
+        WM.ClearIcon(PoolNum);
     }
 
     public virtual void Init(bool AttatchAble, GameObject OpenProcess, string name, Sprite Image, int num)
@@ -98,6 +107,11 @@ public class UIICons : UIDragger
         {
             if (!CanAttatched) AN.AF.AttatchFail("첨부 실패","제한된 파일 형식");
             else AN.AF.Attatching(MyImage.sprite, MyText.text, gameObject);
+        }
+        else if (AN.IsDumped)
+        {
+            AN.DI.DumpAdd(gameObject,MyImage.sprite,MyText.text);
+            gameObject.SetActive(false);
         }
         else {
             if (IsLayer) WM.BatchByMove(gameObject, Dragged, ref CurLay);
