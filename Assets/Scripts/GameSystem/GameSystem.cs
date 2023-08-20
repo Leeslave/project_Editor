@@ -46,26 +46,11 @@ public class GameSystem : MonoBehaviour
         {
             _instance = this;
             DontDestroyOnLoad(gameObject);
-
-            saveList.Add(new SaveData());
             saveList = GameLoader.LoadSaveData();     // 디버깅 : 세이브 데이터 로드
-            SetDate(0);
-            dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드   
+            dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드    
 
-            for(int i = 0; i< 3; i++)
-            {
-                Debug.Log($"{i}시간대 변경점 로그");
-                foreach(var iter in today.npcScheduleList[i])
-                {
-                    if (iter == null)
-                    {
-                        Debug.Log("비어있음");
-                        continue;
-                    }
-                    Debug.Log($"{iter.chat} : {iter.type}");
-                } 
-            }
-                    
+            Debug.Log(saveList[0].startPosition);
+            SetDate(0);     
         }
         else
         {
@@ -79,7 +64,7 @@ public class GameSystem : MonoBehaviour
     ///<param name="dateIndex">전환할 날짜 인덱스(없으면 다음 날짜로), 시간은 무조건 아침</param>
     public void SetDate(int date = -1)
     {
-        if (date < 0 || date > 3)
+        if (date < 0)
         {
             // 다음 날짜로 이동
             date = dateIndex + 1;   
@@ -87,9 +72,9 @@ public class GameSystem : MonoBehaviour
 
         // 해당 날짜 불러오기
         dateIndex = date;
-        SetTime(0);
         location = player.startLocation;
         position = player.startPosition;
+        SetTime(0);
         
 
         // 메인 월드는 재로드

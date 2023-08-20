@@ -78,8 +78,8 @@ public class DailyWrapper
         저장되는 데이터 Wrap
     */
     public Date date;
-    public List<string> workList = null;
-    public List<int> workStageList = null;
+    public List<string> workList = new();
+    public List<int> workStageList = new();
     public List<NPCSchedule> t0Schedule = new();
     public List<NPCSchedule> t1Schedule = new();
     public List<NPCSchedule> t2Schedule = new();
@@ -123,21 +123,15 @@ public class Work
 [Serializable]
 public class NPCSchedule
 {
+    public string name;
     public string image = null;
     public string chat = null;
-    public ChatTriggerType? chatType = null;
-    public World? location = null;
-    public int? position = null;
-    public float? x = null;
-    public float? y = null;
-
-    public enum ScheduleType
-    {
-        create,     // 새로 생성
-        remove,     // 삭제
-        change,     // 변경
-    }
-    public ScheduleType type;
+    public ChatTriggerType chatType = 0;
+    public int location = -1;
+    public int position = -1;
+    public float x = 0;
+    public float y = 0;
+    public int size = 1;
 }
 
 [Serializable]
@@ -145,4 +139,5 @@ public enum ChatTriggerType {
     OnClick,    // 버튼 누를 시
     OnStart,    // 활성화시 자동 1회
     EveryStart, // 매번 활성화마다
+    Once,       // 한번 실행 후 삭제
 }

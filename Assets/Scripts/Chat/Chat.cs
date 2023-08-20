@@ -88,15 +88,14 @@ public class Chat : MonoBehaviour
     ///<summary>
     ///대화 시작
     ///</summary>
-    ///<param name="chatName">대사 파일명 + 날짜및시간으로 파일 탐색</param>
+    ///<param name="fileName">대사 파일명 + 날짜및시간으로 파일 탐색</param>
     ///<remarks>대화 파일 탐색 후 파일 존재시 대화 시작</remarks>
-    public void StartChat(string chatName)
+    public void StartChat(string fileName)
     {
         /*
         * 대화
         - chatName으로 파일 불러오고 Chat 활성화
-        */
-        string fileName = $"{chatName}_{GameSystem.Instance.dateIndex}_{GameSystem.Instance.time}";   
+        */  
         Debug.Log($"대화 시작 : {fileName}"); 
         isTalk = LoadChatFile(fileName);
         if (isTalk == false)

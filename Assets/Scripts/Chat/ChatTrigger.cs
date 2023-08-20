@@ -42,6 +42,13 @@ public class ChatTrigger : MonoBehaviour
     /// </summary>
     public void StartChat()
     {
+        // 첫 활성화 1회 or 클릭 1회 제한
+        if (triggerType == ChatTriggerType.OnStart || triggerType == ChatTriggerType.Once)
+        {
+            if (talkCount > 0)
+                return;
+        }
+        
         Chat.Instance.StartChat(chatName);
         talkCount++;
     }

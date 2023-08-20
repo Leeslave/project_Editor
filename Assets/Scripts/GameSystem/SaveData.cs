@@ -6,8 +6,8 @@ public class SaveData
     *   - 위치 데이터
     *   - 현재 명성치
     */
-    public readonly World startLocation;
-    public readonly int startPosition;
+    public World startLocation;
+    public int startPosition;
     public int renown;
 
     public SaveData()
