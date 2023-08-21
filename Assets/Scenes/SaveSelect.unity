@@ -623,16 +623,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 348036223}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1250495251}
-  m_RootOrder: 29
+  m_Father: {fileID: 816834948}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.05, y: 0.85}
-  m_AnchorMax: {x: 0.2, y: 0.95}
+  m_AnchorMin: {x: 0.2, y: 0.73532486}
+  m_AnchorMax: {x: 0.402, y: 0.85}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -656,7 +656,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "12\uC6D4\n"
+  m_text: '
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8d6c81e723e61fb47b48ac24b9f012ec, type: 2}
   m_sharedMaterial: {fileID: 2217423988375855100, guid: 8d6c81e723e61fb47b48ac24b9f012ec, type: 2}
@@ -665,8 +667,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190335
+  m_fontColor: {r: 1, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1028,14 +1030,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95dc7de64c9764942a333b9dc60542dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSavePath: /Resources/Save/
-  dailySavePath: /Resources/GameData/Main/dailyData.json
-  player:
-    dateIndex: 0
-    time: 0
-    location: 
-    position: 0
-    renown: 0
+  dateIndex: 0
+  time: 0
+  location: 0
+  position: 0
+  isScreenOn: 0
 --- !u!4 &477142253
 Transform:
   m_ObjectHideFlags: 0
@@ -1809,6 +1808,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 186084143}
+  - {fileID: 348036224}
   - {fileID: 1250495251}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -2941,9 +2941,8 @@ RectTransform:
   - {fileID: 1128392494}
   - {fileID: 1336874549}
   - {fileID: 1888404466}
-  - {fileID: 348036224}
   m_Father: {fileID: 816834948}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.1, y: 0.3}
   m_AnchorMax: {x: 0.9, y: 0.9}
@@ -3484,7 +3483,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0917f36df817e804cb884697548e6fdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  saveFile: /Resources/Save/debugsave_1
 --- !u!4 &1459770728
 Transform:
   m_ObjectHideFlags: 0
