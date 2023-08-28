@@ -35,7 +35,7 @@ public class ClearManager_N : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(GS());
+        /*StartCoroutine(GS());*/
     }
 
     public void JudgeClear()
@@ -58,12 +58,12 @@ public class ClearManager_N : MonoBehaviour
             Reports[ErrorCount].SetActive(true);
             ReportsText[ErrorCount++].text = "본문 형식 위반 : -5";
         }
-        if (IsGoalAttatched != 1)
+        if (AF.IsGoalAttatched != 1)
         {
             Reports[ErrorCount].SetActive(true);
             ReportsText[ErrorCount++].text = "파일 첨부 형식 위반 : -5";
         }
-        if (IsGoalAttatched == 0)ReviseScore = MN.MaxHealth;
+        if (AF.IsGoalAttatched == 0)ReviseScore = MN.MaxHealth;
         else ReviseScore = MN.TryCount - MN.Health;
         if (ReviseScore != 0) 
         {
@@ -71,7 +71,7 @@ public class ClearManager_N : MonoBehaviour
             ReportsText[ErrorCount++].text = $"지시 불이행 : -{10 * ReviseScore}";
         }
 
-        StartCoroutine(SendReport());
+        /*StartCoroutine(SendReport());*/
         LayoutRebuilder.ForceRebuildLayoutImmediate(ReportRect);
     }
 
@@ -79,7 +79,7 @@ public class ClearManager_N : MonoBehaviour
     [SerializeField] GameObject test2;
     [SerializeField] GameObject test3;
 
-    IEnumerator GS()
+   /* IEnumerator GS()
     {
         yield return new WaitForSeconds(5);
         MM.NewMessage(
@@ -96,5 +96,5 @@ public class ClearManager_N : MonoBehaviour
         MM.NewMessage("정보부", "업무 보고서", "금일 업무 보고서입니다.",
             new GameObject[] { test3 },
             new string[] {"보고서"});
-    }
+    }*/
 }

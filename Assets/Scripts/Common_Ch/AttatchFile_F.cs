@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class AttatchFile_F : MonoBehaviour
 {
-    [SerializeField] ClearManager_N CN;
     [SerializeField] AttatchFile_N AN;
     [SerializeField] List<GameObject> AttatchFields;
     [SerializeField] List<TMP_Text> AttatchFieldsName;
@@ -20,6 +19,7 @@ public class AttatchFile_F : MonoBehaviour
     int AttatchNum = 0;
     List<int> AttatchInd = new List<int>(5);
     bool[] GoalAttatched = new bool[5];
+    public int IsGoalAttatched;
 
     private void Awake()
     {
@@ -28,6 +28,12 @@ public class AttatchFile_F : MonoBehaviour
         EventTrigger eventTrigger = GetComponent<EventTrigger>();
         MyUi.AddEvent(eventTrigger, EventTriggerType.PointerEnter, OnPoint);
         MyUi.AddEvent(eventTrigger, EventTriggerType.PointerExit, OutPoint);
+    }
+    private void OnDisable()
+    {
+        for (int i = 0; i < 5; i++) GoalAttatched[i] = false;
+        for (int i = 0; i < 5; i++) AttatchInd[i] = i;
+        for (int i = 0; i < 5; i++) AttatchFields[i].SetActive(false);
     }
 
     private void OutPoint(PointerEventData Data)
@@ -50,9 +56,9 @@ public class AttatchFile_F : MonoBehaviour
         if (AttatchNum == 0) AttatchFields[0].SetActive(false);
         ++AttatchNum;
         int s = AttatchInd[AttatchNum];
-        if (this.Goal == Goal && CN!=null)
+        if (this.Goal == Goal)
         {
-            CN.IsGoalAttatched++;
+            IsGoalAttatched++;
             GoalAttatched[s] = true;
         }
         AttatchFields[s].SetActive(true);
@@ -71,10 +77,10 @@ public class AttatchFile_F : MonoBehaviour
             AttatchFields[num].transform.SetSiblingIndex(AttatchNum);
             AttatchInd.Remove(num);
             AttatchInd.Insert(AttatchNum,num);
-            if (GoalAttatched[num] == true && CN!=null)
+            if (GoalAttatched[num] == true)
             {
                 GoalAttatched[num] = false;
-                CN.IsGoalAttatched--;
+                IsGoalAttatched--;
             }
         }
         AttatchNum--;

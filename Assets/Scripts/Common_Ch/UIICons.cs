@@ -63,7 +63,8 @@ public class UIICons : UIDragger
 
     protected virtual void OpenIcon(PointerEventData Data)
     {
-        if (OpenedProcess.activeSelf) return;
+        if(OpenedProcess != null)
+            if (OpenedProcess.activeSelf) return;
         if (DragDoubleCheck)
         {
             DragDoubleCheck = false;
@@ -83,14 +84,16 @@ public class UIICons : UIDragger
 
     protected override void Click(PointerEventData Data)
     {
-        if (OpenedProcess.activeSelf) return;
+        if (OpenedProcess != null)
+            if (OpenedProcess.activeSelf) return;
         base.Click(Data);
         CntRect.position = MyRect.position;
     }
 
     protected override void DragOn(PointerEventData Data)
     {
-        if (OpenedProcess.activeSelf) return;
+        if (OpenedProcess != null)
+            if (OpenedProcess.activeSelf) return;
         base.DragOn(Data);
         if (Data.clickCount == 2) DragDoubleCheck = true;
         Dragged.gameObject.SetActive(true);
@@ -102,7 +105,8 @@ public class UIICons : UIDragger
 
     protected override void DragEnd(PointerEventData Data)
     {
-        if (OpenedProcess.activeSelf) return;
+        if (OpenedProcess != null)
+            if (OpenedProcess.activeSelf) return;
         if (AN.IsAttatched)
         {
             if (!CanAttatched) AN.AF.AttatchFail("첨부 실패","제한된 파일 형식");
