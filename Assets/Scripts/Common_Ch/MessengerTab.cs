@@ -38,8 +38,6 @@ public class MessengerTab : MonoBehaviour
         }
     }
 
-    
-
     private void OnEnable()
     {
         image.color = N;

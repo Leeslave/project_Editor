@@ -25,9 +25,9 @@ public class Windows_M : MonoBehaviour
     protected RectTransform MyRect;
 
     protected bool[,] Occupied;
-    [Header("따로 사전에 생성된 Icon들")]
+    [Header("따로 사전에 생성된 Icon들\n따로 안 넣어두면 버그 납니다.")]
     [SerializeField] List<GameObject> EarlyIcon;
-    [Header("(주의) Icon을 무조건 Field에 생성한 후\n기본적인 Prefab을 적용한 후 넣어주세요.")]
+    [Header("(주의) IconSample을 무조건 Field에 생성한 후\n기본적인 Prefab을 적용한 후 넣어주세요.")]
     [Header("풀링 가능 30개")]
     [SerializeField] GameObject IconSample;
     protected GameObject[] Icons = new GameObject[30];
@@ -41,12 +41,16 @@ public class Windows_M : MonoBehaviour
         for (int i = 0; i < 30; i++) IconsScript[i] = Icons[i].GetComponent<UIICons>();
         for (int i = 0; i < 30; i++) IconsScript[i].PoolNum = i;
         for (int i = 0; i < 30; i++) IconUseAble[i] = true;
+        for (int i = 0; i < EarlyIcon.Count; i++) IconUseAble[i] = false;
         SizeChanger();
 
         EarlyIcon.Clear();
         GR = GetComponent<GraphicRaycaster>();
     }
 
+    /// <summary>
+    /// 다른 프로세스 위로 마우스가 있을 때, 드래그&드롭을 불가능하게 함
+    /// </summary>
     private void FixedUpdate()
     {
         if (MyUi.GRay(GR).Count != 0) CanMove = false;
@@ -82,6 +86,7 @@ public class Windows_M : MonoBehaviour
         RectTransform cnt = Call.GetComponent<RectTransform>();
         int x = (int)((Dragged.position.x - Start_X) / (Icon_Size_X + Space_X)); if (x < 0) x = 0;
         int y = (int)((Start_Y - Dragged.position.y) / (Icon_Size_Y + Space_Y)); if (y < 0) y = 0;
+        if (Occupied[y, x] == true) return;
         Occupied[CallLay.Item2,CallLay.Item1] = false;
         Occupied[y, x] = true;
         CallLay = new Tuple<int, int>(x,y);
@@ -105,7 +110,8 @@ public class Windows_M : MonoBehaviour
                     cnt.position = new Vector3(
                          Start_X + x * (Icon_Size_X + Space_X) + cnt.pivot.x * Icon_Size_X,
                          Start_Y - y * (Icon_Size_Y + Space_Y) - cnt.pivot.y * Icon_Size_Y, 0);
-                    cnt.sizeDelta = new Vector2(Icon_Size_X,Icon_Size_Y);
+                    cnt.sizeDelta = new Vector2(Icon_Size_X, Icon_Size_Y);
+                    print(cnt.sizeDelta);
                     return new Tuple<int,int>(x, y);
                 }
         return null;
@@ -118,7 +124,7 @@ public class Windows_M : MonoBehaviour
     /// <param name="OpenProcess"> 클릭 시 실행되는 프로세스 </param>
     /// <param name="name"> 이름 </param>
     /// <param name="Image"> 이미지 </param>
-    public virtual void NewIcon(bool AttatchAble, GameObject OpenProcess, string name, Sprite Image)
+    public virtual GameObject NewIcon(bool AttatchAble, GameObject OpenProcess, string name, Sprite Image)
     {
         for(int i = 0; i < 30; i++)
         {
@@ -127,16 +133,23 @@ public class Windows_M : MonoBehaviour
                 IconUseAble[i] = false;
                 Icons[i].SetActive(true);
                 IconsScript[i].Init(AttatchAble,OpenProcess,name,Image,i);
-                break;
+                return Icons[i];
             }
         }
+        return null;
     }
-
+    /// <summary>
+    /// 특정 작업을 통해 LayOut이 변경된 Icon의 기존 LayOut을 이용 가능하게 변경
+    /// </summary>
+    /// <param name="CallLay"> Icon의 현재 LayOut상에서의 위치 </param>
     public virtual void RemoveIcon(Tuple<int,int> CallLay)
     {
         Occupied[CallLay.Item2,CallLay.Item1] = false;
     }
-
+    /// <summary>
+    /// 해당 PoolNum의 Icon을 Pooling 가능하게 변경.
+    /// </summary>
+    /// <param name="ind"></param>
     public virtual void ClearIcon(int ind)
     {
         IconUseAble[ind] = true;

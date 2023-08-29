@@ -12,6 +12,9 @@ public class Buttons_M : MonoBehaviour
     protected Color BfColor;
     protected TMP_Text text;
     protected Image image;
+    /// <summary>
+    /// 포인터 온, 오프, 클릭 이벤트만 초기화되있음.
+    /// </summary>
     private void Awake()
     {
         if (GetComponent<EventTrigger>() == null) gameObject.AddComponent<EventTrigger>();

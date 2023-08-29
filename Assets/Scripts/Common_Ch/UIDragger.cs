@@ -18,6 +18,10 @@ public class UIDragger : MonoBehaviour
         MyUi.AddEvent(eventTrigger, EventTriggerType.Drag, DragPointer);
     }
 
+    /// <summary>
+    /// 드래그 중인 Object를 최상단에 위치시킴.
+    /// </summary>
+    /// <param name="Data"></param>
     protected virtual void Click(PointerEventData Data)
     {
         Dragged.SetAsLastSibling();
@@ -28,11 +32,18 @@ public class UIDragger : MonoBehaviour
         DragSetting();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="data"></param>
     protected virtual void DragPointer(PointerEventData data)
     {
         MyUi.DragUI(Dragged.gameObject, AnchorGap);
     }
 
+    /// <summary>
+    /// 마우스 좌표를 UI용 좌표로 변환(무조건 Canvas가 World세팅이 되어 있어야 함)
+    /// </summary>
     protected virtual void DragSetting() 
     { 
         AnchorGap = Camera.main.ScreenToWorldPoint(Input.mousePosition) - Dragged.position; 
