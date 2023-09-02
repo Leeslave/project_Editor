@@ -8,9 +8,11 @@ public class TextOff_Obs : MonoBehaviour
     [SerializeField]
     float RemoveTime;
     WaitForSeconds WFS;
+    Transform Parent;
     private void Awake()
     {
         WFS = new WaitForSeconds(RemoveTime);
+        Parent = transform.parent;
     }
     private void OnEnable()
     {
@@ -20,5 +22,6 @@ public class TextOff_Obs : MonoBehaviour
     {
         yield return WFS;
         gameObject.SetActive(false);
+        transform.SetParent(Parent);
     }
 }
