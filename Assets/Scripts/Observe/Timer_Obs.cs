@@ -15,7 +15,7 @@ public class Timer_Obs : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Minute += Time.deltaTime;
+        Minute += Time.deltaTime * 10;
         if (Minute >= 60) { Hour += 1; Minute = 0; }
         Text.text = $"{Hour}".PadLeft(2,'0') + ":" + $"{(int)Minute}".PadLeft(2,'0');
     }

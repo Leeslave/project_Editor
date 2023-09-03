@@ -23,6 +23,9 @@ public class Detect_Obs : MonoBehaviour
     [NonSerialized] public string[] Actions;
     [NonSerialized] public string Name;
     [NonSerialized] public Transform CurTarget;
+    // 현재 속한 Stage
+    [NonSerialized] public RectTransform CurStage;
+    [NonSerialized] public float MaxX;
     float Hor;
     float Ver;
     private void Awake()
@@ -35,16 +38,29 @@ public class Detect_Obs : MonoBehaviour
             ChatText[i] = ChatForm[i].GetChild(0).GetComponent<TMP_Text>();
         }
     }
+    private void Start()
+    {
+        
+    }
 
+
+    // 좌우 : 475
+    // 상하 : 355
     void Update()
     {
         Hor = Input.GetAxisRaw("Horizontal");
         Ver = Input.GetAxisRaw("Vertical");
-        if (Hor * transform.position.x > 520) Hor = 0;
-        if (Ver * (transform.position.y-30) > 340) Ver = 0;
+        
+        if (Hor * transform.position.x > 475)
+        {
+            if(575 - CurStage.position.x * Hor < MaxX)
+                CurStage.transform.Translate(new Vector3(-Hor * Time.deltaTime * 800, 0, 0));
+            Hor = 0;
+        }
+        if (Ver * transform.position.y > 355) Ver = 0;
 
 
-        transform.Translate(new Vector3(Hor*1.5f,Ver*1.5f,0));
+        transform.Translate(new Vector3(Hor*Time.deltaTime * 800,Ver*Time.deltaTime * 800,0));
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if(OnEnter)
@@ -65,7 +81,7 @@ public class Detect_Obs : MonoBehaviour
     }
 
 
-    Vector3 CntPos = new Vector3(0, 1.5f, 0);
+    Vector3 CntPos = new Vector3(0, 1f, 0);
     public void MakeNoise()
     {
         if (!OnEnter) return;
