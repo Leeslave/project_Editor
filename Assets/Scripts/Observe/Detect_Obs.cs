@@ -38,10 +38,6 @@ public class Detect_Obs : MonoBehaviour
             ChatText[i] = ChatForm[i].GetChild(0).GetComponent<TMP_Text>();
         }
     }
-    private void Start()
-    {
-        
-    }
 
 
     // аб©Л : 475

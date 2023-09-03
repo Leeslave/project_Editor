@@ -1,28 +1,30 @@
+using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-public class OnOffButton_Obs : Buttons_Obs
+public class SubCam_Obs : Buttons_Obs
 {
     Color BfColor;
     Color AfColor;
     Image image;
-    [SerializeField] GameObject[] Target;
-    [SerializeField] GameObject[] AlwaysOn;
-    [SerializeField] GameObject[] AlwaysOff;
+    [SerializeField] StageChanger_Obs SCO;
+    [SerializeField] int Area;
+    [SerializeField] int Sub;
+    [SerializeField] GameObject GG;
     protected override void Awake()
     {
         base.Awake();
         image = GetComponent<Image>();
         BfColor = image.color;
-        AfColor = BfColor - new Color(0.2f,0.2f,0.2f,0);
+        AfColor = BfColor - new Color(0.2f, 0.2f, 0.2f, 0);
     }
 
     protected override void Click(PointerEventData Data)
     {
-        foreach (GameObject a in AlwaysOn) a.SetActive(true);
-        foreach (GameObject a in Target) a.SetActive(a.activeSelf == false);
-        foreach (GameObject a in AlwaysOff) a.SetActive(false);
+        SCO.StageChanger(Area, Sub);
+        GG.SetActive(false);
+        image.color = BfColor;
+        transform.parent.gameObject.SetActive(false);
     }
     protected override void OnPointer(PointerEventData data)
     {

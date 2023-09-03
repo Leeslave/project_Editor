@@ -1,18 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class StageChanger_Obs : MonoBehaviour
 {
-    [SerializeField] StageObject_Obs[] Stages;
+    [SerializeField] StageDB_Obs DB;
     [SerializeField] GameObject Border;
     [SerializeField] ShaderEffect_CRT Glitcher1;
     [SerializeField] ShaderEffect_Unsync Glitcher2;
-    [SerializeField] Detect_Obs Detecter;
-    RectTransform[] Rects;
+    [SerializeField] Detect_Obs Detecter;    
     int CurStage = 0;
+    int CurArea = 0;
 
     [Header("변경 시간")]
     [SerializeField] float ChangeTime;
@@ -21,20 +20,22 @@ public class StageChanger_Obs : MonoBehaviour
     private void Awake()
     {
         WFS = new WaitForSeconds(ChangeTime*0.05f);
-        Rects = new RectTransform[Stages.Length];
-        for (int i = 0; i < Rects.Length; i++) Rects[i] = Stages[i].GetComponent<RectTransform>();
-        Detecter.CurStage = Rects[0];
-        Detecter.MaxX = Rects[0].sizeDelta.x * 0.5f;
+        
     }
-
-    public void StageChanger(int ind)
+    private void Start()
     {
-        Detecter.CurStage = Rects[ind];
-        Detecter.MaxX = Rects[ind].sizeDelta.x * 0.5f;
-        StartCoroutine(StageChange(ind));
+        Detecter.CurStage = DB.Rects[0][0];
+        Detecter.MaxX = DB.Rects[0][0].sizeDelta.x * 0.5f;
     }
 
-    IEnumerator StageChange(int ind)
+    public void StageChanger(int Area, int Sub)
+    {
+        Detecter.CurStage = DB.Rects[Area][Sub];
+        Detecter.MaxX = DB.Rects[Area][Sub].sizeDelta.x * 0.5f;
+        StartCoroutine(StageChange(Area,Sub));
+    }
+
+    IEnumerator StageChange(int Area, int Sub)
     {
         Border.SetActive(true);
         Glitcher1.scanlineIntensity = 200;
@@ -46,11 +47,12 @@ public class StageChanger_Obs : MonoBehaviour
         Glitcher1.scanlineIntensity = 0;
         Glitcher2.speed = 0.01f;
         Border.SetActive(false);
-        Rects[ind].anchoredPosition = Vector3.zero;
+        DB.Rects[CurArea][CurStage].anchoredPosition = Vector3.zero;
         Detecter.transform.position = Vector3.zero;
-        Stages[CurStage].StageOff();
-        Stages[ind].StageOn();
-        CurStage = ind;
+        DB.Stages[CurArea][CurStage].StageOff();
+        DB.Stages[Area][Sub].StageOn();
+        CurArea = Area;
+        CurStage = Sub;
     }
 
 }
