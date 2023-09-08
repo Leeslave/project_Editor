@@ -19,16 +19,18 @@ public class MakeTile : MonoBehaviour
     public GameObject Clear;
     public GameObject Fog;
     public MazeTimer Timer;
-    public List<List<GameObject>> Fogs = new List<List<GameObject>>();
-    public List<List<bool>> IsFog = new List<List<bool>>();
+    [NonSerialized] public List<List<GameObject>> Fogs = new List<List<GameObject>>();
+    [NonSerialized] public List<List<bool>> IsFog = new List<List<bool>>();
+
+    [NonSerialized] public int Difficulty = 4;
+    [NonSerialized] public bool IsCalcFog = false;
 
     public float Move_X;
     public float Move_Y;
-    [System.NonSerialized]
-    public int Col;
-    public int Row;
-    public int KeyNum;
-    public int KeyWeight;
+    [NonSerialized] public int Col;
+    [NonSerialized] public int Row;
+    [NonSerialized] public int KeyNum;
+    [NonSerialized] public int KeyWeight;
 
     void Awake()
     {
@@ -40,22 +42,27 @@ public class MakeTile : MonoBehaviour
         MakeItems();
     }
 
+    // 임시(아직 싱글턴을 어떤 식으로 줄 지 안정해짐)
     void GetDifficulty()
     {
-        if (PlayerPrefs.HasKey("Difficulty"))
+        int[] cs = new int[] { 3, 1, 2 };
+        Col = Row = 10 + 5 * (int)(Difficulty / 3);
+        KeyNum = cs[Difficulty % 3];
+        if (Difficulty <= 3)
         {
-            switch (PlayerPrefs.GetString("Difficulty"))
-            {
-                case "1":
-                    Col = 10; Row = 10; KeyNum = 1; KeyWeight = 10; Timer.NowTime = 50;
-                    break;
-                case "2":
-                    Col = 15; Row = 15; KeyNum = 2; KeyWeight = 30; Timer.NowTime = 100;
-                    break;
-                case "3":
-                    Col = 20; Row = 20; KeyNum = 3; KeyWeight = 50; Timer.NowTime = 200;
-                    break;
-            }
+            IsCalcFog = false;
+            Timer.gameObject.SetActive(false);
+        }
+        else if (Difficulty <= 6)
+        {
+            IsCalcFog = true;
+            Timer.gameObject.SetActive(false);
+        }
+        else
+        {
+            IsCalcFog = true;
+            Timer.NowTime = 150;
+            Timer.gameObject.SetActive(true);
         }
     }
 
@@ -71,7 +78,6 @@ public class MakeTile : MonoBehaviour
         outsB.transform.localScale = new Vector2(2 * Row * Move_X + 120, 12 * Move_Y);
         GameObject outsR = Instantiate(Fog, new Vector3((Row + 5) * Move_X + 10, (-3) * Move_Y + 5), new Quaternion(0, 0, 0, 0));
         outsR.transform.localScale = new Vector2(12 * Move_X, 2 * Col * Move_Y + 120);
-
         for(int y = 0; y < Col * 2; y++)
         {
             Fogs.Add(new List<GameObject>());
@@ -85,6 +91,7 @@ public class MakeTile : MonoBehaviour
             {
                 // 안개 관련 정보를 저장하는 배열에 저장
                 // 미로의 한 칸에 총 4개의 안개가 존재
+                if(IsCalcFog)
                 for(int a = 0; a < 2; a++)for(int b = 0; b<2;b++)
                     {
                         Fogs[Y * 2 + a].Add(Instantiate(Fog, new Vector3(x * Move_X + 2.5f + 5 * b, Y * Move_Y + 2.5f + 5 * a), new Quaternion(0, 0, 0, 0)));

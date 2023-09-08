@@ -223,6 +223,7 @@ public class PlayerMove : MonoBehaviour
 
     void CalcFog()
     {
+        if (!MT.IsCalcFog) return;
         int CurY = (int)((transform.position.y - 5) / Move_X);
         int CurX = (int)((transform.position.x - 5) / Move_X);
 
