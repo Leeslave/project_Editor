@@ -343,7 +343,7 @@ public class PatternManager : MonoBehaviour
             stringReader.Close();
         }
     }
-
+/*
 
     // Hard(3페이즈)                     1 -> 2 -> 3 -> 4
     // 이 밑으론 사용하지 않기로 하였음으로 주석을 작성하지 않음
@@ -431,5 +431,5 @@ public class PatternManager : MonoBehaviour
         Pl.EndG.GetComponent<RealEnd>().Ending(true);
     }
 
-    
+    */
 }

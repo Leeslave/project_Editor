@@ -5,42 +5,32 @@ using UnityEngine.Rendering;
 
 public class BulletMove: MonoBehaviour
 {
+    Vector3 MyRotate = Vector3.forward;
+    SpriteRenderer Mys;
+    Color j = new Color(0, 0, 0, 0.02f);
+    bool s = false;
 
-    // 3페이즈 관련임으로 주석 적지 않음.
-    // 3페이즈 외에서는 OnCollisonEnter만 사용함.
-    public void BigBullet(BulletManager BM)
+    private void Awake()
     {
-        StartCoroutine(BigBulletPattern(BM));
+        Mys = GetComponent<SpriteRenderer>();
     }
-
-    IEnumerator BigBulletPattern(BulletManager BM)
+    private void OnEnable()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(1);
-            Vector2 DX = Vector2.zero;
-            Vector2 DY = Vector2.up;
-            for (int y = 0; y < 3; y++)
-            {
-                if (y == 1) DY = Vector2.zero;
-                else if (y == 2) DY = Vector2.down;
-                for (int x = 0; x < 3; x++)
-                {
-                    if (y == 1 && x == 1) continue;
-                    if (x == 0) DX = Vector2.left;
-                    else if (x == 1) DX = Vector2.zero;
-                    else DX = Vector2.right;
-                    BM.MakeSmallBul(DX * 8, DY * 8).transform.position = transform.position;
-                }
-            }
-            
-        }
+        if (Random.Range(0, 2) == 0) MyRotate = Vector3.back;
+        else MyRotate = Vector3.forward;
     }
+    private void FixedUpdate()
+    {
+        transform.Rotate(MyRotate * Time.deltaTime * 250);
+        if (Mys.color.a <= 0.7 || Mys.color.a >= 1.0) s = s == false;
 
+        if (s) Mys.color -= j;
+        else Mys.color += j;
+    }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Border")
+        if (collision.gameObject.CompareTag("Border"))
         {
             gameObject.SetActive(false);
         }
