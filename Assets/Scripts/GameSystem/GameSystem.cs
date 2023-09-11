@@ -46,7 +46,7 @@ public class GameSystem : MonoBehaviour
         {
             _instance = this;
             DontDestroyOnLoad(gameObject);
-            saveList = GameLoader.LoadSaveData();     // 디버깅 : 세이브 데이터 로드
+            saveList = GameLoader.LoadSaveData();     // 세이브 데이터 로드
             dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드    
 
             Debug.Log(saveList[0].startPosition);
@@ -64,6 +64,11 @@ public class GameSystem : MonoBehaviour
     ///<param name="dateIndex">전환할 날짜 인덱스(없으면 다음 날짜로), 시간은 무조건 아침</param>
     public void SetDate(int date = -1)
     {
+        if (date > dailyList.Count)
+        {
+            Debug.Log($"Day Out Of Range: {date}");
+            return;
+        }
         if (date < 0)
         {
             // 다음 날짜로 이동
@@ -136,6 +141,13 @@ public class GameSystem : MonoBehaviour
 
         // 업무 완료로 전환
         currentWork.isClear = true;
+    }
+
+
+    /// load Game Scene
+    public void LoadNextScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 }
 
