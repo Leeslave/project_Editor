@@ -41,7 +41,7 @@ public class PatternManager : MonoBehaviour
     // 좌우 소환 위치(히든용)
     public Transform SPCNT;
     Vector2[][] SP;                     //SP의 모음
-    Vector2[] SPT = new Vector2[26];    //상
+    Vector2[] SPT = new Vector2[26];    //W상
     Vector2[] SPB = new Vector2[26];    //하
     Vector2[] SPL = new Vector2[19];    //좌
     Vector2[] SPR = new Vector2[19];    //우
@@ -78,6 +78,10 @@ public class PatternManager : MonoBehaviour
         }
         SP = new Vector2[][] { SPB, SPR, SPL, SPT };
         ReadExternalPattern();
+    }
+
+    private void Start()
+    {
     }
 
     public void StartInit()

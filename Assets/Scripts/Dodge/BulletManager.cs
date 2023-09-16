@@ -8,8 +8,7 @@ using UnityEngine.TextCore.Text;
 public class BulletManager : MonoBehaviour
 {
     [SerializeField]
-    public GameObject Bm;
-    public GameObject Bl;
+    public GameObject[] BulletPref;
     static GameObject[] BM;
     static GameObject[] Pool;
     static Rigidbody2D[] rigids = new Rigidbody2D[300];
@@ -19,7 +18,7 @@ public class BulletManager : MonoBehaviour
         BM = new GameObject[300];
         for(int i = 0; i<BM.Length; i++)
         {
-            BM[i] = Instantiate(Bm);
+            BM[i] = Instantiate(BulletPref[Random.Range(0,2)]);
             rigids[i] = BM[i].GetComponent<Rigidbody2D>();
             BM[i].SetActive(false);
         }
