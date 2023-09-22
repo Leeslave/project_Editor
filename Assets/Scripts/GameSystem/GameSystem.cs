@@ -59,7 +59,7 @@ public class GameSystem : MonoBehaviour
     }
 
     ///<summary>
-    /// 날짜 전환
+    /// 날짜 전환 (게임 저장)
     ///</summary>
     ///<param name="dateIndex">전환할 날짜 인덱스(없으면 다음 날짜로), 시간은 무조건 아침</param>
     public void SetDate(int date = -1)
@@ -81,6 +81,11 @@ public class GameSystem : MonoBehaviour
         position = player.startPosition;
         SetTime(0);
         
+        // 게임 저장 (튜토리얼 날짜 제외)
+        if (date > 1)
+        {
+            GameLoader.SavePlayerData(saveList);
+        }
 
         // 메인 월드는 재로드
         if (SceneManager.GetActiveScene().name == "MainWorld")
@@ -145,7 +150,7 @@ public class GameSystem : MonoBehaviour
 
 
     /// load Game Scene
-    public void LoadNextScene(string sceneName)
+    static public void LoadNextScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
     }
