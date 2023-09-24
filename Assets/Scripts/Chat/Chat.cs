@@ -131,8 +131,7 @@ public class Chat : MonoBehaviour
         if (idx >= paragraphs.Count)
         {
             Debug.Log($"Chat OFF: INDEX={idx}");
-            isTalk = false;
-            chatUI.SetActive(false);    // Chat 종료 및 비활성화
+            FinishChat();    // Chat 종료 및 비활성화
             return;
         }
 
@@ -146,6 +145,14 @@ public class Chat : MonoBehaviour
         {
             Coroutine textAnimation = StartCoroutine(TextAnimation(paragraph as NormalParagraph));
         }
+    }
+
+    /// 대사 종료
+    private void FinishChat()
+    {
+        background.sprite = null;   // 배경 초기화
+        isTalk = false;             // 대화 종료
+        chatUI.SetActive(false);    // UI 종료
     }
 
     /// 다시보기 대화 로그 버튼
@@ -279,7 +286,10 @@ public class Chat : MonoBehaviour
             case Paragraph.TalkType.cutScene:
                 NormalParagraph cutSceneParagraph = paragraphs[index] as NormalParagraph;
 
-                background.sprite = GetSprite(cutSceneParagraph.background);    // 배경 이미지 설정 
+                if (cutSceneParagraph.background != null)
+                {
+                    background.sprite = GetSprite(cutSceneParagraph.background);    // 배경 이미지 설정 
+                }
                 background.gameObject.SetActive(true);      // 배경 이미지 활성화
 
                 /// TODO: 캐릭터 CG 활성화

@@ -23,4 +23,9 @@ public class SaveData
 public class SaveWrapper
 {
     public System.Collections.Generic.List<SaveData> data;
+
+    public SaveWrapper()
+    {
+        data = new();
+    }
 }
