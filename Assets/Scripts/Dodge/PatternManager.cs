@@ -31,6 +31,8 @@ public class PatternManager : MonoBehaviour
     public bool IsEnd = false;      // 필사 패턴 여부
     public int CurPattern = 0;      // 현재 패턴
 
+    public GameObject[] Warnings;
+
     List<GameObject> PlatL = new List<GameObject>();        // 레이저 패턴 중 사용되는 Platform들을 저장 <- EndPattern에 사용하기 위함.
     int PatternNum = 0;             // Num of Pattern(안 씀)
 
@@ -61,6 +63,11 @@ public class PatternManager : MonoBehaviour
         new Vector2[] {Vector2.left,Vector2.down}, new Vector2[] {Vector2.zero,Vector2.down}, new Vector2[] { Vector2.right, Vector2.down }
     };
 
+    // WaitForSeconds;
+    WaitForSeconds TwoSec = new WaitForSeconds(2);
+    WaitForSeconds OneSec = new WaitForSeconds(1);
+    WaitForSeconds LittleSec = new WaitForSeconds(0.05f);
+
     private void Awake()
     {
         AL = GetComponent<AudioSource>();
@@ -82,6 +89,7 @@ public class PatternManager : MonoBehaviour
 
     private void Start()
     {
+        StartCoroutine(PatternN2());
     }
 
     public void StartInit()
@@ -103,8 +111,8 @@ public class PatternManager : MonoBehaviour
     IEnumerator MakeEasyPattern()     // 1페이즈에 사용되는 패턴을 생성함.
     {
         this.CurPattern = 0;
-        /*PlatTop.SetActive(true); PlatTop.SetActive(true);*/               
-        if (TM.time == 0) yield return new WaitForSeconds(1);        // 씬이 시작 됨과 동시에 Pattern이 시작될 때 발생하는 렉 때문에 첫 탄막과 그 다음 탄막 사이의 간격이 생겨 해당 건을 방지하기 위해 1초간 멈춤.
+        /*PlatTop.SetActive(true); PlatTop.SetActive(true);*/
+        if (TM.time == 0) yield return OneSec;        // 씬이 시작 됨과 동시에 Pattern이 시작될 때 발생하는 렉 때문에 첫 탄막과 그 다음 탄막 사이의 간격이 생겨 해당 건을 방지하기 위해 1초간 멈춤.
         List<int[]> CurPattern = PTLE[Random.Range(0, PatternNum)];     // 저장된 패턴 중 임의로 1개의 패턴을 가져옴
         for (int CurRepeat = 0; CurRepeat < 2; CurRepeat++)             // 패턴 2회 반복 실행
         {
@@ -114,8 +122,18 @@ public class PatternManager : MonoBehaviour
                 {
                     if (CurPattern[y][x] == 1)                          // 좌 우 번갈아가면서 패턴을 생성
                     {
-                        if (CurRepeat % 2 == 0) BM.MakeSmallBul(Vector2.left * 10, Vector2.zero).transform.position = SPRE[y].position;
-                        else BM.MakeSmallBul(Vector2.right * 10, Vector2.zero).transform.position = SPLE[y].position;
+                        if (CurRepeat % 2 == 0)
+                        {
+                            Warnings[0].SetActive(true);
+                            yield return TwoSec;
+                            BM.MakeSmallBul(Vector2.left * 10, Vector2.zero).transform.position = SPRE[y].position;
+                        }
+                        else
+                        {
+                            Warnings[1].SetActive(true);
+                            yield return TwoSec;
+                            BM.MakeSmallBul(Vector2.right * 10, Vector2.zero).transform.position = SPLE[y].position;
+                        }
                     }
                 }
                 yield return new WaitForSeconds(BulletInterv);
@@ -133,10 +151,12 @@ public class PatternManager : MonoBehaviour
         CurPattern = 1;
         // 화면에 노이즈 생성
         MakeGlitch(0.1f, 0.5f, 0.7f);
-        yield return new WaitForSeconds(1);
+        yield return OneSec;
         MakeGlitch(0, 0, 0);
 
-        yield return new WaitForSeconds(1);
+        yield return OneSec;
+
+        WaitForSeconds SecC = new WaitForSeconds(BulletInterv * 1.4f);
 
         /*
         한 세로 줄을 기준으로 총 11개의 탄막이 생성되는데, 이 중 4칸을 비워 Player가 지나갈 수 있는 공간을 만듬.
@@ -172,7 +192,7 @@ public class PatternManager : MonoBehaviour
             }
             // 증감이 변화 된 직후의 K의 변화 1회 무시
             if (jk) k += dk;
-            yield return new WaitForSeconds(BulletInterv * 1.4f);
+            yield return SecC;
         }
         yield return new WaitForSeconds(10);        // 마지막 줄의 탄막이 생성되며 해당 탄막이 사라지는대 걸리는 시간
         StartCoroutine(ChangePT(PatternN2()));      // 다음 패턴을 실행
@@ -186,7 +206,7 @@ public class PatternManager : MonoBehaviour
         MakeGlitch(0.1f, 0.5f, 0.7f);
         yield return new WaitForSeconds(1.5f);
         MakeGlitch(0, 0, 0);
-        yield return new WaitForSeconds(1);
+        yield return OneSec;
 
         // 모든 탄막 생성 위치의 중간 y값. 플랫폼 생성에 사용.
         float MidY = (SPLE[4].position.y + SPLE[5].position.y) / 2;
@@ -197,9 +217,9 @@ public class PatternManager : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             int a1 = Random.Range(0, 2);
+            Warnings[2 + a1].SetActive(true);
+            yield return TwoSec;
             StartCoroutine(CamShake());
-            // 레이저 생성
-            CurRazer = Instantiate(Razer);
             // 플랫폼 생성
             GameObject cnt = Instantiate(Plat);
             cnt.GetComponent<Transform>().localScale = new Vector3(2f,0.1f);
@@ -211,7 +231,12 @@ public class PatternManager : MonoBehaviour
                 BM.MakeSmallBul(Vector2.left * 3, Vector2.zero).transform.position = SPRE[Random.Range(0, 5)].position;
                 cnt.transform.position = new Vector3(SPLE[4].position.x + 1,MidY,0);
                 cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.right * 3, ForceMode2D.Impulse);
-                CurRazer.transform.position = new Vector3(0, -3, 0);
+                for (int y = 0; y < 180; y++)
+                {
+                    for (int x = 0; x < 5; x++) BM.MakeSmallBul(Vector2.right * 25, Vector2.zero).transform.position = SPLE[5 + x].position;
+                    yield return LittleSec;
+                }
+
             }
             // 플랫폼을 왼쪽에서, 레이저를 아래에서 생성되게 함.
             else
@@ -219,9 +244,13 @@ public class PatternManager : MonoBehaviour
                 BM.MakeSmallBul(Vector2.right * 3, Vector2.zero).transform.position = SPLE[Random.Range(5, 10)].position;
                 cnt.transform.position = new Vector3(SPRE[4].position.x - 1, MidY, 0);
                 cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.left * 3, ForceMode2D.Impulse);
-                CurRazer.transform.position = new Vector3(0, 2.4f, 0);
+                for (int y = 0; y < 180; y++)
+                {
+                    for (int x = 0; x < 5; x++) BM.MakeSmallBul(Vector2.left * 25, Vector2.zero).transform.position = SPRE[x].position;
+                    yield return LittleSec;
+                }
             }
-            yield return new WaitForSeconds(9);
+            yield return OneSec;
         }
         yield return new WaitForSeconds(3);
 
@@ -249,19 +278,18 @@ public class PatternManager : MonoBehaviour
     {
         float Cx = MainCam.transform.position.x;
         float Cy = MainCam.transform.position.y;
-        yield return new WaitForSeconds(2f);
-        for (int i = 0; i < 24; i++)
+        for (int i = 0; i < 35; i++)
         {
             MainCam.transform.position = new Vector3(Cx - 0.5f, Cy, -2);
-            yield return new WaitForSeconds(0.05f);
+            yield return LittleSec;
             MainCam.transform.position = new Vector3(Cx+0.5f, Cy, -2);
-            yield return new WaitForSeconds(0.05f);
+            yield return LittleSec;
             MainCam.transform.position = new Vector3(Cx, Cy+0.5f, -2);
-            yield return new WaitForSeconds(0.05f);
+            yield return LittleSec;
             MainCam.transform.position = new Vector3(Cx, Cy-0.5f, -2);
-            yield return new WaitForSeconds(0.05f);
+            yield return LittleSec;
             MainCam.transform.position = new Vector3(Cx, Cy, -2);
-            yield return new WaitForSeconds(0.05f);
+            yield return LittleSec;
         }
     }
     public void EasyEndPattern() // 1페이즈 종료 후 무조건 사망하는 패턴을 생성함.

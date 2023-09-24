@@ -26,7 +26,6 @@ public class Player : MonoBehaviour
 
     public int speed;               // 플레이어의 좌 우 이동 속도
     public int CurHp;               // 현재 HP
-    public bool MovePing;           // 현재 어떠한 방식으로 플레이어가 이동하는지에 대해 나타냄
     public bool MoveAble = true;    // 플레이어 조작 가능 상태를 나타냄
     bool RayAble = true;            // true일 경우에만 상, 하로 레이케스트를 날림
     List<GameObject> PtL = new List<GameObject>();  // 사망시 나오는 Particle Object의 List
@@ -41,8 +40,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         if (!MoveAble) return;
-        if (MovePing) PingPong();
-        else NormalMove();
+        PingPong();
     }
 
     // 위 아래로 튕기면서 이동하는 상태
@@ -79,23 +77,6 @@ public class Player : MonoBehaviour
         RayAble = true;
     }
 
-    // 플레이어의 이동 방식을 정함.
-    // Input : "Ping"일 경우 튕기는 방식으로, "Normal"일 경우 상하좌우로 직접 움직일 수 있음.
-    // 3페이즈 삭제에 따라 항상 "Ping"상태로 고정됨
-    public void ChangeType(string type)
-    {
-        if(type == "Ping")
-        {
-            rigid.velocity = new Vector2(0, -10);
-            MovePing = true;
-        }
-        else if(type == "Normal")
-        {
-            rigid.velocity = new Vector2(0, 0);
-            MovePing = false;
-        }
-    }
-
     // 엔딩을 출력
     void RealEnd()
     {
@@ -107,7 +88,7 @@ public class Player : MonoBehaviour
     private void OnEnable()
     {
         // 조건은 씬이 생성되었을 때 작동되지 않도록 하기 위함(해당 시점에 굳이 필요 없는 연산)
-        if (CurHp != 3)
+        if (CurHp != 0)
         {
             // PatternManager 및 Timer 참조
             PM.EndPT(false);
@@ -123,15 +104,14 @@ public class Player : MonoBehaviour
         Up.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         Down.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         MoveAble = true;
-        ChangeType("Ping");
         speed = 10;
     }
 
     // 탄막과 충돌했을 때
     // PM과 TM관련은 PatternManager 및 Timer 참조
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Bullet")
+        if (collision.CompareTag("Bullet"))
         {
             PM.MusicOff();
             rigid.velocity = new Vector2(0, 0);
@@ -152,7 +132,7 @@ public class Player : MonoBehaviour
                         PtL[i].GetComponent<Rigidbody2D>().AddForce((PM.DE[i][0] + PM.DE[i][1]) * Random.Range(1, 4), ForceMode2D.Impulse);
                     }
                     // 체력을 한칸 깍고, 1초 뒤 Game Over Object 생성
-                    HPS[--CurHp].sprite = HPOff;
+                    
                     gameObject.SetActive(false);
                     Invoke("OnGameOver", 1);
                 }
@@ -160,10 +140,15 @@ public class Player : MonoBehaviour
                 {
                     PM.EndPT(false);
                     EndG.SetActive(true);
-                    gameObject.SetActive(false) ;
-                    Invoke("RealEnd",1);
+                    gameObject.SetActive(false);
+                    Invoke("RealEnd", 1);
                 }
             }
+        }
+        else if (collision.CompareTag("Trace"))
+        {
+            HPS[CurHp++].sprite = HPOn;
+            collision.gameObject.SetActive(false);
         }
     }
 
