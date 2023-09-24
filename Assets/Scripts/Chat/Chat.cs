@@ -357,7 +357,8 @@ public class Chat : MonoBehaviour
     /// 스프라이트 파일 불러오기
     private Sprite GetSprite(string spriteName)
     {
-        return null;
+        Sprite result = Resources.Load<Sprite>(backgroundFilePath + spriteName);
+        return result;
     }
 
     
