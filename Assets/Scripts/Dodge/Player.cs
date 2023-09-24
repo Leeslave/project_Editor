@@ -18,17 +18,13 @@ public class Player : MonoBehaviour
     public GameObject GameOver;
     // 엔딩 Object
     public GameObject EndG;
-    // 현재 HP 상태를 표시해주는 Image
-    public Image[] HPS;
-    // HP 상태 표시에 사용되는 Sprite
-    public Sprite HPOn;     // HP가 존재함을 나타냄
-    public Sprite HPOff;    // HP가 없음을 나타냄
 
     public int speed;               // 플레이어의 좌 우 이동 속도
-    public int CurHp;               // 현재 HP
     public bool MoveAble = true;    // 플레이어 조작 가능 상태를 나타냄
     bool RayAble = true;            // true일 경우에만 상, 하로 레이케스트를 날림
     List<GameObject> PtL = new List<GameObject>();  // 사망시 나오는 Particle Object의 List
+
+    bool OnStart = true;
 
     private void Awake()
     {
@@ -88,15 +84,13 @@ public class Player : MonoBehaviour
     private void OnEnable()
     {
         // 조건은 씬이 생성되었을 때 작동되지 않도록 하기 위함(해당 시점에 굳이 필요 없는 연산)
-        if (CurHp != 0)
+        if (!OnStart)
         {
             // PatternManager 및 Timer 참조
             PM.EndPT(false);
-            PM.StartPT(0);
-            PM.TM.IsTimeFlow = true;
-            PM.TM.time = 0;
-            PM.TM.MaxTime = PM.TM.TimeToSurvive;
+            PM.NextPattern(0);
         }
+        OnStart = false;
         // 플레이어 사망 연출에 사용된 오브젝트들 비활성화
         foreach (var a in PtL) a.SetActive(false);
         gameObject.transform.position = new Vector2(0, 0);
@@ -105,6 +99,7 @@ public class Player : MonoBehaviour
         Down.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         MoveAble = true;
         speed = 10;
+        rigid.velocity = new Vector2(0, -speed);
     }
 
     // 탄막과 충돌했을 때
@@ -114,42 +109,35 @@ public class Player : MonoBehaviour
         if (collision.CompareTag("Bullet"))
         {
             PM.MusicOff();
-            rigid.velocity = new Vector2(0, 0);
             MoveAble = false;
-            PM.EndPT(true);
-            PM.TM.IsTimeFlow = false;
             if (PM.IsEnd) PM.Clear();
             else
             {
-                if (CurHp > 1)
+                // 플레이어가 터지는 연출
+                for (int i = 0; i < 9; i++)
                 {
-                    // 플레이어가 터지는 연출
-                    for (int i = 0; i < 9; i++)
-                    {
-                        if (i == 4) continue;
-                        PtL[i].transform.position = transform.position;
-                        PtL[i].SetActive(true);
-                        PtL[i].GetComponent<Rigidbody2D>().AddForce((PM.DE[i][0] + PM.DE[i][1]) * Random.Range(1, 4), ForceMode2D.Impulse);
-                    }
-                    // 체력을 한칸 깍고, 1초 뒤 Game Over Object 생성
-                    
-                    gameObject.SetActive(false);
-                    Invoke("OnGameOver", 1);
+                    if (i == 4) continue;
+                    PtL[i].transform.position = transform.position;
+                    PtL[i].SetActive(true);
+                    PtL[i].GetComponent<Rigidbody2D>().AddForce((PM.DE[i][0] + PM.DE[i][1]) * Random.Range(1, 4), ForceMode2D.Impulse);
                 }
-                else
-                {
-                    PM.EndPT(false);
-                    EndG.SetActive(true);
-                    gameObject.SetActive(false);
-                    Invoke("RealEnd", 1);
-                }
+                GameOver.SetActive(true);
+                gameObject.SetActive(false);
             }
         }
         else if (collision.CompareTag("Trace"))
         {
-            HPS[CurHp++].sprite = HPOn;
             collision.gameObject.SetActive(false);
+            PM.NextPattern();
         }
+    }
+
+    public void GameClear()
+    {
+        PM.EndPT(false);
+        EndG.SetActive(true);
+        gameObject.SetActive(false);
+        Invoke("RealEnd", 1);
     }
 
     void OnGameOver()
