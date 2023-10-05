@@ -292,7 +292,7 @@ public class Chat : MonoBehaviour
                 }
                 background.gameObject.SetActive(true);      // 배경 이미지 활성화
 
-                /// TODO: 캐릭터 CG 활성화
+                /// TODO: 캐릭터 CG 비활성화
                 choicePanel.SetActive(false);    // 선택지 패널 비활성화
                 optionPanel.SetActive(true);   // 옵션 패널 활성화 
 
