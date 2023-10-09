@@ -14,7 +14,9 @@ public enum World {
     Cafe,
     Restaurant,
     Hallway,
-    Office
+    Office,
+    Office2,
+    Interrogation
 }
 
 public class WorldSceneManager : MonoBehaviour 
