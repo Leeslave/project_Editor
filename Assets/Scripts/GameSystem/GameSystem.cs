@@ -46,6 +46,9 @@ public class GameSystem : MonoBehaviour
         {
             _instance = this;
             DontDestroyOnLoad(gameObject);
+
+            Screen.SetResolution(1600, 1200, false);
+
             saveList = GameLoader.LoadSaveData();     // 세이브 데이터 로드
             dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드    
 
