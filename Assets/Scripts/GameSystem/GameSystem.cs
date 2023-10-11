@@ -170,7 +170,7 @@ public static class GameLoader
         - Json 파싱으로 플레이어 데이터 저장, 로드
     */
     [SerializeField]
-    private static readonly string playerSavePath = "/Resources/Save/debugsave_1.json";    // 세이브 파일 경로
+    private static readonly string playerSavePath = "/Resources/Save/savedata.json";    // 세이브 파일 경로
     [SerializeField]
     private static readonly string dailySavePath = "/Resources/GameData/Main/dailyData.json";   // 게임 데이터 파일 경로
 
