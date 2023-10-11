@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+[Serializable]
 public class DailyData
 {
     /**
@@ -15,6 +16,8 @@ public class DailyData
     public Date date;   // 날짜 정보    
 
     public List<Work> workData;    // 업무 정보
+
+    public List<NPCSchedule>[] npcScheduleList; // NPC 변경점 리스트
 
     /// DailyData를 DailyWrapper로 Wrapping
     public DailyWrapper WrapDailyData()
@@ -31,6 +34,11 @@ public class DailyData
             resultWrapper.workStageList.Add(elem.stage);
         }
 
+        resultWrapper.t0Schedule = npcScheduleList[0];
+        resultWrapper.t1Schedule = npcScheduleList[1];
+        resultWrapper.t2Schedule = npcScheduleList[2];
+        resultWrapper.t3Schedule = npcScheduleList[3];
+
         return resultWrapper;  
     }
 
@@ -46,11 +54,23 @@ public class DailyData
         {
             workData.Add(new Work(wrapper.workList[i], wrapper.workStageList[i]));
         }
+
+
+        npcScheduleList = new List<NPCSchedule>[4];
+        for(int i = 0; i<4; i++)
+        {
+            npcScheduleList[i] = null;
+        }
+
+        npcScheduleList[0] = wrapper.t0Schedule;
+        npcScheduleList[1] = wrapper.t1Schedule;
+        npcScheduleList[2] = wrapper.t2Schedule;
+        npcScheduleList[3] = wrapper.t3Schedule;
     }
     
 }
 
-[System.Serializable]
+[Serializable]
 public class DailyWrapper
 { 
     /** 
@@ -58,11 +78,15 @@ public class DailyWrapper
         저장되는 데이터 Wrap
     */
     public Date date;
-    public List<string> workList;
-    public List<int> workStageList;
+    public List<string> workList = new();
+    public List<int> workStageList = new();
+    public List<NPCSchedule> t0Schedule = new();
+    public List<NPCSchedule> t1Schedule = new();
+    public List<NPCSchedule> t2Schedule = new();
+    public List<NPCSchedule> t3Schedule = new();
 }
 
-[System.Serializable]
+[Serializable]
 public class Date
 {
     /**
@@ -81,18 +105,39 @@ public class Date
 }
 
 public class Work
+{
+    /**
+    * 업무 정보
+    */
+    public string code;     // 업무 코드명
+    public int stage;       // 스테이지 번호
+    public bool isClear;    // 클리어 여부
+    public Work(string _code, int _stage = 0)
     {
-        /**
-        * 업무 정보
-        */
-        public string code;     // 업무 코드명
-        public int stage;       // 스테이지 번호
-        public bool isClear;    // 클리어 여부
-        public Work(string _code, int _stage = 0)
-        {
-            code = _code;
-            stage = _stage;
-            isClear = false;
-        }
-    } 
+        code = _code;
+        stage = _stage;
+        isClear = false;
+    }
+} 
 
+[Serializable]
+public class NPCSchedule
+{
+    public string name;
+    public string image = null;
+    public string chat = null;
+    public ChatTriggerType chatType = 0;
+    public int location = -1;
+    public int position = -1;
+    public float x = 0;
+    public float y = 0;
+    public int size = 1;
+}
+
+[Serializable]
+public enum ChatTriggerType {   
+    OnClick,    // 버튼 누를 시
+    OnStart,    // 활성화시 자동 1회
+    EveryStart, // 매번 활성화마다
+    Once,       // 한번 실행 후 삭제
+}

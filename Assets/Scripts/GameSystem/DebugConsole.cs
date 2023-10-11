@@ -37,7 +37,7 @@ public class DebugConsole : MonoBehaviour
         switch(input.text)
         {
             case "todayData" :
-                DailyData todayData = GameSystem.Instance.todayData;
+                DailyData todayData = GameSystem.Instance.today;
                 output += $"{todayData.date.year}년 {todayData.date.month}월 {todayData.date.day}일\n";
                 output += $"오늘의 업무 현황\n";
                 foreach(var work in todayData.workData)
@@ -48,9 +48,9 @@ public class DebugConsole : MonoBehaviour
                 break;
             case "playerData" :
                 SaveData player = GameSystem.Instance.player;
-                output += $"Current Date Index: {player.dateIndex}\n";
-                output += $"Current location: {player.location}\n";
-                output += $"Current time: {player.time}\n";
+                output += $"Current Date Index: {GameSystem.Instance.dateIndex}\n";
+                output += $"Current location: {player.startLocation}\n";
+                output += $"Current time: {GameSystem.Instance.time}\n";
                 output += $"Current renown: {player.renown}\n";
                 break;
             case "help" :
@@ -59,7 +59,7 @@ public class DebugConsole : MonoBehaviour
                 output += $"clear: clear all today works\n";
                 break;
             case "clear" :
-                foreach(var work in GameSystem.Instance.todayData.workData)
+                foreach(var work in GameSystem.Instance.today.workData)
                 {
                     work.isClear = true;
                 }
