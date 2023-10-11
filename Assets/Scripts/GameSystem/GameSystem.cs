@@ -15,6 +15,9 @@ public class GameSystem : MonoBehaviour
         날짜, 시간대, 진행상황 적용
     */
 
+    private int resolutionX = 1200;
+    private int resolutionY = 900;
+
     [Header("게임 내 데이터")]
     public int dateIndex = 0;   // 날짜 인덱스
     private List<SaveData> saveList = new();    // 날짜별 저장 데이터
@@ -47,12 +50,11 @@ public class GameSystem : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
 
-            Screen.SetResolution(1600, 1200, false);
+            Screen.SetResolution(resolutionX, resolutionY, false);
 
             saveList = GameLoader.LoadSaveData();     // 세이브 데이터 로드
             dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드    
 
-            Debug.Log(saveList[0].startPosition);
             SetDate(0);
         }
         else
@@ -236,5 +238,7 @@ public static class GameLoader
         byte[] data = Encoding.UTF8.GetBytes(jsonObjectData);
         fileStream.Write(data, 0, data.Length);
         fileStream.Close();
+
+        return;
     }
 }
