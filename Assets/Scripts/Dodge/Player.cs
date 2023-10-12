@@ -19,6 +19,13 @@ public class Player : MonoBehaviour
     // 엔딩 Object
     public GameObject EndG;
 
+    public Image[] Unzips;
+
+    public Sprite Unzip;
+    public Sprite Zip;
+
+    int HPForPattern = 3;    // 일반 패턴용 HP
+
     public int speed;               // 플레이어의 좌 우 이동 속도
     public bool MoveAble = true;    // 플레이어 조작 가능 상태를 나타냄
     bool RayAble = true;            // true일 경우에만 상, 하로 레이케스트를 날림
@@ -88,8 +95,11 @@ public class Player : MonoBehaviour
         {
             // PatternManager 및 Timer 참조
             PM.EndPT(false);
-            PM.NextPattern(0);
+            PM.NextPattern(ref HPForPattern,0);
+            PM.MusicOn();
+            PM.ErrorObject.SetActive(false);
         }
+        
         OnStart = false;
         // 플레이어 사망 연출에 사용된 오브젝트들 비활성화
         foreach (var a in PtL) a.SetActive(false);
@@ -124,11 +134,15 @@ public class Player : MonoBehaviour
                 GameOver.SetActive(true);
                 gameObject.SetActive(false);
             }
+            foreach (Image s in Unzips) s.sprite = Zip;
+            if(HPForPattern > 0) HPForPattern = 3;
         }
         else if (collision.CompareTag("Trace"))
         {
             collision.gameObject.SetActive(false);
-            PM.NextPattern();
+            if (HPForPattern == 1) { foreach (Image s in Unzips) s.gameObject.SetActive(false); }
+            else if (HPForPattern > 1) Unzips[3 - HPForPattern].sprite = Unzip;
+            PM.NextPattern(ref HPForPattern);
         }
     }
 

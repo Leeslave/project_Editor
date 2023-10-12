@@ -19,7 +19,7 @@ public class PatternManager : MonoBehaviour
     [SerializeField] GameObject Plat;
     [SerializeField] GameObject GameEnd;
     [SerializeField] GameObject[] Warnings;
-    [SerializeField] GameObject ErrorObject;
+    [SerializeField] public GameObject ErrorObject;
 
     [SerializeField] GameObject Hand1;
     [SerializeField] GameObject Hand1_2;
@@ -38,13 +38,12 @@ public class PatternManager : MonoBehaviour
     public bool IsEnd = false;      // 필사 패턴 여부
 
     public int CurPattern = 0;      // 현재 패턴
-    int HPForPattern = 3;    // 일반 패턴용 HP
+    
 
     List<GameObject> PlatL = new List<GameObject>();        // 레이저 패턴 중 사용되는 Platform들을 저장 <- EndPattern에 사용하기 위함.
     int PatternNum = 0;             // Num of Pattern(안 씀)
 
     List<List<int[]>> PTLE = new List<List<int[]>>();       // 패턴들의 List
-    GameObject CurRazer = null;
     AudioSource AL;
 
     // 좌우 소환 위치(히든용)
@@ -97,7 +96,9 @@ public class PatternManager : MonoBehaviour
 
     private void Start()
     {
+
         StartCoroutine(MakeEasyPattern());
+        MusicOn();
     }
 
     public void StartInit()
@@ -107,7 +108,7 @@ public class PatternManager : MonoBehaviour
         StartPT(0);
     }
 
-    public void NextPattern(int change = 1)
+    public void NextPattern(ref int HPForPattern, int change = 1)
     {
         if(CurPattern == 0)
         {
@@ -123,12 +124,23 @@ public class PatternManager : MonoBehaviour
         }
         else if (CurPattern == 1)
         {
-            Hand2.SetActive(false);
-            StartPT(2);
+            if (change == 1)
+            {
+                Hand2.SetActive(false);
+                StartPT(2);
+            }
+            else StartPT(1);
         }
         else
         {
-            print("!");
+            if (change == 1)
+            {
+                print("!");
+            }
+            else
+            {
+                StartPT(2);
+            }
         }
 
     }
@@ -198,6 +210,7 @@ public class PatternManager : MonoBehaviour
     // Normal                   N1 -> N2 -> Hard
     IEnumerator PatternN1()       // Play Time : 25s
     {
+        MusicOff();
         Hand2.SetActive(true);
         CurPattern = 1;
         // 화면에 노이즈 생성
@@ -207,6 +220,7 @@ public class PatternManager : MonoBehaviour
 
         yield return OneSec;
 
+        MusicOn();
         WaitForSeconds SecC = new WaitForSeconds(BulletInterv * 1.4f);
 
         /*
@@ -253,6 +267,7 @@ public class PatternManager : MonoBehaviour
 
     IEnumerator PatternN2()
     {
+        MusicOff();
         CurPattern = 2;
         // 화면에 노이즈 생성
         MakeGlitch(0.1f, 0.5f, 0.7f);
@@ -260,6 +275,7 @@ public class PatternManager : MonoBehaviour
         MakeGlitch(0, 0, 0);
         yield return OneSec;
 
+        MusicOn();
         // 모든 탄막 생성 위치의 중간 y값. 플랫폼 생성에 사용.
         float MidY = (SPLE[4].position.y + SPLE[5].position.y) / 2;
 
@@ -378,13 +394,17 @@ public class PatternManager : MonoBehaviour
         foreach (GameObject s in Warnings) s.SetActive(false);
         Hand1.SetActive(false); Hand2.SetActive(false); Hand1_2.SetActive(false);
         Hand3.SetActive(false); Hand3_2.SetActive(false);
-        AL.Play();
         switch (i)
         {
             case 0: StartCoroutine(ChangePT(MakeEasyPattern())); break;
             case 1: StartCoroutine(ChangePT(PatternN1())); break;
             case 2: StartCoroutine(ChangePT(PatternN2())); break;
         }
+    }
+
+    public void MusicOn()
+    {
+        AL.Play();
     }
 
     public void MusicOff()
