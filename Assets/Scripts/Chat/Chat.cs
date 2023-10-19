@@ -288,7 +288,7 @@ public class Chat : MonoBehaviour
 
                 if (cutSceneParagraph.background != null)
                 {
-                    background.sprite = GetSprite(cutSceneParagraph.background);    // 배경 이미지 설정 
+                    background.sprite = GetSprite(backgroundFilePath + cutSceneParagraph.background);    // 배경 이미지 설정 
                 }
                 background.gameObject.SetActive(true);      // 배경 이미지 활성화
 
@@ -365,9 +365,9 @@ public class Chat : MonoBehaviour
     }
 
     /// 스프라이트 파일 불러오기
-    private Sprite GetSprite(string spriteName)
+    private Sprite GetSprite(string filePath)
     {
-        Sprite result = Resources.Load<Sprite>(backgroundFilePath + spriteName);
+        Sprite result = Resources.Load<Sprite>(filePath);
         return result;
     }
 

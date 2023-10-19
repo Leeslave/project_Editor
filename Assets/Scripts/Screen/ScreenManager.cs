@@ -22,13 +22,15 @@ public class ScreenManager : MonoBehaviour
     public GameObject returnButton;     // 스크린 탈출 버튼
     public GameObject desktop;      // 바탕화면 패널
     public GameObject bootPanel;    //부팅 패널
-    private Text bootCLI;     //부팅 콘솔 텍스트
+    public Text bootCLI;     //부팅 콘솔 텍스트
     [SerializeField]
     private ScreenMode currentBootStatus;    //현 부팅 상태
 
     /// 부팅 애니메이션 설정값
     public AnimationController bootAnimation;   //부팅 애니메이션
     public float logoOnSeconds;     //로고 이미지 활성 시간
+
+    public float powerOffDelay;   // 종료 대기 시간
 
     /// 스크린 모드
     public enum ScreenMode{
@@ -38,46 +40,35 @@ public class ScreenManager : MonoBehaviour
         TryOff
     }
 
-    // 싱글톤
+    // 싱글턴
     private static ScreenManager _instance;
     public static ScreenManager Instance
     {
         get { return _instance; }
     }
+
     void Awake()
     {
+        // 싱글턴 설정
         if(!_instance)
         {
             _instance = this;
-            bootCLI = bootPanel.transform.GetChild(1).GetComponent<Text>();
+
+            // 현재 스크린 상태 설정
+            if(GameSystem.Instance.isScreenOn)
+            {
+                /// 바탕 화면으로 설정
+                SetScreen(ScreenMode.On);
+            }
+            else
+            {
+                /// 부팅 대기 화면으로 설정
+                SetScreen(ScreenMode.Off);
+            }
         }
         else
         {
             Destroy(gameObject);
-        }
-    }
-
-    /// 스크린 초기 상태 설정
-    /// 컴포넌트 설정, 부팅 초기값 off
-    void Start() 
-    {
-        if(GameSystem.Instance.isScreenOn)
-        {
-            /// 바탕 화면으로 설정
-            desktop.SetActive(true);
-            bootPanel.SetActive(false);
-
-            SetScreen(ScreenMode.On);
-        }
-        else
-        {
-            /// 부팅 대기 화면으로 설정
-            desktop.SetActive(false);
-            bootPanel.SetActive(true);
-            bootCLI.text = "";
-            bootCLI.gameObject.SetActive(false);
-
-            SetScreen(ScreenMode.Off);
         }
     }
 
@@ -181,23 +172,23 @@ public class ScreenManager : MonoBehaviour
         // 종료 시도
         SetScreen(ScreenMode.TryOff);
 
-        // 3초 내 종료 대기
-        bootCLI.text = "\n\n3초 내로 전원 버튼을 다시 눌러 전원 끄기...";
-        for(var i = 0; i<6; i++)
-        {
-            // 종료
-            if(currentBootStatus == ScreenMode.Off)
-            {
-                SetScreen(ScreenMode.Off);
-                GameSystem.Instance.isScreenOn = false;
-                // TODO: desktop 초기화 (종료)
-                yield break;
-            }
-            yield return new WaitForSeconds(0.5f);
-        }
+        // 종료 대기
+        bootCLI.text = $"\n\n${(int)powerOffDelay}초 내로 전원 버튼을 다시 눌러 전원 끄기...";
 
-        // 종료 취소 및 스크린 재개
-        SetScreen(ScreenMode.On);
+        yield return new WaitUntil(() => currentBootStatus == ScreenMode.Off || Time.time >= powerOffDelay);
+
+        // 전원 종료시
+        if(currentBootStatus == ScreenMode.Off)
+        {
+            SetScreen(ScreenMode.Off);
+            GameSystem.Instance.isScreenOn = false;
+            // TODO: desktop 초기화 (종료)
+        }
+        // 종료 취소시
+        else
+        {
+            SetScreen(ScreenMode.On);
+        }
     }
 
     public void OnReturnClicked(string sceneName)

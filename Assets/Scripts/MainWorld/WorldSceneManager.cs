@@ -35,7 +35,7 @@ public class WorldSceneManager : MonoBehaviour
     private GameObject[] locationList;    // 지역 오브젝트 리스트
 
     [SerializeField]
-    private List<GameObject> npcList;     // 모든 지역 NPC 리스트
+    private List<GameObject> npcList = new();     // 모든 지역 NPC 리스트
 
     [Header("NPC 생성 정보")]
     [SerializeField]
@@ -57,7 +57,6 @@ public class WorldSceneManager : MonoBehaviour
             SetLocation((int)GameSystem.Instance.location);
 
             // npc 생성
-            npcList = new();
             SetWorldObject(); 
         }              
     }
@@ -72,7 +71,6 @@ public class WorldSceneManager : MonoBehaviour
         SetLocation((int)GameSystem.Instance.location);
 
         // npc 생성
-        npcList = new();
         SetWorldObject();
     }
 
@@ -82,7 +80,7 @@ public class WorldSceneManager : MonoBehaviour
         // 이동할 지역 설정
         if (!Enum.IsDefined(typeof(World), location))
         {
-            Debug.Log("Location number ERROR");
+            Debug.Log($"ERROR: Location number incorrect [${location}]");
             location = 0;
         }
 
