@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager_VoightKampff : MonoBehaviour
 {
-    private Chat chat;
+    private Chat_VoightKampff chat;
     private Eye eye;
 
     private GameObject addressPart;
@@ -19,7 +19,7 @@ public class GameManager_VoightKampff : MonoBehaviour
 
     private void Start()
     {
-        chat = GameObject.Find("Chat_VoightKampff").GetComponent<Chat>();
+        chat = GameObject.Find("Chat_VoightKampff").GetComponent<Chat_VoightKampff>();
 
         eye = GameObject.Find("Eye").GetComponent<Eye>();
 
@@ -34,6 +34,11 @@ public class GameManager_VoightKampff : MonoBehaviour
         SetLayer(2, 2, 2, 2, 2, 2, 2);
 
         debugLog.DebugInfo("보이트 캄프 테스트 머신 정상 작동");
+    }
+
+    public Chat_VoightKampff GetChat()
+    {
+        return chat;
     }
 
     public Eye GetEye()
@@ -64,6 +69,6 @@ public class GameManager_VoightKampff : MonoBehaviour
     {
         //입력 차단
         SetLayer(2, 2, 2, 2, 2, 2, 2);
-        // chat.LoadLine(line);
+        chat.LoadLine(line);
     }
 }

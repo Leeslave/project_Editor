@@ -3,29 +3,21 @@ public class SaveData
 {
     /**
     * 플레이어 세이브 데이터 클래스
+    *   데이터 저장을 위한 직렬화 
+    *   - 날짜 인덱스
     *   - 위치 데이터
     *   - 현재 명성치
     */
-    public World startLocation;
-    public int startPosition;
+    public int dateIndex;
+    public int time;
+    public string location;
     public int renown;
 
     public SaveData()
     {
-        startLocation = World.Street;
-        startPosition = 0;
+        dateIndex = 0;
+        time = 0;
+        location = "Office";
         renown = 0;
-    }
-}
-
-/// 세이브 데이터 Wrapper
-[System.Serializable]
-public class SaveWrapper
-{
-    public System.Collections.Generic.List<SaveData> data;
-
-    public SaveWrapper()
-    {
-        data = new();
     }
 }

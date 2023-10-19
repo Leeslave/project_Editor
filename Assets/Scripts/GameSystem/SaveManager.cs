@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,9 +12,27 @@ public class SaveManager : MonoBehaviour
         - 세이브 로드 후 씬 전환
     */
 
-    public void LoadDaySave(int day)
+    // 저장 데이터 리스트
+    public List<string> saveList = new List<string>(3);
+
+    // TODO:
+    /// 존재하는 세이브 파일들 탐색 및 로딩
+    List<string> FindAllSave()
     {
-        GameSystem.Instance.SetDate(day);
-        GameSystem.LoadNextScene("MainWorld");
+        return null;
+    }
+
+    /// <summary>
+    /// 저장 데이터 선택 및 실행
+    /// </summary>
+    ///<param name="SaveFileName">저장 데이터의 파일 이름</param>
+    ///<remarks>저장 데이터를 불러오고 씬 로딩</remarks>
+    public void SelectSave(string saveFileName)
+    {
+        if (saveFileName == null)
+            return;
+
+        GameSystem.Instance.LoadPlayerData(saveFileName);
+        SceneManager.LoadScene("MainWorld");
     }
 }
