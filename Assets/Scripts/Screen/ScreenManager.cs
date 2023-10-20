@@ -1,9 +1,6 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class ScreenManager : MonoBehaviour
 {
@@ -191,10 +188,15 @@ public class ScreenManager : MonoBehaviour
         }
     }
 
+    /**
+    * 스크린에서 복귀 함수
+    * - 스크린에서 나오기 버튼 클릭시 실행
+    * - 해당하는 씬으로 돌아감
+    */
     public void OnReturnClicked(string sceneName)
     {
         if (sceneName == null || sceneName == "")
             sceneName = "MainWorld";
-        SceneManager.LoadScene(sceneName);
+        GameSystem.LoadNextScene(sceneName);
     }
 }
