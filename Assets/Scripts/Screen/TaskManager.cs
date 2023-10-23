@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class TaskManager : MonoBehaviour
 {
@@ -90,20 +89,9 @@ public class TaskManager : MonoBehaviour
             {
                 Debug.Log($"Work Entered! : {consoleInput.text}");
                 consoleInput.text = "업무 로딩중...\n";
-                StartCoroutine(LoadWorkAsync(work.code));
+                StartCoroutine(GameSystem.LoadSceneAsync(work.code));
                 return;
             }
-        }
-    }
-
-    /// 씬 비동기 로딩
-    IEnumerator LoadWorkAsync(string sceneName)
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
         }
     }
 }

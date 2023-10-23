@@ -197,6 +197,6 @@ public class ScreenManager : MonoBehaviour
     {
         if (sceneName == null || sceneName == "")
             sceneName = "MainWorld";
-        GameSystem.LoadNextScene(sceneName);
+        GameSystem.LoadScene(sceneName);
     }
 }

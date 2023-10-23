@@ -8,6 +8,6 @@ public class TestGame : MonoBehaviour
     {
         GameSystem.Instance.player.renown += 10;
         GameSystem.Instance.ClearTask();
-        GameSystem.LoadNextScene("Screen");
+        GameSystem.LoadScene("Screen");
     }
 }

@@ -46,7 +46,7 @@ public class ScreenButton : MonoBehaviour
         // 스크린 확대 후 -> 스크린 활성화
         else
         {
-            GameSystem.LoadNextScene("Screen");
+            GameSystem.LoadScene("Screen");
         }
     }
 

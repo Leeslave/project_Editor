@@ -156,9 +156,20 @@ public class GameSystem : MonoBehaviour
 
 
     /// load Game Scene
-    static public void LoadNextScene(string sceneName)
+    static public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
+    }
+
+    /// load Game Scene Async
+    static public IEnumerator LoadSceneAsync(string sceneName)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
     }
 }
 

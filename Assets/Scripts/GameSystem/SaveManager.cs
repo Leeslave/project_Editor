@@ -17,6 +17,6 @@ public class SaveManager : MonoBehaviour
     public void LoadDaySave(int day)
     {
         GameSystem.Instance.SetDate(day);
-        GameSystem.LoadNextScene("MainWorld");
+        GameSystem.LoadScene("MainWorld");
     }
 }
