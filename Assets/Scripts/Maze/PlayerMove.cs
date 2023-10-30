@@ -5,6 +5,7 @@ using UnityEngine.Scripting;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using System.IO;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -118,9 +119,8 @@ public class PlayerMove : MonoBehaviour
                         }
                         else           // Å¬¸®¾î
                         {
-                            Clear.SetActive(true);
-                            PlayerPrefs.SetString("Clear", "Y");
-                            SceneManager.LoadScene("TestT");
+                            File.Move($"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty}.txt",
+                                      $"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty+1}.txt");
                             Destroy(gameObject);
                         }
                     }

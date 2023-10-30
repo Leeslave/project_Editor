@@ -1,10 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using System.IO;
+using Newtonsoft.Json;
+using Spine;
+using Newtonsoft.Json.Linq;
+using UnityEditor.UIElements;
 
 public class MakeTile : MonoBehaviour
 {
@@ -22,15 +24,17 @@ public class MakeTile : MonoBehaviour
     [NonSerialized] public List<List<GameObject>> Fogs = new List<List<GameObject>>();
     [NonSerialized] public List<List<bool>> IsFog = new List<List<bool>>();
 
-    [NonSerialized] public int Difficulty = 4;
     [NonSerialized] public bool IsCalcFog = false;
 
     public float Move_X;
     public float Move_Y;
+    public int Difficulty;
     [NonSerialized] public int Col;
     [NonSerialized] public int Row;
     [NonSerialized] public int KeyNum;
     [NonSerialized] public int KeyWeight;
+
+    [SerializeField] string[] Paths;
 
     void Awake()
     {
@@ -41,10 +45,11 @@ public class MakeTile : MonoBehaviour
         CreateLevel();
         MakeItems();
     }
-
     // 임시(아직 싱글턴을 어떤 식으로 줄 지 안정해짐)
     void GetDifficulty()
     {
+        String Path = "Assets\\Resources\\GameData\\Maze";
+        Difficulty = MyUi.StringToInt(Directory.GetFiles(Path)[0][(Path.Length + 1)..(Path.Length + 2)]);
         int[] cs = new int[] { 3, 1, 2 };
         Col = Row = 10 + 5 * (int)(Difficulty / 3);
         KeyNum = cs[Difficulty % 3];
