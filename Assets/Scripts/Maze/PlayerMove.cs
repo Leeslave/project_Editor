@@ -119,8 +119,8 @@ public class PlayerMove : MonoBehaviour
                         }
                         else           // Å¬¸®¾î
                         {
-                            File.Move($"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty}.txt",
-                                      $"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty+1}.txt");
+                            File.Move($"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty}",
+                                      $"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty+1}");
                             Destroy(gameObject);
                         }
                     }

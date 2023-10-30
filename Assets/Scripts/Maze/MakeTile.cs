@@ -49,7 +49,7 @@ public class MakeTile : MonoBehaviour
     void GetDifficulty()
     {
         String Path = "Assets\\Resources\\GameData\\Maze";
-        Difficulty = MyUi.StringToInt(Directory.GetFiles(Path)[0][(Path.Length + 1)..(Path.Length + 2)]);
+        Difficulty = Directory.GetFiles(Path)[0][Path.Length+1] - '0';
         int[] cs = new int[] { 3, 1, 2 };
         Col = Row = 10 + 5 * (int)(Difficulty / 3);
         KeyNum = cs[Difficulty % 3];
