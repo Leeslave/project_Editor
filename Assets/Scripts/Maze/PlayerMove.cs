@@ -121,7 +121,8 @@ public class PlayerMove : MonoBehaviour
                         {
                             File.Move($"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty}",
                                       $"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty+1}");
-                            Destroy(gameObject);
+                            File.Create($"Assets\\Resources\\GameData\\Maze\\C");
+                            SceneManager.LoadScene("TestT");
                         }
                     }
                 }

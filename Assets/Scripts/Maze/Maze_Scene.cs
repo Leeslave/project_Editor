@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -12,11 +12,16 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class Maze_Scene : MonoBehaviour
 {
+    public TMP_Text Text;
     string SceneName;
     private void Awake()
     {
-        if (name == "EXIT") { SceneName = "TestT"; PlayerPrefs.SetString("Clear", "N"); }
-        else { SceneName = "Maze"; }
+        if (name == "EXIT") { SceneName = "TestT";}
+        else { 
+            SceneName = "Maze";
+            String Path = "Assets\\Resources\\GameData\\Maze";
+            Text.text = Directory.GetFiles(Path)[0][Path.Length + 1].ToString();
+        }
         AddEvent(GetComponent<EventTrigger>(), EventTriggerType.PointerClick, NextScene);
     }
     void AddEvent(EventTrigger eventTrigger, EventTriggerType Type, Action<PointerEventData> Event)
@@ -28,7 +33,6 @@ public class Maze_Scene : MonoBehaviour
     }
     void NextScene(PointerEventData Data)
     {
-        PlayerPrefs.SetString("Difficulty",name);
         SceneManager.LoadScene(SceneName);
     }
 }
