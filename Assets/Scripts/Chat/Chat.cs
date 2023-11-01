@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using System.Collections;
 using System.IO;
 using System.Text;
@@ -12,11 +11,10 @@ using UnityEngine.Events;
 public class Chat : MonoBehaviour
 {
     /**
-    대사 관리 코드
-    - chat이름으로 대사 파일 불러오기
-        chat이름_날짜index_시간.json
+    대사 출력 코드
+    - Paragraph들 출력하기
     - 대사중 버튼을 눌러 다음 대사로 넘어가기
-    - 스킵하기를 눌러서 다음 선택지 or 대사 종료 (이벤트 함수 실행)
+    - 스킵하기를 눌러서 대사 종료 (이벤트 함수 실행, Ending 선택지 제외)
     - 대사 출력 후 로그 텍스트에 1개씩 추가 
     */
     [Header("UI 요소")]
@@ -36,25 +34,22 @@ public class Chat : MonoBehaviour
     [SerializeField]
     private GameObject optionPanel;     // 옵션 패널 (다시보기, 스킵)
 
-
     [Space(20)] 
     [Header("파일 경로")]
-    public string chatFilePath; // 대사 파일 경로
     public string characterFilePath;    // 캐릭터 파일 경로
     public string backgroundFilePath;   // 배경 CG 파일 경로
     
+    [Space(10)] 
     [Header("대화 상태")]
     public bool isTalk;            // 현재 대화 활성화 여부
+
     [SerializeField]
-    private int index;   // 현재 대화 인덱스
+    public int index;   // 현재 대화 인덱스
+    private List<Paragraph> chatList;   // 대화 리스트
 
     /// 이벤트
-    private UnityEvent<int> normalEvent = new UnityEvent<int>();    // 대사 이벤트
-    private int normalEventParam;       //매개변수
-    private List<UnityEvent<int>> choiceEvents = new List<UnityEvent<int>>(3);    // 선택지 이벤트
-    private List<int> choiceEventParam = new List<int>(3);        // 매개변수
-
-    private List<Paragraph> paragraphs; // 대화 리스트
+    private ChatAction action;    // 대사 반응 함수
+    private List<ChatAction> choiceActions = new List<ChatAction>();    // 선택지 이벤트
 
     /// 싱글턴 선언
     private static Chat _instance;
@@ -69,11 +64,7 @@ public class Chat : MonoBehaviour
             index = -1;
 
             // 이벤트 초기화
-            for(int i = 0; i<choiceEvents.Capacity; i++)
-            {
-                choiceEvents.Add(new UnityEvent<int>());
-                choiceEventParam.Add(-1);
-            }
+            choiceActions.Clear();
 
             // chat UI 초기화
             chatUI = transform.GetChild(0).gameObject;
@@ -88,18 +79,21 @@ public class Chat : MonoBehaviour
     ///<summary>
     ///대화 시작
     ///</summary>
-    ///<param name="fileName">대사 파일명 + 날짜및시간으로 파일 탐색</param>
-    ///<remarks>대화 파일 탐색 후 파일 존재시 대화 시작</remarks>
-    public void StartChat(string fileName)
+    ///<param name="_chatList">대사 리스트</param>
+    public void StartChat(List<Paragraph> _chatList)
     {
-        /*
-        * 대화
-        - chatName으로 파일 불러오고 Chat 활성화
-        */  
-        Debug.Log($"대화 시작 : {fileName}"); 
-        isTalk = LoadChatFile(fileName);
-        if (isTalk == false)
+        // 대화 리스트 오류
+        if (_chatList == null)
+        {
+            Debug.Log($"CHAT DATA CANNOT FOUND");
             return;
+        }
+        
+        // 대화 리스트 할당
+        chatList = _chatList;
+        Debug.Log($"Chat Start"); 
+        isTalk = true;
+
         chatUI.SetActive(true);
         NextChat(0);        
     }
@@ -111,13 +105,19 @@ public class Chat : MonoBehaviour
     public void NextChat(int idx = -1)
     {       
         // 파일 미할당  
-        if (paragraphs == null)
+        if (chatList == null)
         {
             chatUI.SetActive(false);    //UI 비활성화
             return;
         }
 
-        StopAllCoroutines();    // 대사 진행중이면 종료
+        // 대사 진행중이면 종료
+        StopAllCoroutines();    
+        // 이전 대사 반응 함수 실행
+        if (index != 0)
+        {
+            action.Invoke();
+        }
 
         // 디폴트: 다음 텍스트로
         if (idx == -1)
@@ -128,22 +128,21 @@ public class Chat : MonoBehaviour
         index = idx;    // 대사 넘김
 
         // 마지막 대사 이후 or index 오류
-        if (idx >= paragraphs.Count)
+        if (idx >= chatList.Count)
         {
             Debug.Log($"Chat OFF: INDEX={idx}");
             FinishChat();    // Chat 종료 및 비활성화
             return;
         }
 
-        // 현재 대사 불러오기
-        Paragraph paragraph = paragraphs[idx];
+        Paragraph paragraph = chatList[idx]; // 현재 대사 불러오기
 
-        SetChatUI(paragraph.type);  // 대사 타입에 따라 UI 설정
+        SetChatUI(paragraph.chatType);  // 대사 타입에 따라 UI 설정
         
         // 대사 애니메이션 실행
-        if (paragraph.type != Paragraph.TalkType.choice)
+        if (paragraph.chatType != "Choice")
         {
-            Coroutine textAnimation = StartCoroutine(TextAnimation(paragraph as NormalParagraph));
+            StartCoroutine(TextAnimation(paragraph as NormalParagraph));
         }
     }
 
@@ -164,8 +163,17 @@ public class Chat : MonoBehaviour
     /// 대화 스킵 버튼
     public void OnSkipPressed()
     {
-        while(paragraphs[index].type != Paragraph.TalkType.choice)
+        while(true)
         {
+            if (chatList[index].chatType == "Choice")
+            {
+                ChoiceParagraph paragraph = chatList[index] as ChoiceParagraph;
+                foreach(var i in paragraph.choices)
+                {
+                    if (i.isEnding)
+                        return;
+                }
+            }
             NextChat();            
         }
     }
@@ -177,50 +185,45 @@ public class Chat : MonoBehaviour
         if ( (num >= choicePanel.transform.childCount) || (num < 0) )
             return;
 
-        choiceEvents[num].Invoke(choiceEventParam[num]);    // 반응 함수 실행
+        choiceActions[num].Invoke();    // 반응 함수 실행
         NextChat();
     }
 
-    /// 변수 텍스트 적용
-    private string GetVariableValue(string variableName)
+
+    /// <summary>
+    /// 반응 함수 할당
+    /// </summary>
+    /// <param name="func"></param>
+    /// <param name="param"></param>
+    /// <returns></returns>
+    public static ChatAction SetAction(string func, string param)
     {
-        switch(variableName)
+        ChatAction result;
+
+        switch (func)
         {
-            case "year":
-                return GameSystem.Instance.today.date.year.ToString();
-            case "month":
-                return GameSystem.Instance.today.date.month.ToString();
-            case "day":
-                return GameSystem.Instance.today.date.day.ToString();
+        case "Jump":
+            result = new ChatJumpAction();
+            break;
+        case "DayChange":
+            result = new DayChangeAction();
+            break;
+        case "TimeChange":
+            result = new TimeChangeAction();
+            break;
+        default:
+            return null;
         }
-        return "";
+
+        result.param = param;
+        return result;
     }
 
-    /// 함수코드로 이벤트 리스터 할당
-    public void SetAction(UnityEvent<int> _event, string func)
-    {
-        // 반응 함수 없을 시 할당 안함
-        if (func == null)
-        {
-            return;
-        }
-
-        /// 반응 함수 할당
-        switch(func)
-        {
-            case "Jump":
-                _event.AddListener((int num) => { index = num - 1; });
-                break;
-            case "DayChange":
-                _event.AddListener(GameSystem.Instance.SetDate);
-                break;
-            case "TimeChange":
-                _event.AddListener(GameSystem.Instance.SetTime);
-                break;
-        }
-    }
-
+    /// <summary>
     /// 선택지 할당
+    /// </summary>
+    /// <param name="choiceNum">선택지 번호</param>
+    /// <param name="choice">선택지 정보</param>
     public void SetChoice(int choiceNum, Choice choice = null)
     {
         // 선택지 버튼 오류
@@ -237,23 +240,24 @@ public class Chat : MonoBehaviour
             return;
         }   
 
-        button.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = choice.text;  // 선택지 텍스트 설정
+        button.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = ParseVariables(choice.text, choice.variables);  // 선택지 텍스트 설정
 
-        choiceEvents[choiceNum].RemoveAllListeners();           // 반응 초기화
-        SetAction(choiceEvents[choiceNum], choice.reaction);     // 선택지 반응 설정
-        choiceEventParam[choiceNum] = choice.reactionParam;      // 선택지 반응 매개변수 설정   
+        choiceActions[choiceNum] = SetAction(choice.reaction, choice.reactionParam);     // 선택지 반응 설정   
 
         button.SetActive(true);     // 선택지 활성화
     }
 
-    /// 대사 타입에 따라 UI 설정
-    private void SetChatUI(Paragraph.TalkType talkType)
+    /// <summary>
+    /// 대사 타입에 맞는 UI 설정
+    /// </summary>
+    /// <param name="talkType">대사 타입</param>
+    private void SetChatUI(string talkType)
     {
         switch(talkType)
         {
             /// 선택지 상태일때
-            case Paragraph.TalkType.choice:
-                ChoiceParagraph choiceParagraph = paragraphs[index] as ChoiceParagraph;
+            case "Choice":
+                ChoiceParagraph choiceParagraph = chatList[index] as ChoiceParagraph;
 
                 /// TODO: 캐릭터 CG 활성화
                 choicePanel.SetActive(true);    // 선택지 패널 활성화
@@ -283,8 +287,8 @@ public class Chat : MonoBehaviour
                 break;
 
             /// 컷씬 상태일때
-            case Paragraph.TalkType.cutScene:
-                NormalParagraph cutSceneParagraph = paragraphs[index] as NormalParagraph;
+            case "CutScene":
+                NormalParagraph cutSceneParagraph = chatList[index] as NormalParagraph;
 
                 if (cutSceneParagraph.background != null)
                 {
@@ -311,8 +315,8 @@ public class Chat : MonoBehaviour
                 break;
             
             /// 일반 대화 상태일때
-            case Paragraph.TalkType.talk:
-                NormalParagraph normalParagraph = paragraphs[index] as NormalParagraph;
+            case "Talk":
+                NormalParagraph normalParagraph = chatList[index] as NormalParagraph;
 
                 /// 캐릭터 CG 활성화
                 background.gameObject.SetActive(false); // 배경 비활성화
@@ -328,12 +332,14 @@ public class Chat : MonoBehaviour
 
                 break;
         }
-
-        SetAction(normalEvent, paragraphs[index].action);    // 반응 설정
-        normalEventParam = paragraphs[index].actionParam;           // 반응 매개변수 설정
+        // 반응 설정
+        action = SetAction(chatList[index].action, chatList[index].actionParam);    
     }
 
+    /// <summary>
     /// 대사 출력 애니메이션
+    /// </summary>
+    /// <param name="paragraph">출력할 대사</param>
     IEnumerator TextAnimation(NormalParagraph paragraph)
     {
         /**
@@ -344,16 +350,7 @@ public class Chat : MonoBehaviour
         */
 
         // 변수값 적용
-        foreach(var iter in paragraph.variables)
-        {
-            string keyword = iter.keyword;
-            string variableName = iter.variableName;
-            
-            if (paragraph.text.Contains(keyword))
-            {
-                paragraph.text = paragraph.text.Replace(keyword, GetVariableValue(variableName));
-            }
-        }
+        paragraph.text = ParseVariables(paragraph.text, paragraph.variables);
 
         // 한 글자씩 애니메이션
         for (int i = 0; i < paragraph.text.Length; i++)
@@ -364,39 +361,57 @@ public class Chat : MonoBehaviour
         }
     }
 
-    /// 스프라이트 파일 불러오기
+    /// <summary>
+    /// 변수 텍스트 적용
+    /// </summary>
+    /// <param name="variableName">적용할 변수명</param>
+    /// <returns>변수 실재값 반환</returns>
+    private string GetVariableValue(string variableName)
+    {
+        switch(variableName)
+        {
+            case "year":
+                return GameSystem.Instance.today.date.year.ToString();
+            case "month":
+                return GameSystem.Instance.today.date.month.ToString();
+            case "day":
+                return GameSystem.Instance.today.date.day.ToString();
+        }
+        return "";
+    }
+
+    /// <summary>
+    /// 대사 내 변수값 전환하기
+    /// </summary>
+    /// <param name="text">전환 전 대사</param>
+    /// <param name="varList">대사 내 변수 리스트</param>
+    /// <returns>전환된 대사</returns>
+    private string ParseVariables(string text, List<Paragraph.VariableReplace> varList)
+    {
+        string result = text;
+
+        foreach(var iter in varList)
+        {
+            string keyword = iter.keyword;
+            string variableName = iter.variableName;
+            
+            if (result.Contains(keyword))
+            {
+                result = result.Replace(keyword, GetVariableValue(variableName));
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 스프라이트 이미지 불러오기
+    /// </summary>
+    /// <param name="filePath">이미지 경로</param>
+    /// <returns></returns>
     private Sprite GetSprite(string filePath)
     {
         Sprite result = Resources.Load<Sprite>(filePath);
         return result;
-    }
-
-    
-    /// 대사파일명으로 데이터 불러옴
-    private bool LoadChatFile(string fileName)
-    {
-        string path = Application.dataPath + chatFilePath + fileName + ".json";
-        if (!File.Exists(path))
-        {
-            Debug.Log("NO FILE EXISTS: " + path);
-            paragraphs = null;
-            return false;
-        }
-
-        FileStream fileStream = new FileStream(path, FileMode.Open);
-        byte[] data = new byte[fileStream.Length];
-        fileStream.Read(data, 0, data.Length);
-        fileStream.Close();
-
-        // jsonString 읽어오기
-        string jsonText = Encoding.UTF8.GetString(data);
-
-        // paragraphs 초기화
-        paragraphs = new List<Paragraph>();
-
-        //Wrapper에서 데이터 추출
-        ParagraphWrapper wrapper = JsonConvert.DeserializeObject<ParagraphWrapper>(jsonText,  new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-        paragraphs = wrapper.data;
-        return true;
     }
 }

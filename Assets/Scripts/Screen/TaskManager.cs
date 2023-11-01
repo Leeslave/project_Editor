@@ -19,12 +19,12 @@ public class TaskManager : MonoBehaviour
     public bool taskClear   // 모든 업무 완료 플래그
     {
         get { 
-            bool taskResult = true;
-            foreach(var work in GameSystem.Instance.today.workData)
+            bool workResult = true;
+            foreach(var workStatus in GameSystem.Instance.today.workList.Values)
             {
-                taskResult = taskResult & work.isClear;
+                workResult = workResult & workStatus;
             }
-            return taskResult;
+            return workResult;
         }
     }
 
@@ -83,7 +83,7 @@ public class TaskManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in GameSystem.Instance.today.workData)
+        foreach(var work in GameSystem.Instance.today.workList.Keys)
         {
             if(work.code == consoleInput.text)
             {

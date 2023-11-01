@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class DebugConsole : MonoBehaviour
 {
@@ -40,17 +37,18 @@ public class DebugConsole : MonoBehaviour
                 DailyData todayData = GameSystem.Instance.today;
                 output += $"{todayData.date.year}년 {todayData.date.month}월 {todayData.date.day}일\n";
                 output += $"오늘의 업무 현황\n";
-                foreach(var work in todayData.workData)
+                foreach(var work in todayData.workList.Keys)
                 {
-                    output += $"WORK: {work.code}, Stage: {work.stage.ToString()} = Done: {work.isClear.ToString()}";
+                    output += $"WORK: {work.code}, Stage: {work.stage.ToString()} = Done: {todayData.workList[work]}";
                 }
                 output += "\n";
                 break;
             case "playerData" :
                 SaveData player = GameSystem.Instance.player;
-                output += $"Current Date Index: {GameSystem.Instance.dateIndex}\n";
-                output += $"Current location: {player.startLocation}\n";
-                output += $"Current time: {GameSystem.Instance.time}\n";
+                DailyData today = GameSystem.Instance.today;
+                output += $"Current Date Index: {GameSystem.Instance.todayIndex}\n";
+                output += $"Current location: {today.startLocation}\n";
+                output += $"Current time: {GameSystem.Instance.currentTime}\n";
                 output += $"Current renown: {player.renown}\n";
                 break;
             case "help" :
@@ -59,11 +57,11 @@ public class DebugConsole : MonoBehaviour
                 output += $"clear: clear all today works\n";
                 break;
             case "clear" :
-                foreach(var work in GameSystem.Instance.today.workData)
+                foreach(var work in GameSystem.Instance.today.workList.Keys)
                 {
-                    work.isClear = true;
+                    GameSystem.Instance.today.workList[work] = true;
                 }
-                SceneManager.LoadScene("Screen");
+                GameSystem.LoadScene("Screen");
                 break;
         }
 

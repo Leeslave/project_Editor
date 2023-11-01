@@ -1,35 +1,17 @@
 {
-    "dailyDataList": [
+    "days": [
         {
             "date": {
                 "year":23,
                 "month":12,
                 "day":30
             },
-            "t0Schedule": [
-                {
-                    "name": "Keneddy",
-                    "image": "Screen",
-                    "chat": "Test_0_0",
-                    "chatType": 1,
-                    "location": 2,
-                    "position": 0,
-                    "x": 170,
-                    "y": 490,
-                    "size": 1.5
-                }
-            ],
-            "t1Schedule": [
-                {
-                    "name": "Rex",
-                    "image": "Rex",
-                    "chat": "Test_0_1",
-                    "chatType": 1,
-                    "location": 5,
-                    "position": 0,
-                    "x": 450,
-                    "y": 200
-                }
+            "startPosition": 2,
+            "npcList": [
+                ["0/Henderson_0"],
+                null,
+                null,
+                null
             ]
         },
         {
@@ -38,11 +20,23 @@
                 "month":12,
                 "day":23
             },
-            "workList": [
-                "TestGame"
+            "dayTimes": [
+                {"hour": 7, "minute": 0},
+                {"hour": 9, "minute": 0},
+                {"hour": 17, "minute": 30},
+                {"hour": 20, "minute": 0}
             ],
-            "workStageList": [
-                1
+            "startLocation": "Cafe",
+            "startPosition": 1,
+            "startTime": 0,
+            "workList": [
+                {"code": "TestGame", "stage": 0}
+            ],
+            "npcList": [
+                ["1/Keneddy_0"],
+                ["1/Clover_1"],
+                ["1/Clover_2"],
+                null
             ]
         }
     ]

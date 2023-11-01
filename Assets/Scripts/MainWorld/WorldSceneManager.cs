@@ -46,7 +46,7 @@ public class WorldSceneManager : MonoBehaviour
     private void Start()
     {
         // 추가 인트로 실행 (날짜 변경 후 0시에만)
-        if (GameSystem.Instance.time == 0)
+        if (GameSystem.Instance.currentTime == 0)
         {
             if (intro)
                 StartCoroutine("WaitForIntro");
@@ -54,7 +54,7 @@ public class WorldSceneManager : MonoBehaviour
         else
         {
             // 위치 설정
-            SetLocation((int)GameSystem.Instance.location);
+            SetLocation((int)GameSystem.Instance.currentLocation);
 
             // npc 생성
             SetWorldObject(); 
@@ -68,7 +68,7 @@ public class WorldSceneManager : MonoBehaviour
         yield return new WaitUntil(() => intro.isFinished);
         
         // 위치 설정
-        SetLocation((int)GameSystem.Instance.location);
+        SetLocation((int)GameSystem.Instance.currentLocation);
 
         // npc 생성
         SetWorldObject();
@@ -93,20 +93,20 @@ public class WorldSceneManager : MonoBehaviour
         }
 
         // 현재 지역 설정
-        GameSystem.Instance.location = (World)location;
+        GameSystem.Instance.currentLocation = (World)location;
 
         // 지역 내 위치 동기화
-        SetPosition(GameSystem.Instance.position);
+        SetPosition(GameSystem.Instance.currentPosition);
     }
 
     /// 지역 내 이동
     public void SetPosition(int position)
     {
         // 현재 월드 오브젝트
-        Transform currentWorldObject = locationList[(int)GameSystem.Instance.location].transform;
+        Transform currentWorldObject = locationList[(int)GameSystem.Instance.currentLocation].transform;
 
         // 위치값 예외 처리
-        if (position < 0 || GameSystem.Instance.position >= currentWorldObject.childCount)
+        if (position < 0 || GameSystem.Instance.currentPosition >= currentWorldObject.childCount)
             position = 0;
         
         // 해당 위치 활성화
@@ -118,7 +118,7 @@ public class WorldSceneManager : MonoBehaviour
         }
 
         // 현재 위치 설정
-        GameSystem.Instance.position = position;
+        GameSystem.Instance.currentPosition = position;
     }
 
     /// <summary>
@@ -139,7 +139,7 @@ public class WorldSceneManager : MonoBehaviour
             return;
         
         // 해당하는 시간 변경이 아닐 시 종료
-        if (time != GameSystem.Instance.time + 1)
+        if (time != GameSystem.Instance.currentTime + 1)
         {
             return;
         }
@@ -162,28 +162,28 @@ public class WorldSceneManager : MonoBehaviour
     /// </summary>
     private void SetWorldObject()
     {
-        // 새 오브젝트 리스트
-        List<NPCSchedule> schedules = GameSystem.Instance.today.npcScheduleList[GameSystem.Instance.time];
+        // // 새 오브젝트 리스트
+        // List<NPCSchedule> schedules = GameSystem.Instance.today.npcScheduleList[GameSystem.Instance.time];
 
-        // 이전 오브젝트들 삭제
-        foreach(var oldNPC in npcList)
-        {
-            Destroy(oldNPC);
-        }
-        // 리스트 초기화
-        npcList = new();
+        // // 이전 오브젝트들 삭제
+        // foreach(var oldNPC in npcList)
+        // {
+        //     Destroy(oldNPC);
+        // }
+        // // 리스트 초기화
+        // npcList = new();
 
-        // 새 오브젝트 생성
-        foreach(var newNPCData in schedules)
-        {
-            GameObject newNPC = CreateWorldObject(newNPCData);
-            if (newNPC == null)
-            {
-                Debug.Log($"NPC 생성 오류: {newNPCData.name}");
-                continue;
-            }
-            npcList.Add(newNPC);
-        }
+        // // 새 오브젝트 생성
+        // foreach(var newNPCData in schedules)
+        // {
+        //     GameObject newNPC = CreateWorldObject(newNPCData);
+        //     if (newNPC == null)
+        //     {
+        //         Debug.Log($"NPC 생성 오류: {newNPCData.name}");
+        //         continue;
+        //     }
+        //     npcList.Add(newNPC);
+        // }
     }
 
     /// <summary>
@@ -191,40 +191,40 @@ public class WorldSceneManager : MonoBehaviour
     /// </summary>
     /// <param name="npc"></param>
     /// <returns></returns>
-    private GameObject CreateWorldObject(NPCSchedule npc)
-    {
-        // 오브젝트 생성
-        GameObject newNPC = Instantiate(npcPrefab);
-        newNPC.name = npc.name;
+    // private GameObject CreateWorldObject(NPCSchedule npc)
+    // {
+    //     // 오브젝트 생성
+    //     GameObject newNPC = Instantiate(npcPrefab);
+    //     newNPC.name = npc.name;
 
-        // 오브젝트 transform 설정
-        newNPC.transform.SetParent(locationList[npc.location].transform.GetChild(npc.position));
-        RectTransform npcTransform = newNPC.GetComponent<RectTransform>();
-        npcTransform.anchoredPosition = new Vector2(npc.x, npc.y);
-        npcTransform.localScale = new Vector3(1,1,1);   // 스케일 초기화
+    //     // 오브젝트 transform 설정
+    //     newNPC.transform.SetParent(locationList[npc.location].transform.GetChild(npc.position));
+    //     RectTransform npcTransform = newNPC.GetComponent<RectTransform>();
+    //     npcTransform.anchoredPosition = new Vector2(npc.x, npc.y);
+    //     npcTransform.localScale = new Vector3(1,1,1);   // 스케일 초기화
 
-        // 오브젝트 이미지 설정
-        if (npc.image != null)
-        {
-            Image newImage = newNPC.GetComponent<Image>();      
-            newImage.sprite = Resources.Load<Sprite>("Image/" + npc.image);
-            if (newImage.sprite == null)
-            {
-                Debug.Log($"이미지 오류 : {npc.name}");
-                return null;
-            }
-            // 오브젝트 크기 설정
-            npcTransform.sizeDelta = new Vector2(npc.size * npcSizeMultiplier, npc.size * npcSizeMultiplier * (newImage.sprite.rect.height/ newImage.sprite.rect.width));   // 비율 맞춰서 사이즈 설정
-        }        
+    //     // 오브젝트 이미지 설정
+    //     if (npc.image != null)
+    //     {
+    //         Image newImage = newNPC.GetComponent<Image>();      
+    //         newImage.sprite = Resources.Load<Sprite>("Image/" + npc.image);
+    //         if (newImage.sprite == null)
+    //         {
+    //             Debug.Log($"이미지 오류 : {npc.name}");
+    //             return null;
+    //         }
+    //         // 오브젝트 크기 설정
+    //         npcTransform.sizeDelta = new Vector2(npc.size * npcSizeMultiplier, npc.size * npcSizeMultiplier * (newImage.sprite.rect.height/ newImage.sprite.rect.width));   // 비율 맞춰서 사이즈 설정
+    //     }        
 
-        // Chat Trigger 설정
-        if (npc.chat != null)
-        {
-            ChatTrigger npcChatTrigger = newNPC.GetComponent<ChatTrigger>(); 
-            npcChatTrigger.chatName = npc.chat;     // 대사 파일명 설정 
-            npcChatTrigger.triggerType = npc.chatType;  // 대사 타입 설정
-        }
+    //     // Chat Trigger 설정
+    //     if (npc.chat != null)
+    //     {
+    //         ChatTrigger npcChatTrigger = newNPC.GetComponent<ChatTrigger>(); 
+    //         npcChatTrigger.chatName = npc.chat;     // 대사 파일명 설정 
+    //         npcChatTrigger.triggerType = npc.chatType;  // 대사 타입 설정
+    //     }
         
-        return newNPC;
-    }
+    //     return newNPC;
+    // }
 }
