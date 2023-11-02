@@ -36,6 +36,8 @@ public class WorldSceneManager : MonoBehaviour
 
     [SerializeField]
     private List<GameObject> npcList = new();     // 모든 지역 NPC 리스트
+    [SerializeField]
+    private static int sizeMultiplier;  // NPC 크기 배율
 
     private void Start()
     {
@@ -169,23 +171,41 @@ public class WorldSceneManager : MonoBehaviour
         // 리스트 초기화
         npcList = new();
 
-        // 새 오브젝트 생성
+        // 오브젝트들 생성 및 위치 설정
         foreach(var newNPCName in npcFiles)
         {
-            GameObject newNPC = CreateWorldObject(newNPCName);
+            // 새 오브젝트 생성
+            GameObject newNPC = Chat.CreateNPC(newNPCName);
             if (newNPC == null)
             {
                 Debug.Log($"NPC 생성 오류: {newNPCName}");
                 continue;
             }
+            NPCData newNPCData = newNPC.GetComponent<NPC>().npcData;
+            RectTransform newNPCRect = newNPC.GetComponent<RectTransform>();
+            newNPC.SetActive(false);
+
+            // 오브젝트 이미지 설정
+            if (newNPCData.image != null)
+            {
+                Image newImage = newNPC.GetComponent<Image>();      
+                newImage.sprite = Chat.GetSprite(newNPCData.image);
+                if (newImage.sprite == null)
+                {
+                    Debug.Log($"이미지 없음 : {newNPCData.name}");
+                    Destroy(newNPC);
+                    continue;
+                }
+                // 오브젝트 크기 설정
+                newNPCRect.sizeDelta = newNPCData.size * new Vector2(1, newImage.sprite.rect.height/ newImage.sprite.rect.width) * sizeMultiplier;    // 비율 맞춰서 사이즈 설정
+            }   
+            
+            // 오브젝트 transform 설정
+            newNPC.transform.SetParent(locationList[(int)newNPCData.location].transform.GetChild(newNPCData.locationIndex));
+            newNPCRect.anchoredPosition = newNPCData.position;
+            newNPCRect.localScale = new Vector3(1,1,1);   // 스케일 초기화
+
             npcList.Add(newNPC);
         }
     }
-
-    private void SetWorldObjectPosition(GameObject obj)
-    {
-
-    }
-
-    
 }

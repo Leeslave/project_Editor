@@ -20,9 +20,18 @@ public class NPCWrapper
 
 public class NPCData
 {
+    // NPC 대화 타입
+    public enum TriggerType {   
+        OnClick,    // 버튼 누를 시
+        OnStart,    // 활성화시 자동 1회
+        EveryStart, // 매번 활성화마다
+        Once,       // 한번 실행 후 삭제
+        GlobalChat, // NPC 없이 배경 한번 실행 후 삭제
+    }
+
     public string name;     // 이름
     public string image;    // 오브젝트 이미지
-    public NPC.TriggerType triggerType;  // NPC 타입
+    public TriggerType triggerType;  // NPC 타입
     public float size;          // 오브젝트 크기
     public World location;  // 월드 내 지역
     public int locationIndex;   // 지역 내 장소
@@ -43,15 +52,15 @@ public class NPCData
         try
         {
             // NPC 대화 타입 설정
-            triggerType = Enum.Parse<NPC.TriggerType>(wrapper.triggerType);   // string을 TriggerType로 할당
+            triggerType = Enum.Parse<TriggerType>(wrapper.triggerType);   // string을 TriggerType로 할당
         }
         catch(ArgumentException)
         {
             // 대화 타입 오류 시 예외처리
-            triggerType = NPC.TriggerType.OnClick;
+            triggerType = TriggerType.OnClick;
         }   
         // 다이얼로그 대화 시 종료
-        if (triggerType == NPC.TriggerType.GlobalChat)
+        if (triggerType == TriggerType.GlobalChat)
         {
             return;
         }

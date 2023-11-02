@@ -36,8 +36,8 @@ public class Chat : MonoBehaviour
 
     [Space(20)] 
     [Header("파일 경로")]
-    public string characterFilePath;    // 캐릭터 파일 경로
-    public string backgroundFilePath;   // 배경 CG 파일 경로
+    public static string characterFilePath;    // 캐릭터 파일 경로
+    public static string backgroundFilePath;   // 배경 CG 파일 경로
     
     [Space(10)] 
     [Header("대화 상태")]
@@ -49,9 +49,7 @@ public class Chat : MonoBehaviour
 
     [Header("NPC 생성 정보")]
     [SerializeField]
-    private GameObject npcPrefab;   // NPC 생성용 프리팹
-    [SerializeField]
-    private int npcSizeMultiplier;  // NPC 크기 배율
+    private static GameObject npcPrefab;   // NPC 생성용 프리팹
 
     /// 이벤트
     private ChatAction action;    // 대사 반응 함수
@@ -424,44 +422,25 @@ public class Chat : MonoBehaviour
     /// <summary>
     /// 월드에 새 NPC 생성
     /// </summary>
-    /// <param name="npc"></param>
+    /// <param name="newNPCName">생성할 NPC 파일명</param>
     /// <returns></returns>
     public static GameObject CreateNPC(string newNPCName)
     {
         // 오브젝트 생성
         GameObject newNPCObject = Instantiate(npcPrefab);
-        RectTransform npcTransform = newNPCObject.GetComponent<RectTransform>();
 
         // NPC 데이터 로드하기
         newNPCObject.GetComponent<NPC>().npcFileName = newNPCName;
         newNPCObject.GetComponent<NPC>().GetData();
-        NPCData npcData = newNPCObject.GetComponent<NPC>().npcData;
-        if (npcData == null)
+
+        // 데이터 로드 오류
+        if (newNPCObject.GetComponent<NPC>().npcData == null)
         {
             Destroy(newNPCObject);
             Debug.Log($"NPC Create Failed : ${newNPCName}");
             return null;
         }
 
-        // 오브젝트 transform 설정
-        newNPCObject.SetActive(false);
-        newNPCObject.transform.SetParent(locationList[(int)npcData.location].transform.GetChild(npcData.locationIndex));
-        npcTransform.anchoredPosition = npcData.position;
-        npcTransform.localScale = new Vector3(1,1,1);   // 스케일 초기화
-
-        // 오브젝트 이미지 설정
-        if (npcData.image != null)
-        {
-            Image newImage = newNPCObject.GetComponent<Image>();      
-            newImage.sprite = Chat.GetSprite(npcData.image);
-            if (newImage.sprite == null)
-            {
-                Debug.Log($"이미지 없음 : {npcData.name}");
-                return null;
-            }
-            // 오브젝트 크기 설정
-            npcTransform.sizeDelta = npcData.size * new Vector2(1, newImage.sprite.rect.height/ newImage.sprite.rect.width) * npcSizeMultiplier;    // 비율 맞춰서 사이즈 설정
-        }                
         return newNPCObject;
     }
 }
