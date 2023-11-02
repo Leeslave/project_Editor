@@ -1,0 +1,63 @@
+{
+    "name": "렉스",
+    "image": "Rex",
+    "location": "Office",
+    "locationIndex": 0,
+    "position": { "x": 450, "y": 200 },
+    "trigerType": "OnStart",
+    "chatList": [
+        {
+            "$type": "NormalParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"클레이튼씨!! 큰일났어요!" 
+        },
+        {
+            "$type": "NormalParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"클로버씨가!!" 
+        },
+        {
+            "$type": "ChoiceParagraph, Assembly-CSharp",
+            "chatType": "Choice",
+            "choiceList": [
+                {
+                    "text": "응?? 무슨일인데?"
+                },
+                {
+                    "text": "클로버 어딨는데?"
+                }
+            ]
+        },
+        {
+            "$type": "NormalParagraph, Assembly-CSharp",
+            "talker": "???",
+            "text":"쾅!!",
+            "fontSize": 32
+        },
+        {
+            "$type": "NormalParagraph, Assembly-CSharp",
+            "chatType": "CutScene",
+            "talker": "핸더슨",
+            "text":"클레이튼! 잠깐 나 좀 보지!",
+            "fontSize": 32,
+            "background": "hendersonCutscene"
+        },
+        {
+            "$type": "NormalParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"...",
+            "textDelay": 0.6
+        },
+        {
+            "$type": "ChoiceParagraph, Assembly-CSharp",
+            "chatType": "Choice",
+            "choices": [
+                {
+                    "text": "(핸더슨의 방으로 간다.)",
+                    "reaction": "DayChange",
+                    "reactionParam": 1
+                }
+            ]
+        }
+    ]
+}

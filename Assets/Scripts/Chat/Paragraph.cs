@@ -8,7 +8,7 @@ public class Paragraph
     상속용 대사 클래스
     - 대사 타입과 기본 데이터
     */
-    public string chatType;    // 대사 타입
+    public string chatType = "Normal";    // 대사 타입
     public List<CharacterCG> characters = new();  // 캐릭터 CG 리스트
     public string bgm = null;         // 배경음악
     public string action = null;    // 대화 후 반응
@@ -46,7 +46,7 @@ public class ChoiceParagraph : Paragraph
     선택지 대사 클래스
     - 대화 선택지들
     */
-    public List<Choice> choices = null; // 선택지들 리스트
+    public List<Choice> choiceList = null; // 선택지들 리스트
 }
 
 

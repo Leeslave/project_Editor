@@ -55,7 +55,7 @@ public class DailyData
 
 
     /// 업무 정보
-    public Dictionary<Work, bool> workList;
+    public Dictionary<Work, bool> workList = new();
 
     /// NPC 정보
     public List<string>[] npcList = new List<string>[4];
@@ -95,6 +95,7 @@ public class DailyData
         {
             workList.Add(work, false);
         }
+        
 
         // NPC 
         npcList = wrapper.npcList;

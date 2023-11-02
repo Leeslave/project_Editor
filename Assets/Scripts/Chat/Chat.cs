@@ -47,6 +47,12 @@ public class Chat : MonoBehaviour
     public int index;   // 현재 대화 인덱스
     private List<Paragraph> chatList;   // 대화 리스트
 
+    [Header("NPC 생성 정보")]
+    [SerializeField]
+    private GameObject npcPrefab;   // NPC 생성용 프리팹
+    [SerializeField]
+    private int npcSizeMultiplier;  // NPC 크기 배율
+
     /// 이벤트
     private ChatAction action;    // 대사 반응 함수
     private List<ChatAction> choiceActions = new List<ChatAction>();    // 선택지 이벤트
@@ -168,7 +174,7 @@ public class Chat : MonoBehaviour
             if (chatList[index].chatType == "Choice")
             {
                 ChoiceParagraph paragraph = chatList[index] as ChoiceParagraph;
-                foreach(var i in paragraph.choices)
+                foreach(var i in paragraph.choiceList)
                 {
                     if (i.isEnding)
                         return;
@@ -263,25 +269,25 @@ public class Chat : MonoBehaviour
                 choicePanel.SetActive(true);    // 선택지 패널 활성화
                 optionPanel.SetActive(false);   // 옵션 패널 비활성화
 
-                switch(choiceParagraph.choices.Count)
+                switch(choiceParagraph.choiceList.Count)
                 {   
                     // 선택지 1개일때 (가운데 2번 사용)
                     case 1:
                         SetChoice(0);                               // 1번 선택지 비활성화
-                        SetChoice(1, choiceParagraph.choices[0]);   // 2번 선택지 설정
+                        SetChoice(1, choiceParagraph.choiceList[0]);   // 2번 선택지 설정
                         SetChoice(2);                               // 3번 선택지 비활성화
                         break;
                     // 선택지 2개일때 (위, 아래 1,3번 사용)
                     case 2:
-                        SetChoice(0, choiceParagraph.choices[0]);   // 1번 선택지 설정
+                        SetChoice(0, choiceParagraph.choiceList[0]);   // 1번 선택지 설정
                         SetChoice(1);                               // 2번 선택지 비활성화
-                        SetChoice(2, choiceParagraph.choices[1]);   // 3번 선택지 설정
+                        SetChoice(2, choiceParagraph.choiceList[1]);   // 3번 선택지 설정
                         break;
                     // 선택지 3개일때
                     case 3:
-                        SetChoice(0, choiceParagraph.choices[0]);   // 1번 선택지 설정
-                        SetChoice(1, choiceParagraph.choices[1]);   // 2번 선택지 설정
-                        SetChoice(2, choiceParagraph.choices[2]);   // 3번 선택지 설정
+                        SetChoice(0, choiceParagraph.choiceList[0]);   // 1번 선택지 설정
+                        SetChoice(1, choiceParagraph.choiceList[1]);   // 2번 선택지 설정
+                        SetChoice(2, choiceParagraph.choiceList[2]);   // 3번 선택지 설정
                         break;
                 }
                 break;
@@ -409,9 +415,53 @@ public class Chat : MonoBehaviour
     /// </summary>
     /// <param name="filePath">이미지 경로</param>
     /// <returns></returns>
-    private Sprite GetSprite(string filePath)
+    public static Sprite GetSprite(string filePath)
     {
         Sprite result = Resources.Load<Sprite>(filePath);
         return result;
+    }
+
+    /// <summary>
+    /// 월드에 새 NPC 생성
+    /// </summary>
+    /// <param name="npc"></param>
+    /// <returns></returns>
+    public static GameObject CreateNPC(string newNPCName)
+    {
+        // 오브젝트 생성
+        GameObject newNPCObject = Instantiate(npcPrefab);
+        RectTransform npcTransform = newNPCObject.GetComponent<RectTransform>();
+
+        // NPC 데이터 로드하기
+        newNPCObject.GetComponent<NPC>().npcFileName = newNPCName;
+        newNPCObject.GetComponent<NPC>().GetData();
+        NPCData npcData = newNPCObject.GetComponent<NPC>().npcData;
+        if (npcData == null)
+        {
+            Destroy(newNPCObject);
+            Debug.Log($"NPC Create Failed : ${newNPCName}");
+            return null;
+        }
+
+        // 오브젝트 transform 설정
+        newNPCObject.SetActive(false);
+        newNPCObject.transform.SetParent(locationList[(int)npcData.location].transform.GetChild(npcData.locationIndex));
+        npcTransform.anchoredPosition = npcData.position;
+        npcTransform.localScale = new Vector3(1,1,1);   // 스케일 초기화
+
+        // 오브젝트 이미지 설정
+        if (npcData.image != null)
+        {
+            Image newImage = newNPCObject.GetComponent<Image>();      
+            newImage.sprite = Chat.GetSprite(npcData.image);
+            if (newImage.sprite == null)
+            {
+                Debug.Log($"이미지 없음 : {npcData.name}");
+                return null;
+            }
+            // 오브젝트 크기 설정
+            npcTransform.sizeDelta = npcData.size * new Vector2(1, newImage.sprite.rect.height/ newImage.sprite.rect.width) * npcSizeMultiplier;    // 비율 맞춰서 사이즈 설정
+        }                
+        return newNPCObject;
     }
 }

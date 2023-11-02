@@ -27,16 +27,13 @@ public class NPC : MonoBehaviour
     public NPCData npcData;    // NPC 데이터
     public int talkCount = 0;   // 대화 횟수 카운트
 
-    void Awake()
-    {
-        if (npcFileName != null)
-        {
-            GetData();
-        }
-    }
-
     void Start()
     {
+        if (npcData == null)
+        {
+            return;
+        }
+
         if (npcData.triggerType == TriggerType.EveryStart)
         {
             StartChat();
@@ -52,19 +49,19 @@ public class NPC : MonoBehaviour
 
     void OnEnable()
     {
+        if (npcData == null)
+        {
+            return;
+        }
+        
         if (npcData.triggerType == TriggerType.EveryStart)
         {
             StartChat();
         }
     }
 
-    public void GetData(string _npcFileName = null)
+    public void GetData()
     {
-        if (_npcFileName != null)
-        {
-            npcFileName = _npcFileName;
-        }
-
         string path = Application.dataPath + NPCFILEPATH + npcFileName + ".json";
         if (!File.Exists(path))
         {

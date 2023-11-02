@@ -53,7 +53,10 @@ public class GameSystem : MonoBehaviour
             Screen.SetResolution(resolutionX, resolutionY, false);  // 해상도 고정
 
             saveList = GameLoader.LoadSaveData();     // 세이브 데이터 로드
-            dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드    
+            dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드  
+
+            // 초기 데이터 설정
+            SetDate(0);
         }
         else
         {
