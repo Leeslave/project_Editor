@@ -37,7 +37,7 @@ public class WorldSceneManager : MonoBehaviour
     [SerializeField]
     private List<GameObject> npcList = new();     // 모든 지역 NPC 리스트
     [SerializeField]
-    private static int sizeMultiplier;  // NPC 크기 배율
+    public int sizeMultiplier;  // NPC 크기 배율
 
     private void Start()
     {
@@ -175,29 +175,22 @@ public class WorldSceneManager : MonoBehaviour
         foreach(var newNPCName in npcFiles)
         {
             // 새 오브젝트 생성
-            GameObject newNPC = Chat.CreateNPC(newNPCName);
+            GameObject newNPC = Chat.Instance.CreateNPC(newNPCName);
             if (newNPC == null)
             {
                 Debug.Log($"NPC 생성 오류: {newNPCName}");
                 continue;
             }
+
+            // 생성한 오브젝트 정보
             NPCData newNPCData = newNPC.GetComponent<NPC>().npcData;
             RectTransform newNPCRect = newNPC.GetComponent<RectTransform>();
-            newNPC.SetActive(false);
 
-            // 오브젝트 이미지 설정
+            // 오브젝트 크기 설정
             if (newNPCData.image != null)
             {
-                Image newImage = newNPC.GetComponent<Image>();      
-                newImage.sprite = Chat.GetSprite(newNPCData.image);
-                if (newImage.sprite == null)
-                {
-                    Debug.Log($"이미지 없음 : {newNPCData.name}");
-                    Destroy(newNPC);
-                    continue;
-                }
-                // 오브젝트 크기 설정
-                newNPCRect.sizeDelta = newNPCData.size * new Vector2(1, newImage.sprite.rect.height/ newImage.sprite.rect.width) * sizeMultiplier;    // 비율 맞춰서 사이즈 설정
+                Image newNPCImage = newNPC.GetComponent<Image>();
+                newNPCRect.sizeDelta = newNPCData.size * new Vector2(1, newNPCImage.sprite.rect.height/ newNPCImage.sprite.rect.width) * sizeMultiplier;    // 비율 맞춰서 사이즈 설정
             }   
             
             // 오브젝트 transform 설정
@@ -205,6 +198,7 @@ public class WorldSceneManager : MonoBehaviour
             newNPCRect.anchoredPosition = newNPCData.position;
             newNPCRect.localScale = new Vector3(1,1,1);   // 스케일 초기화
 
+            // 생성 완료, 리스트에 추가
             npcList.Add(newNPC);
         }
     }

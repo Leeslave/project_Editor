@@ -36,8 +36,8 @@ public class Chat : MonoBehaviour
 
     [Space(20)] 
     [Header("파일 경로")]
-    public static string characterFilePath;    // 캐릭터 파일 경로
-    public static string backgroundFilePath;   // 배경 CG 파일 경로
+    public static string CHARACTERFILEPATH = "Chat/Character/";    // 캐릭터 파일 경로
+    public static string BACKGROUNDFILEPATH = "Chat/Background/";   // 배경 CG 파일 경로
     
     [Space(10)] 
     [Header("대화 상태")]
@@ -49,11 +49,11 @@ public class Chat : MonoBehaviour
 
     [Header("NPC 생성 정보")]
     [SerializeField]
-    private static GameObject npcPrefab;   // NPC 생성용 프리팹
+    private GameObject npcPrefab;   // NPC 생성용 프리팹
 
     /// 이벤트
     private ChatAction action;    // 대사 반응 함수
-    private List<ChatAction> choiceActions = new List<ChatAction>();    // 선택지 이벤트
+    private ChatAction[] choiceActions = new ChatAction[3];    // 선택지 이벤트
 
     /// 싱글턴 선언
     private static Chat _instance;
@@ -68,7 +68,7 @@ public class Chat : MonoBehaviour
             index = -1;
 
             // 이벤트 초기화
-            choiceActions.Clear();
+            choiceActions = new ChatAction[3];
 
             // chat UI 초기화
             chatUI = transform.GetChild(0).gameObject;
@@ -120,7 +120,8 @@ public class Chat : MonoBehaviour
         // 이전 대사 반응 함수 실행
         if (index != 0)
         {
-            action.Invoke();
+            if (action != null)
+                action.Invoke();
         }
 
         // 디폴트: 다음 텍스트로
@@ -267,6 +268,7 @@ public class Chat : MonoBehaviour
                 choicePanel.SetActive(true);    // 선택지 패널 활성화
                 optionPanel.SetActive(false);   // 옵션 패널 비활성화
 
+                Debug.Log($"선택지 개수 : {choiceParagraph.choiceList.Count}");
                 switch(choiceParagraph.choiceList.Count)
                 {   
                     // 선택지 1개일때 (가운데 2번 사용)
@@ -296,7 +298,7 @@ public class Chat : MonoBehaviour
 
                 if (cutSceneParagraph.background != null)
                 {
-                    background.sprite = GetSprite(backgroundFilePath + cutSceneParagraph.background);    // 배경 이미지 설정 
+                    background.sprite = GetSprite(BACKGROUNDFILEPATH + cutSceneParagraph.background);    // 배경 이미지 설정 
                 }
                 background.gameObject.SetActive(true);      // 배경 이미지 활성화
 
@@ -319,7 +321,7 @@ public class Chat : MonoBehaviour
                 break;
             
             /// 일반 대화 상태일때
-            case "Talk":
+            case "Normal":
                 NormalParagraph normalParagraph = chatList[index] as NormalParagraph;
 
                 /// 캐릭터 CG 활성화
@@ -424,7 +426,7 @@ public class Chat : MonoBehaviour
     /// </summary>
     /// <param name="newNPCName">생성할 NPC 파일명</param>
     /// <returns></returns>
-    public static GameObject CreateNPC(string newNPCName)
+    public GameObject CreateNPC(string newNPCName)
     {
         // 오브젝트 생성
         GameObject newNPCObject = Instantiate(npcPrefab);
@@ -432,14 +434,28 @@ public class Chat : MonoBehaviour
         // NPC 데이터 로드하기
         newNPCObject.GetComponent<NPC>().npcFileName = newNPCName;
         newNPCObject.GetComponent<NPC>().GetData();
+        NPCData npcData = newNPCObject.GetComponent<NPC>().npcData;
 
         // 데이터 로드 오류
-        if (newNPCObject.GetComponent<NPC>().npcData == null)
+        if (npcData == null)
         {
             Destroy(newNPCObject);
             Debug.Log($"NPC Create Failed : ${newNPCName}");
             return null;
         }
+
+        // 오브젝트 이미지 할당
+        if (npcData.image != null)
+        {
+            Image newImage = newNPCObject.GetComponent<Image>();      
+            newImage.sprite = GetSprite(CHARACTERFILEPATH + npcData.image);
+            if (newImage.sprite == null)
+            {
+                Debug.Log($"NPC IMAGE CANNOT FOUND : {CHARACTERFILEPATH + npcData.image}");
+                Destroy(newNPCObject);
+                return null;
+            }
+        }   
 
         return newNPCObject;
     }
