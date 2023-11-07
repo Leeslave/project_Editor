@@ -7,6 +7,11 @@ public class Paragraph
     /**
     상속용 대사 클래스
     - 대사 타입과 기본 데이터
+        대사타입
+        Normal : 기본 대화
+        Choice : 선택지
+        EndChoice : 엔딩 분기 선택지
+        CutScene : 컷씬
     */
     public string chatType = "Normal";    // 대사 타입
     public List<CharacterCG> characters = new();  // 캐릭터 CG 리스트

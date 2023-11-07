@@ -27,6 +27,7 @@ public class WorldSceneManager : MonoBehaviour
     *   - 지역 내 위치 이동
     *   - 지역 간 이동
     */
+    [Header("인트로 데이터")]
     [SerializeField]
     private DayIntro intro;      // 인트로 오브젝트
 
@@ -34,10 +35,11 @@ public class WorldSceneManager : MonoBehaviour
     [SerializeField]
     private GameObject[] locationList;    // 지역 오브젝트 리스트
 
+    [Header("NPC 생성 정보")]
     [SerializeField]
     private List<GameObject> npcList = new();     // 모든 지역 NPC 리스트
     [SerializeField]
-    public int sizeMultiplier;  // NPC 크기 배율
+    private GameObject npcPrefab;   // NPC 생성용 프리팹
 
     private void Start()
     {
@@ -45,12 +47,12 @@ public class WorldSceneManager : MonoBehaviour
         if (GameSystem.Instance.currentTime == 0)
         {
             if (intro)
-                StartCoroutine("WaitForIntro");
+                StartCoroutine(WaitForIntro());
         }
         else
         {
             // 위치 설정
-            SetLocation((int)GameSystem.Instance.currentLocation);
+            MoveLocation((int)GameSystem.Instance.currentLocation);
 
             // npc 생성
             SetWorldObject(); 
@@ -64,14 +66,17 @@ public class WorldSceneManager : MonoBehaviour
         yield return new WaitUntil(() => intro.isFinished);
         
         // 위치 설정
-        SetLocation((int)GameSystem.Instance.currentLocation);
+        MoveLocation((int)GameSystem.Instance.currentLocation);
 
         // npc 생성
         SetWorldObject();
     }
 
-    /// 지역 이동
-    public void SetLocation(int location)
+    /// <summary>
+    /// 지역 변경
+    /// </summary>
+    /// <remarks>지역을 변경하고 지역 내 위치 동기화
+    public void MoveLocation(int location)
     {
         // 이동할 지역 설정
         if (!Enum.IsDefined(typeof(World), location))
@@ -92,11 +97,14 @@ public class WorldSceneManager : MonoBehaviour
         GameSystem.Instance.currentLocation = (World)location;
 
         // 지역 내 위치 동기화
-        SetPosition(GameSystem.Instance.currentPosition);
+        MovePosition(GameSystem.Instance.currentPosition);
     }
 
+    /// <summary>
     /// 지역 내 이동
-    public void SetPosition(int position)
+    /// </summary>
+    /// <remarks>지역 내 위치를 이동
+    public void MovePosition(int position)
     {
         // 현재 월드 오브젝트
         Transform currentWorldObject = locationList[(int)GameSystem.Instance.currentLocation].transform;
@@ -121,7 +129,7 @@ public class WorldSceneManager : MonoBehaviour
     /// 시간대 변경
     /// </summary>
     /// <remarks>시간대를 변경하고 현재 지역 동기화
-    public void ChangeTime(int time)
+    public void ChangeTime()
     {
         /**
         시간대 변경에 따른 지역들 동기화
@@ -130,17 +138,10 @@ public class WorldSceneManager : MonoBehaviour
         - 바로 다음 시간대로만 변경
         */
 
-        // 시간대 변경 제한
-        if (time < 1 || time > 4)
-            return;
-        
-        // 해당하는 시간 변경이 아닐 시 종료
-        if (time != GameSystem.Instance.currentTime + 1)
-        {
-            return;
-        }
+        // 시간대 변경
+        int time = GameSystem.Instance.currentTime + 1;
 
-        // 날짜 변경
+        // 날짜 변경 (시간대 4일시)
         if (time == 4)
         {
             GameSystem.Instance.SetDate();
@@ -148,8 +149,10 @@ public class WorldSceneManager : MonoBehaviour
             return;
         }
 
-        // 시간 변경
+        // 해당시간으로 설정
         GameSystem.Instance.SetTime(time);
+
+        // NPC 데이터 
         SetWorldObject();
     }
 
@@ -158,48 +161,46 @@ public class WorldSceneManager : MonoBehaviour
     /// </summary>
     private void SetWorldObject()
     {
-        // 새 오브젝트 리스트
-        List<string> npcFiles = GameSystem.Instance.today.npcList[GameSystem.Instance.currentTime];
-        if (npcFiles == null)
-            return;
-            
         // 이전 오브젝트들 삭제
         foreach(var oldNPC in npcList)
         {
             Destroy(oldNPC);
         }
+
         // 리스트 초기화
         npcList = new();
+        // 새 오브젝트 데이터
+        List<string> npcFiles = GameSystem.Instance.today.npcList[GameSystem.Instance.currentTime];
+        if (npcFiles == null)
+            return;
 
         // 오브젝트들 생성 및 위치 설정
         foreach(var newNPCName in npcFiles)
         {
             // 새 오브젝트 생성
-            GameObject newNPC = Chat.Instance.CreateNPC(newNPCName);
-            if (newNPC == null)
+            GameObject newObject = Instantiate(npcPrefab);
+
+            // 생성한 오브젝트 정보 로드
+            NPC newNPC = GetComponent<NPC>();
+            newNPC.npcFileName = newNPCName;
+            newNPC.GetData();
+
+            // 오브젝트 정보 로드 실패
+            if (newObject == null)
             {
-                Debug.Log($"NPC 생성 오류: {newNPCName}");
+                Debug.Log($"NPC CREATE FAIED : ${newNPCName}");
                 continue;
             }
-
-            // 생성한 오브젝트 정보
-            NPCData newNPCData = newNPC.GetComponent<NPC>().npcData;
-            RectTransform newNPCRect = newNPC.GetComponent<RectTransform>();
-
-            // 오브젝트 크기 설정
-            if (newNPCData.image != null)
-            {
-                Image newNPCImage = newNPC.GetComponent<Image>();
-                newNPCRect.sizeDelta = newNPCData.size * new Vector2(1, newNPCImage.sprite.rect.height/ newNPCImage.sprite.rect.width) * sizeMultiplier;    // 비율 맞춰서 사이즈 설정
-            }   
             
+            // NPC 정보
+            NPCData newNPCData = newNPC.npcData;
+
             // 오브젝트 transform 설정
-            newNPC.transform.SetParent(locationList[(int)newNPCData.location].transform.GetChild(newNPCData.locationIndex));
-            newNPCRect.anchoredPosition = newNPCData.position;
-            newNPCRect.localScale = new Vector3(1,1,1);   // 스케일 초기화
+            newObject.transform.SetParent(locationList[(int)newNPCData.location].transform.GetChild(newNPCData.locationIndex));
+            newObject.GetComponent<RectTransform>().anchoredPosition = newNPCData.position;
 
             // 생성 완료, 리스트에 추가
-            npcList.Add(newNPC);
+            npcList.Add(newObject);
         }
     }
 }

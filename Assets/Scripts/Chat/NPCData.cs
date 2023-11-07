@@ -47,7 +47,7 @@ public class NPCData
         // 대화 
         chatList = wrapper.chatList;    
         // 반응함수
-        action = Chat.SetAction(wrapper.action, wrapper.actionParam);    
+        action = Chat.GetAction(wrapper.action, wrapper.actionParam);    
 
         try
         {

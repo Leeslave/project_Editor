@@ -3,10 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using System.IO;
-using System.Text;
-using Newtonsoft.Json;
-using UnityEngine.Events;
 
 public class Chat : MonoBehaviour
 {
@@ -41,15 +37,9 @@ public class Chat : MonoBehaviour
     
     [Space(10)] 
     [Header("대화 상태")]
-    public bool isTalk;            // 현재 대화 활성화 여부
-
-    [SerializeField]
+    public bool isTalk;      // 현재 대화 활성화 여부
     public int index;   // 현재 대화 인덱스
     private List<Paragraph> chatList;   // 대화 리스트
-
-    [Header("NPC 생성 정보")]
-    [SerializeField]
-    private GameObject npcPrefab;   // NPC 생성용 프리팹
 
     /// 이벤트
     private ChatAction action;    // 대사 반응 함수
@@ -107,22 +97,9 @@ public class Chat : MonoBehaviour
     ///</summary>
     ///<param name="idx">출력할 대사 인덱스</param>
     public void NextChat(int idx = -1)
-    {       
-        // 파일 미할당  
-        if (chatList == null)
-        {
-            chatUI.SetActive(false);    //UI 비활성화
-            return;
-        }
-
+    {      
         // 대사 진행중이면 종료
-        StopAllCoroutines();    
-        // 이전 대사 반응 함수 실행
-        if (index != 0)
-        {
-            if (action != null)
-                action.Invoke();
-        }
+        StopAllCoroutines();  
 
         // 디폴트: 다음 텍스트로
         if (idx == -1)
@@ -130,17 +107,24 @@ public class Chat : MonoBehaviour
             idx = index + 1;
         }
 
+        // 이전 대사 반응 함수 실행
+        if (index >= 0)
+        {
+            if (action != null)
+                action.Invoke();
+        }        
+
         index = idx;    // 대사 넘김
 
         // 마지막 대사 이후 or index 오류
-        if (idx >= chatList.Count)
+        if (index >= chatList.Count)
         {
-            Debug.Log($"Chat OFF: INDEX={idx}");
+            Debug.Log($"Chat OFF: INDEX={index}");
             FinishChat();    // Chat 종료 및 비활성화
             return;
         }
 
-        Paragraph paragraph = chatList[idx]; // 현재 대사 불러오기
+        Paragraph paragraph = chatList[index]; // 현재 대사 불러오기
 
         SetChatUI(paragraph.chatType);  // 대사 타입에 따라 UI 설정
         
@@ -156,74 +140,11 @@ public class Chat : MonoBehaviour
     {
         background.sprite = null;   // 배경 초기화
         isTalk = false;             // 대화 종료
+        index = -1;                 // 대화 인덱스 초기화
         chatUI.SetActive(false);    // UI 종료
     }
-
-    /// 다시보기 대화 로그 버튼
-    public void OnReplayPressed()
-    {
-
-    }
-
-    /// 대화 스킵 버튼
-    public void OnSkipPressed()
-    {
-        while(true)
-        {
-            if (chatList[index].chatType == "Choice")
-            {
-                ChoiceParagraph paragraph = chatList[index] as ChoiceParagraph;
-                foreach(var i in paragraph.choiceList)
-                {
-                    if (i.isEnding)
-                        return;
-                }
-            }
-            NextChat();            
-        }
-    }
-
-    /// 선택지 버튼 입력 함수
-    public void OnChoicePressed(int num)
-    {   
-        // 선택지 번호 오류
-        if ( (num >= choicePanel.transform.childCount) || (num < 0) )
-            return;
-
-        choiceActions[num].Invoke();    // 반응 함수 실행
-        NextChat();
-    }
-
-
-    /// <summary>
-    /// 반응 함수 할당
-    /// </summary>
-    /// <param name="func"></param>
-    /// <param name="param"></param>
-    /// <returns></returns>
-    public static ChatAction SetAction(string func, string param)
-    {
-        ChatAction result;
-
-        switch (func)
-        {
-        case "Jump":
-            result = new ChatJumpAction();
-            break;
-        case "DayChange":
-            result = new DayChangeAction();
-            break;
-        case "TimeChange":
-            result = new TimeChangeAction();
-            break;
-        default:
-            return null;
-        }
-
-        result.param = param;
-        return result;
-    }
-
+    
+    
     /// <summary>
     /// 선택지 할당
     /// </summary>
@@ -245,9 +166,10 @@ public class Chat : MonoBehaviour
             return;
         }   
 
+        // 선택지 텍스트에 변수값 적용
         button.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = ParseVariables(choice.text, choice.variables);  // 선택지 텍스트 설정
-
-        choiceActions[choiceNum] = SetAction(choice.reaction, choice.reactionParam);     // 선택지 반응 설정   
+        // 선택지 반응 설정
+        choiceActions[choiceNum] = GetAction(choice.reaction, choice.reactionParam);        
 
         button.SetActive(true);     // 선택지 활성화
     }
@@ -258,10 +180,12 @@ public class Chat : MonoBehaviour
     /// <param name="talkType">대사 타입</param>
     private void SetChatUI(string talkType)
     {
+        // 대화 타입에 맞춰 UI들 설정
         switch(talkType)
         {
-            /// 선택지 상태일때
+            /// 선택지/엔딩선택지 상태일때
             case "Choice":
+            case "EndChoice":
                 ChoiceParagraph choiceParagraph = chatList[index] as ChoiceParagraph;
 
                 /// TODO: 캐릭터 CG 활성화
@@ -338,23 +262,61 @@ public class Chat : MonoBehaviour
 
                 break;
         }
+
         // 반응 설정
-        action = SetAction(chatList[index].action, chatList[index].actionParam);    
+        action = GetAction(chatList[index].action, chatList[index].actionParam);    
     }
+
+/************************************UI 이벤트 함수*****************************************/
+
+    /// 다시보기 대화 로그 버튼
+    public void OnReplayPressed()
+    {
+
+    }
+
+    /// 대화 스킵 버튼
+    public void OnSkipPressed()
+    {
+        while(true)
+        {
+            if (chatList[index].chatType == "EndChoice")
+            {
+                ChoiceParagraph paragraph = chatList[index] as ChoiceParagraph;
+                foreach(var i in paragraph.choiceList)
+                {
+                    if (i.isEnding)
+                        return;
+                }
+            }
+            NextChat();            
+        }
+    }
+
+    /// 선택지 버튼 입력 함수
+    public void OnChoicePressed(int num)
+    {   
+        // 선택지 번호 오류
+        if ( (num >= choicePanel.transform.childCount) || (num < 0) )
+            return;
+
+        // 반응 함수 실행
+        if (choiceActions[num] != null)
+        {
+            choiceActions[num].Invoke();    
+        }
+        NextChat();
+    }
+
+/***********************************텍스트 출력용 함수***************************************/
 
     /// <summary>
     /// 대사 출력 애니메이션
     /// </summary>
     /// <param name="paragraph">출력할 대사</param>
+    /// <remarks>대사 delay, 변수값, SFX 적용</remarks>
     IEnumerator TextAnimation(NormalParagraph paragraph)
     {
-        /**
-        * SFX 실행
-        * 대사 출력
-            - delay
-            - 변수값 적용
-        */
-
         // 변수값 적용
         paragraph.text = ParseVariables(paragraph.text, paragraph.variables);
 
@@ -365,25 +327,6 @@ public class Chat : MonoBehaviour
             /// TODO: 텍스트 효과음 출력
             yield return new WaitForSeconds(paragraph.textDelay / 10);
         }
-    }
-
-    /// <summary>
-    /// 변수 텍스트 적용
-    /// </summary>
-    /// <param name="variableName">적용할 변수명</param>
-    /// <returns>변수 실재값 반환</returns>
-    private string GetVariableValue(string variableName)
-    {
-        switch(variableName)
-        {
-            case "year":
-                return GameSystem.Instance.today.date.year.ToString();
-            case "month":
-                return GameSystem.Instance.today.date.month.ToString();
-            case "day":
-                return GameSystem.Instance.today.date.day.ToString();
-        }
-        return "";
     }
 
     /// <summary>
@@ -410,6 +353,56 @@ public class Chat : MonoBehaviour
         return result;
     }
 
+/**************************************데이터값 호출 함수 static****************************************/
+
+    /// <summary>
+    /// 반응 함수 할당
+    /// </summary>
+    /// <param name="func"></param>
+    /// <param name="param"></param>
+    /// <returns></returns>
+    public static ChatAction GetAction(string func, string param)
+    {
+        ChatAction result;
+
+        switch (func)
+        {
+        case "Jump":
+            result = new ChatJumpAction();
+            break;
+        case "DayChange":
+            result = new DayChangeAction();
+            break;
+        case "TimeChange":
+            result = new TimeChangeAction();
+            break;
+        default:
+            return null;
+        }
+
+        result.param = param;
+        return result;
+    }
+
+    /// <summary>
+    /// 변수 텍스트 적용
+    /// </summary>
+    /// <param name="variableName">적용할 변수명</param>
+    /// <returns>변수 실재값 반환</returns>
+    public static string GetVariableValue(string variableName)
+    {
+        switch(variableName)
+        {
+            case "year":
+                return GameSystem.Instance.today.date.year.ToString();
+            case "month":
+                return GameSystem.Instance.today.date.month.ToString();
+            case "day":
+                return GameSystem.Instance.today.date.day.ToString();
+        }
+        return "";
+    }
+
     /// <summary>
     /// 스프라이트 이미지 불러오기
     /// </summary>
@@ -419,44 +412,5 @@ public class Chat : MonoBehaviour
     {
         Sprite result = Resources.Load<Sprite>(filePath);
         return result;
-    }
-
-    /// <summary>
-    /// 월드에 새 NPC 생성
-    /// </summary>
-    /// <param name="newNPCName">생성할 NPC 파일명</param>
-    /// <returns></returns>
-    public GameObject CreateNPC(string newNPCName)
-    {
-        // 오브젝트 생성
-        GameObject newNPCObject = Instantiate(npcPrefab);
-
-        // NPC 데이터 로드하기
-        newNPCObject.GetComponent<NPC>().npcFileName = newNPCName;
-        newNPCObject.GetComponent<NPC>().GetData();
-        NPCData npcData = newNPCObject.GetComponent<NPC>().npcData;
-
-        // 데이터 로드 오류
-        if (npcData == null)
-        {
-            Destroy(newNPCObject);
-            Debug.Log($"NPC Create Failed : ${newNPCName}");
-            return null;
-        }
-
-        // 오브젝트 이미지 할당
-        if (npcData.image != null)
-        {
-            Image newImage = newNPCObject.GetComponent<Image>();      
-            newImage.sprite = GetSprite(CHARACTERFILEPATH + npcData.image);
-            if (newImage.sprite == null)
-            {
-                Debug.Log($"NPC IMAGE CANNOT FOUND : {CHARACTERFILEPATH + npcData.image}");
-                Destroy(newNPCObject);
-                return null;
-            }
-        }   
-
-        return newNPCObject;
     }
 }
