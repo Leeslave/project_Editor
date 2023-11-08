@@ -943,7 +943,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &201226014
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1665,7 +1665,7 @@ GameObject:
   - component: {fileID: 349718606}
   - component: {fileID: 349718605}
   - component: {fileID: 349718604}
-  m_Layer: 8
+  m_Layer: 5
   m_Name: Down
   m_TagString: WorldUI
   m_Icon: {fileID: 0}
@@ -3859,6 +3859,8 @@ MonoBehaviour:
   - {fileID: 1888378986}
   - {fileID: 1062608861}
   - {fileID: 1325233858}
+  LeftButton: {fileID: 539988440}
+  RightButton: {fileID: 282738790}
   npcList: []
   npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
 --- !u!4 &1057474061
@@ -4729,7 +4731,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1354808981
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6567,7 +6569,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2147483647
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

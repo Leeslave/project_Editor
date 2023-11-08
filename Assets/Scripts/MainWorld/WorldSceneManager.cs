@@ -34,6 +34,10 @@ public class WorldSceneManager : MonoBehaviour
     [Header("지역 데이터")]
     [SerializeField]
     private GameObject[] locationList;    // 지역 오브젝트 리스트
+    [SerializeField]
+    private GameObject LeftButton;      // 왼쪽 이동 버튼
+    [SerializeField]
+    private GameObject RightButton;     // 오른쪽 이동 버튼
 
     [Header("NPC 생성 정보")]
     [SerializeField]
@@ -140,6 +144,19 @@ public class WorldSceneManager : MonoBehaviour
         {
             Debug.Log($"WORLD MOVE ERROR : Invalid position {newPos}");
             return;
+        }
+
+        // 양쪽 이동 버튼 설정
+        LeftButton.SetActive(true);
+        RightButton.SetActive(true);    
+        
+        if (newPos == 0)
+        {
+            LeftButton.SetActive(false);
+        }
+        else if(newPos == currentWorldObject.childCount - 1)
+        {
+            RightButton.SetActive(false);
         }
         
         // 해당 위치 활성화
