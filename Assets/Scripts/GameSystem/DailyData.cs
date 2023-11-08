@@ -1,90 +1,108 @@
 using System;
 using System.Collections.Generic;
 
+
+/// JSON 파싱 클래스 : DailyData 기본값
+[Serializable]
+public class DailyWrapper
+{ 
+    public Date date;
+    public DayTime[] dateTimes = new DayTime[]
+    {
+        new DayTime(6, 30),
+        new DayTime(9, 0),
+        new DayTime(17, 0),
+        new DayTime(19, 30)
+    };
+
+    public string startLocation = "Street";
+    public int startPosition = 0;
+    public uint startTime = 0;
+
+
+    public List<Work> workList = new();
+
+    public List<string>[] npcList = new List<string>[4];
+}
+
 [Serializable]
 public class DailyData
 {
     /**
     * 하루 루틴동안의 인게임 데이터
-    *   - 날짜 정보
-    *   - 업무 데이터   
-            업무 코드명
+    *   - 날짜
+    *   - 각 시간대
+    *   플레이 정보
+        - 시작 위치
+        - 시작 시간대
+        - 업무 데이터   
+            업무 코드
             스테이지 번호
-            클리어 여부 
     */
+    
+    /// 하루 날짜 정보
+    public readonly Date date;   // 날짜 
 
-    public Date date;   // 날짜 정보    
+    public readonly DayTime[] dateTimes = new DayTime[4];      // 각 시간대
 
-    public List<Work> workData;    // 업무 정보
 
-    public List<NPCSchedule>[] npcScheduleList; // NPC 변경점 리스트
+    /// 게임 플레이 정보
+    public readonly World startLocation;     // 시작 장소
 
-    /// DailyData를 DailyWrapper로 Wrapping
-    public DailyWrapper WrapDailyData()
-    {
-        DailyWrapper resultWrapper = new DailyWrapper();
+    public readonly int startPosition;   //시작 위치
 
-        // 날짜 할당
-        resultWrapper.date = date;
+    public readonly uint startTime;  // 시작 시간대
 
-        // 업무 키, 데이터 리스트
-        foreach (var elem in workData)
-        {
-            resultWrapper.workList.Add(elem.code);
-            resultWrapper.workStageList.Add(elem.stage);
-        }
 
-        resultWrapper.t0Schedule = npcScheduleList[0];
-        resultWrapper.t1Schedule = npcScheduleList[1];
-        resultWrapper.t2Schedule = npcScheduleList[2];
-        resultWrapper.t3Schedule = npcScheduleList[3];
+    /// 업무 정보
+    public Dictionary<Work, bool> workList = new();
 
-        return resultWrapper;  
-    }
+    /// NPC 정보
+    public List<string>[] npcList = new List<string>[4];
 
-    /// DailyWrapper를 DailyData로 UnWrapping
+    /// Wrapper에서 생성자
     public DailyData(DailyWrapper wrapper)
     {
-        // 날짜 할당
-        date= wrapper.date;
+        // 날짜, 시간대
+        date = wrapper.date;
+        dateTimes = wrapper.dateTimes;
 
-        // 업무 키, 데이터 리스트로 업무 생성
-        workData = new List<Work>();
-        for(int i = 0; i < wrapper.workList.Count; i++)
+        // 시작 위치
+        try
         {
-            workData.Add(new Work(wrapper.workList[i], wrapper.workStageList[i]));
+            startPosition = wrapper.startPosition;
+            startLocation = Enum.Parse<World>(wrapper.startLocation);   // string을 World로 할당
+        }
+        catch(ArgumentException)
+        {
+            // 시작 위치값 오류 시 예외처리
+            startLocation = World.Street;
+        }
+        
+        // 시작 시간대
+        if (wrapper.startTime < 0 || wrapper.startTime > 3)
+        {
+            //시작 시간대 오류 시 예외처리
+            startTime = 0;
+        }
+        else
+        {
+            startTime = wrapper.startTime;
         }
 
-
-        npcScheduleList = new List<NPCSchedule>[4];
-        for(int i = 0; i<4; i++)
+        // 업무
+        foreach(var work in wrapper.workList)
         {
-            npcScheduleList[i] = null;
+            workList.Add(work, false);
         }
+        
 
-        npcScheduleList[0] = wrapper.t0Schedule;
-        npcScheduleList[1] = wrapper.t1Schedule;
-        npcScheduleList[2] = wrapper.t2Schedule;
-        npcScheduleList[3] = wrapper.t3Schedule;
+        // NPC 
+        npcList = wrapper.npcList;
     }
     
 }
 
-[Serializable]
-public class DailyWrapper
-{ 
-    /** 
-    * 하루 데이터 Wrapper
-        저장되는 데이터 Wrap
-    */
-    public Date date;
-    public List<string> workList = new();
-    public List<int> workStageList = new();
-    public List<NPCSchedule> t0Schedule = new();
-    public List<NPCSchedule> t1Schedule = new();
-    public List<NPCSchedule> t2Schedule = new();
-    public List<NPCSchedule> t3Schedule = new();
-}
 
 [Serializable]
 public class Date
@@ -92,11 +110,11 @@ public class Date
     /**
     * 날짜 정보  
     */
-    public int year;
-    public int month;
-    public int day;
+    public uint year;
+    public uint month;
+    public uint day;
 
-    public Date(int _year, int _month, int _day)
+    public Date(uint _year, uint _month, uint _day)
     {
         year = _year;
         month = _month;
@@ -104,6 +122,23 @@ public class Date
     }
 }
 
+[Serializable]
+public class DayTime
+{
+    /**
+    * 시간 정보
+    */
+    public uint hour;
+    public uint minute;
+
+    public DayTime(uint _hour = 0, uint _minute = 0)
+    {
+        hour = _hour;
+        minute = _minute;
+    }
+}
+
+[Serializable]
 public class Work
 {
     /**
@@ -111,33 +146,9 @@ public class Work
     */
     public string code;     // 업무 코드명
     public int stage;       // 스테이지 번호
-    public bool isClear;    // 클리어 여부
     public Work(string _code, int _stage = 0)
     {
         code = _code;
         stage = _stage;
-        isClear = false;
     }
 } 
-
-[Serializable]
-public class NPCSchedule
-{
-    public string name;
-    public string image = null;
-    public string chat = null;
-    public ChatTriggerType chatType = 0;
-    public int location = -1;
-    public int position = -1;
-    public float x = 0;
-    public float y = 0;
-    public int size = 1;
-}
-
-[Serializable]
-public enum ChatTriggerType {   
-    OnClick,    // 버튼 누를 시
-    OnStart,    // 활성화시 자동 1회
-    EveryStart, // 매번 활성화마다
-    Once,       // 한번 실행 후 삭제
-}

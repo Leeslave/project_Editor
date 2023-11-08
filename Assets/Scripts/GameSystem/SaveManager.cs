@@ -1,9 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class SaveManager : MonoBehaviour
 {
@@ -17,6 +12,6 @@ public class SaveManager : MonoBehaviour
     public void LoadDaySave(int day)
     {
         GameSystem.Instance.SetDate(day);
-        GameSystem.LoadNextScene("MainWorld");
+        GameSystem.LoadScene("MainWorld");
     }
 }

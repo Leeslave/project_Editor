@@ -71,7 +71,7 @@ public class DayIntro : MonoBehaviour
         DailyData today = GameSystem.Instance.today;
 
         // 텍스트 세팅
-        dayText.text = $"제국력 {today.date.year}년 {today.date.month}월 {today.date.day}일\n\n{SetHour(GameSystem.Instance.time)}";
+        dayText.text = $"제국력 {today.date.year}년 {today.date.month}월 {today.date.day}일\n\n{SetHour(GameSystem.Instance.currentTime)}";
         yield return new WaitForSeconds(textOnDelay);
 
         //날짜 활성화 애니메이션, 효과음

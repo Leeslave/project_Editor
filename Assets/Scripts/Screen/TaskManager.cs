@@ -1,10 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Collections.Generic;
-using System;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class TaskManager : MonoBehaviour
 {
@@ -22,16 +19,16 @@ public class TaskManager : MonoBehaviour
     public bool taskClear   // 모든 업무 완료 플래그
     {
         get { 
-            bool taskResult = true;
-            foreach(var work in GameSystem.Instance.today.workData)
+            bool workResult = true;
+            foreach(var workStatus in GameSystem.Instance.today.workList.Values)
             {
-                taskResult = taskResult & work.isClear;
+                workResult = workResult & workStatus;
             }
-            return taskResult;
+            return workResult;
         }
     }
 
-    /// 업무 완료 확인 TODO: 업무 클리어 후 돌아올때 확인으로 수정 필요
+    /// 업무 완료 확인
     void OnEnable()
     {
         if (taskClear == true)
@@ -40,16 +37,15 @@ public class TaskManager : MonoBehaviour
         }
     }
 
-    /// 창 열고 닫기
+    /// 업무창 활성화/비활성화
     public void ActiveTaskWindow()
     {
+        // 업무창 활성화
         if (!taskWindow.activeSelf)
         {
-            // 업무 창 활성화
-            taskWindow.SetActive(true);
-            // InputField 비활성화
-            consoleInput.gameObject.SetActive(false);
-            // 콘솔 초기화
+            taskWindow.SetActive(true);     // 오브젝트 활성화
+            consoleInput.gameObject.SetActive(false);   //입력창 비활성화
+            // 콘솔 대사 출력
             if (taskClear)
             {
                 StartCoroutine(TaskConsoleAnimation(1));
@@ -59,11 +55,12 @@ public class TaskManager : MonoBehaviour
                 StartCoroutine(TaskConsoleAnimation(0));
             }
         }
+        // 업무창 비활성화
         else
         {
-            taskConsoleAnimation.Pause();
-            StopAllCoroutines();
-            taskWindow.SetActive(false);
+            taskConsoleAnimation.Pause();   // 업무 대사 중지
+            StopAllCoroutines();            // 모든 코루틴 중지
+            taskWindow.SetActive(false);    // 오브젝트 비활성화
         }
     }
 
@@ -76,33 +73,25 @@ public class TaskManager : MonoBehaviour
         yield return new WaitUntil(() => taskConsoleAnimation.isFinished);
 
         // 텍스트 출력 후 입력창 활성화
-        consoleInput.gameObject.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(consoleInput.gameObject);
+        if (idx == 0)
+        {
+            consoleInput.gameObject.SetActive(true);
+            EventSystem.current.SetSelectedGameObject(consoleInput.gameObject);
+        }
     }
 
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in GameSystem.Instance.today.workData)
+        foreach(var work in GameSystem.Instance.today.workList.Keys)
         {
             if(work.code == consoleInput.text)
             {
                 Debug.Log($"Work Entered! : {consoleInput.text}");
                 consoleInput.text = "업무 로딩중...\n";
-                StartCoroutine(LoadWorkAsync(work.code));
+                StartCoroutine(GameSystem.LoadSceneAsync(work.code));
                 return;
             }
-        }
-    }
-
-    /// 씬 비동기 로딩
-    IEnumerator LoadWorkAsync(string sceneName)
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
         }
     }
 }

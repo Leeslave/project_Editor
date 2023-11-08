@@ -32,12 +32,12 @@ public class GameOption : MonoBehaviour
 
     public void LoadSaveSelect()
     {
-        GameSystem.LoadNextScene("SaveSelect");
+        GameSystem.LoadScene("SaveSelect");
     }
 
     public void LoadStartMenu()
     {
-        GameSystem.LoadNextScene("Start");
+        GameSystem.LoadScene("Start");
     }
 
     public void QuitGame()

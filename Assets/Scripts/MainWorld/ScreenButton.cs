@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ScreenButton : MonoBehaviour
 {
@@ -49,7 +46,7 @@ public class ScreenButton : MonoBehaviour
         // 스크린 확대 후 -> 스크린 활성화
         else
         {
-            SceneManager.LoadScene("Screen");
+            GameSystem.LoadScene("Screen");
         }
     }
 

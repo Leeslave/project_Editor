@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Newtonsoft.Json;
 
 public class GameSystem : MonoBehaviour
 {
@@ -18,22 +19,21 @@ public class GameSystem : MonoBehaviour
     private int resolutionX = 1200;
     private int resolutionY = 900;
 
-    [Header("게임 내 데이터")]
-    public int dateIndex = 0;   // 날짜 인덱스
-    private List<SaveData> saveList = new();    // 날짜별 저장 데이터
-    private List<DailyData> dailyList = new();     // 날짜별 데이터 필드
-
-    [Space(10)]
-    public int time = 0;    // 현재 시간
-    public World location;  // 현재 지역
-    public int position;    // 현재 위치
+    [Header("현재 게임 정보")]
+    public int todayIndex = 0;   // 오늘 날짜 인덱스
+    public int currentTime = 0;    // 현재 시간
+    public World currentLocation;  // 현재 지역
+    public int currentPosition;    // 현재 위치
     public bool isScreenOn = false; // 스크린 활성화 여부
 
-    [SerializeField]
-    public SaveData player { get { return saveList[dateIndex]; } }      // 세이브 데이터 필드
-    [SerializeField]
-    public DailyData today { get { return dailyList[dateIndex]; } }    // 오늘 날짜 데이터 필드
+    /// 게임 데이터 
+    private List<SaveData> saveList = new();    // 저장 데이터
+    private List<DailyData> dailyList = new();     // 날짜별 데이터
 
+    [SerializeField]
+    public SaveData player { get { return saveList[todayIndex]; } }      // 세이브 데이터
+    [SerializeField]
+    public DailyData today { get { return dailyList[todayIndex]; } }    // 오늘 날짜 데이터
 
 
     // 싱글턴
@@ -50,11 +50,12 @@ public class GameSystem : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
 
-            Screen.SetResolution(resolutionX, resolutionY, false);
+            Screen.SetResolution(resolutionX, resolutionY, false);  // 해상도 고정
 
             saveList = GameLoader.LoadSaveData();     // 세이브 데이터 로드
-            dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드    
+            dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드  
 
+            // 초기 데이터 설정
             SetDate(0);
         }
         else
@@ -72,19 +73,16 @@ public class GameSystem : MonoBehaviour
         if (date > dailyList.Count)
         {
             Debug.Log($"Day Out Of Range: {date}");
-            date = 0;
             return;
         }
         if (date < 0)
         {
             // 다음 날짜로 이동
-            date = dateIndex + 1;
+            date = todayIndex + 1;
         }
 
         // 해당 날짜 불러오기
-        dateIndex = date;
-        location = player.startLocation;
-        position = player.startPosition;
+        todayIndex = date;
         SetTime(0);
 
         // 게임 저장 (튜토리얼 날짜 제외)
@@ -93,7 +91,10 @@ public class GameSystem : MonoBehaviour
             GameLoader.SavePlayerData(saveList);
         }
 
-        // 메인 월드는 재로드
+        // 위치 이동
+        currentLocation = today.startLocation;
+        currentPosition = today.startPosition;
+        // 메인 월드 재로드
         if (SceneManager.GetActiveScene().name == "MainWorld")
             SceneManager.LoadScene("MainWorld");
     }
@@ -104,17 +105,20 @@ public class GameSystem : MonoBehaviour
     ///<param name="time">전환할 시간(없으면 다음 시간대로, 마지막 시간대면 다음 날짜로)</param>
     public void SetTime(int nextTime = -1)
     {
-        if (nextTime >= 0 && nextTime <= 4)
+        if (nextTime >= 0 && nextTime < 4)
         {
             // 특정 시간대로 이동
-            time = nextTime;
+            currentTime = nextTime;
         }
         else
         {
-            time++;
-            if (time > 4)
+            // 다음 시간대로 이동
+            currentTime++;
+            
+            if (currentTime > 4)
             {
-                time = 0;
+                // 다음 날짜로 이동
+                currentTime = 0;
                 SetDate();
             }
         }
@@ -125,20 +129,15 @@ public class GameSystem : MonoBehaviour
     /// </summary>
     /// <param name="workCode">설정할 업무의 코드명</param>
     /// <param name="isClear">업무 완료 여부</param>
-    public void ClearTask()
+    public void ClearTask(string workCode)
     {
-        // 현재 씬 이름으로 코드 불러오기
-        string workCode = SceneManager.GetActiveScene().name;
-        if (workCode == null || workCode == "")
-            return;
-
         // 코드에 해당하는 업무 불러오기
         Work currentWork = null;
-        foreach (var work in today.workData)
+        foreach (var work in today.workList)
         {
-            if (work.code == workCode)
+            if (work.Key.code == workCode)
             {
-                currentWork = work;
+                currentWork = work.Key;
                 break;
             }
         }
@@ -151,14 +150,32 @@ public class GameSystem : MonoBehaviour
         }
 
         // 업무 완료로 전환
-        currentWork.isClear = true;
+        today.workList[currentWork] = true;
     }
 
 
-    /// load Game Scene
-    static public void LoadNextScene(string sceneName)
+    /// <summary>
+    /// 해당 씬 로드
+    /// </summary>
+    /// <param name="sceneName"></param>
+    static public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
+    }
+
+    /// <summary>
+    /// 해당 씬 비동기 로드
+    /// </summary>
+    /// <param name="sceneName"></param>
+    /// <returns></returns>
+    static public IEnumerator LoadSceneAsync(string sceneName)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
     }
 }
 
@@ -170,12 +187,13 @@ public static class GameLoader
         - Json 파싱으로 플레이어 데이터 저장, 로드
     */
     [SerializeField]
-    private static readonly string playerSavePath = "/Resources/Save/savedata.json";    // 세이브 파일 경로
+    private static readonly string GAMEDATAPATH = Application.dataPath + "/Resources/GameData/Main/dailyData.json";   // 게임 데이터 파일 경로
     [SerializeField]
-    private static readonly string dailySavePath = "/Resources/GameData/Main/dailyData.json";   // 게임 데이터 파일 경로
+    private static readonly string SAVEPATH = Application.dataPath + "/Resources/Save/savedata.json";    // 세이브 파일 경로
 
     [Serializable]
-    class GameDataWrapper { public List<DailyWrapper> dailyDataList = new(); }     // JsonUtility용 DailyData들 Wrapper
+    class GameDataWrapper { public List<DailyWrapper> days = new(); }     // JsonUtility용 DailyData들 Wrapper
+
 
     /// JSON으로부터 게임 데이터를 로드
     public static List<DailyData> LoadGameData()
@@ -184,19 +202,24 @@ public static class GameLoader
         List<DailyData> result = new();
 
         // 파일 읽어오기
-        FileStream fileStream = new FileStream(Application.dataPath + dailySavePath, FileMode.Open);
+        if (!File.Exists(GAMEDATAPATH))
+        {
+            throw new Exception($"GAME DATA CANNOT FOUND : ${GAMEDATAPATH}");
+            // 치명적 오류, 게임 종료시키기
+        }
+        FileStream fileStream = new FileStream(GAMEDATAPATH, FileMode.Open);
         byte[] data = new byte[fileStream.Length];
         fileStream.Read(data, 0, data.Length);
         fileStream.Close();
 
         // jsonString 읽어오기
-        string jsonObjectData = Encoding.UTF8.GetString(data);
+        string jsonText = Encoding.UTF8.GetString(data);
 
         //Wrapper로 파싱
-        GameDataWrapper wrapper = JsonUtility.FromJson<GameDataWrapper>(jsonObjectData);
+        GameDataWrapper wrapper = JsonConvert.DeserializeObject<GameDataWrapper>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 
         // Wrapper를 DailyData로 전환
-        foreach (DailyWrapper element in wrapper.dailyDataList)
+        foreach (DailyWrapper element in wrapper.days)
         {
             result.Add(new DailyData(element));
         }
@@ -208,18 +231,23 @@ public static class GameLoader
     public static List<SaveData> LoadSaveData()
     {
         // 파일 읽어오기
-        FileStream fileStream = new FileStream(Application.dataPath + playerSavePath, FileMode.Open);
+        if (!File.Exists(SAVEPATH))
+        {
+            throw new Exception($"SAVE DATA CANNOT FOUND : ${SAVEPATH}");
+            // 치명적 오류, 게임 종료시키기
+        }
+        FileStream fileStream = new FileStream(SAVEPATH, FileMode.Open);
         byte[] data = new byte[fileStream.Length];
         fileStream.Read(data, 0, data.Length);
         fileStream.Close();
 
         // jsonString 읽어오기
-        string jsonString = Encoding.UTF8.GetString(data);
+        string jsonText = Encoding.UTF8.GetString(data);
 
         // Wrapper로 파싱
-        SaveWrapper wrapper = JsonUtility.FromJson<SaveWrapper>(jsonString);
+        SaveWrapper wrapper = JsonConvert.DeserializeObject<SaveWrapper>(jsonText,  new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 
-        return wrapper.data;
+        return wrapper.list;
     }
 
     /// 플레이어 데이터 JSON 저장
@@ -228,17 +256,15 @@ public static class GameLoader
         SaveWrapper wrapper = new();
         foreach (var iter in saveList)
         {
-            wrapper.data.Add(iter);
+            wrapper.list.Add(iter);
         }
 
         // json String으로 파싱
-        string jsonObjectData = JsonUtility.ToJson(wrapper);
+        string jsonText = JsonConvert.SerializeObject(wrapper,   new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 
-        FileStream fileStream = new FileStream(Application.dataPath + playerSavePath, FileMode.Create);
-        byte[] data = Encoding.UTF8.GetBytes(jsonObjectData);
+        FileStream fileStream = new FileStream(SAVEPATH, FileMode.Create);
+        byte[] data = Encoding.UTF8.GetBytes(jsonText);
         fileStream.Write(data, 0, data.Length);
         fileStream.Close();
-
-        return;
     }
 }

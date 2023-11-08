@@ -3,17 +3,12 @@ public class SaveData
 {
     /**
     * 플레이어 세이브 데이터 클래스
-    *   - 위치 데이터
     *   - 현재 명성치
     */
-    public World startLocation;
-    public int startPosition;
     public int renown;
 
     public SaveData()
     {
-        startLocation = World.Street;
-        startPosition = 0;
         renown = 0;
     }
 }
@@ -22,10 +17,10 @@ public class SaveData
 [System.Serializable]
 public class SaveWrapper
 {
-    public System.Collections.Generic.List<SaveData> data;
+    public System.Collections.Generic.List<SaveData> list;
 
     public SaveWrapper()
     {
-        data = new();
+        list = new();
     }
 }
