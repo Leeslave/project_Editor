@@ -115,10 +115,10 @@ public class NPC : MonoBehaviour
             {
                 Debug.Log($"NPC IMAGE CANNOT FOUND : {CHARACTERFILEPATH + npcData.image}");
             }
+            GetComponent<Image>().sprite = newSprite;
 
             // 이미지 크기 조절
             RectTransform rect = GetComponent<RectTransform>();     // 스케일 초기화
-            rect.localScale = new Vector3(1,1,1);
             rect.sizeDelta = npcData.size * IMAGESIZEMULTIPLIER 
                                                     * new Vector2(1, newSprite.rect.height/ newSprite.rect.width);
         }

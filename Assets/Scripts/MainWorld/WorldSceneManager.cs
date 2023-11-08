@@ -208,9 +208,10 @@ public class WorldSceneManager : MonoBehaviour
         {
             // 새 오브젝트 생성
             GameObject newObject = Instantiate(npcPrefab);
+            Debug.Log($"Create New NPC : {newNPCName}");
 
             // 생성한 오브젝트 정보 로드
-            NPC newNPC = GetComponent<NPC>();
+            NPC newNPC = newObject.GetComponent<NPC>();
             newNPC.npcFileName = newNPCName;
             newNPC.GetData();
 
@@ -227,6 +228,7 @@ public class WorldSceneManager : MonoBehaviour
             // 오브젝트 transform 설정
             newObject.transform.SetParent(locationList[(int)newNPCData.location].transform.GetChild(newNPCData.locationIndex));
             newObject.GetComponent<RectTransform>().anchoredPosition = newNPCData.position;
+            newObject.GetComponent<RectTransform>().localScale = new Vector3(1f,1f,1f);
 
             // 생성 완료, 리스트에 추가
             npcList.Add(newObject);
