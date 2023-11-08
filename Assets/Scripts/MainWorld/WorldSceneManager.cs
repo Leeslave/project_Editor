@@ -16,7 +16,7 @@ public enum World {
     Hallway,
     Office,
     Office2,
-    Interrogation
+    Interrogate
 }
 
 public class WorldSceneManager : MonoBehaviour 
@@ -52,7 +52,7 @@ public class WorldSceneManager : MonoBehaviour
         else
         {
             // 위치 설정
-            MoveLocation((int)GameSystem.Instance.currentLocation);
+            MoveLocation(GameSystem.Instance.currentLocation.ToString());
 
             // npc 생성
             SetWorldObject(); 
@@ -66,7 +66,7 @@ public class WorldSceneManager : MonoBehaviour
         yield return new WaitUntil(() => intro.isFinished);
         
         // 위치 설정
-        MoveLocation((int)GameSystem.Instance.currentLocation);
+        MoveLocation(GameSystem.Instance.currentLocation.ToString());
 
         // npc 생성
         SetWorldObject();
@@ -76,53 +76,82 @@ public class WorldSceneManager : MonoBehaviour
     /// 지역 변경
     /// </summary>
     /// <remarks>지역을 변경하고 지역 내 위치 동기화
-    public void MoveLocation(int location)
+    public void MoveLocation(string location)
     {
-        // 이동할 지역 설정
-        if (!Enum.IsDefined(typeof(World), location))
+        World newLocation;
+        try
         {
-            Debug.Log($"ERROR: Location number incorrect [${location}]");
-            location = 0;
+            // 이동할 지역 설정
+            newLocation = Enum.Parse<World>(location);
+        }
+        catch(ArgumentException)
+        {
+            Debug.Log($"LOCATION LOAD FAILED : Invalid location Name {location}");
+            return;
         }
 
         // 해당하는 지역만 활성화
         for(int i = 0; i < locationList.Length; i++)
         {
             locationList[i].SetActive(false);
-            if (i == location)
+            if (i == (int)newLocation)
                 locationList[i].SetActive(true);
         }
 
         // 현재 지역 설정
-        GameSystem.Instance.currentLocation = (World)location;
+        GameSystem.Instance.currentLocation = newLocation;
 
         // 지역 내 위치 동기화
-        MovePosition(GameSystem.Instance.currentPosition);
+        MovePosition(GameSystem.Instance.currentPosition.ToString());
     }
 
     /// <summary>
     /// 지역 내 이동
     /// </summary>
     /// <remarks>지역 내 위치를 이동
-    public void MovePosition(int position)
+    public void MovePosition(string position)
     {
+        int newPos;
+
+        // 좌, 우로 이동
+        switch (position)
+        {
+            case "Left":
+                newPos = GameSystem.Instance.currentPosition - 1;
+                break;
+            case "Right":
+                newPos = GameSystem.Instance.currentPosition + 1;
+                break;
+            default:
+                if(!int.TryParse(position, out newPos))
+                {
+                    Debug.Log($"WORLD MOVE ERROR : Cannot move to position {position}");
+                    return;
+                }
+                break;
+        }
+        
+
         // 현재 월드 오브젝트
         Transform currentWorldObject = locationList[(int)GameSystem.Instance.currentLocation].transform;
 
         // 위치값 예외 처리
-        if (position < 0 || GameSystem.Instance.currentPosition >= currentWorldObject.childCount)
-            position = 0;
+        if (newPos < 0 || newPos >= currentWorldObject.childCount)
+        {
+            Debug.Log($"WORLD MOVE ERROR : Invalid position {newPos}");
+            return;
+        }
         
         // 해당 위치 활성화
         for(int i = 0; i < currentWorldObject.childCount; i++)
         {
             currentWorldObject.GetChild(i).gameObject.SetActive(false);
-            if (i == position)
+            if (i == newPos)
                 currentWorldObject.GetChild(i).gameObject.SetActive(true);
         }
 
         // 현재 위치 설정
-        GameSystem.Instance.currentPosition = position;
+        GameSystem.Instance.currentPosition = newPos;
     }
 
     /// <summary>

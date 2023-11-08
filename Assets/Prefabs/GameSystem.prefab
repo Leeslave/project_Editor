@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8337095208539731131}
   m_Layer: 0
   m_Name: GameSystem
-  m_TagString: Untagged
+  m_TagString: GameSystem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -44,11 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95dc7de64c9764942a333b9dc60542dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerSavePath: /Resources/Save/
-  dailySavePath: /Resources/GameData/Main/dailyData.json
-  player:
-    dateIndex: 0
-    time: 0
-    location: 
-    position: 0
-    renown: 0
+  todayIndex: 0
+  currentTime: 0
+  currentLocation: 0
+  currentPosition: 0
+  isScreenOn: 0
