@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -31,10 +32,10 @@ public class UIICons : UIDragger
     [SerializeField] protected bool IsLayer = true;
     // Icon을 통해 실행되는 프로세스
     [SerializeField] protected GameObject OpenedProcess;
-    // 메세지에 첨부될 수 있는 파일인지
-    [SerializeField] protected bool CanAttatched;
+    // 0 : Folder, 1 : DB, 2 : Text, 3 : 몰라
+    public int type;
     // WindowsManager.cs
-    [SerializeField] protected Windows_M WM;
+    [NonSerialized] public Windows_M WM;
     protected AttatchFile_N AN;
     // Window상에서 배치되어 있는 LayOut의 위치 정보 저장에 사용.
     protected Tuple<int, int> CurLay = null;
@@ -92,7 +93,6 @@ public class UIICons : UIDragger
     public virtual void Init(bool AttatchAble, GameObject OpenProcess, string name, Sprite Image, int num)
     {
         OpenedProcess = OpenProcess;
-        CanAttatched = AttatchAble;
         MyText.text = name;
         MyImage.sprite = Image;
         PoolNum = num;
@@ -114,6 +114,7 @@ public class UIICons : UIDragger
         if (Data.clickCount == 2)
         {
             if(OpenedProcess!=null) OpenedProcess.SetActive(true);
+            OpenedProcess.transform.SetAsLastSibling();
             ClickEvent();
         }
     }
@@ -127,8 +128,6 @@ public class UIICons : UIDragger
     
     protected override void Click(PointerEventData Data)
     {
-        if (OpenedProcess != null)
-            if (OpenedProcess.activeSelf) return;
         base.Click(Data);
         CntRect.position = MyRect.position;
     }
@@ -139,12 +138,12 @@ public class UIICons : UIDragger
     /// <param name="Data"></param>
     protected override void DragOn(PointerEventData Data)
     {
-        if (OpenedProcess != null)
-            if (OpenedProcess.activeSelf) return;
         base.DragOn(Data);
         if (Data.clickCount == 2) DragDoubleCheck = true;
         Dragged.gameObject.SetActive(true);
         AN.IsDragged = true;
+        AN.AttatchType = type;
+        AN.IconName = name;
         CntImage.sprite = MyImage.sprite;
         AN.CurDragged = gameObject;
         CntRect.sizeDelta = ImageRect.sizeDelta;
@@ -156,22 +155,9 @@ public class UIICons : UIDragger
     /// <param name="Data"></param>
     protected override void DragEnd(PointerEventData Data)
     {
-        if (OpenedProcess != null)
-            if (OpenedProcess.activeSelf) return;
-        if (AN.IsAttatched)
-        {
-            if (!CanAttatched) AN.AF.AttatchFail("첨부 실패","제한된 파일 형식");
-            else AN.AF.Attatching(MyImage.sprite, MyText.text, gameObject);
-        }
-        else if (AN.IsDumped)
-        {
-            AN.DI.DumpAdd(gameObject,MyImage.sprite,MyText.text);
-            gameObject.SetActive(false);
-        }
-        else {
-            if (IsLayer) WM.BatchByMove(gameObject, Dragged, ref CurLay);
-            else MyRect.position = CntRect.position;
-        }
+        if (AN.Attatch!=null) AN.Attatch();
+        else if (IsLayer) WM.BatchByMove(gameObject, Dragged, ref CurLay);
+        else MyRect.position = CntRect.position;
         Dragged.gameObject.SetActive(false);
     }
 }

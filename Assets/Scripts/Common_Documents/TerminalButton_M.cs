@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class TerminalButton_M : Buttons_M
 {
-    public TabManager_M TM;
+    [SerializeField] InfChange In;
     Color AfColor;
     private void Start()
     {
@@ -24,7 +24,6 @@ public class TerminalButton_M : Buttons_M
     {
         if (!In.IsTouchAble()) return;
         image.color = BfColor;
-        TM.ChangeFolder(null,"Main");
         In.CloseFolder();
     }
 }

@@ -13,11 +13,11 @@ public class DB_M : MonoBehaviour
         foreach (PeopleIndex a in PeopleList.PL) FaceImages.Add(a.name_e, Resources.LoadAll<Sprite>("Manipulation/" + a.name_e));
     }
 
-    public PeopleIndex FindPeople(string name,string key)
+    public PeopleIndex FindPeople(string name)
     {
         foreach(PeopleIndex a in PeopleList.PL)
         {
-            if ((a.name_e.ToLower() == name.ToLower() || a.name_k == name) && a.key == key) return a;
+            if ((a.name_e.ToLower() == name.ToLower() || a.name_k == name)) return a;
         }
         return null;
     }

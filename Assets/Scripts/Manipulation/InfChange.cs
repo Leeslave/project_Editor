@@ -8,25 +8,26 @@ using Unity.VisualScripting;
 
 public class InfChange : MonoBehaviour
 {
-    public DB_M DB;
-    public TMP_Text Name;
-    public TMP_Text Age;
-    public TMP_Text Sex;
-    public TMP_Text Country;
-    public TMP_Text Job;
-    public Image Face;
-    public GameObject Files;
-    public GameObject Faces;
-    public GameObject Folders;
-    public GameObject Drager;
-    public GameObject Drager_Image;
-    public GameObject Terminal_Folder;
-    public Image ImageDrager;
-    public TabManager_M TM;
-    public TMP_Text Terminal;
+    [SerializeField] DB_M DB;
+    [SerializeField] TMP_Text Name;
+    [SerializeField] TMP_Text Age;
+    [SerializeField] TMP_Text Sex;
+    [SerializeField] TMP_Text Country;
+    [SerializeField] TMP_Text Job;
+    [SerializeField] Image Face;
+    [SerializeField] GameObject Files;
+    [SerializeField] GameObject Faces;
+    [SerializeField] GameObject Folders;
+    [SerializeField] GameObject Drager;
+    [SerializeField] GameObject Drager_Image;
+    [SerializeField] GameObject Terminal_Folder;
+    [SerializeField] Image ImageDrager;
+    [SerializeField] TMP_Text Terminal;
+    [SerializeField] GameObject Reviser;
 
-    public int s = 0;
-    public int FaceNum = 0;
+    [NonSerialized] public int s = 0;
+    [NonSerialized] public int FaceNum = 0;
+    public string PeopleName = "Clayton";
 
     private bool TouchAble = true;
 
@@ -40,6 +41,24 @@ public class InfChange : MonoBehaviour
 
     Peoples PeopleList;
     PeopleIndex CurPeople;
+
+    bool FirstOpen = true;
+
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        if (FirstOpen) FirstOpen = false;
+        else
+        {
+            transform.position = Vector3.zero;
+            CurPeople = DB.FindPeople(PeopleName);
+            ChangeInf(CurPeople);
+        }
+    }
 
     public void TouchManager(GameObject cnt, int Type)
     {
@@ -91,7 +110,6 @@ public class InfChange : MonoBehaviour
                 else
                 {
                     CurHighLight.HighLightOff();
-                    TM.ChangeFolder(CurHighLight, CurFolder.name);
                     OpenFolder(CurHighLight);
                 }
                 break;
@@ -100,7 +118,9 @@ public class InfChange : MonoBehaviour
 
     public void OpenFolder(HighLighter_M ss)
     {
-        if(ss == null)
+        Reviser.SetActive(false);
+        Reviser.SetActive(true);
+        if (ss == null)
         {
             Folders.SetActive(true);
             Files.SetActive(false);

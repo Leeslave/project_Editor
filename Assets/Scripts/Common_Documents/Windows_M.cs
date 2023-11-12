@@ -20,7 +20,7 @@ public class Windows_M : MonoBehaviour
     protected int NumX;
     protected int NumY;
     protected GraphicRaycaster GR;
-    protected bool CanMove = false;
+    protected bool CanMove = true;
 
     protected RectTransform MyRect;
 
@@ -28,33 +28,32 @@ public class Windows_M : MonoBehaviour
     [Header("따로 사전에 생성된 Icon들\n따로 안 넣어두면 버그 납니다.")]
     [SerializeField] List<GameObject> EarlyIcon;
     [Header("(주의) IconSample을 무조건 Field에 생성한 후\n기본적인 Prefab을 적용한 후 넣어주세요.")]
-    [Header("풀링 가능 30개")]
+    
     [SerializeField] GameObject IconSample;
-    protected GameObject[] Icons = new GameObject[30];
-    protected UIICons[] IconsScript = new UIICons[30];
-    protected bool[] IconUseAble = new bool[30];
+    [Header("풀링 수(최대 30)")]
+    int PoolingNum;
+    protected GameObject[] Icons;
+    protected UIICons[] IconsScript;
+    protected bool[] IconUseAble;
 
     private void Awake()
     {
-        for (int i = 0; i < EarlyIcon.Count; i++) Icons[i] = EarlyIcon[i];
-        for (int i = EarlyIcon.Count; i < 30; i++) Icons[i] = Instantiate(IconSample, transform);
-        for (int i = 0; i < 30; i++) IconsScript[i] = Icons[i].GetComponent<UIICons>();
-        for (int i = 0; i < 30; i++) IconsScript[i].PoolNum = i;
-        for (int i = 0; i < 30; i++) IconUseAble[i] = true;
-        for (int i = 0; i < EarlyIcon.Count; i++) IconUseAble[i] = false;
+        Windows_M WM = GetComponent<Windows_M>();
         SizeChanger();
-
+        Icons = new GameObject[PoolingNum];
+        IconsScript = new UIICons[PoolingNum];
+        IconUseAble = new bool[PoolingNum];
+        for (int i = 0; i < EarlyIcon.Count; i++) Icons[i] = EarlyIcon[i];
+        for (int i = EarlyIcon.Count; i < PoolingNum; i++) Icons[i] = Instantiate(IconSample, transform);
+        for (int i = 0; i < PoolingNum; i++)
+        {
+            IconsScript[i] = Icons[i].GetComponent<UIICons>();
+            IconsScript[i].PoolNum = i;
+            IconsScript[i].WM = WM;
+        }
+        for (int i = 0; i < PoolingNum; i++) IconUseAble[i] = true;
+        for (int i = 0; i < EarlyIcon.Count; i++) IconUseAble[i] = false;
         EarlyIcon.Clear();
-        GR = GetComponent<GraphicRaycaster>();
-    }
-
-    /// <summary>
-    /// 다른 프로세스 위로 마우스가 있을 때, 드래그&드롭을 불가능하게 함
-    /// </summary>
-    private void FixedUpdate()
-    {
-        if (MyUi.GRay(GR).Count != 0) CanMove = false;
-        else CanMove = true;
     }
 
     /// <summary>
@@ -68,6 +67,7 @@ public class Windows_M : MonoBehaviour
         NumX = (Size_X + Space_X) / (Space_X + Icon_Size_X);
         NumY = (Size_Y + Space_Y) / (Space_Y + Icon_Size_Y);
         Occupied = new bool[NumY, NumX];
+        PoolingNum = NumY * NumX;
         Start_X = (int)(-(Icon_Size_X * NumX + Space_X*(NumX-1)) * 0.5);
         Start_Y = (int)((Icon_Size_Y * NumY + Space_Y * (NumY- 1))* 0.5);
         for (int i = 0; i < NumY; i++) for (int z = 0; z < NumX; z++) Occupied[i, z] = false;
@@ -84,13 +84,14 @@ public class Windows_M : MonoBehaviour
     {
         if (!CanMove) return;
         RectTransform cnt = Call.GetComponent<RectTransform>();
-        int x = (int)((Dragged.position.x - Start_X) / (Icon_Size_X + Space_X)); if (x < 0) x = 0;
-        int y = (int)((Start_Y - Dragged.position.y) / (Icon_Size_Y + Space_Y)); if (y < 0) y = 0;
+        int x = (int)((Dragged.position.x - Start_X - MyRect.anchoredPosition.x) / (Icon_Size_X + Space_X));
+        int y = (int)((Start_Y - Dragged.position.y + MyRect.anchoredPosition.y) / (Icon_Size_Y + Space_Y));
+        if (x >= NumX || x < 0 || y >= NumY || y < 0) return;
         if (Occupied[y, x] == true) return;
         Occupied[CallLay.Item2,CallLay.Item1] = false;
         Occupied[y, x] = true;
         CallLay = new Tuple<int, int>(x,y);
-        cnt.position = new Vector3(
+        cnt.anchoredPosition = new Vector3(
                          Start_X + x * (Icon_Size_X + Space_X) + cnt.pivot.x * Icon_Size_X,
                          Start_Y - y * (Icon_Size_Y + Space_Y) - cnt.pivot.y * Icon_Size_Y, 0);
     }
@@ -107,11 +108,10 @@ public class Windows_M : MonoBehaviour
                 {
                     Occupied[y, x] = true;
                     RectTransform cnt = a.GetComponent<RectTransform>();
-                    cnt.position = new Vector3(
+                    cnt.anchoredPosition = new Vector3(
                          Start_X + x * (Icon_Size_X + Space_X) + cnt.pivot.x * Icon_Size_X,
                          Start_Y - y * (Icon_Size_Y + Space_Y) - cnt.pivot.y * Icon_Size_Y, 0);
                     cnt.sizeDelta = new Vector2(Icon_Size_X, Icon_Size_Y);
-                    print(cnt.sizeDelta);
                     return new Tuple<int,int>(x, y);
                 }
         return null;
@@ -126,7 +126,7 @@ public class Windows_M : MonoBehaviour
     /// <param name="Image"> 이미지 </param>
     public virtual GameObject NewIcon(bool AttatchAble, GameObject OpenProcess, string name, Sprite Image)
     {
-        for(int i = 0; i < 30; i++)
+        for(int i = 0; i < PoolingNum; i++)
         {
             if (IconUseAble[i])
             {
