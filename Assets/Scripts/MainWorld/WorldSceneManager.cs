@@ -175,7 +175,7 @@ public class WorldSceneManager : MonoBehaviour
     /// 시간대 변경
     /// </summary>
     /// <remarks>시간대를 변경하고 현재 지역 동기화
-    public void ChangeTime()
+    public void ChangeTime(int time = -1)
     {
         /**
         시간대 변경에 따른 지역들 동기화
@@ -184,8 +184,21 @@ public class WorldSceneManager : MonoBehaviour
         - 바로 다음 시간대로만 변경
         */
 
-        // 시간대 변경
-        int time = GameSystem.Instance.currentTime + 1;
+        // 특정 시간대 전환
+        // 해당하는 시간대 전환이 아니면 실행 안함
+        if (time > 0 && time < 4)
+        {
+            if (time != GameSystem.Instance.currentTime + 1)
+            {
+                return;
+            }
+        }
+
+        // 자동 시간 넘김
+        if(time == -1)
+        {
+            time = GameSystem.Instance.currentTime + 1;
+        }
 
         // 날짜 변경 (시간대 4일시)
         if (time == 4)

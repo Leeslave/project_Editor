@@ -19,9 +19,10 @@ public class GameSystem : MonoBehaviour
     private int resolutionX = 1200;
     private int resolutionY = 900;
 
+    public int todayIndex { get; private set; }   // 오늘 날짜 인덱스
+    public int currentTime { get; private set; }    // 현재 시간
+
     [Header("현재 게임 정보")]
-    public int todayIndex = 0;   // 오늘 날짜 인덱스
-    public int currentTime = 0;    // 현재 시간
     public World currentLocation;  // 현재 지역
     public int currentPosition;    // 현재 위치
     public bool isScreenOn = false; // 스크린 활성화 여부
