@@ -38,6 +38,9 @@ public class WorldSceneManager : MonoBehaviour
     private GameObject LeftButton;      // 왼쪽 이동 버튼
     [SerializeField]
     private GameObject RightButton;     // 오른쪽 이동 버튼
+    public float moveDelay;     // 지역 이동 딜레이
+    [SerializeField]
+    private Image curtain;      // 지역 이동 효과 이미지
 
     [Header("NPC 생성 정보")]
     [SerializeField]
@@ -159,6 +162,9 @@ public class WorldSceneManager : MonoBehaviour
         {
             RightButton.SetActive(true);
         }
+
+        // 전환 효과 실행
+        StartCoroutine(FadeInOut());
         
         // 해당 위치 활성화
         for(int i = 0; i < currentWorldTransform.childCount; i++)
@@ -265,6 +271,22 @@ public class WorldSceneManager : MonoBehaviour
 
             // 생성 완료, 리스트에 추가
             npcList.Add(newObject);
+        }
+    }
+
+    /// <summary>
+    /// 화면 전환 효과
+    /// </summary>
+    IEnumerator FadeInOut()
+    {
+        float elapsedTime = 0f;
+        
+        // 점점 밝아지기
+        while (elapsedTime < moveDelay)
+        {
+            curtain.color = Color.Lerp(Color.black, Color.clear, elapsedTime / moveDelay);
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
     }
 }
