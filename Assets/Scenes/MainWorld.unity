@@ -2021,7 +2021,6 @@ GameObject:
   - component: {fileID: 471244592}
   - component: {fileID: 471244591}
   - component: {fileID: 471244590}
-  - component: {fileID: 471244596}
   m_Layer: 6
   m_Name: IntroCanvas
   m_TagString: WorldUI
@@ -2038,8 +2037,8 @@ AudioSource:
   m_GameObject: {fileID: 471244589}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 8002b8c5f5df5c94bb7e48b49c415075, type: 3}
+  OutputAudioMixerGroup: {fileID: -1679157954940273207, guid: e0a6c6e9f2b411c4698458df786cb054, type: 2}
+  m_audioClip: {fileID: 8300000, guid: 0f816d48472daf348b24f71b1e1dd476, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -2137,9 +2136,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36961ebcf6f628545a67a773b0dabb09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textSFX: {fileID: 471244590}
+  textDelay: 0.1
   textOnDelay: 1
-  textOnDuration: 2
-  dayText: {fileID: 1038634893}
+  textUI: {fileID: 1038634893}
+  dayText: []
   isFinished: 0
 --- !u!114 &471244592
 MonoBehaviour:
@@ -2224,24 +2225,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &471244596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 471244589}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4db199835a0534748b230f5d5310e403, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GUITextCtrl: {fileID: 0}
-  textAsset: {fileID: 0}
-  textInfo:
-    textStrings: []
-  delayEachChar: 0.05
-  delayEachStringLine: 0.2
 --- !u!1 &485906444
 GameObject:
   m_ObjectHideFlags: 0
@@ -3719,7 +3702,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1038634893
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3776,7 +3759,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 1024
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
