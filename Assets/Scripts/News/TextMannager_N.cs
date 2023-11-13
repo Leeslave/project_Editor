@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class TextMannager_N : MonoBehaviour
 {
-    [SerializeField] NewsReader NR;
+    [SerializeField] DB_M DB;
     [SerializeField] public RectTransform CntSize;
     [SerializeField] public TMP_Text CntText;
     [SerializeField] TMP_Text Insertion;
@@ -26,11 +26,9 @@ public class TextMannager_N : MonoBehaviour
     [NonSerialized] public int TryCount = 0;
     [NonSerialized] public int Health = 0;
     [NonSerialized] public int MaxHealth = 0;
+    [NonSerialized] public int CurNews;
 
-    private void Start()
-    {
-        MaxHealth = TryCount = NR.Errors.Count;
-    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Insert))
@@ -51,27 +49,27 @@ public class TextMannager_N : MonoBehaviour
             if (IsRevise)
             {
                 Touched.text = CntText.text;
-                if (NR.Errors[ind] != TouchedIndex) Health--;
+                //if (NR.Errors[ind] != TouchedIndex) Health--;
             }
             else
             {
                 bool sub;
                 TMP_Text cnt = null;
                 Transform cnt2 = null;
-                try 
+                try
                 {
                     cnt2 = TextField.GetChild(InsertIndex - 1);
                     cnt = cnt2.GetChild(0).GetComponent<TMP_Text>();
                     sub = cnt.text == "";
                 }
-                catch { sub = false;}
-                
+                catch { sub = false; }
+
                 if (sub)
                 {
                     cnt.text = CntText.text;
-                    if (NR.Errors[ind] != cnt2.GetComponent<MainText_N>().MyInd) Health--;
+                    //if (NR.Errors[ind] != cnt2.GetComponent<MainText_N>().MyInd) Health--;
                 }
-                else 
+                else
                 {
                     ForInsert[InsertUsing].transform.SetSiblingIndex(InsertIndex);
                     ForInsertText[InsertUsing].text = CntText.text;

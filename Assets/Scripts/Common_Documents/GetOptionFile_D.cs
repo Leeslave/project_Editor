@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class GetOptionFile_D : BatchField_D
 {
+    [SerializeField] DB_M DB;
+
     [SerializeField] TMP_Text Text;
     
     [SerializeField] Tabs_D[] Tabs;
@@ -20,14 +22,7 @@ public class GetOptionFile_D : BatchField_D
     [NonSerialized] int CurOpen = 0;
     string Normal = "\n\n\n\nDrag Option File Here!";
     string Error = "<size=40><color=#FF0000>404 Not Found</color></size>\n<color=#C8AF10>(x_x)</color>\n\nOops! Something's Wrong.\nDrag Correct Option File Here!";
-
-    // Manipulation
-    protected override IEnumerator BatchType1()
-    {
-        CommonBatch();
-        image.SetActive(false);
-        IC.PeopleName = AN.IconName;
-        string[] texts =
+    string[] Waittexts =
         {
             "Decoding File...",
             "Identifying File Type...",
@@ -35,9 +30,25 @@ public class GetOptionFile_D : BatchField_D
             "Configuring UI..."
         };
 
+    [SerializeField] GameObject GrandParrent;
+    void Start()
+    {
+        Mains = new List<TMP_Text>(MainsBack.Count);
+        Revises = new List<TMP_Text>(RevisesBack.Count);
+        foreach(GameObject s in MainsBack) Mains.Add(s.transform.GetChild(0).GetComponent<TMP_Text>());
+        foreach (GameObject s in RevisesBack) Revises.Add(s.transform.GetChild(0).GetComponent<TMP_Text>());
+        GrandParrent.SetActive(false);
+    }
+    // Manipulation
+    protected override IEnumerator BatchType1()
+    {
+        IC.PeopleName = AN.IconName;
+
+        CommonBatch();
+        image.SetActive(false);
         string cnt = "";
         WaitForSeconds wfs = new WaitForSeconds(0.1f);
-        foreach (string s in texts)
+        foreach (string s in Waittexts)
         {
             cnt += s;
             
@@ -50,24 +61,67 @@ public class GetOptionFile_D : BatchField_D
         }
         Text.text = cnt + "End!\n Wait a little...";
         yield return new WaitForSeconds(1);
+        Text.text = Normal;
+        image.SetActive(true);
+        AttatchAble = true;
+
         Processes[0].SetActive(true);
         Processes[0].transform.SetAsLastSibling();
         Tabs[1].gameObject.SetActive(true);
         TabsText[1].text = "Change Option";
         Tabs[1].Subs.AddRange(MPSub);
-        Text.text = Normal;
-        image.SetActive(true);
-        AttatchAble = true;
     }
-
+    [SerializeField] TMP_Text Title;
+    [SerializeField] TMP_Text Date;
+    [SerializeField] TMP_Text Reporter;
+    List<TMP_Text> Mains;
+    [SerializeField] List<GameObject> MainsBack;
+    List<TMP_Text> Revises;
+    [SerializeField] List<GameObject> RevisesBack;
     // News
     protected override IEnumerator BatchType2()
     {
-        return null;
+        CommonBatch();
+        image.SetActive(false);
+        string cnt = "";
+        WaitForSeconds wfs = new WaitForSeconds(0.1f);
+        foreach (string s in Waittexts)
+        {
+            cnt += s;
+
+            for (int i = 0; i <= 10; i++)
+            {
+                Text.text = cnt + $"<size=20>{i * 10}% </size>";
+                yield return wfs;
+            }
+            cnt += " <size=20>Complete!\n</size>";
+        }
+        Text.text = cnt + "End!\n Wait a little...";
+        yield return new WaitForSeconds(1);
+        Text.text = Normal;
+        image.SetActive(true);
+        AttatchAble = true;
+
+        Processes[1].SetActive(true);
+        Processes[1].transform.SetAsLastSibling();
+        Processes[1].transform.position = Vector3.zero;
+        Processes[2].SetActive(true);
+        Processes[2].transform.SetAsLastSibling();
+        Processes[2].transform.position = Vector3.zero;
     }
     protected override IEnumerator BatchType3()
     {
         return base.BatchType3();
+    }
+    protected override IEnumerator BatchType4()
+    {
+        return base.BatchType4();
+    }
+
+    // 아마 이걸 
+    protected override IEnumerator BatchETC()
+    {
+        return base.BatchETC();
     }
 
     public void CommonBatch()

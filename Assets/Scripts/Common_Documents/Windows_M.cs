@@ -124,7 +124,7 @@ public class Windows_M : MonoBehaviour
     /// <param name="OpenProcess"> 클릭 시 실행되는 프로세스 </param>
     /// <param name="name"> 이름 </param>
     /// <param name="Image"> 이미지 </param>
-    public virtual GameObject NewIcon(bool AttatchAble, GameObject OpenProcess, string name, Sprite Image)
+    public virtual GameObject NewIcon(string name, Sprite Image,int type = -1, bool AttatchAble = false, GameObject OpenProcess = null)
     {
         for(int i = 0; i < PoolingNum; i++)
         {
@@ -132,7 +132,7 @@ public class Windows_M : MonoBehaviour
             {
                 IconUseAble[i] = false;
                 Icons[i].SetActive(true);
-                IconsScript[i].Init(AttatchAble,OpenProcess,name,Image,i);
+                IconsScript[i].Init(AttatchAble,OpenProcess,name,Image,i,type);
                 return Icons[i];
             }
         }

@@ -27,7 +27,7 @@ public class InfChange : MonoBehaviour
 
     [NonSerialized] public int s = 0;
     [NonSerialized] public int FaceNum = 0;
-    public string PeopleName = "Clayton";
+    [NonSerialized]public string PeopleName = "";
 
     private bool TouchAble = true;
 
@@ -51,10 +51,9 @@ public class InfChange : MonoBehaviour
 
     private void OnEnable()
     {
-        if (FirstOpen) FirstOpen = false;
-        else
+        transform.position = Vector3.zero;
+        if (PeopleName != "")
         {
-            transform.position = Vector3.zero;
             CurPeople = DB.FindPeople(PeopleName);
             ChangeInf(CurPeople);
         }

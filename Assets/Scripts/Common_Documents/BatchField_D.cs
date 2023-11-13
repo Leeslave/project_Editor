@@ -35,6 +35,7 @@ public class BatchField_D : MonoBehaviour
                 case 1: StartCoroutine(BatchType1()); break;
                 case 2: StartCoroutine(BatchType2()); break;
                 case 3: StartCoroutine(BatchType3()); break;
+                case 4: StartCoroutine(BatchType4()); break;
                 default: StartCoroutine(BatchETC()); break;
             }
         }
@@ -46,6 +47,7 @@ public class BatchField_D : MonoBehaviour
     protected virtual IEnumerator BatchType1() { yield return null; }
     protected virtual IEnumerator BatchType2() { yield return null; }
     protected virtual IEnumerator BatchType3() { yield return null; }
+    protected virtual IEnumerator BatchType4() { yield return null; }
     protected virtual IEnumerator BatchETC() { yield return null; }
     protected virtual void BatchFail() { }
 

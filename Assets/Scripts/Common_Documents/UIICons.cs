@@ -90,12 +90,14 @@ public class UIICons : UIDragger
     /// <param name="name">Icon의 이름(Text에 사용)</param>
     /// <param name="Image">Icon의 이미지(Image에 사용)</param>
     /// <param name="num">PoolingNumber</param>
-    public virtual void Init(bool AttatchAble, GameObject OpenProcess, string name, Sprite Image, int num)
+    public virtual void Init(bool AttatchAble, GameObject OpenProcess, string name, Sprite Image, int num,int type)
     {
+        this.name = name;
         OpenedProcess = OpenProcess;
         MyText.text = name;
         MyImage.sprite = Image;
         PoolNum = num;
+        this.type = type;
     }
     /// <summary>
     /// Icon 더블 클릭 탐지.
@@ -104,8 +106,10 @@ public class UIICons : UIDragger
     /// <param name="Data"></param>
     protected virtual void OpenIcon(PointerEventData Data)
     {
-        if(OpenedProcess != null)
+        if (OpenedProcess != null)
+        {
             if (OpenedProcess.activeSelf) return;
+        }
         if (DragDoubleCheck)
         {
             DragDoubleCheck = false;
@@ -113,8 +117,11 @@ public class UIICons : UIDragger
         }
         if (Data.clickCount == 2)
         {
-            if(OpenedProcess!=null) OpenedProcess.SetActive(true);
-            OpenedProcess.transform.SetAsLastSibling();
+            if (OpenedProcess != null)
+            {
+                OpenedProcess.SetActive(true);
+                OpenedProcess.transform.SetAsLastSibling();
+            }
             ClickEvent();
         }
     }
