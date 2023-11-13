@@ -57,6 +57,7 @@ public class WorldSceneManager : MonoBehaviour
         {
             // 위치 설정
             MoveLocation(GameSystem.Instance.currentLocation.ToString());
+            MovePosition(GameSystem.Instance.currentPosition.ToString());
 
             // npc 생성
             SetWorldObject(); 
@@ -71,6 +72,7 @@ public class WorldSceneManager : MonoBehaviour
         
         // 위치 설정
         MoveLocation(GameSystem.Instance.currentLocation.ToString());
+        MovePosition(GameSystem.Instance.currentPosition.ToString());
 
         // npc 생성
         SetWorldObject();
@@ -104,9 +106,6 @@ public class WorldSceneManager : MonoBehaviour
 
         // 현재 지역 설정
         GameSystem.Instance.currentLocation = newLocation;
-
-        // 지역 내 위치 동기화
-        MovePosition(GameSystem.Instance.currentPosition.ToString());
     }
 
     /// <summary>
@@ -117,7 +116,7 @@ public class WorldSceneManager : MonoBehaviour
     {
         int newPos;
 
-        // 좌, 우로 이동
+        // 좌, 우 or int로 이동할 위치값 설정
         switch (position)
         {
             case "Left":
@@ -137,34 +136,38 @@ public class WorldSceneManager : MonoBehaviour
         
 
         // 현재 월드 오브젝트
-        Transform currentWorldObject = locationList[(int)GameSystem.Instance.currentLocation].transform;
+        Transform currentWorldTransform = locationList[(int)GameSystem.Instance.currentLocation].transform;
 
         // 위치값 예외 처리
-        if (newPos < 0 || newPos >= currentWorldObject.childCount)
+        if (newPos < 0 || newPos >= currentWorldTransform.childCount)
         {
             Debug.Log($"WORLD MOVE ERROR : Invalid position {newPos}");
             return;
         }
 
         // 양쪽 이동 버튼 설정
-        LeftButton.SetActive(true);
-        RightButton.SetActive(true);    
+        LeftButton.SetActive(false);
+        RightButton.SetActive(false);    
         
-        if (newPos == 0)
+        // 0보다 클때 왼쪽 이동 가능
+        if (newPos > 0)
         {
-            LeftButton.SetActive(false);
+            LeftButton.SetActive(true);
         }
-        else if(newPos == currentWorldObject.childCount - 1)
+        // 오른쪽 끝보다 작을때 오른쪽 이동 가능
+        if(newPos < currentWorldTransform.childCount - 1)
         {
-            RightButton.SetActive(false);
+            RightButton.SetActive(true);
         }
         
         // 해당 위치 활성화
-        for(int i = 0; i < currentWorldObject.childCount; i++)
+        for(int i = 0; i < currentWorldTransform.childCount; i++)
         {
-            currentWorldObject.GetChild(i).gameObject.SetActive(false);
+            currentWorldTransform.GetChild(i).gameObject.SetActive(false);
             if (i == newPos)
-                currentWorldObject.GetChild(i).gameObject.SetActive(true);
+            {
+                currentWorldTransform.GetChild(i).gameObject.SetActive(true);
+            }
         }
 
         // 현재 위치 설정
