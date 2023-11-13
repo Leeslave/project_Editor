@@ -4,7 +4,7 @@
     "location": "Office",
     "locationIndex": 0,
     "position": { "x": 450, "y": 200 },
-    "triggerType": "Once",
+    "triggerType": "OnStart",
     "chatList": [
         {
             "$type": "NormalParagraph, Assembly-CSharp",
@@ -53,7 +53,9 @@
             "chatType": "Choice",
             "choiceList": [
                 {
-                    "text": "(핸더슨의 방으로 간다.)"
+                    "text": "(핸더슨의 방으로 간다.)",
+                    "reaction": "DayChange",
+                    "reactionParam": "-1"
                 }
             ]
         }
