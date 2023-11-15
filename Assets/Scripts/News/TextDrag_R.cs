@@ -38,7 +38,7 @@ public class TextDrag_R : UIDragger
     {
         TM.IsDragged = false;
         Dragged.gameObject.SetActive(false);
-        //if (TM.EndDrag(MyInd)) gameObject.SetActive(false);
+        if (TM.EndDrag(MyInd)) gameObject.SetActive(false);
     }
 
     void OnPoint(PointerEventData Data)

@@ -59,7 +59,7 @@ public class GetOptionFile_D : BatchField_D
             }
             cnt += " <size=20>Complete!\n</size>";
         }
-        Text.text = cnt + "End!\n Wait a little...";
+        Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
         yield return new WaitForSeconds(1);
         Text.text = Normal;
         image.SetActive(true);
@@ -83,8 +83,10 @@ public class GetOptionFile_D : BatchField_D
     {
         CommonBatch();
         image.SetActive(false);
+        News CurNews = DB.FindNews(AN.IconName);
+
         string cnt = "";
-        WaitForSeconds wfs = new WaitForSeconds(0.1f);
+        WaitForSeconds wfs = new WaitForSeconds(0.01f);
         foreach (string s in Waittexts)
         {
             cnt += s;
@@ -96,12 +98,25 @@ public class GetOptionFile_D : BatchField_D
             }
             cnt += " <size=20>Complete!\n</size>";
         }
-        Text.text = cnt + "End!\n Wait a little...";
-        yield return new WaitForSeconds(1);
+        Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
+        yield return new WaitForSeconds(0.1f);
         Text.text = Normal;
         image.SetActive(true);
         AttatchAble = true;
 
+        Title.text = CurNews.Title;
+        Date.text = CurNews.Date;
+        Reporter.text = CurNews.Reporter;
+        for(int i = 0; i < CurNews.CountM; i++)
+        {
+            Mains[i].text = CurNews.Main[i];
+            MainsBack[i].SetActive(true);
+        }
+        for(int i =0; i < CurNews.CountR; i++)
+        {
+            Revises[i].text = CurNews.Revise[i];
+            RevisesBack[i].SetActive(true);
+        }
         Processes[1].SetActive(true);
         Processes[1].transform.SetAsLastSibling();
         Processes[1].transform.position = Vector3.zero;

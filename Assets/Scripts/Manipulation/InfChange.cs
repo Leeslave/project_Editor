@@ -42,7 +42,6 @@ public class InfChange : MonoBehaviour
     Peoples PeopleList;
     PeopleIndex CurPeople;
 
-    bool FirstOpen = true;
 
     private void Start()
     {

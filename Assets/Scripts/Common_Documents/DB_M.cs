@@ -10,6 +10,7 @@ public class DB_M : MonoBehaviour
 
     public Peoples PeopleList;
     public Dictionary<string, Sprite[]> FaceImages = new Dictionary<string, Sprite[]>();
+    public News[] NewsList;
     void Start()
     {
         string CurPath = Directory.GetCurrentDirectory() + "\\Assets\\Resources";
@@ -23,17 +24,16 @@ public class DB_M : MonoBehaviour
         DBFolder.gameObject.SetActive(false);
         //Read News Data
         var Files = Directory.GetDirectories(CurPath + "\\News");
-        News[] news = new News[Files.Length];
+        NewsList = new News[Files.Length];
+
         for (int i = 0; i < Files.Length; i++)
         {
-            NewsFolder.NewIcon(name: Files[i][(CurPath.Length + 6)..], Image: spr,2);
-            news[i].CountM = 0;
-            news[i].CountR = 0;
-            news[i].Main = new string[50];
-            news[i].Revise = new string[4];
-            news[i].Errors = new List<int>(4);
-            ReadMain(news[i], Files[i] + "\\Main.txt");
-            ReadRevise(news[i], Files[i] + "\\Revise.txt");
+            string cnt = Files[i][(CurPath.Length + 6)..].Replace('_','/');
+            NewsFolder.NewIcon(name: cnt, Image: spr,2);
+            NewsList[i] = new News();
+            NewsList[i].publishDay = cnt;
+            ReadMain(NewsList[i], Files[i] + "\\Main.txt");
+            ReadRevise(NewsList[i], Files[i] + "\\Revise.txt");
         }
         NewsFolder.gameObject.SetActive(false);
     }
@@ -61,17 +61,17 @@ public class DB_M : MonoBehaviour
         }
     }
 
-    struct News
+    public News FindNews(string Date)
     {
-        public string Title;
-        public string Date;
-        public string Reporter;
-        public string[] Main; /*= new string[50];*/
-        public int CountM; /*= 0;*/
-        public string[] Revise; /*= new string[4];*/
-        public int CountR; /*= 0;*/
-        public List<int> Errors; /*= new List<int>(4);*/
+        foreach(News a in NewsList)
+        {
+            print(a.publishDay);
+            print(Date);
+            if (a.publishDay == Date) return a;
+        }
+        return null;
     }
+
     void ReadMain(News N, string path)
     {
         StreamReader reader = new StreamReader(path);
@@ -86,8 +86,6 @@ public class DB_M : MonoBehaviour
                 line = line.Replace("[/]", "");
                 N.Errors.Add(N.CountM);
             }
-            //Mains[CountM].text = line;
-            //MainsBack[CountM].SetActive(true);
             N.Main[N.CountM++] = line;
         }
         reader.Close();
@@ -99,8 +97,7 @@ public class DB_M : MonoBehaviour
         string line;
         while ((line = reader.ReadLine()) != null)
         {
-            //Revises[CountR].text = line;
-            //RevisesBack[CountR].SetActive(true);
+            
             N.Revise[N.CountR++] = line;
         }
         reader.Close();
