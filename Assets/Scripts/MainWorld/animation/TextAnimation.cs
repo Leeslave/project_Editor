@@ -80,7 +80,7 @@ public class TextAnimation : AnimBase
         if (time != 0)
             foreach (char c in text.ToCharArray())
             {
-                GUITextCtrl.text += c;
+                GUITextCtrl.text += c.ToString();
                 yield return new WaitForSeconds(time);  //1글자씩 time 간격으로 출력
             }
         else                                            //딜레이 없이 일괄 출력

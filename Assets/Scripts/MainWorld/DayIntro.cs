@@ -1,26 +1,50 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class DayIntro : MonoBehaviour
 {
     /**
-    *   하루 시작 인트로 스크립트 (PlayerPrefs 갱신 직후 실행)
+    *   하루 시작 인트로 스크립트
         : 씬이 재로딩 될때마다(날짜 변경)마다 실행
-    *   - 날짜 인트로 애니메이션 첫 활성화
-        - PlayerDataManager의 월드 로딩 실행
     */
-    private AudioSource awakeSFX;   // 인트로용 효과음
+    private AudioSource _awakeSfx;   // 인트로용 효과음
     public float textOnDelay;   // 시작부터 글자 활성화까지의 딜레이
     public float textOnDuration;    //글자 활성화 지속시간
     public TMP_Text dayText;      //글자 활성화용 텍스트 오브젝트
+    public bool isFinished;
+
+    private static DayIntro _instance;
+    public static DayIntro Instance
+    {
+        get { return _instance; }
+    }
+
+    // 싱글톤 설정 및 컴포넌트 불러오기
+    private void Awake()
+    {
+        if (!_instance)
+        {
+            _instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        _awakeSfx = GetComponent<AudioSource>();
+    }
+
+    void OnEnable()
+    {
+        StartCoroutine(DayCountIntro());
+    }
 
     /**
     * 시간대 문자열 설정 함수
     - (0: 출근전, 1: 업무전, 2: 업무후, 3: 퇴근 후)
     */ 
-    private string setHour(int timeOffset)
+    private string SetHour(int timeOffset)
     {
         switch(timeOffset) {
             case 1:
@@ -34,40 +58,29 @@ public class DayIntro : MonoBehaviour
         }
     }
 
-    // 컴포넌트 불러오기
-    private void Awake()
+    /// <summary>
+    /// 날짜 인트로 코루틴
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator DayCountIntro()
     {
-        awakeSFX = GetComponent<AudioSource>();
-    }
-
-    // 인트로 시작
-    private void Start() 
-    {
-        Debug.Log("Current Renown: " + PlayerDataManager.Instance.playerData.renown);
-        StartCoroutine("DayCountIntro");
-    }    
-
-    /**
-    * 날짜 출력 인트로
-    *   - 날짜 텍스트 출력
-    *   - Intro 비활성화 하면서 현재 WorldCanvas 설정하는 함수 호출
-    */
-    IEnumerator DayCountIntro() {
+        // 플래그 설정
+        isFinished = false;
+        
         dayText.gameObject.SetActive(false);
-
-        PlayerData playerData = PlayerDataManager.Instance.playerData;
+        DailyData today = GameSystem.Instance.today;
 
         // 텍스트 세팅
-        dayText.text = $"제국력 {playerData.date.year}년 {playerData.date.month}월 {playerData.date.day}일\n\n{setHour(playerData.time)}";
+        dayText.text = $"제국력 {today.date.year}년 {today.date.month}월 {today.date.day}일\n\n{SetHour(GameSystem.Instance.currentTime)}";
         yield return new WaitForSeconds(textOnDelay);
 
         //날짜 활성화 애니메이션, 효과음
         dayText.gameObject.SetActive(true);
-        if(awakeSFX != null) awakeSFX.Play();
+        if(_awakeSfx) _awakeSfx.Play();
         yield return new WaitForSeconds(textOnDuration);
 
-        //종료 및 WorldCanvas 설정
-        FindObjectOfType<WorldSceneManager>().asyncWorldCanvas();
+        //종료 및 flag 설정
+        isFinished = true;
         gameObject.SetActive(false);
     }
 }
