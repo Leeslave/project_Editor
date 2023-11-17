@@ -9,36 +9,47 @@ using Random = UnityEngine.Random;
 // Make Pattern / End Pattern
 public class PatternManager : MonoBehaviour
 {
-    public BulletManager BM;
-    public Camera MainCam;
-    public Timer TM;
-    public Player Pl;
+    [SerializeField] BulletManager BM;
+    [SerializeField] Camera MainCam;
+    [SerializeField] Player Pl;
 
-    public GameObject PlatTop;          // 윗 Platform
-    public GameObject PlatBottom;       // 아랫 Platform
+    [SerializeField] GameObject PlatTop;          // 윗 Platform
+    [SerializeField] GameObject PlatBottom;       // 아랫 Platform
 
-    public GameObject Plat;
-    public GameObject Razer;
-    public GameObject GameEnd;
-    
+    [SerializeField] GameObject Plat;
+    [SerializeField] GameObject GameEnd;
+    [SerializeField] GameObject[] Warnings;
+    [SerializeField] public GameObject ErrorObject;
+
+    [SerializeField] GameObject Hand1;
+    [SerializeField] GameObject Hand1_2;
+    [SerializeField] GameObject Hand2;
+    [SerializeField] GameObject Hand3;
+    [SerializeField] GameObject Hand3_2;
+
     // 좌우 소환 위치(1페용)
-    public Transform[] SPRE;    // Right
-    public Transform[] SPLE;    // Left
+    [SerializeField] Transform[] SPRE;    // Right
+    [SerializeField] Transform[] SPLE;    // Left
 
-    public float RepeatInterv;      // 패턴 반복 사이의 간격
-    public float BulletInterv;      // 한 패턴 내 탄막 간의 간격
-    public float PatternInterv;     // 패턴과 패턴 사이의 간격
+    [SerializeField] float RepeatInterv;      // 패턴 반복 사이의 간격
+    [SerializeField] float BulletInterv;      // 한 패턴 내 탄막 간의 간격
+    [SerializeField] float PatternInterv;     // 패턴과 패턴 사이의 간격
+
+    public bool IsEnd = false;      // 필사 패턴 여부
+
+    public int CurPattern = 0;      // 현재 패턴
+    
 
     List<GameObject> PlatL = new List<GameObject>();        // 레이저 패턴 중 사용되는 Platform들을 저장 <- EndPattern에 사용하기 위함.
     int PatternNum = 0;             // Num of Pattern(안 씀)
 
     List<List<int[]>> PTLE = new List<List<int[]>>();       // 패턴들의 List
-    GameObject CurRazer = null;
+    AudioSource AL;
 
     // 좌우 소환 위치(히든용)
     public Transform SPCNT;
     Vector2[][] SP;                     //SP의 모음
-    Vector2[] SPT = new Vector2[26];    //상
+    Vector2[] SPT = new Vector2[26];    //W상
     Vector2[] SPB = new Vector2[26];    //하
     Vector2[] SPL = new Vector2[19];    //좌
     Vector2[] SPR = new Vector2[19];    //우
@@ -58,8 +69,15 @@ public class PatternManager : MonoBehaviour
         new Vector2[] {Vector2.left,Vector2.down}, new Vector2[] {Vector2.zero,Vector2.down}, new Vector2[] { Vector2.right, Vector2.down }
     };
 
+    // WaitForSeconds;
+    WaitForSeconds TwoSec = new WaitForSeconds(2);
+    WaitForSeconds OneSec = new WaitForSeconds(1);
+    WaitForSeconds LittleSec = new WaitForSeconds(0.05f);
+    WaitForSeconds LittleLittle = new WaitForSeconds(0.02f);
+
     private void Awake()
     {
+        AL = GetComponent<AudioSource>();
         for (int i = 0; i < 26; i++)            // SPCNT의 x를 기준으로 x를 1씩 증가시키며 해당 위치를 SPT(상), SPB(하)에 저장함. 이 떄 상과 하 사이의 y축 간격은 18
         {
             SPT[i] = new Vector2(SPCNT.position.x + i, SPCNT.position.y);
@@ -78,46 +96,132 @@ public class PatternManager : MonoBehaviour
 
     private void Start()
     {
+
+        StartCoroutine(MakeEasyPattern());
+        MusicOn();
+    }
+
+    public void StartInit()
+    {
+        Pl.gameObject.SetActive(true);
+        CurPattern = 0;
         StartPT(0);
     }
 
+    public void NextPattern(ref int HPForPattern, int change = 1)
+    {
+        if(CurPattern == 0)
+        {
+            if (HPForPattern == 0)
+            {
+                StartPT(1);
+            }
+            else
+            {
+                HPForPattern -= change;
+                StartPT(0);
+            }
+        }
+        else if (CurPattern == 1)
+        {
+            if (change == 1)
+            {
+                Hand2.SetActive(false);
+                StartPT(2);
+            }
+            else StartPT(1);
+        }
+        else
+        {
+            if (change == 1)
+            {
+                print("!");
+            }
+            else
+            {
+                StartPT(2);
+            }
+        }
+
+    }
+
+    Vector3 Left = new Vector3(-10.65f,3.5f,0);
+    Vector3 Right = new Vector3(10.65f, 3.5f, 0);
     // EZ
     IEnumerator MakeEasyPattern()     // 1페이즈에 사용되는 패턴을 생성함.
     {
-        /*PlatTop.SetActive(true); PlatTop.SetActive(true);*/               
-        if (TM.time == 0) yield return new WaitForSeconds(0.2f);        // 씬이 시작 됨과 동시에 Pattern이 시작될 때 발생하는 렉 때문에 첫 탄막과 그 다음 탄막 사이의 간격이 생겨 해당 건을 방지하기 위해 0.2초간 멈춤.
-        List<int[]> CurPattern = PTLE[Random.Range(0, PatternNum)];     // 저장된 패턴 중 임의로 1개의 패턴을 가져옴
+        /*PlatTop.SetActive(true); PlatTop.SetActive(true);*/
+        yield return OneSec;
+        List<int[]> CurPT = PTLE[Random.Range(0, PatternNum)];     // 저장된 패턴 중 임의로 1개의 패턴을 가져옴
         for (int CurRepeat = 0; CurRepeat < 2; CurRepeat++)             // 패턴 2회 반복 실행
         {
-            for (int x = 0; x < CurPattern[0].Length; x++)
+            if(CurRepeat % 2 == 0)
             {
-                for (int y = 0; y < CurPattern.Count; y++)
+                Warnings[0].SetActive(true);
+                Hand3.SetActive(true);
+                Hand3.transform.position = Right;
+                for (int i = 0; i < 25; i++)
                 {
-                    if (CurPattern[y][x] == 1)                          // 좌 우 번갈아가면서 패턴을 생성
+                    yield return LittleLittle;
+                    Hand3.transform.Translate(-1, 0, 0);
+                }
+                Hand3.SetActive(false);
+                yield return TwoSec;
+            }
+            else
+            {
+                Warnings[1].SetActive(true);
+                Hand3_2.SetActive(true);
+                Hand3_2.transform.position = Left;
+                for (int i = 0; i < 25; i++)
+                {
+                    yield return LittleLittle;
+                    Hand3_2.transform.Translate(1, 0, 0);
+                }
+                Hand3_2.SetActive(false);
+                yield return TwoSec;
+            }
+            for (int x = 0; x < CurPT[0].Length; x++)
+            {
+                for (int y = 0; y < CurPT.Count; y++)
+                {
+                    if (CurPT[y][x] == 1)                          // 좌 우 번갈아가면서 패턴을 생성
                     {
-                        if (CurRepeat % 2 == 0) BM.MakeSmallBul(Vector2.left * 10, Vector2.zero).transform.position = SPRE[y].position;
-                        else BM.MakeSmallBul(Vector2.right * 10, Vector2.zero).transform.position = SPLE[y].position;
+                        if (CurRepeat % 2 == 0)
+                        {
+                            BM.MakeSmallBul(Vector2.left * 10, Vector2.zero).transform.position = SPRE[y].position;
+                        }
+                        else
+                        {
+                            BM.MakeSmallBul(Vector2.right * 10, Vector2.zero).transform.position = SPLE[y].position;
+                        }
                     }
                 }
                 yield return new WaitForSeconds(BulletInterv);
             }
             yield return new WaitForSeconds(RepeatInterv);
         }
-        yield return new WaitForSeconds(PatternInterv);
-        StartCoroutine(ChangePT(MakeEasyPattern()));                    // 다음 패턴을 실행
+        yield return OneSec;
+        if (!ErrorObject.activeSelf) ErrorObject.SetActive(true);
+        StartPT(0);               // 다음 패턴을 실행
         yield break;
     }
 
     // Normal                   N1 -> N2 -> Hard
     IEnumerator PatternN1()       // Play Time : 25s
     {
-
+        MusicOff();
+        Hand2.SetActive(true);
+        CurPattern = 1;
         // 화면에 노이즈 생성
         MakeGlitch(0.1f, 0.5f, 0.7f);
-        yield return new WaitForSeconds(1);
+        yield return OneSec;
         MakeGlitch(0, 0, 0);
 
-        yield return new WaitForSeconds(1);
+        yield return OneSec;
+
+        MusicOn();
+        WaitForSeconds SecC = new WaitForSeconds(BulletInterv * 1.4f);
 
         /*
         한 세로 줄을 기준으로 총 11개의 탄막이 생성되는데, 이 중 4칸을 비워 Player가 지나갈 수 있는 공간을 만듬.
@@ -136,7 +240,7 @@ public class PatternManager : MonoBehaviour
              7줄의 탄막이 생성되어 플레이어가 제자리에서 버티지 못하게 하여, 플레이어의 이동을 강제함
             */
             if (i == 30) for (int y = 6; y <= 12; y++) BM.MakeSmallBul(DF[2 / j] * 1.5f, Vector2.zero).transform.position = SP[2 / j][y];
-            for (int y = 4; y <= 14; y++)
+            for (int y = 5; y <= 14; y++)
             {
                 if (!(y >= k && y <= k + 3)) BM.MakeSmallBul(DF[j] * 6, Vector2.zero).transform.position = SP[j][y];
             }
@@ -153,21 +257,25 @@ public class PatternManager : MonoBehaviour
             }
             // 증감이 변화 된 직후의 K의 변화 1회 무시
             if (jk) k += dk;
-            yield return new WaitForSeconds(BulletInterv * 1.4f);
+            yield return SecC;
         }
         yield return new WaitForSeconds(10);        // 마지막 줄의 탄막이 생성되며 해당 탄막이 사라지는대 걸리는 시간
-        StartCoroutine(ChangePT(PatternN2()));      // 다음 패턴을 실행
+        if (!ErrorObject.activeSelf) ErrorObject.SetActive(true);
+        StartPT(1);
         yield break;
     }
 
     IEnumerator PatternN2()
     {
+        MusicOff();
+        CurPattern = 2;
         // 화면에 노이즈 생성
         MakeGlitch(0.1f, 0.5f, 0.7f);
         yield return new WaitForSeconds(1.5f);
         MakeGlitch(0, 0, 0);
-        yield return new WaitForSeconds(1);
+        yield return OneSec;
 
+        MusicOn();
         // 모든 탄막 생성 위치의 중간 y값. 플랫폼 생성에 사용.
         float MidY = (SPLE[4].position.y + SPLE[5].position.y) / 2;
 
@@ -177,76 +285,88 @@ public class PatternManager : MonoBehaviour
         for (int i = 0; i < 3; i++)
         {
             int a1 = Random.Range(0, 2);
-            StartCoroutine(CamShake());
-            // 레이저 생성
-            CurRazer = Instantiate(Razer);
+            Warnings[2 + a1].SetActive(true);
             // 플랫폼 생성
             GameObject cnt = Instantiate(Plat);
-            cnt.GetComponent<Transform>().localScale = new Vector3(1.5f,0.1f);
+            cnt.GetComponent<Transform>().localScale = new Vector3(2f,0.1f);
+            if (a1 == 0) 
+            {
+                cnt.transform.position = new Vector3(SPLE[4].position.x + 1, MidY, 0);
+                cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.right * 2, ForceMode2D.Impulse);
+            }
+            else
+            {
+                cnt.transform.position = new Vector3(SPRE[4].position.x - 1, MidY, 0);
+                cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.left * 2, ForceMode2D.Impulse);
+            }
             PlatL.Add(cnt);
+            yield return TwoSec;
+            StartCoroutine(CamShake(8.75f));
 
             // 플랫폼을 오른쪽에서, 레이저를 위에서 생성되게 함.
             if (a1 == 0)
             {
                 BM.MakeSmallBul(Vector2.left * 3, Vector2.zero).transform.position = SPRE[Random.Range(0, 5)].position;
-                BM.MakeSmallBul(Vector2.left * 3, Vector2.zero).transform.position = SPRE[Random.Range(0,5)].position;
-                cnt.transform.position = new Vector3(SPLE[4].position.x + 1,MidY,0);
-                cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.right * 3, ForceMode2D.Impulse);
-                CurRazer.transform.position = new Vector3(0, -3, 0);
+                
+                for (int y = 0; y < 150; y++)
+                {
+                    for (int x = 0; x < 5; x++) BM.MakeSmallBul(Vector2.right * 25, Vector2.zero).transform.position = SPLE[5 + x].position;
+                    yield return LittleSec;
+                }
+
             }
             // 플랫폼을 왼쪽에서, 레이저를 아래에서 생성되게 함.
             else
             {
                 BM.MakeSmallBul(Vector2.right * 3, Vector2.zero).transform.position = SPLE[Random.Range(5, 10)].position;
-                BM.MakeSmallBul(Vector2.right * 3, Vector2.zero).transform.position = SPLE[Random.Range(5, 10)].position;
-                cnt.transform.position = new Vector3(SPRE[4].position.x - 1, MidY, 0);
-                cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.left * 3, ForceMode2D.Impulse);
-                CurRazer.transform.position = new Vector3(0, 2.4f, 0);
+                
+                for (int y = 0; y < 150; y++)
+                {
+                    for (int x = 0; x < 5; x++) BM.MakeSmallBul(Vector2.left * 25, Vector2.zero).transform.position = SPRE[x].position;
+                    yield return LittleSec;
+                }
             }
-            yield return new WaitForSeconds(9);
+            yield return OneSec;
         }
-        yield return new WaitForSeconds(3);
-        // 모든 패턴을 종료
-        EndPT(false);
-
-        // 엔딩을 출력
-        Pl.gameObject.SetActive(false);
-        Pl.EndG.SetActive(true);
-        Pl.EndG.GetComponent<RealEnd>().Ending("Game Clear", "당신의 의지가 풍만해진다.");
-
-        /*MakeGlitch(0.3f, 0.7f, 1);
         yield return new WaitForSeconds(5);
-        MakeGlitch(0, 0, 0);
-        TM.IsTimeFlow = true;
-        TM.MaxTime = 10000;
-        StartCoroutine(ChangePT(Pattern1()));*/
+
+        if (!ErrorObject.activeSelf) ErrorObject.SetActive(true);
+        StartPT(2);
         yield break;
     }
 
-    IEnumerator CamShake()      // 화면을 흔드는 효과를 연출함.
+    public void Clear()
+    {
+        EndPT(false);
+        Pl.gameObject.SetActive(false);
+        Pl.EndG.SetActive(true);
+        Pl.EndG.GetComponent<RealEnd>().Ending(true);
+    }
+
+    IEnumerator CamShake(float time,float intensity = 1)      // 화면을 흔드는 효과를 연출함.
     {
         float Cx = MainCam.transform.position.x;
         float Cy = MainCam.transform.position.y;
-        yield return new WaitForSeconds(2f);
-        for (int i = 0; i < 24; i++)
+        int count = (int)(time * 4);
+        for (int i = 0; i < count; i++)
         {
-            MainCam.transform.position = new Vector3(Cx - 0.5f, Cy, -2);
-            yield return new WaitForSeconds(0.05f);
-            MainCam.transform.position = new Vector3(Cx+0.5f, Cy, -2);
-            yield return new WaitForSeconds(0.05f);
-            MainCam.transform.position = new Vector3(Cx, Cy+0.5f, -2);
-            yield return new WaitForSeconds(0.05f);
-            MainCam.transform.position = new Vector3(Cx, Cy-0.5f, -2);
-            yield return new WaitForSeconds(0.05f);
+            MainCam.transform.position = new Vector3(Cx - 0.5f * intensity, Cy, -2);
+            yield return LittleSec;
+            MainCam.transform.position = new Vector3(Cx+0.5f * intensity, Cy, -2);
+            yield return LittleSec;
+            MainCam.transform.position = new Vector3(Cx, Cy+0.5f * intensity, -2);
+            yield return LittleSec;
+            MainCam.transform.position = new Vector3(Cx, Cy-0.5f * intensity, -2);
+            yield return LittleSec;
             MainCam.transform.position = new Vector3(Cx, Cy, -2);
-            yield return new WaitForSeconds(0.05f);
+            yield return LittleSec;
         }
     }
     public void EasyEndPattern() // 1페이즈 종료 후 무조건 사망하는 패턴을 생성함.
     {
         BM.DelBul();
         StopAllCoroutines();
-        for (int i = 0; i < SPL.Length; i++)
+        for (int i = 0; i < SPLE.Length; i++)
         {
             BM.MakeSmallBul(Vector2.left * 2.5f, Vector2.zero).transform.position = SPRE[i].position;
             BM.MakeSmallBul(Vector2.right * 2.5f, Vector2.zero).transform.position = SPLE[i].position;
@@ -271,22 +391,35 @@ public class PatternManager : MonoBehaviour
     public void StartPT(int i)      
     {
         EndPT(false);
+        foreach (GameObject s in Warnings) s.SetActive(false);
+        Hand1.SetActive(false); Hand2.SetActive(false); Hand1_2.SetActive(false);
+        Hand3.SetActive(false); Hand3_2.SetActive(false);
         switch (i)
         {
             case 0: StartCoroutine(ChangePT(MakeEasyPattern())); break;
             case 1: StartCoroutine(ChangePT(PatternN1())); break;
+            case 2: StartCoroutine(ChangePT(PatternN2())); break;
         }
+    }
+
+    public void MusicOn()
+    {
+        AL.Play();
+    }
+
+    public void MusicOff()
+    {
+        AL.Stop();
     }
     
     // 현재 실행중인 패턴을 중지하며, 인수에 따라 패턴의 부산물을 지울 것인지 아닌지를 정함
     // 지우지 않는 경우를 만든 이유는 연출 때문
     // Input : 패턴의 부산물들을 지울 것인지 아닌지를 결정하는 bool값. True일 경우 지우지 않으며, false일 경우 모두 지움
-    public void EndPT(bool IsEnd)     
+    public void EndPT(bool _IsEnd)     
     {
-        if (!IsEnd)
+        if (!_IsEnd)
         {
             StopAllCoroutines();
-            if (CurRazer != null) Destroy(CurRazer);
             foreach (var a in PlatL) Destroy(a);
             Pl.transform.GetChild(0).gameObject.SetActive(false);
             BM.DelBul();
@@ -319,93 +452,4 @@ public class PatternManager : MonoBehaviour
             stringReader.Close();
         }
     }
-
-
-    // Hard(3페이즈)                     1 -> 2 -> 3 -> 4
-    // 이 밑으론 사용하지 않기로 하였음으로 주석을 작성하지 않음
-    IEnumerator Pattern1()
-    {
-        PlatTop.SetActive(false); PlatTop.SetActive(false);
-        Pl.ChangeType("Normal");
-        yield return new WaitForSeconds(1);
-
-        for (int i = 0; i < 20; i++)
-        {
-            int a = Random.Range(0, 4);
-            int b = Random.Range(1, SP[a].Length - 1);
-            BM.MakeBigBul(DF[a] * 2, Vector2.zero, true).transform.position = SP[a][b];
-            yield return new WaitForSeconds(3);
-        }
-        StartCoroutine(ChangePT(Pattern2()));
-        yield break;
-    }
-
-    IEnumerator Pattern2()
-    {
-        Pl.ChangeType("Normal");
-        yield return new WaitForSeconds(1);
-
-        for (int i = 0; i < 30; i++)
-        {
-            Debug.Log("3 Playing");
-            for (int x = 0; x < 9; x += 2) if (x != 4) BM.MakeSmallBul(DE[x][0] * 5, DE[x][1] * 5).transform.position = new Vector2(SPT[12].x + 0.5f, SPL[9].y);
-            for (int x = 0; x < SPT.Length / 2; x++) BM.MakeSmallBul(Vector2.down * 5, Vector2.zero).transform.position = SPT[x];
-            for (int x = 0; x < SPR.Length / 2; x++) BM.MakeSmallBul(Vector2.left * 5, Vector2.zero).transform.position = SPR[x];
-            for (int x = SPB.Length / 2; x < SPB.Length; x++) BM.MakeSmallBul(Vector2.up * 5, Vector2.zero).transform.position = SPB[x];
-            for (int x = SPL.Length / 2; x < SPL.Length; x++) BM.MakeSmallBul(Vector2.right * 5, Vector2.zero).transform.position = SPL[x];
-            yield return new WaitForSeconds(1.5f);
-        }
-        StartCoroutine(ChangePT(Pattern3()));
-        yield break;
-    }
-
-    IEnumerator Pattern3()
-    {
-        Pl.ChangeType("Normal");
-        yield return new WaitForSeconds(1);
-
-        Vector3 Cnt1 = new Vector3(SPT[12].x + 0.5f, SPL[9].y, 0);
-        Vector3 Cnt2 = new Vector3(SPT[25].x, SPL[9].y, 0);
-        Vector3 Cnt3 = new Vector3(SPT[0].x, SPL[9].y, 0);
-        BM.MakeBigBul(Vector2.zero, Vector2.zero, false).transform.position = Cnt1;
-        BM.MakeBigBul(Vector2.zero, Vector2.zero, false).transform.position = Cnt2;
-        BM.MakeBigBul(Vector2.zero, Vector2.zero, false).transform.position = Cnt3;
-
-        for (int i = 0; i < 50; i++)
-        {
-            BM.MakeSmallBul((Pl.transform.position - Cnt1).normalized * 7, Vector2.zero).transform.position = Cnt1;
-            BM.MakeSmallBul((Pl.transform.position - Cnt2).normalized * 7, Vector2.zero).transform.position = Cnt2;
-            BM.MakeSmallBul((Pl.transform.position - Cnt3).normalized * 7, Vector2.zero).transform.position = Cnt3;
-            yield return new WaitForSeconds(0.25f);
-        }
-
-        StartCoroutine(ChangePT(Pattern4()));
-        yield break;
-    }
-
-    IEnumerator Pattern4()
-    {
-        Pl.ChangeType("Normal");
-        Pl.transform.GetChild(0).gameObject.SetActive(true);
-        yield return new WaitForSeconds(1);
-
-        Vector3 Cnt1 = new Vector3(SPT[12].x + 0.5f, SPL[9].y, 0);
-
-        for (int i = 0; i < 1000; i++)
-        {
-            int r2 = Random.Range(10, 20);
-            float a1 = Random.Range(-1f, 1f); if (a1 == 0) a1 = 1;
-            float a2 = Random.Range(-1f, 1f); if (a2 == 0) a2 = -1;
-            Vector2 s = new Vector2(a1, a2);
-            BM.MakeSmallBul(s * r2, Vector2.zero).transform.position = Cnt1;
-            yield return new WaitForSeconds(0.01f);
-        }
-        yield return new WaitForSeconds(10);
-        EndPT(false);
-        Pl.gameObject.SetActive(false);
-        Pl.EndG.SetActive(true);
-        Pl.EndG.GetComponent<RealEnd>().Ending("Game Clear", "당신의 의지가 풍만해진다.");
-    }
-
-    
 }
