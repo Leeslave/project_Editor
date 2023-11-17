@@ -4,7 +4,6 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using System.IO;
 using Newtonsoft.Json;
-using Spine;
 using Newtonsoft.Json.Linq;
 
 public class MakeTile : MonoBehaviour
@@ -44,7 +43,7 @@ public class MakeTile : MonoBehaviour
         CreateLevel();
         MakeItems();
     }
-    // ÀÓ½Ã(¾ÆÁ÷ ½Ì±ÛÅÏÀ» ¾î¶² ½ÄÀ¸·Î ÁÙ Áö ¾ÈÁ¤ÇØÁü)
+    // ï¿½Ó½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½Ì±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
     void GetDifficulty()
     {
         
@@ -75,7 +74,7 @@ public class MakeTile : MonoBehaviour
 
     void CreateLevel()
     {
-        // ¹Ì·ÎÀÇ ¹Ù±ù ºÎºÐÀ» µÑ·¯½Î´Â  ¾È°³¸¦ »ý¼º.
+        // ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ù±ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ñ·ï¿½ï¿½Î´ï¿½  ï¿½È°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         GameObject outsT = Instantiate(Fog, new Vector3((-3) * Move_X + 5, (Col + 5) * Move_Y + 10), new Quaternion(0, 0, 0, 0));
         outsT.transform.localScale = new Vector2(2 * Row * Move_X + 120 ,12 * Move_Y);
         GameObject outsL = Instantiate(Fog, new Vector3(-60, -60), new Quaternion(0, 0, 0, 0));
@@ -95,30 +94,30 @@ public class MakeTile : MonoBehaviour
             int y = Col - 1 - Y;
             for (int x = 0; x < Row; x++)
             {
-                // ¾È°³ °ü·Ã Á¤º¸¸¦ ÀúÀåÇÏ´Â ¹è¿­¿¡ ÀúÀå
-                // ¹Ì·ÎÀÇ ÇÑ Ä­¿¡ ÃÑ 4°³ÀÇ ¾È°³°¡ Á¸Àç
+                // ï¿½È°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½è¿­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                // ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ Ä­ï¿½ï¿½ ï¿½ï¿½ 4ï¿½ï¿½ï¿½ï¿½ ï¿½È°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 if(IsCalcFog)
                 for(int a = 0; a < 2; a++)for(int b = 0; b<2;b++)
                     {
                         Fogs[Y * 2 + a].Add(Instantiate(Fog, new Vector3(x * Move_X + 2.5f + 5 * b, Y * Move_Y + 2.5f + 5 * a), new Quaternion(0, 0, 0, 0)));
                         IsFog[Y * 2 + a].Add(false);
                     }
-                if (!Maze_Inf.Maze[x, Y].Left)     // ¿ÞÂÊ º® »ý¼º ¿©ºÎ
+                if (!Maze_Inf.Maze[x, Y].Left)     // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 {
                     GameObject cnt = Instantiate(CWall,new Vector3(x * 10,y * 10 + 5,0),transform.rotation);
                     if (Maze_Inf.Maze[x, Y].Exit == Vector3.left) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
                 }
-                if (!Maze_Inf.Maze[x, Y].Right)     // ¿À¸¥ÂÊ º® »ý¼º ¿©ºÎ
+                if (!Maze_Inf.Maze[x, Y].Right)     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 {
                     GameObject cnt = Instantiate(CWall, new Vector3(x * 10 +10, y* 10 + 5, 0), new Quaternion(0,0,90,0));
                     if (Maze_Inf.Maze[x, Y].Exit == Vector3.right) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
                 }
-                if (!Maze_Inf.Maze[x, Y].Down)     // ¾Æ·¡ÂÊ º® »ý¼º ¿©ºÎ
+                if (!Maze_Inf.Maze[x, Y].Down)     // ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 {
                     GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10, 0), transform.rotation);
                     if (Maze_Inf.Maze[x, Y].Exit == Vector3.down) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
                 }
-                if (!Maze_Inf.Maze[x, Y].Up)     // À§ÂÊ º® »ý¼º ¿©ºÎ
+                if (!Maze_Inf.Maze[x, Y].Up)     // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 {
                     GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10+10, 0), transform.rotation);
                     if (Maze_Inf.Maze[x, Y].Exit == Vector3.up) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
@@ -127,8 +126,8 @@ public class MakeTile : MonoBehaviour
         }
     }
 
-    // Key »ý¼º
-    // ¸ðµç KeyÀÇ À§Ä¡°¡ °ãÄ¡Áö ¾ÊÀ¸¸ç, ÇÃ·¹ÀÌ¾î¿Í Æ¯Á¤ °Å¸® ÀÌ»óÀÇ À§Ä¡¿¡¼­ »ý¼ºµÇµµ·Ï ÇÔ.
+    // Key ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ Keyï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½.
 
     void MakeItems()
     {
