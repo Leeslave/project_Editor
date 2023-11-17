@@ -16,7 +16,7 @@ public class TextFieldProUGUI : MonoBehaviour
     private Coroutine flowTextWithDelayCoroutine;
     private bool isNowFlowText;
 
-    private void Start()
+    private void Awake()
     {
 
     }

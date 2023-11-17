@@ -7,17 +7,12 @@ public class TextField : MonoBehaviour
 {
 
     private TextMeshPro markText;
-    private SpriteRenderer guideSprite;
 
     private bool isNowFlowText;
 
-    private void Start()
+    private void Awake()
     {
-        if (transform.Find("MarkText") != null)
-            markText = transform.Find("MarkText").GetComponent<TextMeshPro>();
-
-        if (transform.Find("GuideText") != null)
-            guideSprite = transform.Find("GuideText").GetComponent<SpriteRenderer>();
+        markText = transform.GetChild(0).GetComponent<TextMeshPro>();
     }
 
     public string GetText()
@@ -116,20 +111,4 @@ public class TextField : MonoBehaviour
         StartCoroutine(ConvertSizeText_IE(currentSize, target, targetSize, endTime, currentTime));
     }
 
-    public void FillPercentage(float endTime)
-    {
-        StartCoroutine(FillPercentage_IE(endTime, 0));
-    }
-
-    private IEnumerator FillPercentage_IE(float endTime, float currentendTime)
-    {
-        currentendTime += endTime / 100;
-        if (currentendTime > endTime)
-            yield break;
-
-        markText.text = Mathf.CeilToInt(currentendTime / endTime * 100).ToString() + "%";
-
-        yield return new WaitForSeconds(endTime / 100);
-        StartCoroutine(FillPercentage_IE(endTime, currentendTime));
-    }
 }

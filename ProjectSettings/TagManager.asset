@@ -9,14 +9,12 @@ TagManager:
   - Bullet
   - ClatonPos
   - InquisitorPos
-  - File
-  - Folder
-  - Detail
-  - Trace
   - Wall
-  - MainGameSystem
   - ExitWall
   - Key
+  - GameSystem
+  - World
+  - WorldUI
   layers:
   - Default
   - TransparentFX
@@ -26,7 +24,11 @@ TagManager:
   - UI
   - Player
   - Bullet
-  - 
+  - LED_Tube
+  - LED_Square_example
+  - Overlay
+  - PostProcessing
+  - World
   - 
   - 
   - 
@@ -59,9 +61,6 @@ TagManager:
     locked: 0
   - name: OnWorldObject
     uniqueID: 3394954593
-    locked: 0
-  - name: OverWorldObject
-    uniqueID: 2984767161
     locked: 0
   - name: OverWorldUI
     uniqueID: 3197987561

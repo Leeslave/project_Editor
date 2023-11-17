@@ -11,7 +11,7 @@ public class AnimationController : MonoBehaviour
     *   - 리스트 내 특정 애니메이션들만 실행
     */
     public AnimBase[] anims;    // 애니메이션 리스트
-    public bool isFinished;     // 애니메이션 
+    public bool isFinished;     // 실행 완료 여부 
 
     /// <summary>모든 애니메이션 순차 실행</summary>
     public void Play()
