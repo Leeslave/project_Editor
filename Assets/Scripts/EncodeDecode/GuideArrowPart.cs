@@ -8,7 +8,7 @@ public class GuideArrowPart : MonoBehaviour
     private GameObject guideArrow_1;
     private GameObject guideArrow_2;
 
-    void Start()
+    void Awake()
     {
         guideArrow_0 = transform.GetChild(0).gameObject;
         guideArrow_1 = transform.GetChild(1).gameObject;

@@ -60,7 +60,7 @@ public class Log : MonoBehaviour
 
     private void GetLogTxtFile(string fileName)
     {
-        string filePath = "Assets/Resources/Log/Log_" + fileName + ".txt";
+        string filePath = "Assets/Resources/Text/EncodeDecode/Log/Log_" + fileName + ".txt";
         fileTxt = new FileInfo(filePath);
 
         if (fileTxt.Exists)

@@ -24,9 +24,7 @@ public class TextAnimation : AnimBase
     // 텍스트 코루틴 실행
     public override IEnumerator Play()
     {   
-        Debug.Log($"{gameObject.ToString()}Play Animation");
         yield return StartCoroutine(AnimTexts());
-        
     }
 
     // TextInfo 내부의 텍스트들의 애니메이션 코루틴 실행
@@ -34,16 +32,16 @@ public class TextAnimation : AnimBase
     {
         foreach (AnimString iter in textInfo.textStrings)
         {
-            // info 타입으로 애니메이션 타입 구분 (0 : string, 1 : int)
-            switch (iter.infoType)
+            // info 타입으로 애니메이션 타입 구분 (0 : string, 1 : int, 2 : parameter)
+            switch (iter.textType)
             {
                 case 0:
-                    yield return StartCoroutine(AnimString(iter.info, iter.stringTime < 0 ? delayEachChar : iter.stringTime));
-                    yield return new WaitForSeconds(iter.textTime < 0 ? delayEachStringLine : iter.textTime);
+                    yield return StartCoroutine(AnimString(iter.text, iter.textDelay < 0 ? delayEachChar : iter.textDelay));
+                    yield return new WaitForSeconds(iter.lineDelay < 0 ? delayEachStringLine : iter.lineDelay);
                     break;
                 case 1:
-                    yield return StartCoroutine(AnimInt(iter.info, iter.stringTime < 0 ? delayEachChar : iter.stringTime));
-                    yield return new WaitForSeconds(iter.textTime < 0 ? delayEachStringLine : iter.textTime);
+                    yield return StartCoroutine(AnimInt(iter.text, iter.textDelay < 0 ? delayEachChar : iter.textDelay));
+                    yield return new WaitForSeconds(iter.lineDelay < 0 ? delayEachStringLine : iter.lineDelay);
                     break;
             }
         }
@@ -82,7 +80,7 @@ public class TextAnimation : AnimBase
         if (time != 0)
             foreach (char c in text.ToCharArray())
             {
-                GUITextCtrl.text += c;
+                GUITextCtrl.text += c.ToString();
                 yield return new WaitForSeconds(time);  //1글자씩 time 간격으로 출력
             }
         else                                            //딜레이 없이 일괄 출력
@@ -102,16 +100,16 @@ public class TextInfo
 [Serializable]
 public class AnimString
 {
-    public string info;
-    public int infoType;
-    public float textTime;
-    public float stringTime;
+    public string text;
+    public int textType;
+    public float lineDelay;
+    public float textDelay;
 
     public AnimString(string _i, int _it, float _t, float _s)
     {
-        info = _i;
-        infoType = _it;
-        textTime = _t;
-        stringTime = _s;
+        text = _i;
+        textType = _it;
+        lineDelay = _t;
+        textDelay = _s;
     }
 }
