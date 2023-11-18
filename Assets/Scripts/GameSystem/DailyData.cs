@@ -136,6 +136,11 @@ public class DayTime
         hour = _hour;
         minute = _minute;
     }
+
+    public override string ToString()
+    {
+        return $"{hour:D2}:{minute:D2}";
+    }
 }
 
 [Serializable]

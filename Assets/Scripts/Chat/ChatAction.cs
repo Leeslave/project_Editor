@@ -56,16 +56,3 @@ public class ChatJumpAction : ChatAction
         
     }
 }
-// /// 반응 함수 할당
-        // switch(func)
-        // {
-        //     case "Jump":
-        //         _event.AddListener((int num) => { index = num - 1; });
-        //         break;
-        //     case "DayChange":
-        //         _event.AddListener(GameSystem.Instance.SetDate);
-        //         break;
-        //     case "TimeChange":
-        //         _event.AddListener(GameSystem.Instance.SetTime);
-        //         break;
-        // }

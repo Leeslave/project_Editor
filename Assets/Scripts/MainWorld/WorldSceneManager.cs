@@ -38,6 +38,9 @@ public class WorldSceneManager : MonoBehaviour
     private GameObject LeftButton;      // 왼쪽 이동 버튼
     [SerializeField]
     private GameObject RightButton;     // 오른쪽 이동 버튼
+    public float moveDelay;     // 지역 이동 딜레이
+    [SerializeField]
+    private Image curtain;      // 지역 이동 효과 이미지
 
     [Header("NPC 생성 정보")]
     [SerializeField]
@@ -57,6 +60,7 @@ public class WorldSceneManager : MonoBehaviour
         {
             // 위치 설정
             MoveLocation(GameSystem.Instance.currentLocation.ToString());
+            MovePosition(GameSystem.Instance.currentPosition.ToString());
 
             // npc 생성
             SetWorldObject(); 
@@ -71,6 +75,7 @@ public class WorldSceneManager : MonoBehaviour
         
         // 위치 설정
         MoveLocation(GameSystem.Instance.currentLocation.ToString());
+        MovePosition(GameSystem.Instance.currentPosition.ToString());
 
         // npc 생성
         SetWorldObject();
@@ -104,9 +109,6 @@ public class WorldSceneManager : MonoBehaviour
 
         // 현재 지역 설정
         GameSystem.Instance.currentLocation = newLocation;
-
-        // 지역 내 위치 동기화
-        MovePosition(GameSystem.Instance.currentPosition.ToString());
     }
 
     /// <summary>
@@ -117,7 +119,7 @@ public class WorldSceneManager : MonoBehaviour
     {
         int newPos;
 
-        // 좌, 우로 이동
+        // 좌, 우 or int로 이동할 위치값 설정
         switch (position)
         {
             case "Left":
@@ -137,34 +139,41 @@ public class WorldSceneManager : MonoBehaviour
         
 
         // 현재 월드 오브젝트
-        Transform currentWorldObject = locationList[(int)GameSystem.Instance.currentLocation].transform;
+        Transform currentWorldTransform = locationList[(int)GameSystem.Instance.currentLocation].transform;
 
         // 위치값 예외 처리
-        if (newPos < 0 || newPos >= currentWorldObject.childCount)
+        if (newPos < 0 || newPos >= currentWorldTransform.childCount)
         {
             Debug.Log($"WORLD MOVE ERROR : Invalid position {newPos}");
             return;
         }
 
         // 양쪽 이동 버튼 설정
-        LeftButton.SetActive(true);
-        RightButton.SetActive(true);    
+        LeftButton.SetActive(false);
+        RightButton.SetActive(false);    
         
-        if (newPos == 0)
+        // 0보다 클때 왼쪽 이동 가능
+        if (newPos > 0)
         {
-            LeftButton.SetActive(false);
+            LeftButton.SetActive(true);
         }
-        else if(newPos == currentWorldObject.childCount - 1)
+        // 오른쪽 끝보다 작을때 오른쪽 이동 가능
+        if(newPos < currentWorldTransform.childCount - 1)
         {
-            RightButton.SetActive(false);
+            RightButton.SetActive(true);
         }
+
+        // 전환 효과 실행
+        StartCoroutine(FadeInOut());
         
         // 해당 위치 활성화
-        for(int i = 0; i < currentWorldObject.childCount; i++)
+        for(int i = 0; i < currentWorldTransform.childCount; i++)
         {
-            currentWorldObject.GetChild(i).gameObject.SetActive(false);
+            currentWorldTransform.GetChild(i).gameObject.SetActive(false);
             if (i == newPos)
-                currentWorldObject.GetChild(i).gameObject.SetActive(true);
+            {
+                currentWorldTransform.GetChild(i).gameObject.SetActive(true);
+            }
         }
 
         // 현재 위치 설정
@@ -175,7 +184,7 @@ public class WorldSceneManager : MonoBehaviour
     /// 시간대 변경
     /// </summary>
     /// <remarks>시간대를 변경하고 현재 지역 동기화
-    public void ChangeTime()
+    public void ChangeTime(int time = -1)
     {
         /**
         시간대 변경에 따른 지역들 동기화
@@ -184,8 +193,21 @@ public class WorldSceneManager : MonoBehaviour
         - 바로 다음 시간대로만 변경
         */
 
-        // 시간대 변경
-        int time = GameSystem.Instance.currentTime + 1;
+        // 특정 시간대 전환
+        // 해당하는 시간대 전환이 아니면 실행 안함
+        if (time > 0 && time < 4)
+        {
+            if (time != GameSystem.Instance.currentTime + 1)
+            {
+                return;
+            }
+        }
+
+        // 자동 시간 넘김
+        if(time == -1)
+        {
+            time = GameSystem.Instance.currentTime + 1;
+        }
 
         // 날짜 변경 (시간대 4일시)
         if (time == 4)
@@ -249,6 +271,22 @@ public class WorldSceneManager : MonoBehaviour
 
             // 생성 완료, 리스트에 추가
             npcList.Add(newObject);
+        }
+    }
+
+    /// <summary>
+    /// 화면 전환 효과
+    /// </summary>
+    IEnumerator FadeInOut()
+    {
+        float elapsedTime = 0f;
+        
+        // 점점 밝아지기
+        while (elapsedTime < moveDelay)
+        {
+            curtain.color = Color.Lerp(Color.black, Color.clear, elapsedTime / moveDelay);
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
     }
 }
