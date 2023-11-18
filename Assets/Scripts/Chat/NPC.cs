@@ -110,7 +110,7 @@ public class NPC : MonoBehaviour
         if (npcData.image != null)
         {
             // 이미지 불러오기
-            Sprite newSprite = Chat.GetSprite(CHARACTERFILEPATH + npcData.image + "_stand");
+            Sprite newSprite = Chat.GetSprite(CHARACTERFILEPATH + npcData.image);
             if(newSprite == null)
             {
                 Debug.Log($"NPC IMAGE CANNOT FOUND : {CHARACTERFILEPATH + npcData.image}");

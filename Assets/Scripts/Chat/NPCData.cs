@@ -57,7 +57,6 @@ public class NPCData
         catch(ArgumentException)
         {
             // 대화 타입 오류 시 예외처리
-            Debug.Log($"NPC Trigger Type Error : {wrapper.triggerType}");
             triggerType = TriggerType.OnClick;
         }   
         // 다이얼로그 대화 시 종료

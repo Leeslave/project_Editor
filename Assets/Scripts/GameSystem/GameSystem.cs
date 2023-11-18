@@ -19,10 +19,9 @@ public class GameSystem : MonoBehaviour
     private int resolutionX = 1200;
     private int resolutionY = 900;
 
-    public int todayIndex { get; private set; } = 0;   // 오늘 날짜 인덱스
-    public int currentTime { get; private set; }  = 0;   // 현재 시간
-
     [Header("현재 게임 정보")]
+    public int todayIndex = 0;   // 오늘 날짜 인덱스
+    public int currentTime = 0;    // 현재 시간
     public World currentLocation;  // 현재 지역
     public int currentPosition;    // 현재 위치
     public bool isScreenOn = false; // 스크린 활성화 여부
@@ -71,16 +70,15 @@ public class GameSystem : MonoBehaviour
     ///<param name="dateIndex">전환할 날짜 인덱스(없으면 다음 날짜로), 시간은 무조건 아침</param>
     public void SetDate(int date = -1)
     {
-        if (date == -1)
-        {
-            // 다음 날짜로 이동
-            date = todayIndex + 1;
-        }
-
-        if (date > dailyList.Count || date < 0)
+        if (date > dailyList.Count)
         {
             Debug.Log($"Day Out Of Range: {date}");
             return;
+        }
+        if (date < 0)
+        {
+            // 다음 날짜로 이동
+            date = todayIndex + 1;
         }
 
         // 해당 날짜 불러오기
@@ -96,7 +94,6 @@ public class GameSystem : MonoBehaviour
         // 위치 이동
         currentLocation = today.startLocation;
         currentPosition = today.startPosition;
-        Debug.Log($"Current position = {currentLocation} : {currentPosition}");
         // 메인 월드 재로드
         if (SceneManager.GetActiveScene().name == "MainWorld")
             SceneManager.LoadScene("MainWorld");

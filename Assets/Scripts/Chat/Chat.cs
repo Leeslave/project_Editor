@@ -280,15 +280,14 @@ public class Chat : MonoBehaviour
     {
         while(true)
         {
-            // 대사 종료까지 반복
-            if (isTalk == false)
+            if (chatList[index].chatType == "EndChoice")
             {
-                return;
-            }
-            // 도중 선택지까지 반복
-            if (chatList[index].chatType == "Choice" || chatList[index].chatType == "EndChoice")
-            {
-                return;
+                ChoiceParagraph paragraph = chatList[index] as ChoiceParagraph;
+                foreach(var i in paragraph.choiceList)
+                {
+                    if (i.isEnding)
+                        return;
+                }
             }
             NextChat();            
         }
