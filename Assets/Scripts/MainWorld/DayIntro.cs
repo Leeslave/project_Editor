@@ -8,32 +8,14 @@ public class DayIntro : MonoBehaviour
     *   하루 시작 인트로 스크립트
         : 씬이 재로딩 될때마다(날짜 변경)마다 실행
     */
-    private AudioSource _awakeSfx;   // 인트로용 효과음
-    public float textOnDelay;   // 시작부터 글자 활성화까지의 딜레이
-    public float textOnDuration;    //글자 활성화 지속시간
-    public TMP_Text dayText;      //글자 활성화용 텍스트 오브젝트
-    public bool isFinished;
-
-    private static DayIntro _instance;
-    public static DayIntro Instance
-    {
-        get { return _instance; }
-    }
-
-    // 싱글톤 설정 및 컴포넌트 불러오기
-    private void Awake()
-    {
-        if (!_instance)
-        {
-            _instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-
-        _awakeSfx = GetComponent<AudioSource>();
-    }
+    [SerializeField]
+    private AudioSource textSFX;   // 인트로용 효과음
+    public float textDelay;   // 글자 딜레이
+    public float textOnDelay;   // 글자 출력 후 딜레이
+    [SerializeField]
+    private TMP_Text textUI;      //글자 활성화용 텍스트 오브젝트
+    private string[] dayText;      // 실제 날짜 글자
+    public bool isFinished;     // 인트로 종료 여부
 
     void OnEnable()
     {
@@ -41,21 +23,22 @@ public class DayIntro : MonoBehaviour
     }
 
     /**
-    * 시간대 문자열 설정 함수
-    - (0: 출근전, 1: 업무전, 2: 업무후, 3: 퇴근 후)
+    * 장소 문자열 설정 함수
     */ 
-    private string SetHour(int timeOffset)
+    string getLocationName(World text)
     {
-        switch(timeOffset) {
-            case 1:
-                return "09:00 AM";
-            case 2:
-                return "05:00 PM";
-            case 3:
-                return "07:30 PM";
-            case 0:default:
-                return "06:30 AM";
+        string result = "???";
+        switch(text)
+        {
+            case World.Street: 
+                result = "신시가지";
+                break;
+            case World.Cafe:
+                result = "신문사 앞 카페";
+                break;
+                
         }
+        return result;
     }
 
     /// <summary>
@@ -67,17 +50,34 @@ public class DayIntro : MonoBehaviour
         // 플래그 설정
         isFinished = false;
         
-        dayText.gameObject.SetActive(false);
-        DailyData today = GameSystem.Instance.today;
+        // 텍스트 UI 설정
+        textUI.text = "";
+        textUI.gameObject.SetActive(true);
 
         // 텍스트 세팅
-        dayText.text = $"제국력 {today.date.year}년 {today.date.month}월 {today.date.day}일\n\n{SetHour(GameSystem.Instance.currentTime)}";
-        yield return new WaitForSeconds(textOnDelay);
+        DailyData today = GameSystem.Instance.today;
+        dayText = new string[] { "", "", ""};
+        dayText[0] = $"제국력 {today.date.year}년 {today.date.month}월 {today.date.day}일";
+        dayText[1] = today.dateTimes[0].ToString();
+        dayText[2] = getLocationName(today.startLocation);
 
-        //날짜 활성화 애니메이션, 효과음
-        dayText.gameObject.SetActive(true);
-        if(_awakeSfx) _awakeSfx.Play();
-        yield return new WaitForSeconds(textOnDuration);
+        // 한 글자씩 애니메이션
+        for(int i = 0; i < 3; i++)
+        {
+            foreach(char c in dayText[i])
+            {
+                if (c != ' ')
+                {
+                    textSFX.Play();
+                    yield return new WaitForSeconds(textDelay);
+                }
+                textUI.text += c;
+            }
+            textUI.text += "\n";
+        }        
+
+        // 대사 출력 후 딜레이
+        yield return new WaitForSeconds(textOnDelay);
 
         //종료 및 flag 설정
         isFinished = true;
