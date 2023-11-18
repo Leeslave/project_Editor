@@ -1,19 +1,68 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 
-// 박스의 정보를 저장(아직 무게만 사용)
+// 박스의 정보를 저장
 public class Box : MonoBehaviour
 {
-    public int Weight;
     public int MaxDurability;
-    public int CurDurability;
+    public int Weight;
+    public int BoxNum;
+    public HanoiManager HM;
 
-    public void InitBox(int _Weight, int _Durability)
+    bool IsBreakAble = false;
+    int CurDurability = 0;
+    TMP_Text Dura;
+
+    /// <summary>
+    /// Box Object Awake시 랜덤으로 내구도를 부여할 것인지 정함
+    /// TODO : 스테이지 별 정해진 개수별로 내구도 부여
+    /// </summary>
+    private void Awake()
     {
-        Weight = _Weight;
-        MaxDurability = _Durability;
-        CurDurability = _Durability;
+        if (Random.Range(0,2)== 0)
+        {
+            CurDurability = MaxDurability;
+            Dura = transform.GetChild(0).GetComponent<TMP_Text>();
+            Dura.text = CurDurability.ToString();
+            Dura.gameObject.SetActive(true);
+            IsBreakAble = true;
+        }
     }
+
+    /// <summary>
+    /// 현재 박스를 B박스 위에 놓을 수 있는가 여부 반환.
+    /// </summary>
+    /// <param name="B">현재 놓으려는 Container 최상단의 Box</param>
+    /// <returns></returns>
+    public bool CanAdd(Box B)
+    {
+        if (B.Weight < Weight) return false;
+        return true;
+    }
+    /// <summary>
+    /// 현재 박스를 집을 수 있는지 여부 반환(내구도)
+    /// </summary>
+    /// <returns></returns>
+    public bool CanPick()
+    {
+        if (IsBreakAble) return CurDurability != 0;
+        return true;
+    }
+    /// <summary>
+    /// 현재 박스의 내구도를 변환함
+    /// </summary>
+    /// <param name="change">변화량</param>
+    public void DuraChange(int change)
+    {
+        if (IsBreakAble)
+        {
+            if (change > 0 && HM.NextBox < BoxNum) HM.NextBox = BoxNum;
+            CurDurability += change;
+            Dura.text = CurDurability.ToString();
+            if (CurDurability == 0) HM.ErrorEvent(BoxNum);
+        }
+    }
+
+
 }

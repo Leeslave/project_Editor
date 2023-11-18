@@ -26,10 +26,12 @@ public class GoBack : MonoBehaviour
     }
     void OnPoint(PointerEventData Data)
     {
+        if (!HM.TouchAble||HM.IsPick) return;
         if (IsActive) sr.color = Af;
     }
     public void OutPoint(PointerEventData Data)
     {
+        if (!HM.TouchAble|| HM.IsPick) return;
         if (IsActive) sr.color = Bf;
     }
 
@@ -37,9 +39,9 @@ public class GoBack : MonoBehaviour
     // 다시실행 버튼이면 HanoiManager의 GoEvent를 실행한다.
     void Click(PointerEventData A)
     {
+        if (!HM.TouchAble || HM.IsPick) return;
         if (name == "Go") HM.GoEvent();
         else HM.BackEvent();
-        
     }
 
     void AddEvent(EventTrigger eventTrigger, EventTriggerType Type, Action<PointerEventData> Event)

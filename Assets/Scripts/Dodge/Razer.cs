@@ -25,7 +25,7 @@ public class Razer : MonoBehaviour
         // 1.4초동안 레이저의 크기를 키움
         for (; transform.localScale.y < 1.4f; transform.localScale = new Vector2(transform.localScale.x, transform.localScale.y + 0.1f))
             yield return new WaitForSeconds(0.01f);
-        yield return new WaitForSeconds(6.22f);
+        yield return new WaitForSeconds(5.72f);
         // 1.4초동안 레이저의 크기를 줄임
         for (; transform.localScale.y >= 0.1f; transform.localScale = new Vector2(transform.localScale.x, transform.localScale.y - 0.1f))
             yield return new WaitForSeconds(0.01f);

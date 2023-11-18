@@ -154,7 +154,7 @@ public class MazeMap
             Groups[i].Last_Rows.RemoveRange(0, del_count);   // Group 내에서 이전 Col에 있던 Cell들의 정보 삭제.
         }
     }
-    void TrimMaze() // 마지막 모든 Cell을 하나의 Group으로 합침
+    void TrimMaze() // 마지막 모든 Cell을 하나의 Group으로 합(Union과 동일 과정)
     {
         for(int Y = 0; Y < Col; Y++)
         {
