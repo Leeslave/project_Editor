@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -56,7 +57,41 @@ public class ResultPanel_ForGame : MonoBehaviour
             return false;
         }
 
-        if(SceneManager.LoadEncrypted.DecryptionAnswer != SceneManager.DisplayDecrypted.DecryptedTextBody.StringBuffer)
+        //플레이어가 로드한 암호화된 텍스트
+        var encryptedText = SceneManager.LoadEncrypted.EncryptedTextBody.TextTMP.text.Replace(" ", "");
+        //키 순위에서 빈칸 및 언더라인 제거
+        var keyPriority = SceneManager.Transpose.KeyPriority.TextTMP.text.Replace(" ", "");
+        keyPriority = keyPriority.Replace("_", "");
+        //키 순위에 따라서 전치한 텍스트
+        string[] orderedText = new string[keyPriority.Length];
+        var transposedText = "";
+        //복호화 텍스트
+        var table = SceneManager.BilateralSubstitute.TableElements;
+        var dic = SceneManager.BilateralSubstitute.LineRowDecode;
+        var decryptedText = "";
+
+        //일시적인 저장 공간으로 전치
+        for (var i = 0; i < keyPriority.Length; i++)
+            for (var j = 0; j < encryptedText.Length / keyPriority.Length; j++)
+                orderedText[i] += encryptedText[(int.Parse(keyPriority[i].ToString()) - 1) * (encryptedText.Length / keyPriority.Length) + j];
+        
+        //최종 전치 결과
+        for (var i = 0; i < encryptedText.Length / keyPriority.Length; i++)
+            for(var j = 0; j < keyPriority.Length; j++)
+                transposedText += orderedText[j][i];
+        
+        //테이블에 따라서 복호화
+        for (var i = 0; i < encryptedText.Length / 2; i++)
+        {
+            var line = dic[transposedText[0]];
+            var row = dic[transposedText[1]];
+            decryptedText += table[row + line * 6].TextTMP.text;
+            transposedText = transposedText.Substring(2);
+        }
+
+        Debug.Log(decryptedText);
+
+        if(decryptedText != SceneManager.DisplayDecrypted.DecryptedTextBody.StringBuffer)
         {
             StartCoroutine(PrintDecryptionFailed_IE("복호화 데이터 무결성 검사를 통과하지 못했습니다!"));
             return false;
@@ -234,9 +269,6 @@ public class ResultPanel_ForGame : MonoBehaviour
         //올바른 암호화 텍스트를 획득한다
         for (var i = 0; i < orderedText.Length; i++)
             encryptionResult += orderedText[i];
-
-        Debug.Log(encryptionResult);
-        Debug.Log(SceneManager.DisplayEncrypted.EncryptedTextBody.StringBuffer);
 
         if (encryptionResult != SceneManager.DisplayEncrypted.EncryptedTextBody.StringBuffer.Replace(" ", ""))
         {

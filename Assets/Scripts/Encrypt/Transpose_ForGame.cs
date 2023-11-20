@@ -196,7 +196,7 @@ public class Transpose_ForGame : MonoBehaviour
                 //전치 행렬 출력
                 StartCoroutine(CircumventRow(0));
         
-                //전치 행렬 전달
+                //복호화해야하는 순서 계산하여 출력
                 SceneManager.BilateralSubstitute.UpdateTransposedTextDisplayAndTable();
 
                 //전치가 완료될 때까지 전체 입력 차단

@@ -13,8 +13,8 @@ public class BilateralSubstitute_ForGame : MonoBehaviour
     public BasicText[] TableElements { get; set; } = new BasicText[36];
     public BasicText[] LineElements { get; set; } = new BasicText[6];
     public BasicText[] RowElements { get; set; } = new BasicText[6];
-    public BasicButton TablePlusButton { get; set; }
-    public BasicButton TableMinusButton { get; set; }
+    public BasicButton NextTableButton { get; set; }
+    public BasicButton BeforeTableButton { get; set; }
 
     public int[] LastLineRowElements { get; set; } = new int[2] {
         0, 0
@@ -46,8 +46,8 @@ public class BilateralSubstitute_ForGame : MonoBehaviour
             LineElements[i] = this.transform.GetChild(4).transform.GetChild(i).GetComponent<BasicText>();
             RowElements[i] = this.transform.GetChild(5).transform.GetChild(i).GetComponent<BasicText>();
         }
-        TablePlusButton = this.transform.GetChild(6).GetComponent<BasicButton>();
-        TableMinusButton = this.transform.GetChild(7).GetComponent<BasicButton>();
+        NextTableButton = this.transform.GetChild(6).GetComponent<BasicButton>();
+        BeforeTableButton = this.transform.GetChild(7).GetComponent<BasicButton>();
         
         UpdateTable();
         Initialize();
@@ -75,11 +75,11 @@ public class BilateralSubstitute_ForGame : MonoBehaviour
     public IEnumerator CutOffInputForWhile(float wait, float duration)
     {
         yield return new WaitForSeconds(wait);
-        TablePlusButton.SetAvailable(false);
-        TableMinusButton.SetAvailable(false);
+        NextTableButton.SetAvailable(false);
+        BeforeTableButton.SetAvailable(false);
         yield return new WaitForSeconds(duration);
-        TablePlusButton.SetAvailable(true);
-        TableMinusButton.SetAvailable(true);
+        NextTableButton.SetAvailable(true);
+        BeforeTableButton.SetAvailable(true);
     }
     
     /// <summary>
@@ -88,8 +88,8 @@ public class BilateralSubstitute_ForGame : MonoBehaviour
     /// <param name="value"> 가능 여부 </param>
     public void SetAvailable(bool value)
     {
-        TablePlusButton.SetAvailable(value);
-        TableMinusButton.SetAvailable(value);
+        NextTableButton.SetAvailable(value);
+        BeforeTableButton.SetAvailable(value);
     }
     
     /// <summary>
@@ -239,7 +239,7 @@ public class BilateralSubstitute_ForGame : MonoBehaviour
     /// </summary>
     private void UpdateTable()
     {
-        var filePath = "Assets/Resources/Tables/Table_" + CurrentTableNum.ToString() + ".txt";
+        var filePath = "Assets/Resources/GameData/Encrypt/Tables/Table_" + CurrentTableNum.ToString() + ".txt";
         FileInfo txtFile = new FileInfo(filePath);
 
         if (!txtFile.Exists)

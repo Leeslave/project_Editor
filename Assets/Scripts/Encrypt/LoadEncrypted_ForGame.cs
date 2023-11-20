@@ -12,7 +12,6 @@ public class LoadEncrypted_ForGame : MonoBehaviour
     public BasicText EncryptedTextBody { get; set; }
     public BasicText EncryptedTextWriter { get; set; }
     public BasicText EncryptedTextDate { get; set; }
-    public string DecryptionAnswer { get; set; }
 
     private void Awake()
     {
@@ -65,14 +64,13 @@ public class LoadEncrypted_ForGame : MonoBehaviour
     /// </summary>
     public void LoadEncryptedText()
     {
-        var filePath = "Assets/Resources/Encrypted/" + EncryptedTextTitle.StringBuffer + ".txt";
+        var filePath = "Assets/Resources/GameData/Encrypt/Encrypted/" + EncryptedTextTitle.StringBuffer + ".txt";
         if (new FileInfo(filePath).Exists)
         {
             var reader = new StreamReader(filePath, System.Text.Encoding.UTF8);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, reader.ReadLine(), true, EncryptedTextBody.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, reader.ReadLine(), true, EncryptedTextWriter.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, reader.ReadLine(), true, EncryptedTextDate.TextTMP);
-            DecryptionAnswer = reader.ReadLine();
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, "Decrypted-" + EncryptedTextTitle.StringBuffer, true, SceneManager.DisplayDecrypted.DecryptedTextTitle.TextTMP);
             SceneManager.CutOffInputForWhile(0f, 1.5f);
             reader.Close();   

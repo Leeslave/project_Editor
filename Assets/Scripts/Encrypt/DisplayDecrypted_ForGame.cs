@@ -76,7 +76,7 @@ public class DisplayDecrypted_ForGame : MonoBehaviour
         if (!SceneManager.ResultPanel.PrintDecryptionResult())
             return;
         
-        var filePath = "Assets/Resources/Decrypted/" + DecryptedTextTitle.TextTMP.text + ".txt";
+        var filePath = "Assets/Resources/GameData/Encrypt/Decrypted/" + DecryptedTextTitle.TextTMP.text + ".txt";
         if(!new FileInfo(filePath).Exists)
         {
             StreamWriter writer = File.CreateText(filePath);

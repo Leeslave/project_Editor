@@ -1542,7 +1542,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 112532038}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ceeeb81ac695a9468f8aaa6b387679f, type: 3}
+  m_Script: {fileID: 11500000, guid: 7a44eded0a874dc4780e3a15d8490e72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &112579928
@@ -2659,7 +2659,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 181432770}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eba77eafaf2a0de4f92aa8b468f98055, type: 3}
+  m_Script: {fileID: 11500000, guid: a4a099f84ebe04c45b65493a21c99336, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &186263181
@@ -12158,7 +12158,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 713321984}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dcf3a393447edd842ac2f60297aec73f, type: 3}
+  m_Script: {fileID: 11500000, guid: 577cd624371b4bd488b6cf36f232e1ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &721377357
@@ -22855,7 +22855,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1441589469}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e4ed125b523b814a8db4d267afb7ef4, type: 3}
+  m_Script: {fileID: 11500000, guid: 20fe87179bcc4654896e7faf3ee17b9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1449208829
@@ -23673,7 +23673,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1472704926}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7c1a844686441147a75b0d4e1c02960, type: 3}
+  m_Script: {fileID: 11500000, guid: d64b87b5f2519de4fa8eb55e1b27846a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1481101132
@@ -24028,7 +24028,7 @@ GameObject:
   - component: {fileID: 1484298271}
   - component: {fileID: 1484298270}
   m_Layer: 0
-  m_Name: TableMinusButton
+  m_Name: BeforeTableButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24103,6 +24103,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1564639075}
         m_TargetAssemblyTypeName: BiliteralSubstituteTextFile_ForGame, Assembly-CSharp
         m_MethodName: TableMinus
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1564639075}
+        m_TargetAssemblyTypeName: BilateralSubstitute_ForGame, Assembly-CSharp
+        m_MethodName: UpdateTransposedTextDisplayAndTable
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -25204,7 +25216,7 @@ GameObject:
   - component: {fileID: 1564639074}
   - component: {fileID: 1564639075}
   m_Layer: 0
-  m_Name: BiliteralSubstitute
+  m_Name: BilateralSubstitute
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25242,7 +25254,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1564639072}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87fe9e2721a7dcb4398a910a1cdfcb59, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c707779d7d9b8f47a1895db2ef20afe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1573839622
@@ -26801,7 +26813,7 @@ GameObject:
   - component: {fileID: 1646898873}
   - component: {fileID: 1646898872}
   m_Layer: 0
-  m_Name: TablePlusButton
+  m_Name: NextTableButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26876,6 +26888,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1564639075}
         m_TargetAssemblyTypeName: BiliteralSubstituteTextFile_ForGame, Assembly-CSharp
         m_MethodName: TablePlus
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1564639075}
+        m_TargetAssemblyTypeName: BilateralSubstitute_ForGame, Assembly-CSharp
+        m_MethodName: UpdateTransposedTextDisplayAndTable
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -29847,7 +29871,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1849005362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0158dc70189fdcd469a66e958c13a1f8, type: 3}
+  m_Script: {fileID: 11500000, guid: 38245848bb96e0c4fafc6299049d935a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1850604197

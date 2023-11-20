@@ -73,7 +73,7 @@ public class DisplayEncrypted_ForGame : MonoBehaviour
         if (!SceneManager.ResultPanel.PrintEncryptionResult())
             return;
         
-        var filePath = "Assets/Resources/Encrypted/" + EncryptedTextTitle.StringBuffer + ".txt";
+        var filePath = "Assets/Resources/GameData/Encrypt/Encrypted/" + EncryptedTextTitle.StringBuffer + ".txt";
         if(!new FileInfo(filePath).Exists)
         {
             StreamWriter writer = File.CreateText(filePath);
