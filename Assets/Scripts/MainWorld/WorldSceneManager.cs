@@ -16,6 +16,7 @@ public enum World {
     Hallway,
     Office,
     Office2,
+    Desk,
     Interrogate
 }
 
