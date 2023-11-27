@@ -14,7 +14,8 @@ public class Paragraph
         CutScene : 컷씬
     */
     public string chatType = "Normal";    // 대사 타입
-    public List<CharacterCG> characters = new();  // 캐릭터 CG 리스트
+    public CharacterCG characterL = null;  // 왼쪽 캐릭터 CG
+    public CharacterCG characterR = null;   // 오른쪽 캐릭터 CG
     public string bgm = null;         // 배경음악
     public string action = null;    // 대화 후 반응
     public string actionParam = null;    // 반응 매개변수

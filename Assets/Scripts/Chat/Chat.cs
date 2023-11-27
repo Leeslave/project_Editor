@@ -24,11 +24,15 @@ public class Chat : MonoBehaviour
     private TMP_Text talkerInfo;    // 발화자 정보
     public TMP_Text text;           // 대화 내용
 
-    [Space(10)]
+    [Space(20)]
     [SerializeField]
     private GameObject choicePanel;     // 선택지 패널 (선택지 3개)
     [SerializeField]
     private GameObject optionPanel;     // 옵션 패널 (다시보기, 스킵)
+    [SerializeField]
+    private Image characterL;    // 왼쪽 캐릭터 CG
+    [SerializeField]
+    private Image characterR;    // 오른쪽 캐릭터 CG
 
     [Space(20)] 
     [Header("파일 경로")]
@@ -180,6 +184,16 @@ public class Chat : MonoBehaviour
     /// <param name="talkType">대사 타입</param>
     private void SetChatUI(string talkType)
     {
+        // CG 초기 설정
+        characterL.gameObject.SetActive(false);
+        characterR.gameObject.SetActive(false);
+        background.gameObject.SetActive(false);
+
+        // 패널들 초기 설정
+        talkPanel.SetActive(false);
+        choicePanel.gameObject.SetActive(false);
+        optionPanel.gameObject.SetActive(true);
+
         // 대화 타입에 맞춰 UI들 설정
         switch(talkType)
         {
@@ -188,7 +202,18 @@ public class Chat : MonoBehaviour
             case "EndChoice":
                 ChoiceParagraph choiceParagraph = chatList[index] as ChoiceParagraph;
 
-                /// TODO: 캐릭터 CG 활성화
+                // 캐릭터 CG 활성화
+                if (choiceParagraph.characterL != null)
+                {
+                    characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{choiceParagraph.characterL.fileName}_{choiceParagraph.characterL.index}");
+                    characterL.gameObject.SetActive(true);
+                }
+                if (choiceParagraph.characterR != null)
+                {
+                    characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{choiceParagraph.characterR.fileName}_{choiceParagraph.characterR.index}");
+                    characterR.gameObject.SetActive(true);
+                }
+
                 choicePanel.SetActive(true);    // 선택지 패널 활성화
                 optionPanel.SetActive(false);   // 옵션 패널 비활성화
 
@@ -226,10 +251,6 @@ public class Chat : MonoBehaviour
                 }
                 background.gameObject.SetActive(true);      // 배경 이미지 활성화
 
-                /// TODO: 캐릭터 CG 비활성화
-                choicePanel.SetActive(false);    // 선택지 패널 비활성화
-                optionPanel.SetActive(true);   // 옵션 패널 활성화 
-
                 // 대사 존재시 대사창 활성화
                 if (cutSceneParagraph.text != "")  
                 {
@@ -240,18 +261,24 @@ public class Chat : MonoBehaviour
                     text.fontSize = cutSceneParagraph.fontSize;   // 대사 크기 설정
                     text.text = "";             // 대사 초기화
                 }
-                else
-                    talkPanel.SetActive(false);  
                 break;
             
             /// 일반 대화 상태일때
             case "Normal":
                 NormalParagraph normalParagraph = chatList[index] as NormalParagraph;
 
-                /// 캐릭터 CG 활성화
-                background.gameObject.SetActive(false); // 배경 비활성화
-                choicePanel.SetActive(false);   // 선택지 패널 비활성화
-                optionPanel.SetActive(true);    // 옵션 패널 활성화 
+                // 캐릭터 CG 활성화
+                if (normalParagraph.characterL != null)
+                {
+                    characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{normalParagraph.characterL.fileName}", normalParagraph.characterL.index);
+                    characterL.gameObject.SetActive(true);
+                }
+                if (normalParagraph.characterR != null)
+                {
+                    characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{normalParagraph.characterR.fileName}", normalParagraph.characterR.index);
+                    characterR.gameObject.SetActive(true);
+                }
+                 
                 talkPanel.SetActive(true);      // 대화 패널 활성화
 
                 talkerName.text = normalParagraph.talker;     // 발화자 이름
@@ -411,7 +438,31 @@ public class Chat : MonoBehaviour
     /// <returns></returns>
     public static Sprite GetSprite(string filePath)
     {
+        Debug.Log($"Get Image : {filePath}");
         Sprite result = Resources.Load<Sprite>(filePath);
+
+        if (result == null)
+        {
+            Debug.Log($"Image Load Failed : {filePath}");
+        }
         return result;
+    }
+
+    /// <summary>
+    /// 멀티 스프라이트 이미지 불러오기
+    /// </summary>
+    /// <param name="filePath">이미지 경로</param>
+    /// <param name="i">멀티 이미지내 인덱스</param>
+    /// <returns></returns>
+    public static Sprite GetSprite(string filePath, int i)
+    {
+        Debug.Log($"Get Image : {filePath}");
+        Sprite[] result = Resources.LoadAll<Sprite>(filePath);
+
+        if (result == null)
+        {
+            Debug.Log($"Image Load Failed : {filePath}");
+        }
+        return result[i];
     }
 }
