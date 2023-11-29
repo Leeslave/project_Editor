@@ -102,6 +102,23 @@ public class LJWConverter : MonoBehaviour
     }
 
 
+    
+    /// <summary>
+    /// 제네릭 키에 대응하는 코루틴 밸류가 딕셔너리에 있는지 확인하고, 있다면 기존 코루틴을 종료시키고 딕셔너리에서 삭제한다
+    /// </summary>
+    /// <param name="dictionary"></param>
+    /// <param name="key"></param>
+    /// <typeparam name="T"></typeparam>
+    private void CheckAndStopCoroutine<T>(IDictionary<T, Coroutine> dictionary, T key)
+    {
+        if (!dictionary.TryGetValue(key, out var value)) 
+            return;
+        
+        StopCoroutine(value);
+        dictionary.Remove(key);
+    }
+    
+
 
     /// <summary>
     /// SpriteRenderer의 color를 wait동안 대기한 후에 duration동안 endColor로 선형 전환
@@ -144,6 +161,9 @@ public class LJWConverter : MonoBehaviour
     }
     private IEnumerator ConvertSpriteRendererColor_ScaledTime(float wait, float duration, float startTime, Color endColor, Color startColor, SpriteRenderer targetSpriteRenderer)
     {
+        if (!targetSpriteRenderer)
+            yield break;
+        
         //작업 개시로부터 지난 시간
         var pastDeltaTime = Time.time - startTime;
 
@@ -161,13 +181,11 @@ public class LJWConverter : MonoBehaviour
         else if(pastDeltaTime >= wait)//액티브
         {
             targetSpriteRenderer.color = Color.Lerp(startColor, endColor, Mathf.Max(0.01f, pastDeltaTime - wait) / duration);
-
+            
             yield return new WaitForSeconds(0.02f);
             SpriteRendererColorCoroutines[targetSpriteRenderer] = StartCoroutine(ConvertSpriteRendererColor_ScaledTime(wait, duration, startTime, endColor, startColor, targetSpriteRenderer));
         }
     }
-    
-    
     
     /// <summary>
     /// SpriteRenderer의 size를 wait동안 대기한 후에 duration동안 endSize로 선형 전환
@@ -232,8 +250,8 @@ public class LJWConverter : MonoBehaviour
             SpriteRendererSizeCoroutines[targetSpriteRenderer] = StartCoroutine(ConvertSpriteRendererSize_ScaledTime(wait, duration, startTime, endSize, startSize, targetSpriteRenderer));
         }
     }
-
-
+    
+    
     
     /// <summary>
     /// Image의 color를 wait동안 대기한 후에 duration동안 endColor로 선형 전환
@@ -365,8 +383,6 @@ public class LJWConverter : MonoBehaviour
         }
     }
     
-    
-    
     /// <summary>
     /// TextMeshPro의 fontSize를 wait동안 대기한 후에 duration동안 endSize로 선형 전환
     /// </summary>
@@ -431,8 +447,6 @@ public class LJWConverter : MonoBehaviour
         }
     }
     
-    
-    
     /// <summary>
     /// TextMeshPro의 text에 wait동안 대기한 후에 duration동안 value를 순차적으로 입력
     /// </summary>
@@ -489,15 +503,13 @@ public class LJWConverter : MonoBehaviour
             yield return new WaitForSeconds(0.02f);
             TMPPrintCoroutines[targetTMP] = StartCoroutine(PrintTMPByDuration_ScaledTime(wait, duration, startTime, idx, value, targetTMP));
         }
-        else if (pastDeltaTime >= wait)//액티브
+        else if (pastDeltaTime >= wait) //액티브
         {
             targetTMP.text += value[idx];
             yield return new WaitForSeconds(duration/value.Length);
             TMPPrintCoroutines[targetTMP] = StartCoroutine(PrintTMPByDuration_ScaledTime(wait, duration, startTime, idx + 1, value, targetTMP));   
         }
     }
-
-    
     
     /// <summary>
     /// TextMeshPro의 text에 wait동안 대기한 후에 delay간격으로 value를 순차적으로 입력
@@ -563,8 +575,6 @@ public class LJWConverter : MonoBehaviour
         }
     }
     
-    
-    
     /// <summary>
     /// TextMeshPro에 진행 중인 출력 작업 정지 
     /// </summary>
@@ -578,8 +588,6 @@ public class LJWConverter : MonoBehaviour
         TMPPrintCoroutines.Remove(targetTMP);
     }
     
-    
-    
     /// <summary>
     /// TextMeshPro에 진행 중인 출력 작업 유무
     /// </summary>
@@ -589,9 +597,9 @@ public class LJWConverter : MonoBehaviour
     {
         return TMPPrintCoroutines.ContainsKey(targetTMP);
     }
-
-
-
+    
+    
+    
     /// <summary>
     /// TextMeshProUGUI의 color를 wait동안 대기한 후에 duration동안 endColor로 선형 전환
     /// </summary>
@@ -653,8 +661,6 @@ public class LJWConverter : MonoBehaviour
             UGUIColorCoroutine[targetUGUI] = StartCoroutine(ConvertUGUIColor_ScaledTime(wait, duration, startTime, endColor, startColor, targetUGUI));
         }
     }
-
-    
     
     /// <summary>
     /// TextMeshProUGUI의 fontSize wait동안 대기한 후에 duration동안 endSize로 선형 전환
@@ -717,8 +723,6 @@ public class LJWConverter : MonoBehaviour
             UGUIFontSizeCoroutines[targetUGUI] = StartCoroutine(ConvertUGUIFontSize_ScaledTime(wait, duration, startTime, endSize, startSize, targetUGUI));
         }
     }
-    
-    
     
     /// <summary>
     /// TextMeshProUGUI의 text에 wait동안 대기한 후에 duration동안 value를 순차적으로 입력
@@ -783,8 +787,6 @@ public class LJWConverter : MonoBehaviour
             UGUIPrintCoroutines[targetUGUI] = StartCoroutine(PrintUGUIByDuration_ScaledTime(wait, duration, startTime, idx + 1, value, targetUGUI));   
         }
     }
-
-    
     
     /// <summary>
     /// TextMeshProUGUI의 text에 wait동안 대기한 후에 delay간격으로 value를 순차적으로 입력
@@ -850,8 +852,6 @@ public class LJWConverter : MonoBehaviour
         }
     }
     
-    
-    
     /// <summary>
     /// TextMeshProUGUI에 진행 중인 출력 작업 정지 
     /// </summary>
@@ -864,8 +864,6 @@ public class LJWConverter : MonoBehaviour
         StopCoroutine(UGUIPrintCoroutines[targetUGUI]);
         UGUIPrintCoroutines.Remove(targetUGUI);
     }
-    
-    
     
     /// <summary>
     /// TextMeshProUGUI에 진행 중인 출력 작업 유무

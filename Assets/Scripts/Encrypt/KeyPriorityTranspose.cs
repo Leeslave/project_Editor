@@ -3,9 +3,9 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
-public class Transpose_ForGame : MonoBehaviour
+public class KeyPriorityTranspose : MonoBehaviour
 {
-    private ADFGVXSceneManager_ForGame SceneManager;
+    private ADFGVXGameManager _gameManager;
 
     public BasicText Title { get; set; }
     public BasicInputField KeyInputField { get; set; }
@@ -22,7 +22,7 @@ public class Transpose_ForGame : MonoBehaviour
 
     private void Awake()
     {
-        SceneManager = FindObjectOfType<ADFGVXSceneManager_ForGame>();
+        _gameManager = FindObjectOfType<ADFGVXGameManager>();
 
         Title = this.transform.GetChild(0).GetComponent<BasicText>();
         KeyInputField = this.transform.GetChild(1).GetComponent<BasicInputField>();
@@ -46,16 +46,8 @@ public class Transpose_ForGame : MonoBehaviour
         KeyPriority.TextTMP.text = "_ _ _ _ _ _ _ _ _";
         ClearTransposedMatrix();
         ReverseTransposeLines.Initialize();
-        
-        switch (SceneManager.CurrentSystemMode)
-        {
-            case ADFGVXSceneManager_ForGame.SystemMode.Decryption:
-                ReverseTransposeLines.gameObject.SetActive(false);
-                break;
-            case ADFGVXSceneManager_ForGame.SystemMode.Encryption:
-                ReverseTransposeLines.gameObject.SetActive(true);
-                break;
-        }
+
+        ReverseTransposeLines.SetAvailability(_gameManager.CurrentSystemMode != ADFGVXGameManager.SystemMode.Decryption);
     }
 
     /// <summary>
@@ -63,14 +55,10 @@ public class Transpose_ForGame : MonoBehaviour
     /// </summary>
     /// <param name="wait"> 대기 시간 </param>
     /// <param name="duration"> 차단 시간 </param>
-    public IEnumerator CutOffInputForWhile(float wait, float duration)
+    public void CutAvailabilityInputForWhile(float wait, float duration)
     {
-        yield return new WaitForSeconds(wait);
-        KeyInputField.SetAvailable(false);
-        ReverseTransposeLines.SetAvailable(false);
-        yield return new WaitForSeconds(duration);
-        KeyInputField.SetAvailable(true);
-        ReverseTransposeLines.SetAvailable(true);
+        KeyInputField.CutAvailabilityForWhile(wait, duration);
+        ReverseTransposeLines.CutAvailabilityForWhile(wait, duration);
     }
     
     /// <summary>
@@ -79,8 +67,8 @@ public class Transpose_ForGame : MonoBehaviour
     /// <param name="value"> 가능 여부 </param>
     public void SetAvailable(bool value)
     {
-        KeyInputField.SetAvailable(value);
-        ReverseTransposeLines.SetAvailable(value);
+        KeyInputField.SetAvailability(value);
+        ReverseTransposeLines.SetAvailability(value);
     }
     
     /// <summary>
@@ -122,26 +110,19 @@ public class Transpose_ForGame : MonoBehaviour
             //키의 길이는 0이나 1이 될 수 없다
             ReverseTransposeLines.InputFieldTMP.color = new Color(1f, 0.3f, 0.3f, 1f);
             ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * 9, 82f);
-            ReverseTransposeLines.InputFieldTMP.characterSpacing = 0.0f;
-            ReverseTransposeLines.InputFieldTMP.text = "길이가 0, 1인 키는 사용할 수 없습니다!";
         }
-        else if((ReverseTransposeLines.StringBuffer.Length != 2 * SceneManager.WritePlain.PlainTextBody.StringBuffer.Length) || (ReverseTransposeLines.StringBuffer.Length % value.Length != 0))
+        else if((ReverseTransposeLines.StringBuffer.Length != 2 * _gameManager.WritePlain.PlainTextBody.StringBuffer.Length) || (ReverseTransposeLines.StringBuffer.Length % value.Length != 0))
         {
             //평문 전체를 전치하지 못했거나 키값이 유효하지 않다면
             ReverseTransposeLines.InputFieldTMP.color = new Color(1f, 0.3f, 0.3f, 1f);
             ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * value.Length, 82f);
-            ReverseTransposeLines.InputFieldTMP.characterSpacing = 37.5f;
-            ReverseTransposeLines.InputFieldTMP.text = ReverseTransposeLines.StringBuffer;
         }
         else
         {
             //색을 통해서 플레이어에게 현재 역전치 내용이 유효함을 알린다
             ReverseTransposeLines.InputFieldTMP.color = new Color(0.3f, 1f, 0.3f, 1f);
             ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * value.Length, 82f);
-            ReverseTransposeLines.InputFieldTMP.characterSpacing = 37.5f;
-            ReverseTransposeLines.InputFieldTMP.text = ReverseTransposeLines.StringBuffer;
         }
-        
     }
 
     /// <summary>
@@ -149,15 +130,15 @@ public class Transpose_ForGame : MonoBehaviour
     /// </summary>
     public void OnTransposeDown()
     {
-        switch (SceneManager.CurrentSystemMode)
+        switch (_gameManager.CurrentSystemMode)
         {
-            case ADFGVXSceneManager_ForGame.SystemMode.Decryption: 
+            case ADFGVXGameManager.SystemMode.Decryption: 
             {
                 KeyInputField.IsReadyForInput = false;
                 KeyInputField.IsFlash = false;
                 
                 //빈칸을 제거하여 반환
-                var encryptedText = SceneManager.LoadEncrypted.EncryptedTextBody.TextTMP.text.Replace(" ", "");
+                var encryptedText = _gameManager.LoadEncrypted.EncryptedTextBody.TextTMP.text.Replace(" ", "");
                 
                 
                 var key = KeyInputField.StringBuffer;
@@ -197,14 +178,14 @@ public class Transpose_ForGame : MonoBehaviour
                 StartCoroutine(CircumventRow(0));
         
                 //복호화해야하는 순서 계산하여 출력
-                SceneManager.BilateralSubstitute.UpdateTransposedTextDisplayAndTable();
+                _gameManager.BilateralSubstitute.UpdateTransposedTextDisplayAndTable();
 
                 //전치가 완료될 때까지 전체 입력 차단
-                SceneManager.CutOffInputForWhile(0f, (RowLength + LineLength) * 0.1f);
+                _gameManager.CutAvailabilityInputForWhile(0f, (RowLength + LineLength) * 0.1f);
                 
                 break;
             }
-            case ADFGVXSceneManager_ForGame.SystemMode.Encryption: 
+            case ADFGVXGameManager.SystemMode.Encryption: 
             {
                 KeyInputField.IsReadyForInput = false;
                 KeyInputField.IsFlash = false;

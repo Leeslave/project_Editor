@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
@@ -32,19 +34,33 @@ public class BasicButton : MonoBehaviour
     }
     
     /// <summary>
-    /// 사용 가능 여부를 결정한다
+    /// 버튼에 대한 접근성을 설정한다
     /// </summary>
     /// <param name="value"> 사용 가능 여부 </param>
-    public void SetAvailable(bool value)
+    public void SetAvailability(bool value)
     {
-        //초기화
         ButtonFill.color = Exit;
-        //value에 따라서 버튼 사용 가능 여부가 결정된다
         IsActive = value;
-        //항상 false로 설정해야 차단이 풀리는 순간 새롭게 Enter 이벤트가 발생한다
         IsMouseOver = false;
     }
 
+    /// <summary>
+    /// wait 이후에 버튼에 대한 접근성을 차단하고, 차단 시점에서 duration 이후에 회복한다
+    /// </summary>
+    /// <param name="wait"></param>
+    /// <param name="duration"></param>
+    public void CutAvailabilityForWhile(float wait, float duration)
+    {
+        StartCoroutine(CutAvailabilityForWhile_IE(wait, duration));
+    }
+    private IEnumerator CutAvailabilityForWhile_IE(float wait, float duration)
+    {
+        yield return new WaitForSeconds(wait);
+        SetAvailability(false);
+        yield return new WaitForSeconds(duration);
+        SetAvailability(true);
+    }
+    
     /// <summary>
     /// 마우스 Down
     /// </summary>

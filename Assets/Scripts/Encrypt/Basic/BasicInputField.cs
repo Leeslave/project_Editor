@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
-using Unity.VisualScripting;
 
 public class BasicInputField : MonoBehaviour
 {
@@ -39,7 +38,7 @@ public class BasicInputField : MonoBehaviour
     public string StringBuffer { get; set; } = "";
     public bool IsReadyForInput { get; set; }
     public bool IsFlash { get; set; } = false;
-    public bool SkipFlash { get; set; }
+    private bool SkipFlash { get; set; }
     
     private void Awake()
     {
@@ -55,6 +54,9 @@ public class BasicInputField : MonoBehaviour
         StartCoroutine(StartFlashInputField());
     }
     
+    /// <summary>
+    /// 인풋 필드 초기화
+    /// </summary>
     public void Initialize()
     {
         StringBuffer = "";
@@ -62,10 +64,10 @@ public class BasicInputField : MonoBehaviour
     }
 
     /// <summary>
-    /// 입력 가능 여부를 결정한다
+    /// 인풋 필드에 대한 접근성을 설정한다
     /// </summary>
-    /// <param name="value"> 입력 가능 여부 </param>
-    public void SetAvailable(bool value)
+    /// <param name="value"> 사용 가능 여부 </param>
+    public void SetAvailability(bool value)
     {
         //초기화
         InputFieldFill.color = Exit;
@@ -75,6 +77,23 @@ public class BasicInputField : MonoBehaviour
         IsMouseOver = false;
     }
 
+    /// <summary>
+    /// wait 이후에 인풋 필드에 대한 접근성을 차단하고, 차단 시점에서 duration 이후에 회복한다
+    /// </summary>
+    /// <param name="wait"></param>
+    /// <param name="duration"></param>
+    public void CutAvailabilityForWhile(float wait, float duration)
+    {
+        StartCoroutine(CutAvailabilityForWhile_IE(wait, duration));
+    }
+    private IEnumerator CutAvailabilityForWhile_IE(float wait, float duration)
+    {
+        yield return new WaitForSeconds(wait);
+        SetAvailability(false);
+        yield return new WaitForSeconds(duration);
+        SetAvailability(true);
+    }
+    
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -174,7 +193,7 @@ public class BasicInputField : MonoBehaviour
         OnDeleteInputField.Invoke();
     }
 
-    public void ReturnInputField()
+    public virtual void ReturnInputField()
     {
         OnReturnInputField.Invoke();
         

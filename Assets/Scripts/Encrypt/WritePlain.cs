@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class WritePlain_ForGame : MonoBehaviour
+public class WritePlain : MonoBehaviour
 { 
     
     
@@ -30,12 +30,9 @@ public class WritePlain_ForGame : MonoBehaviour
     /// </summary>
     /// <param name="wait"> 대기 시간 </param>
     /// <param name="duration"> 차단 시간 </param>
-    public IEnumerator CutOffInputForWhile(float wait, float duration)
+    public void CutAvailabilityInputForWhile(float wait, float duration)
     {
-        yield return new WaitForSeconds(wait);
-        PlainTextBody.SetAvailable(false);
-        yield return new WaitForSeconds(duration);
-        PlainTextBody.SetAvailable(true);
+        PlainTextBody.CutAvailabilityForWhile(wait, duration);
     }
 
     /// <summary>
@@ -44,7 +41,7 @@ public class WritePlain_ForGame : MonoBehaviour
     /// <param name="value"> 가능 여부 </param>
     public void SetAvailable(bool value)
     {
-        PlainTextBody.SetAvailable(value);
+        PlainTextBody.SetAvailability(value);
     }
     
     public void CalculateKeyLength()

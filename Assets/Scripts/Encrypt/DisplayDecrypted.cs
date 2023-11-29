@@ -1,11 +1,12 @@
 using System;
 using System.Collections;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class DisplayDecrypted_ForGame : MonoBehaviour
+public class DisplayDecrypted : MonoBehaviour
 {
-    public ADFGVXSceneManager_ForGame SceneManager { get; set; }
+    public ADFGVXGameManager GameManager { get; set; }
 
     public BasicText Title { get; set; }
     public BasicText DecryptedTextTitle { get; set; }
@@ -17,7 +18,7 @@ public class DisplayDecrypted_ForGame : MonoBehaviour
 
     private void Awake()
     {
-        SceneManager = FindObjectOfType<ADFGVXSceneManager_ForGame>();
+        GameManager = FindObjectOfType<ADFGVXGameManager>();
 
         Title = this.transform.GetChild(0).GetComponent<BasicText>();
         DecryptedTextTitle = this.transform.GetChild(1).GetComponent<BasicText>();
@@ -47,14 +48,10 @@ public class DisplayDecrypted_ForGame : MonoBehaviour
     /// </summary>
     /// <param name="wait"> 대기 시간 </param>
     /// <param name="duration"> 차단 시간 </param>
-    public IEnumerator CutOffInputForWhile(float wait, float duration)
+    public void CutAvailabilityInputForWhile(float wait, float duration)
     {
-        yield return new WaitForSeconds(wait);
-        DecryptedTextBody.SetAvailable(false);
-        SaveButton.SetAvailable(false);
-        yield return new WaitForSeconds(duration);
-        DecryptedTextBody.SetAvailable(true);
-        SaveButton.SetAvailable(true);
+        DecryptedTextBody.CutAvailabilityForWhile(wait, duration);
+        SaveButton.CutAvailabilityForWhile(wait, duration);
     }
     
     /// <summary>
@@ -63,8 +60,8 @@ public class DisplayDecrypted_ForGame : MonoBehaviour
     /// <param name="value"> 가능 여부 </param>
     public void SetAvailable(bool value)
     {
-        DecryptedTextBody.SetAvailable(value);
-        SaveButton.SetAvailable(value);
+        DecryptedTextBody.SetAvailability(value);
+        SaveButton.SetAvailability(value);
     }
     
     /// <summary>
@@ -73,7 +70,7 @@ public class DisplayDecrypted_ForGame : MonoBehaviour
     public void SaveDecryptedTextFile()
     {
         //복호화 연출을 띄우고 성공 실패 여부에 따라서 리턴
-        if (!SceneManager.ResultPanel.PrintDecryptionResult())
+        if (!GameManager.ResultPanel.PrintDecryptionResult())
             return;
         
         var filePath = "Assets/Resources/GameData/Encrypt/Decrypted/" + DecryptedTextTitle.TextTMP.text + ".txt";

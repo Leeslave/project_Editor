@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
-public class BilateralSubstitute_ForGame : MonoBehaviour
+public class BilateralSubstitute : MonoBehaviour
 {
-    public ADFGVXSceneManager_ForGame SceneManager { get; set; }
+    public ADFGVXGameManager GameManager { get; set; }
 
     public BasicText Title { get; set; }
     public BasicText CurrentTableNumDisplay { get; set; }
@@ -34,7 +34,7 @@ public class BilateralSubstitute_ForGame : MonoBehaviour
     
     private void Awake()
     {
-        SceneManager = FindObjectOfType<ADFGVXSceneManager_ForGame>();
+        GameManager = FindObjectOfType<ADFGVXGameManager>();
 
         Title = this.transform.GetChild(0).GetComponent<BasicText>();
         CurrentTableNumDisplay = this.transform.GetChild(1).GetComponent<BasicText>();
@@ -72,14 +72,10 @@ public class BilateralSubstitute_ForGame : MonoBehaviour
     /// </summary>
     /// <param name="wait"> 대기 시간 </param>
     /// <param name="duration"> 차단 시간 </param>
-    public IEnumerator CutOffInputForWhile(float wait, float duration)
+    public void CutAvailabilityInputForWhile(float wait, float duration)
     {
-        yield return new WaitForSeconds(wait);
-        NextTableButton.SetAvailable(false);
-        BeforeTableButton.SetAvailable(false);
-        yield return new WaitForSeconds(duration);
-        NextTableButton.SetAvailable(true);
-        BeforeTableButton.SetAvailable(true);
+        NextTableButton.CutAvailabilityForWhile(wait, duration);
+        BeforeTableButton.CutAvailabilityForWhile(wait, duration);
     }
     
     /// <summary>
@@ -88,8 +84,8 @@ public class BilateralSubstitute_ForGame : MonoBehaviour
     /// <param name="value"> 가능 여부 </param>
     public void SetAvailable(bool value)
     {
-        NextTableButton.SetAvailable(value);
-        BeforeTableButton.SetAvailable(value);
+        NextTableButton.SetAvailability(value);
+        BeforeTableButton.SetAvailability(value);
     }
     
     /// <summary>
@@ -97,12 +93,12 @@ public class BilateralSubstitute_ForGame : MonoBehaviour
     /// </summary>
     public void UpdateTransposedTextDisplayAndTable()
     {
-        switch (SceneManager.CurrentSystemMode)
+        switch (GameManager.CurrentSystemMode)
         {
-            case ADFGVXSceneManager_ForGame.SystemMode.Decryption: 
+            case ADFGVXGameManager.SystemMode.Decryption: 
             { 
                 //복호화 해야하는 전치된 텍스트를 불러온다
-                var transposedText = SceneManager.Transpose.CurrentTransposedText;
+                var transposedText = GameManager.KeyPriorityTranspose.CurrentTransposedText;
                
                 //전치된 텍스트가 없으면 종료
                 if (transposedText == "")
@@ -112,10 +108,10 @@ public class BilateralSubstitute_ForGame : MonoBehaviour
                 }
 
                 //역전치 라인에 필요 이상의 인풋이 들어가지 않도록 막는다
-                SceneManager.DisplayDecrypted.DecryptedTextBody.MaxInputLength = transposedText.Length / 2;
+                GameManager.DisplayDecrypted.DecryptedTextBody.MaxInputLength = transposedText.Length / 2;
 
                 //현재까지 복호화한 내용의 길이
-                var length = SceneManager.DisplayDecrypted.DecryptedTextBody.StringBuffer.Length;
+                var length = GameManager.DisplayDecrypted.DecryptedTextBody.StringBuffer.Length;
                 
                 //현재까지 진행된 복호화 정도에 따라서 작업
                 if (2 * length >= transposedText.Length)
@@ -163,10 +159,10 @@ public class BilateralSubstitute_ForGame : MonoBehaviour
         
                 break;
             }
-            case ADFGVXSceneManager_ForGame.SystemMode.Encryption:
+            case ADFGVXGameManager.SystemMode.Encryption:
             {
                 //암호화 해야하는 평문을 불러온다
-                var plainText = SceneManager.WritePlain.PlainTextBody.StringBuffer;
+                var plainText = GameManager.WritePlain.PlainTextBody.StringBuffer;
                 
                 //평문 텍스트가 없으면 종료
                 if (plainText == "")
@@ -176,10 +172,10 @@ public class BilateralSubstitute_ForGame : MonoBehaviour
                 }
                 
                 //역전치 라인에 필요 이상의 인풋이 들어가지 않도록 막는다
-                SceneManager.Transpose.ReverseTransposeLines.MaxInputLength = plainText.Length * 2;
+                GameManager.KeyPriorityTranspose.ReverseTransposeLines.MaxInputLength = plainText.Length * 2;
                 
                 //현재까지 역전치한 내용의 길이
-                var length = SceneManager.Transpose.ReverseTransposeLines.StringBuffer.Length;
+                var length = GameManager.KeyPriorityTranspose.ReverseTransposeLines.StringBuffer.Length;
 
                 //현재까지 진행된 암호화 정도에 따라서 작업
                 if (length >= plainText.Length * 2)

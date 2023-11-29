@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using UnityEngine;
 using System.IO;
+using Unity.VisualScripting;
 
-public class LoadEncrypted_ForGame : MonoBehaviour
+public class LoadEncrypted : MonoBehaviour
 {
-    private ADFGVXSceneManager_ForGame SceneManager;
+    private ADFGVXGameManager _gameManager;
     
     public BasicText Title { get; set; }
     public BasicInputField EncryptedTextTitle { get; set; }
@@ -15,7 +16,7 @@ public class LoadEncrypted_ForGame : MonoBehaviour
 
     private void Awake()
     {
-        SceneManager = FindObjectOfType<ADFGVXSceneManager_ForGame>();
+        _gameManager = FindObjectOfType<ADFGVXGameManager>();
         
         Title = this.transform.GetChild(0).GetComponent<BasicText>();
         EncryptedTextTitle = this.transform.GetChild(1).GetComponent<BasicInputField>();
@@ -42,12 +43,9 @@ public class LoadEncrypted_ForGame : MonoBehaviour
     /// </summary>
     /// <param name="wait"> 대기 시간 </param>
     /// <param name="duration"> 차단 시간 </param>
-    public IEnumerator CutOffInputForWhile(float wait, float duration)
+    public void CutAvailabilityInputForWhile(float wait, float duration)
     {
-        yield return new WaitForSeconds(wait);
-        EncryptedTextTitle.SetAvailable(false);
-        yield return new WaitForSeconds(duration);
-        EncryptedTextTitle.SetAvailable(true);
+        EncryptedTextTitle.CutAvailabilityForWhile(wait, duration);
     }
     
     /// <summary>
@@ -56,7 +54,7 @@ public class LoadEncrypted_ForGame : MonoBehaviour
     /// <param name="value"> 가능 여부 </param>
     public void SetAvailable(bool value)
     {
-        EncryptedTextTitle.SetAvailable(value);
+        EncryptedTextTitle.SetAvailability(value);
     }
     
     /// <summary>
@@ -71,8 +69,8 @@ public class LoadEncrypted_ForGame : MonoBehaviour
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, reader.ReadLine(), true, EncryptedTextBody.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, reader.ReadLine(), true, EncryptedTextWriter.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, reader.ReadLine(), true, EncryptedTextDate.TextTMP);
-            LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, "Decrypted-" + EncryptedTextTitle.StringBuffer, true, SceneManager.DisplayDecrypted.DecryptedTextTitle.TextTMP);
-            SceneManager.CutOffInputForWhile(0f, 1.5f);
+            LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, "Decrypted-" + EncryptedTextTitle.StringBuffer, true, _gameManager.DisplayDecrypted.DecryptedTextTitle.TextTMP);
+            _gameManager.CutAvailabilityInputForWhile(0f, 1.5f);
             reader.Close();   
         }
         else

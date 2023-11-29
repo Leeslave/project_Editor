@@ -6,9 +6,9 @@ using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class ResultPanel_ForGame : MonoBehaviour
+public class ResultPanel : MonoBehaviour
 {
-    public ADFGVXSceneManager_ForGame SceneManager { get; set; }
+    public ADFGVXGameManager GameManager { get; set; }
     
     public BasicButton CloseButton { get; set; }
     public TextMeshPro Title { get; set; }
@@ -16,7 +16,7 @@ public class ResultPanel_ForGame : MonoBehaviour
     
     private void Awake()
     {
-        SceneManager = GameObject.FindObjectOfType<ADFGVXSceneManager_ForGame>();
+        GameManager = GameObject.FindObjectOfType<ADFGVXGameManager>();
         
         CloseButton = this.transform.GetChild(0).GetComponent<BasicButton>();
         Title = this.transform.GetChild(1).GetChild(0).GetComponent<TextMeshPro>();
@@ -26,48 +26,48 @@ public class ResultPanel_ForGame : MonoBehaviour
     public void ClosePanel()
     {
         this.transform.position = new Vector3(-350f, 0f, 0f);
-        SceneManager.SetAvailable(true);
+        GameManager.SetAvailable(true);
     }
 
     public bool PrintDecryptionResult()
     {
-        CloseButton.SetAvailable(false);
+        CloseButton.SetAvailability(false);
 
-        if (SceneManager.LoadEncrypted.EncryptedTextBody.TextTMP.text == "")
+        if (GameManager.LoadEncrypted.EncryptedTextBody.TextTMP.text == "")
         {
             StartCoroutine(PrintDecryptionFailed_IE("복호화하고 싶은 파일을 로드하지 않았습니다!"));
             return false;
         }
 
-        if (SceneManager.Transpose.KeyInputField.StringBuffer == "")
+        if (GameManager.KeyPriorityTranspose.KeyInputField.StringBuffer == "")
         {
             StartCoroutine(PrintDecryptionFailed_IE("복호화 키를 입력하지 않았습니다!"));
             return false;
         }
         
-        if (SceneManager.Transpose.TransposeLines[0].text == "")
+        if (GameManager.KeyPriorityTranspose.TransposeLines[0].text == "")
         {
             StartCoroutine(PrintDecryptionFailed_IE("키 순위 전치가 실행되지 않았습니다!"));
             return false;
         }
         
-        if (SceneManager.DisplayDecrypted.DecryptedTextBody.StringBuffer == "")
+        if (GameManager.DisplayDecrypted.DecryptedTextBody.StringBuffer == "")
         {
             StartCoroutine(PrintDecryptionFailed_IE("ADFGVX 테이블에 따른 이중 문자 치환을 하지 않았습니다!"));
             return false;
         }
 
         //플레이어가 로드한 암호화된 텍스트
-        var encryptedText = SceneManager.LoadEncrypted.EncryptedTextBody.TextTMP.text.Replace(" ", "");
+        var encryptedText = GameManager.LoadEncrypted.EncryptedTextBody.TextTMP.text.Replace(" ", "");
         //키 순위에서 빈칸 및 언더라인 제거
-        var keyPriority = SceneManager.Transpose.KeyPriority.TextTMP.text.Replace(" ", "");
+        var keyPriority = GameManager.KeyPriorityTranspose.KeyPriority.TextTMP.text.Replace(" ", "");
         keyPriority = keyPriority.Replace("_", "");
         //키 순위에 따라서 전치한 텍스트
         string[] orderedText = new string[keyPriority.Length];
         var transposedText = "";
         //복호화 텍스트
-        var table = SceneManager.BilateralSubstitute.TableElements;
-        var dic = SceneManager.BilateralSubstitute.LineRowDecode;
+        var table = GameManager.BilateralSubstitute.TableElements;
+        var dic = GameManager.BilateralSubstitute.LineRowDecode;
         var decryptedText = "";
 
         //일시적인 저장 공간으로 전치
@@ -91,7 +91,7 @@ public class ResultPanel_ForGame : MonoBehaviour
 
         Debug.Log(decryptedText);
 
-        if(decryptedText != SceneManager.DisplayDecrypted.DecryptedTextBody.StringBuffer)
+        if(decryptedText != GameManager.DisplayDecrypted.DecryptedTextBody.StringBuffer)
         {
             StartCoroutine(PrintDecryptionFailed_IE("복호화 데이터 무결성 검사를 통과하지 못했습니다!"));
             return false;
@@ -105,7 +105,7 @@ public class ResultPanel_ForGame : MonoBehaviour
     {
         //결과 창 이동
         this.transform.localPosition = new Vector3(-57f, 17f, 0f);
-        SceneManager.SetAvailable(false);
+        GameManager.SetAvailable(false);
 
         Result.text = "";
         
@@ -147,14 +147,14 @@ public class ResultPanel_ForGame : MonoBehaviour
         Result.text += "\n";
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, "복호화 파일을 저장했습니다!", false, Result);
 
-        CloseButton.SetAvailable(true);
+        CloseButton.SetAvailability(true);
     }
 
     private IEnumerator PrintDecryptionFailed_IE(string error)
     {
         //결과 창 이동
         this.transform.localPosition = new Vector3(-57f, 17f, 0f);
-        SceneManager.SetAvailable(false);
+        GameManager.SetAvailable(false);
 
         Result.text = "";
         
@@ -196,51 +196,51 @@ public class ResultPanel_ForGame : MonoBehaviour
         Result.text += "\n";
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, error, false, Result);
 
-        CloseButton.SetAvailable(true);
+        CloseButton.SetAvailability(true);
     }
 
     public bool PrintEncryptionResult()
     {
-        CloseButton.SetAvailable(false);
+        CloseButton.SetAvailability(false);
         
-        if (SceneManager.WritePlain.PlainTextBody.StringBuffer == "")
+        if (GameManager.WritePlain.PlainTextBody.StringBuffer == "")
         {
             StartCoroutine(PrintEncryptionFailed_IE("암호화 하고 싶은 평문을 입력하지 않았습니다!"));
             return false;
         }
 
-        if (SceneManager.Transpose.KeyInputField.StringBuffer == "")
+        if (GameManager.KeyPriorityTranspose.KeyInputField.StringBuffer == "")
         {
             StartCoroutine(PrintEncryptionFailed_IE("암호화 키를 입력하지 않았습니다!"));
             return false;
         }
         
-        if (SceneManager.Transpose.ReverseTransposeLines.StringBuffer == "")
+        if (GameManager.KeyPriorityTranspose.ReverseTransposeLines.StringBuffer == "")
         {
             StartCoroutine(PrintEncryptionFailed_IE("ADFGVX 테이블에 따른 이중 문자 치환을 하지 않았습니다!"));
             return false;
         }
 
-        if (SceneManager.DisplayEncrypted.EncryptedTextBody.StringBuffer == "")
+        if (GameManager.DisplayEncrypted.EncryptedTextBody.StringBuffer == "")
         {
             StartCoroutine(PrintEncryptionFailed_IE("키 순위 전치가 실행되지 않았습니다!"));
             return false;
         }
 
-        if (SceneManager.DisplayEncrypted.EncryptedTextTitle.StringBuffer == "")
+        if (GameManager.DisplayEncrypted.EncryptedTextTitle.StringBuffer == "")
         {
             StartCoroutine(PrintEncryptionFailed_IE("복호화 데이터를 저장할 파일 이름을 입력하지 않았습니다!"));
             return false;
         }
         
         //플레이어가 작성한 평문
-        var plainText = SceneManager.WritePlain.PlainTextBody.StringBuffer;
+        var plainText = GameManager.WritePlain.PlainTextBody.StringBuffer;
         //키 순위에서 빈칸 및 언더라인 제거
-        var keyPriority = SceneManager.Transpose.KeyPriority.TextTMP.text.Replace(" ", "");
+        var keyPriority = GameManager.KeyPriorityTranspose.KeyPriority.TextTMP.text.Replace(" ", "");
         keyPriority = keyPriority.Replace("_", "");
         //테이블에 의해서 치환된 텍스트
         string[] adfgvx = { "A", "D", "F", "G", "V", "X" };
-        var table = SceneManager.BilateralSubstitute.TableElements;
+        var table = GameManager.BilateralSubstitute.TableElements;
         var tabledText = "";
         //키 순위에 의해서 전치된 텍스트
         string[] orderedText = new string[keyPriority.Length];
@@ -255,7 +255,7 @@ public class ResultPanel_ForGame : MonoBehaviour
                 if (plainText[i].ToString() == table[j].TextTMP.text)
                     tabledText += adfgvx[j / 6] + adfgvx[j % 6];
         
-        if (tabledText != SceneManager.Transpose.ReverseTransposeLines.StringBuffer)
+        if (tabledText != GameManager.KeyPriorityTranspose.ReverseTransposeLines.StringBuffer)
         {
             StartCoroutine(PrintEncryptionFailed_IE("이중 문자 치환 결과가 유효하지 않습니다!"));
             return false;
@@ -270,7 +270,7 @@ public class ResultPanel_ForGame : MonoBehaviour
         for (var i = 0; i < orderedText.Length; i++)
             encryptionResult += orderedText[i];
 
-        if (encryptionResult != SceneManager.DisplayEncrypted.EncryptedTextBody.StringBuffer.Replace(" ", ""))
+        if (encryptionResult != GameManager.DisplayEncrypted.EncryptedTextBody.StringBuffer.Replace(" ", ""))
         {
             StartCoroutine(PrintEncryptionFailed_IE("암호화 데이터 무결성 검사를 통과하지 못했습니다!"));
             return false;
@@ -285,7 +285,7 @@ public class ResultPanel_ForGame : MonoBehaviour
     {
         //결과 창 이동
         this.transform.localPosition = new Vector3(-57f, 17f, 0f);
-        SceneManager.SetAvailable(false);
+        GameManager.SetAvailable(false);
 
         Result.text = "";
         
@@ -327,14 +327,14 @@ public class ResultPanel_ForGame : MonoBehaviour
         Result.text += "\n";
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, "암호화 파일을 저장했습니다!", false, Result);
 
-        CloseButton.SetAvailable(true);
+        CloseButton.SetAvailability(true);
     }
 
     private IEnumerator PrintEncryptionFailed_IE(string error)
     { 
         //결과 창 이동
         this.transform.localPosition = new Vector3(-57f, 17f, 0f);
-        SceneManager.SetAvailable(false);
+        GameManager.SetAvailable(false);
 
         Result.text = "";
         
@@ -376,7 +376,7 @@ public class ResultPanel_ForGame : MonoBehaviour
         Result.text += "\n";
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, error, false, Result);
 
-        CloseButton.SetAvailable(true);
+        CloseButton.SetAvailability(true);
     }
     
 }

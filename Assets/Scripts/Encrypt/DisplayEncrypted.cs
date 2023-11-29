@@ -2,9 +2,9 @@ using System.Collections;
 using System.IO;
 using UnityEngine;
 
-public class DisplayEncrypted_ForGame : MonoBehaviour
+public class DisplayEncrypted : MonoBehaviour
 {
-    public ADFGVXSceneManager_ForGame SceneManager { get; set; }
+    public ADFGVXGameManager GameManager { get; set; }
     
     public BasicText Title { get; set; }
     public BasicInputField EncryptedTextTitle { get; set; }
@@ -15,7 +15,7 @@ public class DisplayEncrypted_ForGame : MonoBehaviour
 
     private void Awake()
     {
-        SceneManager = GameObject.FindObjectOfType<ADFGVXSceneManager_ForGame>();
+        GameManager = GameObject.FindObjectOfType<ADFGVXGameManager>();
         
         Title = this.transform.GetChild(0).GetComponent<BasicText>();
         EncryptedTextTitle = this.transform.GetChild(1).GetComponent<BasicInputField>();
@@ -41,16 +41,11 @@ public class DisplayEncrypted_ForGame : MonoBehaviour
     /// </summary>
     /// <param name="wait"> 대기 시간 </param>
     /// <param name="duration"> 차단 시간 </param>
-    public IEnumerator CutOffInputForWhile(float wait, float duration)
+    public void CutAvailabilityInputForWhile(float wait, float duration)
     {
-        yield return new WaitForSeconds(wait);
-        EncryptedTextTitle.SetAvailable(false);
-        EncryptedTextBody.SetAvailable(false);
-        SaveButton.SetAvailable(false);
-        yield return new WaitForSeconds(duration);
-        EncryptedTextTitle.SetAvailable(true);
-        EncryptedTextBody.SetAvailable(true);
-        SaveButton.SetAvailable(true);
+        EncryptedTextTitle.CutAvailabilityForWhile(wait, duration);
+        EncryptedTextBody.CutAvailabilityForWhile(wait, duration);
+        SaveButton.CutAvailabilityForWhile(wait, duration);
     }
     
     /// <summary>
@@ -59,9 +54,9 @@ public class DisplayEncrypted_ForGame : MonoBehaviour
     /// <param name="value"> 가능 여부 </param>
     public void SetAvailable(bool value)
     {
-        EncryptedTextTitle.SetAvailable(value);
-        EncryptedTextBody.SetAvailable(value);
-        SaveButton.SetAvailable(value);
+        EncryptedTextTitle.SetAvailability(value);
+        EncryptedTextBody.SetAvailability(value);
+        SaveButton.SetAvailability(value);
     }
 
     /// <summary>
@@ -70,7 +65,7 @@ public class DisplayEncrypted_ForGame : MonoBehaviour
     public void SaveEncryptedTextFile()
     {
         //암호화 연출을 띄우고 성공 실패 여부에 따라서 리턴
-        if (!SceneManager.ResultPanel.PrintEncryptionResult())
+        if (!GameManager.ResultPanel.PrintEncryptionResult())
             return;
         
         var filePath = "Assets/Resources/GameData/Encrypt/Encrypted/" + EncryptedTextTitle.StringBuffer + ".txt";
