@@ -38,7 +38,7 @@ public class NormalParagraph : Paragraph
     */
     public string talker;  // 발화자
     public string talkerInfo = "";    // 발화자 설명
-    public string text;  // 내용
+    public string text = "";  // 내용
     public List<VariableReplace> variables = new(); // 변수값
     public int fontSize = 16;   // 글자 크기
     public float textDelay = 0.3f;      // 텍스트간 딜레이
