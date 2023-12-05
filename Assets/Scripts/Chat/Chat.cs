@@ -217,7 +217,6 @@ public class Chat : MonoBehaviour
                 choicePanel.SetActive(true);    // 선택지 패널 활성화
                 optionPanel.SetActive(false);   // 옵션 패널 비활성화
 
-                Debug.Log($"선택지 개수 : {choiceParagraph.choiceList.Count}");
                 switch(choiceParagraph.choiceList.Count)
                 {   
                     // 선택지 1개일때 (가운데 2번 사용)

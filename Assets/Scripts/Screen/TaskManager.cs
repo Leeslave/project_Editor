@@ -33,7 +33,7 @@ public class TaskManager : MonoBehaviour
     {
         if (taskClear == true)
         {
-            GameSystem.Instance.SetTime();
+            GameSystem.Instance.SetTime(2);
         }
     }
 
