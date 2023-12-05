@@ -85,6 +85,10 @@ public class ScreenManager : MonoBehaviour
             // 탈출 버튼 비활성화
             returnButton.SetActive(false);
         }
+        else if (screenMode == ScreenMode.TryOff)
+        {
+            
+        }
         else
         {
             // 탈출 버튼 활성화
