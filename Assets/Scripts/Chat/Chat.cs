@@ -27,15 +27,24 @@ public class Chat : MonoBehaviour
 
     [Space(20)]
     [SerializeField]
-    private GameObject choicePanel;     // 선택지 패널 (선택지 3개)
-    [SerializeField]
-    private GameObject optionPanel;     // 옵션 패널 (다시보기, 스킵)
-    [SerializeField]
     private Image characterL;    // 왼쪽 캐릭터 CG
     [SerializeField]
     private Image characterR;    // 오른쪽 캐릭터 CG
+    [SerializeField]
+    private GameObject choicePanel;     // 선택지 패널 (선택지 3개)
+    [SerializeField]
+    private GameObject optionPanel;     // 옵션 패널 (다시보기, 스킵)
 
-    [Space(20)] 
+    [Space(20)]
+    [SerializeField]
+    private GameObject remindContent;     // 다시보기 패널
+    [SerializeField]
+    private GameObject remindTalkNode;      // 대화 다시보기 노드 프리팹
+    [SerializeField]
+    private GameObject remindChoiceNode;    // 선택지 다시보기 노드 프리팹
+
+
+    [Space(30)] 
     [Header("파일 경로")]
     public static string CHARACTERFILEPATH = "Chat/Character/";    // 캐릭터 파일 경로
     public static string BACKGROUNDFILEPATH = "Chat/Background/";   // 배경 CG 파일 경로
@@ -121,7 +130,7 @@ public class Chat : MonoBehaviour
         }
 
         Paragraph paragraph = chatList.Dequeue(); // 현재 대사 불러오기
-        logList.Enqueue(paragraph);
+        AddLog(paragraph);
 
         SetChat(paragraph);  // 대사 타입에 따라 설정
     }
@@ -139,7 +148,52 @@ public class Chat : MonoBehaviour
     {
         background.sprite = null;   // 배경 초기화
         isTalk = false;             // 대화 종료
+        ClearLog();
         chatUI.SetActive(false);    // UI 종료
+    }
+
+    /// <summary>
+    /// 대사 다시보기 추가
+    /// </summary>
+    /// <param name="para">추가할 대사</param>
+    private void AddLog(Paragraph para)
+    {
+        logList.Enqueue(para);
+
+        if (para is TalkParagraph)      // 대사 다시보기
+        {
+            TalkParagraph talkPara = para as TalkParagraph;
+            GameObject newNode = Instantiate(remindTalkNode, remindContent.transform);
+
+            newNode.transform.GetChild(0).GetComponent<TMP_Text>().text = talkPara.talker;  // 발화자 설정
+            newNode.transform.GetChild(1).GetComponent<TMP_Text>().text = talkPara.text;    // 대사 내용
+        }
+        else if (para is ChoiceParagraph)   // 선택지 다시보기
+        {
+            ChoiceParagraph choicePara = para as ChoiceParagraph;
+            GameObject newNode = Instantiate(remindChoiceNode, remindContent.transform);
+            
+            for(int i = 0; i < choicePara.choiceList.Count; i++)        // 선택지들 활성화
+            {
+                newNode.transform.GetChild(i).GetComponent<TMP_Text>().text = choicePara.choiceList[i].text;
+                newNode.transform.GetChild(i).gameObject.SetActive(true);
+            }
+        }
+        else
+        {
+            return;
+        }
+    }
+
+    /// <summary>
+    /// 대화 다시보기 초기화
+    /// </summary>
+    private void ClearLog()
+    {
+        for(int i = 0; i < remindContent.transform.childCount; i++)
+        {
+            Destroy(remindContent.transform.GetChild(i).gameObject);
+        }
     }
     
     
@@ -277,12 +331,6 @@ public class Chat : MonoBehaviour
     }
 
 /************************************UI 이벤트 함수*****************************************/
-
-    /// 다시보기 대화 로그 버튼
-    public void OnReplayPressed()
-    {
-
-    }
 
     /// 대화 스킵 버튼
     public void OnSkipPressed()
