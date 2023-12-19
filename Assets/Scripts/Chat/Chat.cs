@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class Chat : MonoBehaviour
 {
@@ -42,8 +43,8 @@ public class Chat : MonoBehaviour
     [Space(10)] 
     [Header("대화 상태")]
     public bool isTalk;      // 현재 대화 활성화 여부
-    public int index;   // 현재 대화 인덱스
-    private List<Paragraph> chatList;   // 대화 리스트
+    private Queue<Paragraph> chatList;   // 대화 리스트
+    private Queue<Paragraph> logList;   // 대화 기록 리스트
 
     /// 이벤트
     private ChatAction action;    // 대사 반응 함수
@@ -59,7 +60,6 @@ public class Chat : MonoBehaviour
             _instance = this;   // 싱글톤 할당
 
             isTalk = false;     //대사 초기화
-            index = -1;
 
             // 이벤트 초기화
             choiceActions = new ChatAction[3];
@@ -88,55 +88,50 @@ public class Chat : MonoBehaviour
         }
         
         // 대화 리스트 할당
-        chatList = _chatList;
+        chatList = new Queue<Paragraph>(_chatList);
+        logList = new Queue<Paragraph>();
         Debug.Log($"Chat Start"); 
         isTalk = true;
 
         chatUI.SetActive(true);
-        NextChat(0);        
+        NextChat();        
     }
 
     ///<summary>
     ///다음 대사 출력 함수
     ///</summary>
     ///<param name="idx">출력할 대사 인덱스</param>
-    public void NextChat(int idx = -1)
+    public void NextChat()
     {      
         // 대사 진행중이면 종료
         StopAllCoroutines();  
 
-        // 디폴트: 다음 텍스트로
-        if (idx == -1)
-        {
-            idx = index + 1;
-        }
-
         // 이전 대사 반응 함수 실행
-        if (index >= 0)
+        if (logList.Count != 0)
         {
-            if (action != null)
-                action.Invoke();
+            action?.Invoke();
         }        
 
-        index = idx;    // 대사 넘김
-
         // 마지막 대사 이후 or index 오류
-        if (index >= chatList.Count)
+        if (chatList.Count <= 0)
         {
-            Debug.Log($"Chat OFF: INDEX={index}");
+            Debug.Log($"Chat OFF : Left {logList.Count}");
             FinishChat();    // Chat 종료 및 비활성화
             return;
         }
 
-        Paragraph paragraph = chatList[index]; // 현재 대사 불러오기
+        Paragraph paragraph = chatList.Dequeue(); // 현재 대사 불러오기
+        logList.Enqueue(paragraph);
 
-        SetChatUI(paragraph.chatType);  // 대사 타입에 따라 UI 설정
-        
-        // 대사 애니메이션 실행
-        if (paragraph.chatType != "Choice")
-        {
-            StartCoroutine(TextAnimation(paragraph as NormalParagraph));
-        }
+        SetChat(paragraph);  // 대사 타입에 따라 설정
+    }
+
+    /// <summary>
+    /// 대사 넘기기 함수
+    /// </summary>
+    public void SkipChat()
+    {
+        NextChat();
     }
 
     /// 대사 종료
@@ -144,7 +139,6 @@ public class Chat : MonoBehaviour
     {
         background.sprite = null;   // 배경 초기화
         isTalk = false;             // 대화 종료
-        index = -1;                 // 대화 인덱스 초기화
         chatUI.SetActive(false);    // UI 종료
     }
     
@@ -182,7 +176,7 @@ public class Chat : MonoBehaviour
     /// 대사 타입에 맞는 UI 설정
     /// </summary>
     /// <param name="talkType">대사 타입</param>
-    private void SetChatUI(string talkType)
+    private void SetChat(Paragraph para)
     {
         // CG 초기 설정
         characterL.gameObject.SetActive(false);
@@ -195,102 +189,91 @@ public class Chat : MonoBehaviour
         optionPanel.gameObject.SetActive(true);
 
         // 대화 타입에 맞춰 UI들 설정
-        switch(talkType)
+        if (para is TalkParagraph)        /// 일반 대사
         {
-            /// 선택지/엔딩선택지 상태일때
-            case "Choice":
-            case "EndChoice":
-                ChoiceParagraph choiceParagraph = chatList[index] as ChoiceParagraph;
+            TalkParagraph normalPara = para as TalkParagraph;
 
-                // 캐릭터 CG 활성화
-                if (choiceParagraph.characterL != null)
-                {
-                    characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{choiceParagraph.characterL.fileName}_{choiceParagraph.characterL.index}");
-                    characterL.gameObject.SetActive(true);
-                }
-                if (choiceParagraph.characterR != null)
-                {
-                    characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{choiceParagraph.characterR.fileName}_{choiceParagraph.characterR.index}");
-                    characterR.gameObject.SetActive(true);
-                }
-
-                choicePanel.SetActive(true);    // 선택지 패널 활성화
-                optionPanel.SetActive(false);   // 옵션 패널 비활성화
-
-                switch(choiceParagraph.choiceList.Count)
-                {   
-                    // 선택지 1개일때 (가운데 2번 사용)
-                    case 1:
-                        SetChoice(0);                               // 1번 선택지 비활성화
-                        SetChoice(1, choiceParagraph.choiceList[0]);   // 2번 선택지 설정
-                        SetChoice(2);                               // 3번 선택지 비활성화
-                        break;
-                    // 선택지 2개일때 (위, 아래 1,3번 사용)
-                    case 2:
-                        SetChoice(0, choiceParagraph.choiceList[0]);   // 1번 선택지 설정
-                        SetChoice(1);                               // 2번 선택지 비활성화
-                        SetChoice(2, choiceParagraph.choiceList[1]);   // 3번 선택지 설정
-                        break;
-                    // 선택지 3개일때
-                    case 3:
-                        SetChoice(0, choiceParagraph.choiceList[0]);   // 1번 선택지 설정
-                        SetChoice(1, choiceParagraph.choiceList[1]);   // 2번 선택지 설정
-                        SetChoice(2, choiceParagraph.choiceList[2]);   // 3번 선택지 설정
-                        break;
-                }
-                break;
-
-            /// 컷씬 상태일때
-            case "CutScene":
-                NormalParagraph cutSceneParagraph = chatList[index] as NormalParagraph;
-
-                if (cutSceneParagraph.background != null)
-                {
-                    background.sprite = GetSprite(BACKGROUNDFILEPATH + cutSceneParagraph.background);    // 배경 이미지 설정 
-                }
+            // 배경 활성화
+            if (normalPara.background != null)
+            {
+                background.sprite = GetSprite(BACKGROUNDFILEPATH + normalPara.background);    // 배경 이미지 설정 
+            }
+            if (background.sprite != null)
                 background.gameObject.SetActive(true);      // 배경 이미지 활성화
 
-                // 대사 존재시 대사창 활성화
-                if (cutSceneParagraph.text != "")  
-                {
-                    talkPanel.SetActive(true);
-                    talkerName.text = cutSceneParagraph.talker;     // 발화자 이름
-                    talkerInfo.text = cutSceneParagraph.talkerInfo; // 발화자 설명
+            // 캐릭터 CG 활성화
+            if (normalPara.characterL != null)
+            {
+                characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{normalPara.characterL.fileName}", normalPara.characterL.index);
+                characterL.gameObject.SetActive(true);
+            }
+            if (normalPara.characterR != null)
+            {
+                characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{normalPara.characterR.fileName}", normalPara.characterR.index);
+                characterR.gameObject.SetActive(true);
+            }
+                
+            talkPanel.SetActive(true);      // 대화 패널 활성화
 
-                    text.fontSize = cutSceneParagraph.fontSize;   // 대사 크기 설정
-                    text.text = "";             // 대사 초기화
-                }
-                break;
-            
-            /// 일반 대화 상태일때
-            case "Normal":
-                NormalParagraph normalParagraph = chatList[index] as NormalParagraph;
+            talkerName.text = normalPara.talker;     // 발화자 이름
+            talkerInfo.text = normalPara.talkerInfo; // 발화자 설명
 
-                // 캐릭터 CG 활성화
-                if (normalParagraph.characterL != null)
-                {
-                    characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{normalParagraph.characterL.fileName}", normalParagraph.characterL.index);
-                    characterL.gameObject.SetActive(true);
-                }
-                if (normalParagraph.characterR != null)
-                {
-                    characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{normalParagraph.characterR.fileName}", normalParagraph.characterR.index);
-                    characterR.gameObject.SetActive(true);
-                }
-                 
-                talkPanel.SetActive(true);      // 대화 패널 활성화
+            text.fontSize = normalPara.fontSize;   // 대사 크기 설정
 
-                talkerName.text = normalParagraph.talker;     // 발화자 이름
-                talkerInfo.text = normalParagraph.talkerInfo; // 발화자 설명
+            StartCoroutine(TextAnimation(para as TalkParagraph));
+        }
+        else if(para is ChoiceParagraph)         /// 일반 선택지
+        {
+            ChoiceParagraph choicePara = para as ChoiceParagraph;
 
-                text.fontSize = normalParagraph.fontSize;   // 대사 크기 설정
-                text.text = "";             // 대사 초기화
+            // 캐릭터 CG 활성화
+            if (choicePara.characterL != null)
+            {
+                characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterL.fileName}_{choicePara.characterL.index}");
+                characterL.gameObject.SetActive(true);
+            }
+            if (choicePara.characterR != null)
+            {
+                characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterR.fileName}_{choicePara.characterR.index}");
+                characterR.gameObject.SetActive(true);
+            }
 
-                break;
+            choicePanel.SetActive(true);    // 선택지 패널 활성화
+            optionPanel.SetActive(false);   // 옵션 패널 비활성화
+
+            switch(choicePara.choiceList.Count)
+            {   
+                // 선택지 1개일때 (가운데 2번 사용)
+                case 1:
+                    SetChoice(0);                               // 1번 선택지 비활성화
+                    SetChoice(1, choicePara.choiceList[0]);   // 2번 선택지 설정
+                    SetChoice(2);                               // 3번 선택지 비활성화
+                    break;
+                // 선택지 2개일때 (위, 아래 1,3번 사용)
+                case 2:
+                    SetChoice(0, choicePara.choiceList[0]);   // 1번 선택지 설정
+                    SetChoice(1);                               // 2번 선택지 비활성화
+                    SetChoice(2, choicePara.choiceList[1]);   // 3번 선택지 설정
+                    break;
+                // 선택지 3개일때
+                case 3:
+                    SetChoice(0, choicePara.choiceList[0]);   // 1번 선택지 설정
+                    SetChoice(1, choicePara.choiceList[1]);   // 2번 선택지 설정
+                    SetChoice(2, choicePara.choiceList[2]);   // 3번 선택지 설정
+                    break;
+            }
+        }
+        else if (para is CutSceneParagraph)     // 컷씬
+        {
+
+        }
+        else        // 대사 타입 오류
+        {
+            throw new Exception($"Unknown Chat Data : {para.chatType}");
         }
 
         // 반응 설정
-        action = GetAction(chatList[index].action, chatList[index].actionParam);    
+        action = GetAction(para.action, para.actionParam);  
     }
 
 /************************************UI 이벤트 함수*****************************************/
@@ -312,8 +295,9 @@ public class Chat : MonoBehaviour
                 return;
             }
             // 도중 선택지까지 반복
-            if (chatList[index].chatType == "Choice" || chatList[index].chatType == "EndChoice")
+            if (chatList.Peek() is ChoiceParagraph)
             {
+                NextChat();
                 return;
             }
             NextChat();            
@@ -328,10 +312,7 @@ public class Chat : MonoBehaviour
             return;
 
         // 반응 함수 실행
-        if (choiceActions[num] != null)
-        {
-            choiceActions[num].Invoke();    
-        }
+        choiceActions[num]?.Invoke();
         NextChat();
     }
 
@@ -342,8 +323,11 @@ public class Chat : MonoBehaviour
     /// </summary>
     /// <param name="paragraph">출력할 대사</param>
     /// <remarks>대사 delay, 변수값, SFX 적용</remarks>
-    IEnumerator TextAnimation(NormalParagraph paragraph)
+    IEnumerator TextAnimation(TalkParagraph paragraph)
     {
+        // 대사 초기화
+        text.text = "";
+
         // 변수값 적용
         paragraph.text = ParseVariables(paragraph.text, paragraph.variables);
 

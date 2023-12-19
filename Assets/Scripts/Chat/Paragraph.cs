@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 [Serializable]
-public class Paragraph
+public abstract class Paragraph
 {
     /**
     상속용 대사 클래스
@@ -29,7 +29,7 @@ public class Paragraph
 }
 
 [Serializable]
-public class NormalParagraph : Paragraph
+public class TalkParagraph : Paragraph
 {
     /**
     일반 대사/컷씬 클래스
@@ -53,6 +53,12 @@ public class ChoiceParagraph : Paragraph
     - 대화 선택지들
     */
     public List<Choice> choiceList = null; // 선택지들 리스트
+}
+
+[Serializable]
+public class CutSceneParagraph : Paragraph
+{
+
 }
 
 
