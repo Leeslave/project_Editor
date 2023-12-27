@@ -42,6 +42,7 @@ public class WorldSceneManager : MonoBehaviour
     public float moveDelay;     // 지역 이동 딜레이
     [SerializeField]
     private Image curtain;      // 지역 이동 효과 이미지
+    public AudioSource worldBGM;  // 지역 내 배경음악
 
     [Header("NPC 생성 정보")]
     [SerializeField]
@@ -49,7 +50,18 @@ public class WorldSceneManager : MonoBehaviour
     [SerializeField]
     private GameObject npcPrefab;   // NPC 생성용 프리팹
 
-    private void Start()
+    /// 싱글턴 선언
+    private static WorldSceneManager _instance;
+    public static WorldSceneManager Instance { get { return _instance; } }
+    void Awake()
+    {
+        if (!_instance)
+            _instance = this;
+        else
+            Destroy(gameObject);
+    }
+
+    void Start()
     {
         // 추가 인트로 실행 (날짜 변경 후 0시에만)
         if (GameSystem.Instance.currentTime == 0)
@@ -105,8 +117,16 @@ public class WorldSceneManager : MonoBehaviour
         {
             locationList[i].SetActive(false);
             if (i == (int)newLocation)
+            {
                 locationList[i].SetActive(true);
-        }
+                // 지역 내 정보 활성화
+                if (locationList[i].TryGetComponent(out AudioSource audio))
+                {
+                    worldBGM = audio;
+                    worldBGM.Play();
+                }
+            }
+        }        
 
         // 현재 지역 설정
         GameSystem.Instance.currentLocation = newLocation;
@@ -267,8 +287,6 @@ public class WorldSceneManager : MonoBehaviour
 
             // 오브젝트 transform 설정
             newObject.transform.SetParent(locationList[(int)newNPCData.location].transform.GetChild(newNPCData.locationIndex));
-            newObject.GetComponent<RectTransform>().anchoredPosition = newNPCData.position;
-            newObject.GetComponent<RectTransform>().localScale = new Vector3(1f,1f,1f);
 
             // 생성 완료, 리스트에 추가
             npcList.Add(newObject);

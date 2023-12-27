@@ -19,6 +19,15 @@ public class Chat : MonoBehaviour
     [SerializeField]
     private Image background;   // 배경 이미지
     [SerializeField]
+    private AudioSource bgm;    // 배경 음악
+
+    [Space(20)]
+    [Header("대화 패널")]
+    [SerializeField]
+    private Image characterL;    // 왼쪽 캐릭터 CG
+    [SerializeField]
+    private Image characterR;    // 오른쪽 캐릭터 CG
+    [SerializeField]
     private GameObject talkPanel;   // 대화 패널
     public TMP_Text talkerName;     // 발화자 이름
     [SerializeField]
@@ -26,16 +35,14 @@ public class Chat : MonoBehaviour
     public TMP_Text text;           // 대화 내용
 
     [Space(20)]
-    [SerializeField]
-    private Image characterL;    // 왼쪽 캐릭터 CG
-    [SerializeField]
-    private Image characterR;    // 오른쪽 캐릭터 CG
+    [Header("선택지 패널")]
     [SerializeField]
     private GameObject choicePanel;     // 선택지 패널 (선택지 3개)
+    
+    [Space(20)]
+    [Header("옵션 패널")]
     [SerializeField]
     private GameObject optionPanel;     // 옵션 패널 (다시보기, 스킵)
-
-    [Space(20)]
     [SerializeField]
     private GameObject remindContent;     // 다시보기 패널
     [SerializeField]
@@ -46,8 +53,9 @@ public class Chat : MonoBehaviour
 
     [Space(30)] 
     [Header("파일 경로")]
-    public static string CHARACTERFILEPATH = "Chat/Character/";    // 캐릭터 파일 경로
-    public static string BACKGROUNDFILEPATH = "Chat/Background/";   // 배경 CG 파일 경로
+    private readonly string CHARACTERFILEPATH = "Chat/Character/";    // 캐릭터 파일 경로
+    private readonly string BACKGROUNDFILEPATH = "Chat/Background/";   // 배경 CG 파일 경로
+    private readonly string BGMFILEPATH = "Chat/BGM/";      // 배경음악 파일 경로
     
     [Space(10)] 
     [Header("대화 상태")]
@@ -147,6 +155,8 @@ public class Chat : MonoBehaviour
     private void FinishChat()
     {
         background.sprite = null;   // 배경 초기화
+        bgm.clip = null;            // 배경음악 초기화
+        WorldSceneManager.Instance.worldBGM.UnPause();
         isTalk = false;             // 대화 종료
         ClearLog();
         chatUI.SetActive(false);    // UI 종료
@@ -324,6 +334,38 @@ public class Chat : MonoBehaviour
         else        // 대사 타입 오류
         {
             throw new Exception($"Unknown Chat Data : {para.chatType}");
+        }
+
+        // 배경음악 설정
+        if (para.bgm != null)
+        {
+            // 모든 음악 중지
+            if (para.bgm == "STOP")
+            {
+                WorldSceneManager.Instance.worldBGM.Pause();
+                bgm.Pause();
+            }
+            // 월드 음악으로 되돌림
+            else if (para.bgm == "RETURN")
+            {
+                bgm.Stop();
+                WorldSceneManager.Instance.worldBGM.UnPause();
+            }
+            // 대화 음악 재실행
+            else if (para.bgm == "RESTART")
+            {
+                bgm.UnPause();
+            }
+            // 대화 음악 새로 실행
+            else
+            {
+                AudioClip audio = Resources.Load<AudioClip>(BGMFILEPATH + para.bgm);
+                if (audio != null)
+                {
+                    bgm.clip = audio;
+                    bgm.Play();
+                }
+            }
         }
 
         // 반응 설정
