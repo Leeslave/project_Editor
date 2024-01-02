@@ -67,6 +67,7 @@ public class GetOptionFile_D : BatchField_D
 
         Processes[0].SetActive(true);
         Processes[0].transform.SetAsLastSibling();
+
         Tabs[1].gameObject.SetActive(true);
         TabsText[1].text = "Change Option";
         Tabs[1].Subs.AddRange(MPSub);
@@ -76,17 +77,16 @@ public class GetOptionFile_D : BatchField_D
     [SerializeField] TMP_Text Reporter;
     List<TMP_Text> Mains;
     [SerializeField] List<GameObject> MainsBack;
-    List<TMP_Text> Revises;
-    [SerializeField] List<GameObject> RevisesBack;
+    [NonSerialized] internal List<TMP_Text> Revises;
+    [SerializeField] internal List<GameObject> RevisesBack;
     // News
     protected override IEnumerator BatchType2()
     {
         CommonBatch();
         image.SetActive(false);
         News CurNews = DB.FindNews(AN.IconName);
-
         string cnt = "";
-        WaitForSeconds wfs = new WaitForSeconds(0.01f);
+        WaitForSeconds wfs = new WaitForSeconds(0.1f);
         foreach (string s in Waittexts)
         {
             cnt += s;
@@ -99,7 +99,7 @@ public class GetOptionFile_D : BatchField_D
             cnt += " <size=20>Complete!\n</size>";
         }
         Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(1f);
         Text.text = Normal;
         image.SetActive(true);
         AttatchAble = true;
@@ -123,6 +123,10 @@ public class GetOptionFile_D : BatchField_D
         Processes[2].SetActive(true);
         Processes[2].transform.SetAsLastSibling();
         Processes[2].transform.position = Vector3.zero;
+
+        Tabs[1].gameObject.SetActive(true);
+        TabsText[1].text = "Add Text";
+        Tabs[1].Subs.AddRange(MPSub);
     }
     protected override IEnumerator BatchType3()
     {
