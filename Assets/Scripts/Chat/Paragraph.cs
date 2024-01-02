@@ -40,9 +40,30 @@ public class TalkParagraph : Paragraph
     public string talkerInfo = "";    // 발화자 설명
     public string text = "";  // 내용
     public List<VariableReplace> variables = new(); // 변수값
-    public int fontSize = 16;   // 글자 크기
+
+    // 글자 크기 기본값들
+    public const int NORMALFONTSIZE = 16; 
+    public const int LARGEFONTSIZE = 32;
+    public const int SMALLFONTSIZE = 10;
+
+    public string fontSize = "normal";   // 글자 크기
     public float textDelay = 0.3f;      // 텍스트간 딜레이
     public string background = null;  // 배경 이미지
+
+
+    public int GetFontSize()
+    {
+        switch(fontSize)
+        {
+            case "large":
+                return LARGEFONTSIZE;
+            case "small":
+                return SMALLFONTSIZE;
+            case "normal":default:
+                return NORMALFONTSIZE;
+
+        }
+    }
 }   
 
 [Serializable]

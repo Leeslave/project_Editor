@@ -33,6 +33,8 @@ public class Chat : MonoBehaviour
     [SerializeField]
     private TMP_Text talkerInfo;    // 발화자 정보
     public TMP_Text text;           // 대화 내용
+    public AudioSource[] textSFXs = new AudioSource[2]; // 대사 효과음
+    public AudioSource textSFX = new();
 
     [Space(20)]
     [Header("선택지 패널")]
@@ -282,7 +284,14 @@ public class Chat : MonoBehaviour
             talkerName.text = normalPara.talker;     // 발화자 이름
             talkerInfo.text = normalPara.talkerInfo; // 발화자 설명
 
-            text.fontSize = normalPara.fontSize;   // 대사 크기 설정
+            text.fontSize = normalPara.GetFontSize();   // 대사 크기 설정
+
+            if(text.fontSize == TalkParagraph.LARGEFONTSIZE)
+                textSFX = textSFXs[1];
+            else if(text.fontSize == TalkParagraph.NORMALFONTSIZE)
+                textSFX = textSFXs[0];
+            else
+                textSFX = new();
 
             StartCoroutine(TextAnimation(para as TalkParagraph));
         }
@@ -424,8 +433,13 @@ public class Chat : MonoBehaviour
         // 한 글자씩 애니메이션
         for (int i = 0; i < paragraph.text.Length; i++)
         {
+            // 텍스트 추가
             text.text += paragraph.text[i];
-            /// TODO: 텍스트 효과음 출력
+            
+            // 텍스트 효과음 실행
+            textSFX.Stop();
+            textSFX.Play();
+
             yield return new WaitForSeconds(paragraph.textDelay / 10);
         }
     }
