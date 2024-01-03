@@ -65,8 +65,6 @@ public class DB_M : MonoBehaviour
     {
         foreach(News a in NewsList)
         {
-            print(a.publishDay);
-            print(Date);
             if (a.publishDay == Date) return a;
         }
         return null;

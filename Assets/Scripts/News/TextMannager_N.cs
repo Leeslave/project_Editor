@@ -48,10 +48,9 @@ public class TextMannager_N : MonoBehaviour
             Sub.effectColor = ColorN;
             if (IsRevise)
             {
-                print(Touched.text);
-                print(CntText.text);
+/*                print(Touched.text);
+                print(CntText.text);*/
                 Touched.text = CntText.text;
-                //if (NR.Errors[ind] != TouchedIndex) Health--;
             }
             else
             {
@@ -69,7 +68,6 @@ public class TextMannager_N : MonoBehaviour
                 if (sub)
                 {
                     cnt.text = CntText.text;
-                    //if (NR.Errors[ind] != cnt2.GetComponent<MainText_N>().MyInd) Health--;
                 }
                 else
                 {

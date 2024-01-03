@@ -34,9 +34,7 @@ public class GetOptionFile_D : BatchField_D
     void Start()
     {
         Mains = new List<TMP_Text>(MainsBack.Count);
-        Revises = new List<TMP_Text>(RevisesBack.Count);
         foreach(GameObject s in MainsBack) Mains.Add(s.transform.GetChild(0).GetComponent<TMP_Text>());
-        foreach (GameObject s in RevisesBack) Revises.Add(s.transform.GetChild(0).GetComponent<TMP_Text>());
         GrandParrent.SetActive(false);
     }
     // Manipulation
@@ -72,13 +70,14 @@ public class GetOptionFile_D : BatchField_D
         TabsText[1].text = "Change Option";
         Tabs[1].Subs.AddRange(MPSub);
     }
+
+
     [SerializeField] TMP_Text Title;
     [SerializeField] TMP_Text Date;
     [SerializeField] TMP_Text Reporter;
     List<TMP_Text> Mains;
     [SerializeField] List<GameObject> MainsBack;
-    [NonSerialized] internal List<TMP_Text> Revises;
-    [SerializeField] internal List<GameObject> RevisesBack;
+    
     // News
     protected override IEnumerator BatchType2()
     {
@@ -112,11 +111,7 @@ public class GetOptionFile_D : BatchField_D
             Mains[i].text = CurNews.Main[i];
             MainsBack[i].SetActive(true);
         }
-        for(int i =0; i < CurNews.CountR; i++)
-        {
-            Revises[i].text = CurNews.Revise[i];
-            RevisesBack[i].SetActive(true);
-        }
+
         Processes[1].SetActive(true);
         Processes[1].transform.SetAsLastSibling();
         Processes[1].transform.position = Vector3.zero;
@@ -126,7 +121,7 @@ public class GetOptionFile_D : BatchField_D
 
         Tabs[1].gameObject.SetActive(true);
         TabsText[1].text = "Add Text";
-        Tabs[1].Subs.AddRange(MPSub);
+        Tabs[1].Subs.AddRange(NewsSub);
     }
     protected override IEnumerator BatchType3()
     {
