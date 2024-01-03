@@ -44,9 +44,12 @@ public class ChatJumpAction : ChatAction
 {
     public override int Invoke()
     {
-        if(int.TryParse(param, out int chatIndex))
+        if(int.TryParse(param, out int count))
         {
-            Chat.Instance.index = chatIndex - 1;
+            for (int i = 0; i < count; i++)
+            {
+                Chat.Instance.SkipChat();
+            }
             return 0;
         }
         else

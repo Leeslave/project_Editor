@@ -118,9 +118,18 @@ public class NPC : MonoBehaviour
             GetComponent<Image>().sprite = newSprite;
 
             // 이미지 크기 조절
-            RectTransform rect = GetComponent<RectTransform>();     // 스케일 초기화
+            RectTransform rect = GetComponent<RectTransform>();
+            // 스케일 초기화
+            rect.localScale = new Vector3(1f,1f,1f);
             rect.sizeDelta = npcData.size * IMAGESIZEMULTIPLIER 
                                                     * new Vector2(1, newSprite.rect.height/ newSprite.rect.width);
+            // 위치 설정
+            rect.anchoredPosition = npcData.position;
+        }
+        // 이미지 없으면 크기 없애기
+        else
+        {
+            GetComponent<RectTransform>().localScale = new Vector3(0f,0f,0f);
         }
     }
 }

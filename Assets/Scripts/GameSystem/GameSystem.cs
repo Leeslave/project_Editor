@@ -85,7 +85,7 @@ public class GameSystem : MonoBehaviour
 
         // 해당 날짜 불러오기
         todayIndex = date;
-        SetTime(0);
+        currentTime = 0;
 
         // 게임 저장 (튜토리얼 날짜 제외)
         if (date > 1)
@@ -103,27 +103,27 @@ public class GameSystem : MonoBehaviour
     }
 
     ///<summary>
-    /// 시간 전환
+    /// 다음 시간대로 전환
     ///</summary>
     ///<param name="time">전환할 시간(없으면 다음 시간대로, 마지막 시간대면 다음 날짜로)</param>
     public void SetTime(int nextTime = -1)
     {
-        if (nextTime >= 0 && nextTime < 4)
+        if (nextTime >= 0 && nextTime <= 4)
         {
-            // 특정 시간대로 이동
-            currentTime = nextTime;
-        }
-        else
-        {
-            // 다음 시간대로 이동
-            currentTime++;
-            
-            if (currentTime > 4)
+            // 특정 시간대로 이동시 시간대 오류 확인
+            if (nextTime !=  currentTime + 1)
             {
-                // 다음 날짜로 이동
-                currentTime = 0;
-                SetDate();
+                Debug.Log($"Invalid Time Set = {currentTime} : set time to {nextTime}");
+                return;
             }
+        }
+        // 다음 시간대로 이동
+        currentTime++;
+        
+        if (currentTime >= 4)
+        {
+            // 다음 날짜로 이동
+            SetDate();
         }
     }
 

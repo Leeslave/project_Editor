@@ -1,0 +1,52 @@
+{
+    "list": [
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"컷씬이랑 날짜 전환 테스트입니다" 
+        },
+        {
+            "$type": "ChoiceParagraph, Assembly-CSharp",
+            "choices": [
+                {
+                    "text": "이건 선택지"
+                },
+                {
+                    "text": "둘 다 동일하게 선택됨"
+                }
+            ],
+            "type":1
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "???",
+            "text":"글자 크기 더 크게 32",
+            "fontSize": "large"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "핸더슨",
+            "text":"컷씬 추가",
+            "fontSize": "large",
+            "background": "hendersonCutscene",
+            "type": 2
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"타입 생략, 배경 켜지는지 확인",
+            "textDelay": 0.6
+        },
+        {
+            "$type": "ChoiceParagraph, Assembly-CSharp",
+            "choices": [
+                {
+                    "text": "누르면 다음 날짜로 넘어가는 함수",
+                    "reaction": "DayChange",
+                    "reactionParam": 1
+                }
+            ],
+            "type":1
+        }
+    ]
+}
