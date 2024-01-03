@@ -56,7 +56,6 @@ public class Chat : MonoBehaviour
     [Header("파일 경로")]
     private readonly string CHARACTERFILEPATH = "Chat/Character/";    // 캐릭터 파일 경로
     private readonly string BACKGROUNDFILEPATH = "Chat/Background/";   // 배경 CG 파일 경로
-    private readonly string BGMFILEPATH = "Chat/BGM/";      // 배경음악 파일 경로
     
     [Space(10)] 
     [Header("대화 상태")]
