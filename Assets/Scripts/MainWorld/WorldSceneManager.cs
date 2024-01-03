@@ -42,7 +42,7 @@ public class WorldSceneManager : MonoBehaviour
     public float moveDelay;     // 지역 이동 딜레이
     [SerializeField]
     private Image curtain;      // 지역 이동 효과 이미지
-    public AudioSource worldBGM;  // 지역 내 배경음악
+    public SoundManager worldBGM;  // 지역 내 배경음악
 
     [Header("NPC 생성 정보")]
     [SerializeField]
@@ -120,11 +120,8 @@ public class WorldSceneManager : MonoBehaviour
             {
                 locationList[i].SetActive(true);
                 // 지역 내 정보 활성화
-                if (locationList[i].TryGetComponent(out AudioSource audio))
-                {
-                    worldBGM = audio;
-                    worldBGM.Play();
-                }
+                Debug.Log($"Set World BGM : {i}");
+                worldBGM.OverlapPlay(i);
             }
         }        
 

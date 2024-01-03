@@ -19,7 +19,7 @@ public class Chat : MonoBehaviour
     [SerializeField]
     private Image background;   // 배경 이미지
     [SerializeField]
-    private AudioSource bgm;    // 배경 음악
+    private SoundManager bgm;    // 배경 음악
 
     [Space(20)]
     [Header("대화 패널")]
@@ -33,8 +33,7 @@ public class Chat : MonoBehaviour
     [SerializeField]
     private TMP_Text talkerInfo;    // 발화자 정보
     public TMP_Text text;           // 대화 내용
-    public AudioSource[] textSFXs = new AudioSource[2]; // 대사 효과음
-    public AudioSource textSFX = new();
+    public SoundManager textSFX;    // 대화 효과음
 
     [Space(20)]
     [Header("선택지 패널")]
@@ -157,8 +156,7 @@ public class Chat : MonoBehaviour
     private void FinishChat()
     {
         background.sprite = null;   // 배경 초기화
-        bgm.clip = null;            // 배경음악 초기화
-        WorldSceneManager.Instance.worldBGM.UnPause();
+        WorldSceneManager.Instance.worldBGM.Resume();
         isTalk = false;             // 대화 종료
         ClearLog();
         chatUI.SetActive(false);    // UI 종료
@@ -287,9 +285,9 @@ public class Chat : MonoBehaviour
             text.fontSize = normalPara.GetFontSize();   // 대사 크기 설정
 
             if(text.fontSize == TalkParagraph.LARGEFONTSIZE)
-                textSFX = textSFXs[1];
+                textSFX.SetClip(1);
             else if(text.fontSize == TalkParagraph.NORMALFONTSIZE)
-                textSFX = textSFXs[0];
+                textSFX.SetClip(0);
             else
                 textSFX = new();
 
@@ -358,20 +356,19 @@ public class Chat : MonoBehaviour
             else if (para.bgm == "RETURN")
             {
                 bgm.Stop();
-                WorldSceneManager.Instance.worldBGM.UnPause();
+                WorldSceneManager.Instance.worldBGM.Resume();
             }
             // 대화 음악 재실행
             else if (para.bgm == "RESTART")
             {
-                bgm.UnPause();
+                bgm.Resume();
             }
             // 대화 음악 새로 실행
             else
             {
-                AudioClip audio = Resources.Load<AudioClip>(BGMFILEPATH + para.bgm);
-                if (audio != null)
+                if (int.TryParse(para.bgm, out int result))
                 {
-                    bgm.clip = audio;
+                    bgm.SetClip(result);
                     bgm.Play();
                 }
             }
@@ -437,7 +434,6 @@ public class Chat : MonoBehaviour
             text.text += paragraph.text[i];
             
             // 텍스트 효과음 실행
-            textSFX.Stop();
             textSFX.Play();
 
             yield return new WaitForSeconds(paragraph.textDelay / 10);
