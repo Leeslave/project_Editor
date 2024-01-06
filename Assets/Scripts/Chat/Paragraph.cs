@@ -47,7 +47,7 @@ public class TalkParagraph : Paragraph
     public const int SMALLFONTSIZE = 10;
 
     public string fontSize = "normal";   // 글자 크기
-    public float textDelay = 0.3f;      // 텍스트간 딜레이
+    public float textDelay = 0.4f;      // 텍스트간 딜레이
     public string background = null;  // 배경 이미지
 
 
