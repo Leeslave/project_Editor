@@ -16,7 +16,6 @@ public enum World {
     Hallway,
     Office,
     Office2,
-    Desk,
     Interrogate
 }
 
@@ -35,10 +34,6 @@ public class WorldSceneManager : MonoBehaviour
     [Header("지역 데이터")]
     [SerializeField]
     private GameObject[] locationList;    // 지역 오브젝트 리스트
-    [SerializeField]
-    private GameObject LeftButton;      // 왼쪽 이동 버튼
-    [SerializeField]
-    private GameObject RightButton;     // 오른쪽 이동 버튼
     public float moveDelay;     // 지역 이동 딜레이
     [SerializeField]
     private Image curtain;      // 지역 이동 효과 이미지
@@ -47,8 +42,7 @@ public class WorldSceneManager : MonoBehaviour
     [Header("NPC 생성 정보")]
     [SerializeField]
     private List<GameObject> npcList = new();     // 모든 지역 NPC 리스트
-    [SerializeField]
-    private GameObject npcPrefab;   // NPC 생성용 프리팹
+    public GameObject npcPrefab;   // NPC 생성용 프리팹
 
     /// 싱글턴 선언
     private static WorldSceneManager _instance;
@@ -72,8 +66,7 @@ public class WorldSceneManager : MonoBehaviour
         else
         {
             // 위치 설정
-            MoveLocation(GameSystem.Instance.currentLocation.ToString());
-            MovePosition(GameSystem.Instance.currentPosition.ToString());
+            MoveLocation(GameSystem.Instance.currentLocation);
 
             // npc 생성
             SetWorldObject(); 
@@ -87,8 +80,7 @@ public class WorldSceneManager : MonoBehaviour
         yield return new WaitUntil(() => intro.isFinished);
         
         // 위치 설정
-        MoveLocation(GameSystem.Instance.currentLocation.ToString());
-        MovePosition(GameSystem.Instance.currentPosition.ToString());
+        MoveLocation(GameSystem.Instance.currentLocation);
 
         // npc 생성
         SetWorldObject();
@@ -98,25 +90,13 @@ public class WorldSceneManager : MonoBehaviour
     /// 지역 변경
     /// </summary>
     /// <remarks>지역을 변경하고 지역 내 위치 동기화
-    public void MoveLocation(string location)
+    public void MoveLocation(World location)
     {
-        World newLocation;
-        try
-        {
-            // 이동할 지역 설정
-            newLocation = Enum.Parse<World>(location);
-        }
-        catch(ArgumentException)
-        {
-            Debug.Log($"LOCATION LOAD FAILED : Invalid location Name {location}");
-            return;
-        }
-
         // 해당하는 지역만 활성화
         for(int i = 0; i < locationList.Length; i++)
         {
             locationList[i].SetActive(false);
-            if (i == (int)newLocation)
+            if (i == (int)location)
             {
                 locationList[i].SetActive(true);
                 // 지역 내 정보 활성화
@@ -126,75 +106,11 @@ public class WorldSceneManager : MonoBehaviour
         }        
 
         // 현재 지역 설정
-        GameSystem.Instance.currentLocation = newLocation;
+        GameSystem.Instance.currentLocation = location;
     }
 
-    /// <summary>
-    /// 지역 내 이동
-    /// </summary>
-    /// <remarks>지역 내 위치를 이동
-    public void MovePosition(string position)
+    public void SetPosition(int newPos)
     {
-        int newPos;
-
-        // 좌, 우 or int로 이동할 위치값 설정
-        switch (position)
-        {
-            case "Left":
-                newPos = GameSystem.Instance.currentPosition - 1;
-                break;
-            case "Right":
-                newPos = GameSystem.Instance.currentPosition + 1;
-                break;
-            default:
-                if(!int.TryParse(position, out newPos))
-                {
-                    Debug.Log($"WORLD MOVE ERROR : Cannot move to position {position}");
-                    return;
-                }
-                break;
-        }
-        
-
-        // 현재 월드 오브젝트
-        Transform currentWorldTransform = locationList[(int)GameSystem.Instance.currentLocation].transform;
-
-        // 위치값 예외 처리
-        if (newPos < 0 || newPos >= currentWorldTransform.childCount)
-        {
-            Debug.Log($"WORLD MOVE ERROR : Invalid position {newPos}");
-            return;
-        }
-
-        // 양쪽 이동 버튼 설정
-        LeftButton.SetActive(false);
-        RightButton.SetActive(false);    
-        
-        // 0보다 클때 왼쪽 이동 가능
-        if (newPos > 0)
-        {
-            LeftButton.SetActive(true);
-        }
-        // 오른쪽 끝보다 작을때 오른쪽 이동 가능
-        if(newPos < currentWorldTransform.childCount - 1)
-        {
-            RightButton.SetActive(true);
-        }
-
-        // 전환 효과 실행
-        StartCoroutine(FadeInOut());
-        
-        // 해당 위치 활성화
-        for(int i = 0; i < currentWorldTransform.childCount; i++)
-        {
-            currentWorldTransform.GetChild(i).gameObject.SetActive(false);
-            if (i == newPos)
-            {
-                currentWorldTransform.GetChild(i).gameObject.SetActive(true);
-            }
-        }
-
-        // 현재 위치 설정
         GameSystem.Instance.currentPosition = newPos;
     }
 
@@ -213,7 +129,7 @@ public class WorldSceneManager : MonoBehaviour
 
         // 특정 시간대 전환
         // 해당하는 시간대 전환이 아니면 실행 안함
-        if (time > 0 && time < 4)
+        if (time > 0 && time <= 4)
         {
             if (time != GameSystem.Instance.currentTime + 1)
             {
@@ -293,7 +209,7 @@ public class WorldSceneManager : MonoBehaviour
     /// <summary>
     /// 화면 전환 효과
     /// </summary>
-    IEnumerator FadeInOut()
+    public IEnumerator FadeInOut()
     {
         float elapsedTime = 0f;
         
