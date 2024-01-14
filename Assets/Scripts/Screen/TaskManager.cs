@@ -20,7 +20,7 @@ public class TaskManager : MonoBehaviour
     /// 업무 완료 확인
     void OnEnable()
     {
-        if (GameSystem.Instance.taskClear == true)
+        if (GameSystem.Instance.isTaskClear == true)
         {
             GameSystem.Instance.SetTime(2);
         }
@@ -35,7 +35,7 @@ public class TaskManager : MonoBehaviour
             taskWindow.SetActive(true);     // 오브젝트 활성화
             consoleInput.gameObject.SetActive(false);   //입력창 비활성화
             // 콘솔 대사 출력
-            if (GameSystem.Instance.taskClear)
+            if (GameSystem.Instance.isTaskClear)
             {
                 StartCoroutine(TaskConsoleAnimation(1));
             }

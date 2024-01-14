@@ -17,18 +17,18 @@ public class GameSystem : MonoBehaviour
     */ 
 
     /// 현재 플레이 시각
-    public int todayIndex { get; private set; } = 0;   // 오늘 날짜 인덱스
-    public int currentTime { get; private set; }  = 0;   // 현재 시간
+    public int date { get; private set; } = 0;   // 오늘 날짜 인덱스
+    public int time { get; private set; }  = 0;   // 현재 시간
 
     ///  현재 플레이 위치
-    public World currentLocation;  // 현재 지역
-    public int currentPosition;    // 현재 위치
+    public World location { get; private set; }  // 현재 지역
+    public int position { get; private set; }    // 현재 위치
 
     // 스크린 활성화 여부
     public bool isScreenOn = false; 
     
     // 업무 클리어 여부
-    public bool taskClear   // 모든 업무 완료 플래그
+    public bool isTaskClear   // 모든 업무 완료 플래그
     {
         get { 
             bool workResult = true;
@@ -45,9 +45,9 @@ public class GameSystem : MonoBehaviour
     private List<DailyData> dailyList = new();     // 날짜별 데이터
 
     [SerializeField]
-    public SaveData player { get { return saveList[todayIndex]; } }      // 오늘 세이브 데이터
+    public SaveData player { get { return saveList[date]; } }      // 오늘 세이브 데이터
     [SerializeField]
-    public DailyData today { get { return dailyList[todayIndex]; } }    // 오늘 날짜 데이터
+    public DailyData today { get { return dailyList[date]; } }    // 오늘 날짜 데이터
 
 
     // 싱글턴
@@ -77,6 +77,26 @@ public class GameSystem : MonoBehaviour
         }
     }
 
+    
+    /// <summary>
+    /// 지역 값 설정
+    /// </summary>
+    /// <param name="newLocation">설정할 새 지역</param>
+    public void SetLocation(World newLocation)
+    {
+        location = newLocation;
+    }
+
+
+    /// <summary>
+    /// 위치 값 설정
+    /// </summary>
+    /// <param name="newPos">설정할 새 위치</param>
+    public void SetPosition(int newPos)
+    {
+        position = newPos;
+    }
+
 
     ///<summary>
     /// 날짜 전환 (게임 저장)
@@ -92,8 +112,8 @@ public class GameSystem : MonoBehaviour
         }
 
         // 해당 날짜 불러오기
-        todayIndex = date;
-        currentTime = 0;
+        this.date = date;
+        SetTime(0);
 
         // 게임 저장 (튜토리얼 날짜 제외)
         if (date > 1)
@@ -101,10 +121,6 @@ public class GameSystem : MonoBehaviour
             GameLoader.SavePlayerData(saveList);
         }
 
-        // TODO: 위치 이동, 로딩 씬 이후 WorldSceneManager로 변경
-        currentLocation = today.startLocation;
-        currentPosition = today.startPosition; 
-        Debug.Log($"Current position = {currentLocation} : {currentPosition}");
 
         // TODO: 메인 월드 재로드, 로딩 씬으로 대체
         if (SceneManager.GetActiveScene().name == "MainWorld")
@@ -114,26 +130,12 @@ public class GameSystem : MonoBehaviour
     ///<summary>
     /// 다음 시간대로 전환
     ///</summary>
-    ///<param name="time">전환할 시간(없으면 다음 시간대로, 마지막 시간대면 다음 날짜로)</param>
-    public void SetTime(int nextTime = -1)
+    ///<param name="time">전환할 시간(마지막 시간대면 다음 날짜로)</param>
+    public void SetTime(int _time)
     {
-        if (nextTime >= 0 && nextTime <= 4)
-        {
-            // 특정 시간대로 이동시 시간대 오류 확인
-            if (nextTime !=  currentTime + 1)
-            {
-                Debug.Log($"Invalid Time Set = {currentTime} : set time to {nextTime}");
-                return;
-            }
-        }
-        // 다음 시간대로 이동
-        currentTime++;
-        
-        if (currentTime >= 4)
-        {
-            // 다음 날짜로 이동
-            SetDate(todayIndex + 1);
-        }
+        if (_time < 0 || _time >= 4)
+            return;
+        time = _time;
     }
 
     /// <summary>
@@ -170,17 +172,18 @@ public class GameSystem : MonoBehaviour
     /// 해당 씬 로드
     /// </summary>
     /// <param name="sceneName"></param>
-    static public void LoadScene(string sceneName)
+    public static void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
     }
+
 
     /// <summary>
     /// 해당 씬 비동기 로드
     /// </summary>
     /// <param name="sceneName"></param>
     /// <returns></returns>
-    static public IEnumerator LoadSceneAsync(string sceneName)
+    public static IEnumerator LoadSceneAsync(string sceneName)
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
@@ -189,7 +192,6 @@ public class GameSystem : MonoBehaviour
             yield return null;
         }
     }
-
 }
 
 public static class GameLoader

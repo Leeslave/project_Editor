@@ -930,7 +930,7 @@ GameObject:
   - component: {fileID: 201459183}
   - component: {fileID: 201459182}
   m_Layer: 5
-  m_Name: Right
+  m_Name: Left
   m_TagString: WorldUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -943,18 +943,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 201459180}
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1240408164}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
-  m_AnchorMin: {x: 0.5162501, y: 0.31500003}
-  m_AnchorMax: {x: 0.5725, y: 0.37}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.88500005, y: 0.11433334}
+  m_AnchorMax: {x: 0.9425001, y: 0.17933334}
+  m_AnchoredPosition: {x: 0, y: -1}
+  m_SizeDelta: {x: 0.000015258789, y: -6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &201459182
 MonoBehaviour:
@@ -1001,8 +1001,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1354808982}
-        m_TargetAssemblyTypeName: WorldLocation, Assembly-CSharp
-        m_MethodName: MoveRight
+        m_TargetAssemblyTypeName: Location, Assembly-CSharp
+        m_MethodName: MoveLeft
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2308,7 +2308,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locationName: Bar
   connectLen: 2
+  npcList: []
+  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  sizeMultiplier: 1
 --- !u!1 &490362231
 GameObject:
   m_ObjectHideFlags: 0
@@ -2481,9 +2485,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1354808982}
+      - m_Target: {fileID: 1354808980}
         m_TargetAssemblyTypeName: WorldLocation, Assembly-CSharp
-        m_MethodName: MoveLocation
+        m_MethodName: 
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4221,7 +4225,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locationName: Cafe
   connectLen: 2
+  npcList: []
+  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  sizeMultiplier: 1
 --- !u!1 &847676104
 GameObject:
   m_ObjectHideFlags: 0
@@ -4273,7 +4281,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locationName: Restaurant
   connectLen: 2
+  npcList: []
+  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  sizeMultiplier: 1
 --- !u!1 &861285814
 GameObject:
   m_ObjectHideFlags: 0
@@ -4998,19 +5010,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   intro: {fileID: 471244591}
   locationList:
-  - {fileID: 1354808980}
-  - {fileID: 485906444}
-  - {fileID: 844649768}
-  - {fileID: 847676104}
-  - {fileID: 1846315221}
-  - {fileID: 1888378986}
-  - {fileID: 1062608861}
-  - {fileID: 1325233858}
+  - {fileID: 1354808982}
+  - {fileID: 485906446}
+  - {fileID: 844649770}
+  - {fileID: 847676106}
+  - {fileID: 1846315223}
+  - {fileID: 1888378988}
+  - {fileID: 1062608863}
+  - {fileID: 1325233860}
   moveDelay: 0.5
   curtain: {fileID: 756446686}
   worldBGM: {fileID: 1057474062}
-  npcList: []
-  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
 --- !u!4 &1057474061
 Transform:
   m_ObjectHideFlags: 0
@@ -5195,7 +5205,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locationName: Office2
   connectLen: 1
+  npcList: []
+  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  sizeMultiplier: 1
 --- !u!1 &1115329608
 GameObject:
   m_ObjectHideFlags: 1
@@ -5846,7 +5860,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1240408164
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5864,7 +5878,7 @@ RectTransform:
   - {fileID: 509427305}
   - {fileID: 1738316511}
   m_Father: {fileID: 1354808981}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -6289,6 +6303,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1325233859}
+  - component: {fileID: 1325233860}
   m_Layer: 8
   m_Name: Interrogate
   m_TagString: World
@@ -6317,6 +6332,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1325233860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1325233858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  locationName: Interrogate
+  connectLen: 1
+  npcList: []
+  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  sizeMultiplier: 1
 --- !u!1 &1341910684
 GameObject:
   m_ObjectHideFlags: 0
@@ -6424,8 +6456,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1240408164}
   - {fileID: 1416746265}
+  - {fileID: 1240408164}
   m_Father: {fileID: 1462642115}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6446,7 +6478,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locationName: Street
   connectLen: 2
+  npcList: []
+  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  sizeMultiplier: 0.8
 --- !u!1 &1361372139
 GameObject:
   m_ObjectHideFlags: 0
@@ -6460,7 +6496,7 @@ GameObject:
   - component: {fileID: 1361372142}
   - component: {fileID: 1361372141}
   m_Layer: 5
-  m_Name: Left
+  m_Name: Right
   m_TagString: WorldUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6473,16 +6509,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1361372139}
-  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1416746265}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
-  m_AnchorMin: {x: 0.46625003, y: 0.04766667}
-  m_AnchorMax: {x: 0.5422499, y: 0.13433334}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
+  m_AnchorMin: {x: 0.022499999, y: 0.351}
+  m_AnchorMax: {x: 0.0875, y: 0.41754252}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -6531,8 +6567,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1354808982}
-        m_TargetAssemblyTypeName: WorldLocation, Assembly-CSharp
-        m_MethodName: MoveLeft
+        m_TargetAssemblyTypeName: Location, Assembly-CSharp
+        m_MethodName: MoveRight
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6597,7 +6633,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1416746265
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6613,7 +6649,7 @@ RectTransform:
   - {fileID: 103925068}
   - {fileID: 1361372140}
   m_Father: {fileID: 1354808981}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -8537,7 +8573,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locationName: Hallway
   connectLen: 3
+  npcList: []
+  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  sizeMultiplier: 1
 --- !u!1 &1863535829
 GameObject:
   m_ObjectHideFlags: 0
@@ -8659,7 +8699,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locationName: Office
   connectLen: 2
+  npcList: []
+  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  sizeMultiplier: 1
 --- !u!1 &1905119619
 GameObject:
   m_ObjectHideFlags: 0
