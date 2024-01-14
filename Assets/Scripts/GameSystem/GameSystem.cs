@@ -14,25 +14,38 @@ public class GameSystem : MonoBehaviour
         플레이어 데이터를 저장, 로드
         게임 데이터를 로드, 관리
         날짜, 시간대, 진행상황 적용
-    */
+    */ 
 
-    private int resolutionX = 1200;
-    private int resolutionY = 900;
-
+    /// 현재 플레이 시각
     public int todayIndex { get; private set; } = 0;   // 오늘 날짜 인덱스
     public int currentTime { get; private set; }  = 0;   // 현재 시간
 
-    [Header("현재 게임 정보")]
+    ///  현재 플레이 위치
     public World currentLocation;  // 현재 지역
     public int currentPosition;    // 현재 위치
-    public bool isScreenOn = false; // 스크린 활성화 여부
 
-    /// 게임 데이터 
+    // 스크린 활성화 여부
+    public bool isScreenOn = false; 
+    
+    // 업무 클리어 여부
+    public bool taskClear   // 모든 업무 완료 플래그
+    {
+        get { 
+            bool workResult = true;
+            foreach(var workStatus in Instance.today.workList.Values)
+            {
+                workResult = workResult & workStatus;
+            }
+            return workResult;
+        }
+    }
+
+    /// 플레이 데이터 
     private List<SaveData> saveList = new();    // 저장 데이터
     private List<DailyData> dailyList = new();     // 날짜별 데이터
 
     [SerializeField]
-    public SaveData player { get { return saveList[todayIndex]; } }      // 세이브 데이터
+    public SaveData player { get { return saveList[todayIndex]; } }      // 오늘 세이브 데이터
     [SerializeField]
     public DailyData today { get { return dailyList[todayIndex]; } }    // 오늘 날짜 데이터
 
@@ -44,6 +57,7 @@ public class GameSystem : MonoBehaviour
         get { return _instance; }
     }
 
+
     private void Awake()
     {
         if (!_instance)
@@ -51,12 +65,10 @@ public class GameSystem : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
 
-            Screen.SetResolution(resolutionX, resolutionY, false);  // 해상도 고정
-
             saveList = GameLoader.LoadSaveData();     // 세이브 데이터 로드
             dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드  
 
-            // 초기 데이터 설정
+            // 초기 데이터 설정 (로딩 씬 설정 후 삭제)
             SetDate(0);
         }
         else
@@ -65,18 +77,14 @@ public class GameSystem : MonoBehaviour
         }
     }
 
+
     ///<summary>
     /// 날짜 전환 (게임 저장)
     ///</summary>
     ///<param name="dateIndex">전환할 날짜 인덱스(없으면 다음 날짜로), 시간은 무조건 아침</param>
-    public void SetDate(int date = -1)
+    public void SetDate(int date)
     {
-        if (date == -1)
-        {
-            // 다음 날짜로 이동
-            date = todayIndex + 1;
-        }
-
+        // 날짜 오류
         if (date > dailyList.Count || date < 0)
         {
             Debug.Log($"Day Out Of Range: {date}");
@@ -93,11 +101,12 @@ public class GameSystem : MonoBehaviour
             GameLoader.SavePlayerData(saveList);
         }
 
-        // 위치 이동
+        // TODO: 위치 이동, 로딩 씬 이후 WorldSceneManager로 변경
         currentLocation = today.startLocation;
-        currentPosition = today.startPosition;
+        currentPosition = today.startPosition; 
         Debug.Log($"Current position = {currentLocation} : {currentPosition}");
-        // 메인 월드 재로드
+
+        // TODO: 메인 월드 재로드, 로딩 씬으로 대체
         if (SceneManager.GetActiveScene().name == "MainWorld")
             SceneManager.LoadScene("MainWorld");
     }
@@ -123,7 +132,7 @@ public class GameSystem : MonoBehaviour
         if (currentTime >= 4)
         {
             // 다음 날짜로 이동
-            SetDate();
+            SetDate(todayIndex + 1);
         }
     }
 
@@ -180,6 +189,7 @@ public class GameSystem : MonoBehaviour
             yield return null;
         }
     }
+
 }
 
 public static class GameLoader
@@ -196,6 +206,7 @@ public static class GameLoader
 
     [Serializable]
     class GameDataWrapper { public List<DailyWrapper> days = new(); }     // JsonUtility용 DailyData들 Wrapper
+    
 
 
     /// JSON으로부터 게임 데이터를 로드
