@@ -125,6 +125,8 @@ public class NPC : MonoBehaviour
                                                     * new Vector2(1, newSprite.rect.height/ newSprite.rect.width);
             // 위치 설정
             rect.anchoredPosition = npcData.position;
+            Debug.Log(rect.anchoredPosition);
+            Debug.Log(rect.position);
         }
         // 이미지 없으면 크기 없애기
         else
