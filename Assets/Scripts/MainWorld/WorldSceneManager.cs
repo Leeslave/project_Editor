@@ -27,17 +27,19 @@ public class WorldSceneManager : MonoBehaviour
     *   - 지역 내 위치 이동
     *   - 지역 간 이동
     */
-    [Header("인트로 데이터")]
-    [SerializeField]
-    private DayIntro intro;      // 인트로 오브젝트
 
     [Header("지역 데이터")]
     [SerializeField]
     private Location[] locationList;    // 지역 오브젝트 리스트
+    private int CurrentIndex { get { return (int)GameSystem.Instance.location; } }    // 현재 지역
+    public SoundManager worldBGM;  // 지역 내 배경음악
+
+    [Header("지역 이동 효과")]
     public float moveDelay;     // 지역 이동 딜레이
     [SerializeField]
     private Image curtain;      // 지역 이동 효과 이미지
-    public SoundManager worldBGM;  // 지역 내 배경음악
+
+    public bool isMoveOpen { get; private set; } = false;    // 지역 내 이동 버튼 활성화 여부
 
 
     /// 싱글턴 선언
@@ -53,38 +55,30 @@ public class WorldSceneManager : MonoBehaviour
 
     void Start()
     {
-        // 추가 인트로 실행 (날짜 변경 후 0시에만)
-        if (GameSystem.Instance.time == 0)
-        {
-            if (intro)
-                StartCoroutine(WaitForIntro());
-        }
-        else
-        {
-            ChangeTime(GameSystem.Instance.time);
-            // 위치 설정
-            MoveLocation(GameSystem.Instance.location);
-        }              
+        // 시간 설정
+        ChangeTime(GameSystem.Instance.time);          
     }
 
-    // 인트로 오브젝트 대기
-    IEnumerator WaitForIntro()
+
+    /// <summary>
+    /// 지역 이동 버튼 활성화
+    /// </summary>
+    public void SetMoveActive()
     {
-        intro.gameObject.SetActive(true);
-        yield return new WaitUntil(() => intro.isFinished);
-        
-        // 시간 설정
-        ChangeTime(0);
-        // 위치 설정
-        MoveLocation(GameSystem.Instance.location);
+        isMoveOpen = !isMoveOpen;
+        locationList[CurrentIndex].SetButtonActive(isMoveOpen);
     }
 
     /// <summary>
     /// 지역 변경
     /// </summary>
     /// <remarks>지역을 변경하고 지역 내 위치 동기화
+    [HideInInspector]
     public void MoveLocation(World location)
     {
+        // 현재 지역 설정
+        GameSystem.Instance.SetLocation(location);
+
         // 해당하는 지역만 활성화
         for(int i = 0; i < locationList.Length; i++)
         {
@@ -92,16 +86,17 @@ public class WorldSceneManager : MonoBehaviour
             if (i == (int)location)
             {
                 locationList[i].gameObject.SetActive(true);
-                // 지역 내 정보 활성화
                 Debug.Log($"Set World BGM : {i}");
                 worldBGM.OverlapPlay(i);
             }
         }        
-
-        // 현재 지역 설정
-        GameSystem.Instance.SetLocation(location);
     }
 
+    /// <summary>
+    /// 지역 내 위치값 설정
+    /// </summary>
+    /// <param name="newPos">새 위치</param>
+    [HideInInspector]
     public void SetPosition(int newPos)
     {
         GameSystem.Instance.SetPosition(newPos);
@@ -148,14 +143,9 @@ public class WorldSceneManager : MonoBehaviour
         if (time == 4)
         {
             // 날짜 재설정
-            GameSystem.Instance.SetDate(GameSystem.Instance.date + 1);
+            GameSystem.Instance.SetDate();
             
-            // NPC 옵저빙
-            SetWorldObject();
-
-            // 위치 설정
-            MoveLocation(GameSystem.Instance.today.startLocation);
-            SetPosition(GameSystem.Instance.today.startPosition);
+            GameSystem.LoadScene("DayLoading");
             return;
         }
 

@@ -78,7 +78,7 @@ public class TaskManager : MonoBehaviour
             {
                 Debug.Log($"Work Entered! : {consoleInput.text}");
                 consoleInput.text = "업무 로딩중...\n";
-                StartCoroutine(GameSystem.LoadSceneAsync(work.code));
+                GameSystem.LoadScene(work.code);
                 return;
             }
         }

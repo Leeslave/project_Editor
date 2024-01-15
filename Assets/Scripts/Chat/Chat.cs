@@ -254,43 +254,48 @@ public class Chat : MonoBehaviour
         // 대화 타입에 맞춰 UI들 설정
         if (para is TalkParagraph)        /// 일반 대사
         {
-            TalkParagraph normalPara = para as TalkParagraph;
+            TalkParagraph talk = para as TalkParagraph;
 
             // 배경 활성화
-            if (normalPara.background != null)
+            if (talk.background != null)
             {
-                background.sprite = GetSprite(BACKGROUNDFILEPATH + normalPara.background);    // 배경 이미지 설정 
+                background.sprite = GetSprite(BACKGROUNDFILEPATH + talk.background);    // 배경 이미지 설정 
             }
             if (background.sprite != null)
                 background.gameObject.SetActive(true);      // 배경 이미지 활성화
 
             // 캐릭터 CG 활성화
-            if (normalPara.characterL != null)
+            if (talk.characterL != null)
             {
-                characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{normalPara.characterL.fileName}", normalPara.characterL.index);
+                characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterL.fileName}", talk.characterL.index);
                 characterL.gameObject.SetActive(true);
             }
-            if (normalPara.characterR != null)
+            if (talk.characterR != null)
             {
-                characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{normalPara.characterR.fileName}", normalPara.characterR.index);
+                characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterR.fileName}", talk.characterR.index);
                 characterR.gameObject.SetActive(true);
             }
-                
-            talkPanel.SetActive(true);      // 대화 패널 활성화
+            
+            // 대화 존재시
+            if (talk.text != null)
+            {
 
-            talkerName.text = normalPara.talker;     // 발화자 이름
-            talkerInfo.text = normalPara.talkerInfo; // 발화자 설명
+                talkPanel.SetActive(true);      // 대화 패널 활성화
 
-            text.fontSize = normalPara.GetFontSize();   // 대사 크기 설정
+                talkerName.text = talk.talker;     // 발화자 이름
+                talkerInfo.text = talk.talkerInfo; // 발화자 설명
 
-            if(text.fontSize == TalkParagraph.LARGEFONTSIZE)
-                textSFX.SetClip(1);
-            else if(text.fontSize == TalkParagraph.NORMALFONTSIZE)
-                textSFX.SetClip(0);
-            else
-                textSFX = new();
+                text.fontSize = talk.GetFontSize();   // 대사 크기 설정
 
-            StartCoroutine(TextAnimation(para as TalkParagraph));
+                if(text.fontSize == TalkParagraph.LARGEFONTSIZE)
+                    textSFX.SetClip(1);
+                else if(text.fontSize == TalkParagraph.NORMALFONTSIZE)
+                    textSFX.SetClip(0);
+                else
+                    textSFX = new();
+
+                StartCoroutine(TextAnimation(talk));
+            }
         }
         else if(para is ChoiceParagraph)         /// 일반 선택지
         {
@@ -332,10 +337,6 @@ public class Chat : MonoBehaviour
                     SetChoice(2, choicePara.choiceList[2]);   // 3번 선택지 설정
                     break;
             }
-        }
-        else if (para is CutSceneParagraph)     // 컷씬
-        {
-
         }
         else        // 대사 타입 오류
         {

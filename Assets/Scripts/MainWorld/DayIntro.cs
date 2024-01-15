@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class DayIntro : MonoBehaviour
 {
@@ -15,37 +16,40 @@ public class DayIntro : MonoBehaviour
     [SerializeField]
     private TMP_Text textUI;      //글자 활성화용 텍스트 오브젝트
     private string[] dayText;      // 실제 날짜 글자
-    public bool isFinished;     // 인트로 종료 여부
+    public bool isFinished = false;     // 인트로 종료 여부
 
     void OnEnable()
     {
-        StartCoroutine(DayCountIntro());
+        StartCoroutine(SceneLoading());
     }
 
-    /**
-    * 장소 문자열 설정 함수
-    */ 
-    string getLocationName(World text)
+
+    private IEnumerator SceneLoading()
     {
-        string result = "???";
-        switch(text)
+        StartCoroutine(DayCountIntro());
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("MainWorld");
+        asyncLoad.allowSceneActivation = false;
+
+        while ((isFinished && asyncLoad.isDone) == false)
         {
-            case World.Street: 
-                result = "신시가지";
-                break;
-            case World.Cafe:
-                result = "신문사 앞 카페";
-                break;
-                
-        }
-        return result;
+            Debug.Log("Wait");
+            yield return null;
+
+            if (isFinished && asyncLoad.isDone == true)
+            {
+                Debug.Log("Finished!");
+                // asyncLoad.allowSceneActivation = true;
+                yield break;
+            }
+        }       
     }
+
 
     /// <summary>
     /// 날짜 인트로 코루틴
     /// </summary>
     /// <returns></returns>
-    public IEnumerator DayCountIntro()
+    private IEnumerator DayCountIntro()
     {
         // 플래그 설정
         isFinished = false;
@@ -81,6 +85,25 @@ public class DayIntro : MonoBehaviour
 
         //종료 및 flag 설정
         isFinished = true;
-        gameObject.SetActive(false);
+    }
+
+    
+    /**
+    * 장소 문자열 설정 함수
+    */ 
+    string getLocationName(World text)
+    {
+        string result = "???";
+        switch(text)
+        {
+            case World.Street: 
+                result = "신시가지";
+                break;
+            case World.Cafe:
+                result = "신문사 앞 카페";
+                break;
+                
+        }
+        return result;
     }
 }

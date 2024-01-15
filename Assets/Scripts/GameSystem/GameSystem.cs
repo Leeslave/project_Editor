@@ -44,9 +44,7 @@ public class GameSystem : MonoBehaviour
     private List<SaveData> saveList = new();    // 저장 데이터
     private List<DailyData> dailyList = new();     // 날짜별 데이터
 
-    [SerializeField]
     public SaveData player { get { return saveList[date]; } }      // 오늘 세이브 데이터
-    [SerializeField]
     public DailyData today { get { return dailyList[date]; } }    // 오늘 날짜 데이터
 
 
@@ -102,8 +100,14 @@ public class GameSystem : MonoBehaviour
     /// 날짜 전환 (게임 저장)
     ///</summary>
     ///<param name="dateIndex">전환할 날짜 인덱스(없으면 다음 날짜로), 시간은 무조건 아침</param>
-    public void SetDate(int date)
+    public void SetDate(int date = -1)
     {
+        // 다음 날짜로 이동시
+        if (date == -1)
+        {
+            date = this.date + 1;
+        }
+
         // 날짜 오류
         if (date > dailyList.Count || date < 0)
         {
@@ -124,7 +128,7 @@ public class GameSystem : MonoBehaviour
 
         // TODO: 메인 월드 재로드, 로딩 씬으로 대체
         if (SceneManager.GetActiveScene().name == "MainWorld")
-            SceneManager.LoadScene("MainWorld");
+            SceneManager.LoadScene("DayLoading");
     }
 
     ///<summary>
@@ -175,22 +179,6 @@ public class GameSystem : MonoBehaviour
     public static void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
-    }
-
-
-    /// <summary>
-    /// 해당 씬 비동기 로드
-    /// </summary>
-    /// <param name="sceneName"></param>
-    /// <returns></returns>
-    public static IEnumerator LoadSceneAsync(string sceneName)
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-
-        while (!asyncLoad.isDone)
-        {
-            yield return null;
-        }
     }
 }
 

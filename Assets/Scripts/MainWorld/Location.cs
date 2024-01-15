@@ -12,7 +12,9 @@ public class Location : MonoBehaviour
     [SerializeField]
     private string locationName; // 지역명
     [SerializeField]
-    int connectLen;     // 연결 가능 최대 길이
+    private int connectLen;     // 연결 가능 최대 길이
+    [SerializeField]
+    private List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
 
     [SerializeField]
     private List<NPC> npcList = new();  // NPC 리스트
@@ -24,6 +26,7 @@ public class Location : MonoBehaviour
     void OnEnable()
     {
         MovePosition(GameSystem.Instance.position);
+        SetButtonActive(WorldSceneManager.Instance.isMoveOpen);
     }
 
 
@@ -56,12 +59,13 @@ public class Location : MonoBehaviour
         }
 
         // 위치값 새로설정
-        GameSystem.Instance.SetPosition(newPos);
+        WorldSceneManager.Instance.SetPosition(newPos);
     }
 
 
     // 연결된 맵 왼쪽으로 이동
-    public void MoveLeft()
+    [SerializeField]
+    private void MoveLeft()
     {
         int newPos = GameSystem.Instance.position - 1;
         if (newPos < 0)
@@ -75,7 +79,8 @@ public class Location : MonoBehaviour
 
 
     // 연결된 맵 오른쪽으로 이동
-    public void MoveRight()
+    [SerializeField]
+    private void MoveRight()
     {
         int newPos = GameSystem.Instance.position + 1;
         if (newPos > connectLen)
@@ -88,6 +93,25 @@ public class Location : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// 지역 이동 버튼 활성화
+    /// </summary>
+    /// <param name="isActive">버튼 활성화 여부</param>
+    [HideInInspector]
+    public void SetButtonActive(bool isActive)
+    {
+        foreach(var button in buttons)
+        {
+            button.SetActive(isActive);
+        }
+    }
+
+
+    /// <summary>
+    /// 시간대에 해당하는 NPC들 생성
+    /// </summary>
+    /// <param name="date">날짜</param>
+    /// <param name="time">시간대</param>
     public void SetNPC(int date, int time)
     {
         // 이전 오브젝트들 삭제
