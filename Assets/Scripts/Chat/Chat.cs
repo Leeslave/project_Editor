@@ -106,8 +106,7 @@ public class Chat : MonoBehaviour
         
         // 대화 리스트 할당
         chatList = new Queue<Paragraph>(_chatList);
-        logList = new Queue<Paragraph>();
-        Debug.Log($"Chat Start"); 
+        logList = new Queue<Paragraph>();   
         isTalk = true;
 
         chatUI.SetActive(true);

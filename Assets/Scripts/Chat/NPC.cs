@@ -35,7 +35,6 @@ public class NPC : MonoBehaviour
     /// </summary>
     public void StartChat()
     {
-        Debug.Log($"{talkCount} : {data.count}");
         if (data == null)
         {
             Debug.Log($"NPC DATA CANNOT FOUND");
@@ -46,6 +45,7 @@ public class NPC : MonoBehaviour
         if (data.count > 0 && talkCount >= data.count)
             return;
         
+        Debug.Log($"Start Chat : {data.name}");
         Chat.Instance.StartChat(data.chatList);
         talkCount++;
     }

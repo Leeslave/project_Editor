@@ -20,28 +20,27 @@ public class DayIntro : MonoBehaviour
 
     void OnEnable()
     {
-        StartCoroutine(SceneLoading());
+        StartCoroutine(SceneLoading("MainWorld"));
     }
 
 
-    private IEnumerator SceneLoading()
+    private IEnumerator SceneLoading(string scene)
     {
+        // 인트로 실행
         StartCoroutine(DayCountIntro());
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("MainWorld");
+        yield return new WaitUntil(() => isFinished == true);
+
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scene);
         asyncLoad.allowSceneActivation = false;
 
-        while ((isFinished && asyncLoad.isDone) == false)
+        while (asyncLoad.progress <  0.9f)
         {
-            Debug.Log("Wait");
             yield return null;
+        }   
 
-            if (isFinished && asyncLoad.isDone == true)
-            {
-                Debug.Log("Finished!");
-                // asyncLoad.allowSceneActivation = true;
-                yield break;
-            }
-        }       
+        Debug.Log($"Scene Loaded : {scene}");
+        asyncLoad.allowSceneActivation = true;
+        yield break;    
     }
 
 

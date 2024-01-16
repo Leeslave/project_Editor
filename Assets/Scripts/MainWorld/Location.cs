@@ -117,7 +117,7 @@ public class Location : MonoBehaviour
         // 이전 오브젝트들 삭제
         foreach(var oldNPC in npcList)
         {
-            Destroy(oldNPC);
+            Destroy(oldNPC.gameObject);
         }
 
         // 리스트 초기화
@@ -157,10 +157,13 @@ public class Location : MonoBehaviour
 
                 RectTransform rect = newNPC.GetComponent<RectTransform>();
                 // 위치 설정
+                Debug.Log(_data.anchor);
                 rect.anchorMin = _data.anchor;
                 rect.anchorMax = _data.anchor;
+                Debug.Log($"Anchor applied : {rect.anchorMin} ~ {rect.anchorMax}");
                 // 크기 설정
                 rect.sizeDelta = _data.size * sizeMultiplier;
+                rect.localScale = new Vector3(1f,1f,1f);
             }
         }
 
