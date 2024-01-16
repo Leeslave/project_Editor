@@ -27,22 +27,20 @@ public class WorldSceneManager : MonoBehaviour
     *   - 지역 내 위치 이동
     *   - 지역 간 이동
     */
-    [Header("인트로 데이터")]
-    [SerializeField]
-    private DayIntro intro;      // 인트로 오브젝트
 
     [Header("지역 데이터")]
     [SerializeField]
-    private GameObject[] locationList;    // 지역 오브젝트 리스트
+    private Location[] locationList;    // 지역 오브젝트 리스트
+    private int CurrentIndex { get { return (int)GameSystem.Instance.location; } }    // 현재 지역
+    public SoundManager worldBGM;  // 지역 내 배경음악
+
+    [Header("지역 이동 효과")]
     public float moveDelay;     // 지역 이동 딜레이
     [SerializeField]
     private Image curtain;      // 지역 이동 효과 이미지
-    public SoundManager worldBGM;  // 지역 내 배경음악
 
-    [Header("NPC 생성 정보")]
-    [SerializeField]
-    private List<GameObject> npcList = new();     // 모든 지역 NPC 리스트
-    public GameObject npcPrefab;   // NPC 생성용 프리팹
+    public bool isMoveOpen { get; private set; } = false;    // 지역 내 이동 버튼 활성화 여부
+
 
     /// 싱글턴 선언
     private static WorldSceneManager _instance;
@@ -57,61 +55,51 @@ public class WorldSceneManager : MonoBehaviour
 
     void Start()
     {
-        // 추가 인트로 실행 (날짜 변경 후 0시에만)
-        if (GameSystem.Instance.currentTime == 0)
-        {
-            if (intro)
-                StartCoroutine(WaitForIntro());
-        }
-        else
-        {
-            // 위치 설정
-            MoveLocation(GameSystem.Instance.currentLocation);
-
-            // npc 생성
-            SetWorldObject(); 
-        }              
+        // 시간 설정
+        ChangeTime(GameSystem.Instance.time);          
     }
 
-    // 인트로 오브젝트 대기
-    IEnumerator WaitForIntro()
-    {
-        intro.gameObject.SetActive(true);
-        yield return new WaitUntil(() => intro.isFinished);
-        
-        // 위치 설정
-        MoveLocation(GameSystem.Instance.currentLocation);
 
-        // npc 생성
-        SetWorldObject();
+    /// <summary>
+    /// 지역 이동 버튼 활성화
+    /// </summary>
+    public void SetMoveActive()
+    {
+        isMoveOpen = !isMoveOpen;
+        locationList[CurrentIndex].SetButtonActive(isMoveOpen);
     }
 
     /// <summary>
     /// 지역 변경
     /// </summary>
     /// <remarks>지역을 변경하고 지역 내 위치 동기화
+    [HideInInspector]
     public void MoveLocation(World location)
     {
+        // 현재 지역 설정
+        GameSystem.Instance.SetLocation(location);
+
         // 해당하는 지역만 활성화
         for(int i = 0; i < locationList.Length; i++)
         {
-            locationList[i].SetActive(false);
+            locationList[i].gameObject.SetActive(false);
             if (i == (int)location)
             {
-                locationList[i].SetActive(true);
-                // 지역 내 정보 활성화
+                locationList[i].gameObject.SetActive(true);
                 Debug.Log($"Set World BGM : {i}");
                 worldBGM.OverlapPlay(i);
             }
         }        
-
-        // 현재 지역 설정
-        GameSystem.Instance.currentLocation = location;
     }
 
+    /// <summary>
+    /// 지역 내 위치값 설정
+    /// </summary>
+    /// <param name="newPos">새 위치</param>
+    [HideInInspector]
     public void SetPosition(int newPos)
     {
-        GameSystem.Instance.currentPosition = newPos;
+        GameSystem.Instance.SetPosition(newPos);
     }
 
     /// <summary>
@@ -125,37 +113,51 @@ public class WorldSceneManager : MonoBehaviour
         - NPC들 활성화, 위치 동기화
         - 지역들 배경 이미지 변경
         - 바로 다음 시간대로만 변경
+        - 0시로 변경가능 (초기화)
         */
+
+        // 자동 시간 넘김
+        if(time == -1)
+        {
+            time = GameSystem.Instance.time + 1;
+        }
+
+        // 시간대 오류
+        if(time > 4 || time < 0)
+        {
+            Debug.Log($"Invalid Time : {time}");
+            return;
+        }
 
         // 특정 시간대 전환
         // 해당하는 시간대 전환이 아니면 실행 안함
         if (time > 0 && time <= 4)
         {
-            if (time != GameSystem.Instance.currentTime + 1)
+            if (time != GameSystem.Instance.time + 1)
             {
                 return;
             }
         }
 
-        // 자동 시간 넘김
-        if(time == -1)
-        {
-            time = GameSystem.Instance.currentTime + 1;
-        }
-
         // 날짜 변경 (시간대 4일시)
         if (time == 4)
         {
+            // 날짜 재설정
             GameSystem.Instance.SetDate();
-            SetWorldObject();
+            
+            GameSystem.LoadScene("DayLoading");
             return;
         }
 
         // 해당시간으로 설정
         GameSystem.Instance.SetTime(time);
 
-        // NPC 데이터 
+        // NPC 옵저빙
         SetWorldObject();
+
+        // 위치 설정
+        MoveLocation(GameSystem.Instance.today.startLocation);
+        SetPosition(GameSystem.Instance.today.startPosition);
     }
 
     /// <summary>
@@ -163,46 +165,11 @@ public class WorldSceneManager : MonoBehaviour
     /// </summary>
     private void SetWorldObject()
     {
-        // 이전 오브젝트들 삭제
-        foreach(var oldNPC in npcList)
+        foreach(var location in locationList)
         {
-            Destroy(oldNPC);
-        }
-
-        // 리스트 초기화
-        npcList = new();
-        // 새 오브젝트 데이터
-        List<string> npcFiles = GameSystem.Instance.today.npcList[GameSystem.Instance.currentTime];
-        if (npcFiles == null)
-            return;
-
-        // 오브젝트들 생성 및 위치 설정
-        foreach(var newNPCName in npcFiles)
-        {
-            // 새 오브젝트 생성
-            GameObject newObject = Instantiate(npcPrefab);
-            Debug.Log($"Create New NPC : {newNPCName}");
-
-            // 생성한 오브젝트 정보 로드
-            NPC newNPC = newObject.GetComponent<NPC>();
-            newNPC.npcFileName = newNPCName;
-            newNPC.GetData();
-
-            // 오브젝트 정보 로드 실패
-            if (newObject == null)
-            {
-                Debug.Log($"NPC CREATE FAIED : ${newNPCName}");
-                continue;
-            }
-            
-            // NPC 정보
-            NPCData newNPCData = newNPC.npcData;
-
-            // 오브젝트 transform 설정
-            newObject.transform.SetParent(locationList[(int)newNPCData.location].transform.GetChild(newNPCData.locationIndex));
-
-            // 생성 완료, 리스트에 추가
-            npcList.Add(newObject);
+            location.gameObject.SetActive(true);
+            location.SetNPC(GameSystem.Instance.date, GameSystem.Instance.time);
+            location.gameObject.SetActive(false);
         }
     }
 

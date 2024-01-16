@@ -36,7 +36,7 @@ public class TalkParagraph : Paragraph
     - 기본적인 대화
     - 컷씬용 배경
     */
-    public string talker;  // 발화자
+    public string talker = "";  // 발화자
     public string talkerInfo = "";    // 발화자 설명
     public string text = "";  // 내용
     public List<VariableReplace> variables = new(); // 변수값
@@ -64,6 +64,12 @@ public class TalkParagraph : Paragraph
 
         }
     }
+
+    public TalkParagraph(string text)
+    {
+        talker = "";
+        this.text = text;
+    }
 }   
 
 [Serializable]
@@ -75,13 +81,6 @@ public class ChoiceParagraph : Paragraph
     */
     public List<Choice> choiceList = null; // 선택지들 리스트
 }
-
-[Serializable]
-public class CutSceneParagraph : Paragraph
-{
-
-}
-
 
 [Serializable]
 public class Choice
