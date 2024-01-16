@@ -16,6 +16,31 @@ public class GameOption : MonoBehaviour
         - 언어?
     */
     
+    /// 해상도 설정
+    private int resolutionX = 1200;
+    private int resolutionY = 900;
+    
+    /// 싱글턴 선언
+    private static GameOption _instance;
+    public static GameOption Instance { get { return _instance; } }
+
+
+    void Awake()
+    {
+        if(!_instance)
+        {
+            _instance = this;   // 싱글톤 할당
+
+            
+            Screen.SetResolution(resolutionX, resolutionY, false);  // 해상도 고정
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+
     public Button optionButton;
 
     void Update()
@@ -35,10 +60,12 @@ public class GameOption : MonoBehaviour
         GameSystem.LoadScene("SaveSelect");
     }
 
+
     public void LoadStartMenu()
     {
         GameSystem.LoadScene("Start");
     }
+
 
     public void QuitGame()
     {

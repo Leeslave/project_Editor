@@ -16,22 +16,11 @@ public class TaskManager : MonoBehaviour
     public GameObject taskWindow;       // 업무 프로그램 창
     public AnimationController taskConsoleAnimation;    //업무 대화 콘솔 애니메이션
     public TMP_InputField consoleInput;     // 업무 입력 창
-    public bool taskClear   // 모든 업무 완료 플래그
-    {
-        get { 
-            bool workResult = true;
-            foreach(var workStatus in GameSystem.Instance.today.workList.Values)
-            {
-                workResult = workResult & workStatus;
-            }
-            return workResult;
-        }
-    }
 
     /// 업무 완료 확인
     void OnEnable()
     {
-        if (taskClear == true)
+        if (GameSystem.Instance.isTaskClear == true)
         {
             GameSystem.Instance.SetTime(2);
         }
@@ -46,7 +35,7 @@ public class TaskManager : MonoBehaviour
             taskWindow.SetActive(true);     // 오브젝트 활성화
             consoleInput.gameObject.SetActive(false);   //입력창 비활성화
             // 콘솔 대사 출력
-            if (taskClear)
+            if (GameSystem.Instance.isTaskClear)
             {
                 StartCoroutine(TaskConsoleAnimation(1));
             }
@@ -89,7 +78,7 @@ public class TaskManager : MonoBehaviour
             {
                 Debug.Log($"Work Entered! : {consoleInput.text}");
                 consoleInput.text = "업무 로딩중...\n";
-                StartCoroutine(GameSystem.LoadSceneAsync(work.code));
+                GameSystem.LoadScene(work.code);
                 return;
             }
         }

@@ -21,8 +21,6 @@ public class DailyWrapper
 
 
     public List<Work> workList = new();
-
-    public List<string>[] npcList = new List<string>[4];
 }
 
 [Serializable]
@@ -56,9 +54,6 @@ public class DailyData
 
     /// 업무 정보
     public Dictionary<Work, bool> workList = new();
-
-    /// NPC 정보
-    public List<string>[] npcList = new List<string>[4];
 
     /// Wrapper에서 생성자
     public DailyData(DailyWrapper wrapper)
@@ -95,10 +90,6 @@ public class DailyData
         {
             workList.Add(work, false);
         }
-        
-
-        // NPC 
-        npcList = wrapper.npcList;
     }
     
 }
