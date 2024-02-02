@@ -12,9 +12,10 @@ public class VK_PupilExitChecker : MonoBehaviour
     
     private void OnTriggerExit2D(Collider2D other)
     {
-        Debug.Log(other.name);
-        
-        if(other.name == "PupilCollider")
+        if (other.name == "PupilCollider")
+        {
+            Debug.Log("눈동자가 바깥으로 빠져나갔습니다!");
             PupilExitEvent.Invoke();
+        }
     }
 }
