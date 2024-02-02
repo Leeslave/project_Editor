@@ -71,7 +71,7 @@ public class BasicButton : MonoBehaviour
         if (!IsMouseOver)
             return;
         
-        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0f, Down, ButtonFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0f, Down, ButtonFill);
         OnMouseDownEvent.Invoke();
     }
 
@@ -85,7 +85,7 @@ public class BasicButton : MonoBehaviour
         if (!IsMouseOver)
             return;
         
-        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, Up, ButtonFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, Up, ButtonFill);
         OnMouseUpEvent.Invoke();
     }
 
@@ -100,7 +100,7 @@ public class BasicButton : MonoBehaviour
             return;
         
         IsMouseOver = true;
-        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0f, Enter, ButtonFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0f, Enter, ButtonFill);
         OnMouseEnterEvent.Invoke();
     }
 
@@ -113,7 +113,7 @@ public class BasicButton : MonoBehaviour
             return;
         
         IsMouseOver = false;
-        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, Exit, ButtonFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, Exit, ButtonFill);
         OnMouseExitEvent.Invoke();
     }
 

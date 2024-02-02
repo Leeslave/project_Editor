@@ -62,9 +62,9 @@ public class BilateralSubstitute : MonoBehaviour
         
         //테이블 전체 소등
         for(var i = 0; i < 36; i++)
-            LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[i].TextFill);
-        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
-        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), RowElements[LastLineRowElements[1]].TextFill);
+            LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[i].TextFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), RowElements[LastLineRowElements[1]].TextFill);
     }
 
     /// <summary>
@@ -120,13 +120,13 @@ public class BilateralSubstitute : MonoBehaviour
                     TransposedTextDisplay.TextTMP.text = "<color=#2DFF2D>TASK COMPLETE!</color>";
                     
                     //테이블 소등
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), RowElements[LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), RowElements[LastLineRowElements[1]].TextFill);
                     for(var i = 0; i < LastLineRowElements[1]; i++)
-                        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
+                        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
                     for(var i = 0; i < LastLineRowElements[0]; i++)
-                        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
+                        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
                 }
                 else
                 {
@@ -137,24 +137,24 @@ public class BilateralSubstitute : MonoBehaviour
                     TransposedTextDisplay.TextTMP.text = result;
                     
                     //테이블 소등
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), RowElements[LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), RowElements[LastLineRowElements[1]].TextFill);
                     for(var i = 0; i < LastLineRowElements[1]; i++)
-                        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
+                        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
                     for(var i = 0; i < LastLineRowElements[0]; i++)
-                        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
+                        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
                     
                     //테이블 점등
                     LastLineRowElements[0] = LineRowDecode[red.ToCharArray()[0]];
                     LastLineRowElements[1] = LineRowDecode[red.ToCharArray()[1]];
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 1.0f), LineElements[LastLineRowElements[0]].TextFill);
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 1.0f), RowElements[LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 1.0f), LineElements[LastLineRowElements[0]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 1.0f), RowElements[LastLineRowElements[1]].TextFill);
                     for(var i = 0; i < LastLineRowElements[1]; i++)
-                        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 0.5f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
+                        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 0.5f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
                     for(var i = 0; i < LastLineRowElements[0]; i++)
-                        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 0.5f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 1.0f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
+                        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 0.5f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 1.0f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
                 }
         
                 break;
@@ -184,13 +184,13 @@ public class BilateralSubstitute : MonoBehaviour
                     TransposedTextDisplay.TextTMP.text = "<color=#2DFF2D>TASK COMPLETE!</color>";
                     
                     //테이블 소등
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), RowElements[LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), RowElements[LastLineRowElements[1]].TextFill);
                     for(var i = 0; i < LastLineRowElements[1]; i++)
-                        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
+                        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
                     for(var i = 0; i < LastLineRowElements[0]; i++)
-                        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
+                        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
                 }
                 else
                 {
@@ -201,13 +201,13 @@ public class BilateralSubstitute : MonoBehaviour
                     TransposedTextDisplay.TextTMP.text = result;
                     
                     //테이블 소등
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), RowElements[LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), RowElements[LastLineRowElements[1]].TextFill);
                     for(var i = 0; i < LastLineRowElements[1]; i++)
-                        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
+                        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
                     for(var i = 0; i < LastLineRowElements[0]; i++)
-                        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
+                        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
                     
                     //테이블 점등
                     var idx = 0;
@@ -216,13 +216,13 @@ public class BilateralSubstitute : MonoBehaviour
                             break;
                     LastLineRowElements[0] = idx / 6;
                     LastLineRowElements[1] = idx % 6;
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 1.0f), LineElements[LastLineRowElements[0]].TextFill);
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 1.0f), RowElements[LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 1.0f), LineElements[LastLineRowElements[0]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 1.0f), RowElements[LastLineRowElements[1]].TextFill);
                     for(var i = 0; i < LastLineRowElements[1]; i++)
-                        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 0.5f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
+                        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 0.5f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
                     for(var i = 0; i < LastLineRowElements[0]; i++)
-                        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 0.5f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
-                    LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 1.0f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
+                        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 0.5f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.1764f, 0.1764f, 1.0f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
                 }
                 
                 break;

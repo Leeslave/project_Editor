@@ -106,7 +106,7 @@ public class BasicInputField : MonoBehaviour
             IsReadyForInput = false;
             IsFlash = false;
             BasicKeyboard.Instance.ConnectedInputField = null;
-            LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, Exit, InputFieldFill);
+            LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, Exit, InputFieldFill);
         }
     }
 
@@ -116,7 +116,7 @@ public class BasicInputField : MonoBehaviour
             return;
         if (!IsMouseOver)
             return;
-        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0f, Down, InputFieldFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0f, Down, InputFieldFill);
         OnMouseDownEvent.Invoke();
     }
 
@@ -131,7 +131,7 @@ public class BasicInputField : MonoBehaviour
         IsReadyForInput = true;
         IsFlash = false;
         BasicKeyboard.Instance.ConnectedInputField = this;
-        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, Writing, InputFieldFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, Writing, InputFieldFill);
         OnMouseUpEvent.Invoke();
     }
 
@@ -147,7 +147,7 @@ public class BasicInputField : MonoBehaviour
         if (IsReadyForInput)
             return;
         
-        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0f, Enter, InputFieldFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0f, Enter, InputFieldFill);
         OnMouseEnterEvent.Invoke();
     }
 
@@ -161,7 +161,7 @@ public class BasicInputField : MonoBehaviour
         if(IsReadyForInput)
             return;
         
-        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, Exit, InputFieldFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, Exit, InputFieldFill);
         OnMouseExitEvent.Invoke();
     }
 
@@ -204,7 +204,7 @@ public class BasicInputField : MonoBehaviour
         IsFlash = false;
         BasicKeyboard.Instance.ConnectedInputField = null;
         
-        LJWConverter.Instance.ConvertSpriteRendererColor(false, 0.0f, 0.2f, Exit, InputFieldFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, Exit, InputFieldFill);
     }
 
     private IEnumerator StartFlashInputField()

@@ -29,18 +29,18 @@ public class ADFGVXGameManager : MonoBehaviour
         switch(CurrentSystemMode)
         {
             case SystemMode.Decryption:
-                LJWConverter.Instance.ConvertTransformPos(false, 0.0f, 0.5f, new Vector3(120f, 50f, 5f), DisplayDecrypted.transform);
-                LJWConverter.Instance.ConvertTransformPos(false, 0.5f, 0.5f, new Vector3(-15f, 50f, 5f), WritePlain.transform);
-                LJWConverter.Instance.ConvertTransformPos(false, 0.5f, 0.5f, new Vector3(120f, 0f, 5f), LoadEncrypted.transform);
-                LJWConverter.Instance.ConvertTransformPos(false, 1.0f, 0.5f, new Vector3(-15f, 0f, 5f), DisplayEncrypted.transform);
+                LJWConverter.Instance.PositionTransform(false, 0.0f, 0.5f, new Vector3(120f, 50f, 5f), DisplayDecrypted.transform);
+                LJWConverter.Instance.PositionTransform(false, 0.5f, 0.5f, new Vector3(-15f, 50f, 5f), WritePlain.transform);
+                LJWConverter.Instance.PositionTransform(false, 0.5f, 0.5f, new Vector3(120f, 0f, 5f), LoadEncrypted.transform);
+                LJWConverter.Instance.PositionTransform(false, 1.0f, 0.5f, new Vector3(-15f, 0f, 5f), DisplayEncrypted.transform);
                 CutAvailabilityInputForWhile(0f, 1.5f);
                 CurrentSystemMode = SystemMode.Encryption;
                 break;
             case SystemMode.Encryption:
-                LJWConverter.Instance.ConvertTransformPos(false, 0.5f, 0.5f, new Vector3(-15f, 50f, 5f), DisplayDecrypted.transform);
-                LJWConverter.Instance.ConvertTransformPos(false, 0.0f, 0.5f, new Vector3(-15f, 100f, 5f), WritePlain.transform);
-                LJWConverter.Instance.ConvertTransformPos(false, 1.0f, 0.5f, new Vector3(-15f, 0f, 5f), LoadEncrypted.transform);
-                LJWConverter.Instance.ConvertTransformPos(false, 0.5f, 0.5f, new Vector3(-15f, -62f, 5f),DisplayEncrypted.transform);
+                LJWConverter.Instance.PositionTransform(false, 0.5f, 0.5f, new Vector3(-15f, 50f, 5f), DisplayDecrypted.transform);
+                LJWConverter.Instance.PositionTransform(false, 0.0f, 0.5f, new Vector3(-15f, 100f, 5f), WritePlain.transform);
+                LJWConverter.Instance.PositionTransform(false, 1.0f, 0.5f, new Vector3(-15f, 0f, 5f), LoadEncrypted.transform);
+                LJWConverter.Instance.PositionTransform(false, 0.5f, 0.5f, new Vector3(-15f, -62f, 5f),DisplayEncrypted.transform);
                 CutAvailabilityInputForWhile(0f, 1.5f);
                 CurrentSystemMode = SystemMode.Decryption;
                 break;
