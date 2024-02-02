@@ -1,5 +1,9 @@
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+
+
+/*------------------ Info Data ---------------------*/
 
 [Serializable]
 public class PeopleIndex
@@ -13,6 +17,14 @@ public class PeopleIndex
     public string age;
     public int face;
 }
+
+public class Peoples
+{
+    public PeopleIndex[] PL;
+}
+
+/*------------------ News Data ---------------------*/
+
 [Serializable]
 public class News
 {
@@ -35,8 +47,61 @@ public class News
     }
 }
 
-public class Peoples
+/*------------------ Instructions Data ---------------------*/
+
+[Serializable]
+public class Instruction
 {
-    public PeopleIndex[] PL;
+    [JsonProperty("Info")]
+    public info[] InfoInst;
+    [JsonProperty("News")]
+    public news[] NewsInst;
+    [JsonProperty("Docs")]
+    public docs[] DocsInst;
 }
+
+[Serializable]
+public class info
+{
+    /*
+     * 0 : 국적
+     * 1 : 나라
+     * 2 : 얼굴
+     */
+    public int ToDo;
+    public string Target;
+    public int Before;
+    public int After;
+}
+
+[Serializable]
+public class news
+{
+    /*
+     * 0 : 추가
+     * 1 : 삭제
+     * 2 : 변경
+     */
+    public int ToDo;
+    public int Line;        // 줄
+    public string Normal;   // 이전(변경일 경우만 적을 것)
+    public string Revise;   // 이후(변경일 경우에만 적을 것)
+    public string Goal;     // 최종적으로 적용 되어야 하는 문장(삭제의 경우는 제외)
+}
+
+[Serializable]
+public class docs
+{
+    /*
+     * 0 : 추가
+     * 1 : 삭제
+     * 2 : 변경
+     */
+    public int ToDo;
+    public int Line;
+    public string Normal;
+    public string Revise;
+    public string Goal;
+}
+
 

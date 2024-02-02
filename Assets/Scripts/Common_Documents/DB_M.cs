@@ -1,20 +1,32 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+// 해당 게임의 모든 I/O 입출력은 해당 코드를 통해 이루어짐
 public class DB_M : MonoBehaviour
 {
     [SerializeField] Windows_M DBFolder;
     [SerializeField] Windows_M NewsFolder;
     [SerializeField] Sprite spr;
 
+    public int Month;
+    public int Day;
+
+    public List<string[]> InfSub = new List<string[]>(2);
     public Peoples PeopleList;
     public Dictionary<string, Sprite[]> FaceImages = new Dictionary<string, Sprite[]>();
     public News[] NewsList;
-    void Start()
+    public Instruction Instructions; 
+
+
+    void Awake()
     {
-        string CurPath = Directory.GetCurrentDirectory() + "\\Assets\\Resources";
+        string CurPath = Directory.GetCurrentDirectory() + "\\Assets\\Resources\\GameData";
         // Read Manipulation Data
+        InfSub.Add(File.ReadAllText(CurPath + $"\\Manipulation\\Countries.txt").Split('\n'));
+        InfSub.Add(File.ReadAllText(CurPath + $"\\Manipulation\\Jobs.txt").Split('\n'));
+
         PeopleList = JsonUtility.FromJson<Peoples>(File.ReadAllText(CurPath + "\\Manipulation\\People.json"));
         foreach (PeopleIndex a in PeopleList.PL)
         {
@@ -33,9 +45,10 @@ public class DB_M : MonoBehaviour
             NewsList[i] = new News();
             NewsList[i].publishDay = cnt;
             ReadMain(NewsList[i], Files[i] + "\\Main.txt");
-            ReadRevise(NewsList[i], Files[i] + "\\Revise.txt");
         }
         NewsFolder.gameObject.SetActive(false);
+        //Read Instructions
+        Instructions = JsonConvert.DeserializeObject<Instruction>(File.ReadAllText(CurPath + $"\\Documents\\{Month}_{Day}.json"));
     }
 
     public PeopleIndex FindPeople(string name)
@@ -79,24 +92,7 @@ public class DB_M : MonoBehaviour
         string line;
         while ((line = reader.ReadLine()) != null)
         {
-            if (line.Contains("[/]"))
-            {
-                line = line.Replace("[/]", "");
-                N.Errors.Add(N.CountM);
-            }
             N.Main[N.CountM++] = line;
-        }
-        reader.Close();
-    }
-
-    void ReadRevise(News N, string path)
-    {
-        StreamReader reader = new StreamReader(path);
-        string line;
-        while ((line = reader.ReadLine()) != null)
-        {
-            
-            N.Revise[N.CountR++] = line;
         }
         reader.Close();
     }

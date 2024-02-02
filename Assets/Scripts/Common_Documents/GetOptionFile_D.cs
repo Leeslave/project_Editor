@@ -8,6 +8,8 @@ public class GetOptionFile_D : BatchField_D
 {
     [SerializeField] DB_M DB;
 
+    [SerializeField] GameObject ToDoList;
+
     [SerializeField] TMP_Text Text;
     
     [SerializeField] Tabs_D[] Tabs;
@@ -17,9 +19,10 @@ public class GetOptionFile_D : BatchField_D
     [SerializeField] GameObject[] NewsSub;
     [SerializeField] GameObject image;
 
-    [SerializeField] InfChange IC;
+    [SerializeField] public InfChange IC;
 
     [NonSerialized] int CurOpen = 0;
+    [NonSerialized] public int CurType = 0;
     string Normal = "\n\n\n\nDrag Option File Here!";
     string Error = "<size=40><color=#FF0000>404 Not Found</color></size>\n<color=#C8AF10>(x_x)</color>\n\nOops! Something's Wrong.\nDrag Correct Option File Here!";
     string[] Waittexts =
@@ -33,19 +36,20 @@ public class GetOptionFile_D : BatchField_D
     [SerializeField] GameObject GrandParrent;
     void Start()
     {
-        Mains = new List<TMP_Text>(MainsBack.Count);
-        foreach(GameObject s in MainsBack) Mains.Add(s.transform.GetChild(0).GetComponent<TMP_Text>());
         GrandParrent.SetActive(false);
     }
+
+    float LoadingTime1 = 0.01f;
+    float LoadingTime2 = 0.1f;
     // Manipulation
     protected override IEnumerator BatchType1()
     {
         IC.PeopleName = AN.IconName;
-
+        CurType = 1;
         CommonBatch();
         image.SetActive(false);
         string cnt = "";
-        WaitForSeconds wfs = new WaitForSeconds(0.1f);
+        WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
         foreach (string s in Waittexts)
         {
             cnt += s;
@@ -58,7 +62,7 @@ public class GetOptionFile_D : BatchField_D
             cnt += " <size=20>Complete!\n</size>";
         }
         Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(LoadingTime2);
         Text.text = Normal;
         image.SetActive(true);
         AttatchAble = true;
@@ -69,23 +73,26 @@ public class GetOptionFile_D : BatchField_D
         Tabs[1].gameObject.SetActive(true);
         TabsText[1].text = "Change Option";
         Tabs[1].Subs.AddRange(MPSub);
+        
+        ToDoList.SetActive(true);
+        gameObject.SetActive(false);
     }
 
 
     [SerializeField] TMP_Text Title;
     [SerializeField] TMP_Text Date;
     [SerializeField] TMP_Text Reporter;
-    List<TMP_Text> Mains;
-    [SerializeField] List<GameObject> MainsBack;
+    [SerializeField] TextMannager_N TMN;
     
     // News
     protected override IEnumerator BatchType2()
     {
         CommonBatch();
+        CurType = 2;
         image.SetActive(false);
         News CurNews = DB.FindNews(AN.IconName);
         string cnt = "";
-        WaitForSeconds wfs = new WaitForSeconds(0.1f);
+        WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
         foreach (string s in Waittexts)
         {
             cnt += s;
@@ -98,30 +105,21 @@ public class GetOptionFile_D : BatchField_D
             cnt += " <size=20>Complete!\n</size>";
         }
         Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(LoadingTime2);
         Text.text = Normal;
         image.SetActive(true);
         AttatchAble = true;
-
         Title.text = CurNews.Title;
         Date.text = CurNews.Date;
         Reporter.text = CurNews.Reporter;
-        for(int i = 0; i < CurNews.CountM; i++)
-        {
-            Mains[i].text = CurNews.Main[i];
-            MainsBack[i].SetActive(true);
-        }
+        for (int i = 0; i < CurNews.CountM; i++) TMN.ActiveText(CurNews.Main[i]);
 
         Processes[1].SetActive(true);
         Processes[1].transform.SetAsLastSibling();
         Processes[1].transform.position = Vector3.zero;
-        Processes[2].SetActive(true);
-        Processes[2].transform.SetAsLastSibling();
-        Processes[2].transform.position = Vector3.zero;
 
-        Tabs[1].gameObject.SetActive(true);
-        TabsText[1].text = "Add Text";
-        Tabs[1].Subs.AddRange(NewsSub);
+        ToDoList.SetActive(true);
+        gameObject.SetActive(false);
     }
     protected override IEnumerator BatchType3()
     {
@@ -132,7 +130,7 @@ public class GetOptionFile_D : BatchField_D
         return base.BatchType4();
     }
 
-    // ¾Æ¸¶ ÀÌ°É 
+    // ì•„ë§ˆ ì´ê±¸ 
     protected override IEnumerator BatchETC()
     {
         return base.BatchETC();
@@ -158,5 +156,10 @@ public class GetOptionFile_D : BatchField_D
     {
         Tabs[CurOpen].CloseTab();
         CurOpen = index;
+    }
+
+    private void OnDisable()
+    {
+        AttatchAble = true;
     }
 }

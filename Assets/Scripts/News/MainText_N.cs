@@ -1,38 +1,80 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Collections.Generic;
+using System;
 
 public class MainText_N : MonoBehaviour
 {
     [SerializeField] TextMannager_N TM;
     [SerializeField] TMP_Text Text;
-    [SerializeField] public int MyInd;
-    Outline OL;
+    [SerializeField] RectTransform ReBuild;
+    /*[NonSerialized]*/ public int MyInd;
+    [NonSerialized] public bool OnButton;
+    TMP_InputField Field;
+    [SerializeField] TMP_Text FieldText;
+    [SerializeField] int DocsType; // 0 : N, 1 : Docs
+    RectTransform MyRect;
+    char LastChar = ' ';
+    Vector2 Sub = new Vector3(0, 20);
+
     private void Awake()
     {
-        EventTrigger eventTrigger = GetComponent<EventTrigger>();
-        OL = GetComponent<Outline>();
-        MyUi.AddEvent(eventTrigger, EventTriggerType.PointerEnter, OnPoint);
-        MyUi.AddEvent(eventTrigger, EventTriggerType.PointerExit, OutPoint);
+        MyRect = GetComponent<RectTransform>();
+        Field = GetComponent<TMP_InputField>();
+        Field.onEndEdit.AddListener(Enter);
+        Field.onValueChanged.AddListener(Delete);
     }
-    void OnPoint(PointerEventData Data)
+
+    bool GetEnter = false;
+    void Enter(string text)
     {
-        if (TM.IsDragged)
+        if(!OnButton)
         {
-            TM.InsertIndex = transform.GetSiblingIndex();
-            TM.Touched = Text;
-            TM.TouchedIndex = MyInd;
-            TM.Sub = OL;
-            OL.effectColor = TM.ColorT;
+            Text.text = Field.text;
+            gameObject.SetActive(false);
+            Text.gameObject.SetActive(true);
+            //LayoutRebuilder.ForceRebuildLayoutImmediate(ReBuild);
         }
     }
-    void OutPoint(PointerEventData Data)
+    void Delete(string text)
     {
-        if (TM.IsDragged)
+        if (text.Length != 0)
         {
-            TM.Touched = null;
-            OL.effectColor = TM.ColorN;
+            MyRect.sizeDelta = new Vector2(MyRect.sizeDelta.x, Field.preferredHeight + 20);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(ReBuild);
         }
+    }
+    public void DelLine()
+    {
+        Text.text = "";
+        Field.text = "";
+        MyRect.sizeDelta = new Vector2(550, 40);
+    }
+    public void AddLine(string text,int Ind)
+    {
+        Text.text = text;
+        MyInd = Ind;
+    }
+
+    private void OnEnable()
+    {
+        GetEnter = false;
+        OnButton = false;
+        Field.ActivateInputField();
+        Field.text = Text.text;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(ReBuild);
+        MyRect.sizeDelta = new Vector2(MyRect.sizeDelta.x, Field.preferredHeight + 20);
+        Field.MoveTextEnd(false);
+    }
+
+    private void OnDisable()
+    {
+        Text.text = Field.text;
+
+        gameObject.SetActive(false);
+        Text.gameObject.SetActive(true);
+        TM.TDN.CheckList(DocsType,MyInd,Field.text);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(ReBuild);
     }
 }

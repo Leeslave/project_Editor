@@ -1,83 +1,64 @@
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Linq.Expressions; 
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TextMannager_N : MonoBehaviour
 {
-    [SerializeField] DB_M DB;
-    [SerializeField] public RectTransform CntSize;
-    [SerializeField] public TMP_Text CntText;
-    [SerializeField] TMP_Text Insertion;
-    [SerializeField] List<GameObject> ForInsert;
-    [SerializeField] List<TMP_Text> ForInsertText;
-    [SerializeField] Transform TextField;
-    [NonSerialized] int InsertUsing = 0;
-    [NonSerialized] public int InsertIndex = 0;
-    [NonSerialized] public int TouchedIndex = 0;
-    [NonSerialized] public Color ColorT = new Color(1, 0, 0, 1);
-    [NonSerialized] public Color ColorN = new Color(1, 0, 0, 0);
-    [NonSerialized] public bool IsDragged = false;
-    [NonSerialized] public TMP_Text Touched = null;
-    [NonSerialized] public Outline Sub = null;
-    [NonSerialized] public bool IsRevise = true;
-    [NonSerialized] public int TryCount = 0;
-    [NonSerialized] public int Health = 0;
-    [NonSerialized] public int MaxHealth = 0;
-    [NonSerialized] public int CurNews;
+    [SerializeField] GameObject[] Texts;
+    [SerializeField] MainText_N[] MainTexts;
+    [SerializeField] public ToDoList_N TDN;
 
-
-    private void Update()
+    int ActivateText = 0;
+    private void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Insert))
+        foreach (var k in Texts) if (k.activeSelf) ActivateText++;
+    }
+
+    int CurOpen = 0;
+    public void OpenText(int Ind)
+    {
+        if(Ind != CurOpen)
         {
-            if (IsRevise == true) Insertion.text = "모드 : 삽입";
-            else Insertion.text = "모드 : 수정";
-            IsRevise = IsRevise == false;
+            MainTexts[CurOpen].gameObject.SetActive(false);
+            CurOpen = Ind;
         }
     }
 
-    public bool EndDrag(int ind)
+    public void ActiveText(string Text,int ind = -1)
     {
-        if (Touched == null) return false;
-        else
+        for(int i = 0; i < Texts.Length; i++)
         {
-            TryCount--;
-            Sub.effectColor = ColorN;
-            if (IsRevise)
+            if (!Texts[i].activeSelf)
             {
-/*                print(Touched.text);
-                print(CntText.text);*/
-                Touched.text = CntText.text;
+                if(ind != -1) Texts[i].transform.SetSiblingIndex(ind+5);
+                Texts[i].SetActive(true);
+                MainTexts[i].AddLine(Text,ActivateText++);
+                break;
             }
-            else
-            {
-                bool sub;
-                TMP_Text cnt = null;
-                Transform cnt2 = null;
-                try
-                {
-                    cnt2 = TextField.GetChild(InsertIndex - 1);
-                    cnt = cnt2.GetChild(0).GetComponent<TMP_Text>();
-                    sub = cnt.text == "";
-                }
-                catch { sub = false; }
+        }
+        ResetIndex();
+    }
 
-                if (sub)
-                {
-                    cnt.text = CntText.text;
-                }
-                else
-                {
-                    ForInsert[InsertUsing].transform.SetSiblingIndex(InsertIndex);
-                    ForInsertText[InsertUsing].text = CntText.text;
-                    ForInsert[InsertUsing++].SetActive(true);
-                    Health--;
-                }
+    public void RemoveText(int Ind)
+    {
+        Texts[Ind].SetActive(false);
+        MainTexts[Ind].DelLine();
+        Texts[Ind].transform.SetAsLastSibling();
+        ActivateText--;
+        ResetIndex();
+    }
+
+    public void ResetIndex()
+    {
+        for(int i = 0; i < Texts.Length; i++)
+        {
+            if (Texts[i].activeSelf)
+            {
+                MainTexts[i].MyInd = Texts[i].transform.GetSiblingIndex() - 4;
             }
-            return true;
         }
     }
 }
