@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -18,19 +19,23 @@ public class VK_ManagerScript : MonoBehaviour
     }
     private TurnStatus CurrentTurnStatus { get; set; } = TurnStatus.비활성;
     
-    private SpriteRenderer ArrowDisplay { get; set; }
+    private GameObject ArrowSpawnPos { get; set; }
     private GameObject Arrow { get; set; }
     private Queue<GameObject> ArrowQueue { get; set; } = new Queue<GameObject>();
     
-    private SpriteRenderer TimerSlider { get; set; }
+    private TextMeshPro TurnTimer { get; set; }
+    
+    private GameObject AnswerScreen { get; set; }
+    
     
     private void Awake()
     {
         EyeViewer = GameObject.Find("EyeViewer");
         PupilBone = GameObject.Find("bone_10");
-        ArrowDisplay = GameObject.Find("ArrowDisplay").GetComponent<SpriteRenderer>();
+        ArrowSpawnPos = GameObject.Find("ArrowSpawnPos");
         Arrow = Resources.Load<GameObject>("VoightKampffDev/Arrow");
-        TimerSlider = GameObject.Find("TimerSlider").GetComponent<SpriteRenderer>();
+        TurnTimer = GameObject.Find("TurnTimer").GetComponent<TextMeshPro>();
+        AnswerScreen = GameObject.Find("AnswerScreen");
     }
 
     private void Update()
@@ -46,23 +51,21 @@ public class VK_ManagerScript : MonoBehaviour
     }
     private IEnumerator StartSequence(float wait, float duration, int num)
     {
-        LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, wait, new Color(0f, 0f, 0f, 0.8f), ArrowDisplay);
-        
-        //타이머 슬라이더 초기화
-        ResetTimerSlider(wait);
-        
-        yield return new WaitForSeconds(wait);
-        
-        //타이머 슬라이더 최소화
-        MinimizeTimerSlider(duration);
-        
-        Debug.Log("새로운 턴이 시작되었습니다!");
-        
         //랜덤한 개수의 화살표를 생성한다
         SpawnArrows(Random.Range(4, 8));
         
         //활성 상태가 아니면 화살표를 입력할 수 없다
         CurrentTurnStatus = TurnStatus.활성;
+        
+        //답지가 출력되는 스크린을 상승시킨다
+        LJWConverter.Instance.PositionTransform(false, 0f, wait, new Vector3(3.4f, -7f, 0f), AnswerScreen.transform);
+        
+        //타이머를 시작시킨다
+        LJWConverter.Instance.SetIntTimerTMP(false, wait, duration, TurnTimer);
+
+        yield return new WaitForSeconds(wait);
+        
+        Debug.Log("새로운 턴이 시작되었습니다!");
         
         //시퀀스마다 난수를 생성하여 눈동자가 다른 방향으로 움직이게 한다
         for (var i = 0; i < num; i++)
@@ -74,16 +77,20 @@ public class VK_ManagerScript : MonoBehaviour
         }
         
         //모든 시퀀스를 소화했으므로 턴을 종료한다
-        yield return StartCoroutine(EndTurn(3f));
+        yield return StartCoroutine(EndTurn(1.5f));
         
         Debug.Log("타이머가 다 되어 턴이 종료되었습니다!");
     }
     private IEnumerator EndTurn(float duration)
     {        
-        CurrentTurnStatus = TurnStatus.비활성;
+        //답지가 출력되는 스크린을 하강시킨다
+        LJWConverter.Instance.PositionTransform(false, 0f, duration, new Vector3(3.4f, -11f, 0f), AnswerScreen.transform);
         
-        //타이머 슬라이더 최소화
-        MinimizeTimerSlider(duration);
+        //타이머를 종료시킨다
+        LJWConverter.Instance.EndIntTimerTMP(false, 0f, duration, TurnTimer);
+        
+        //활성 상태가 아니면 화살표를 입력할 수 없다
+        CurrentTurnStatus = TurnStatus.비활성;
         
         //활성화되어있던 시퀀스를 종료한다
         if(ReferenceEquals(PupilSequenceCoroutine, null) == false)
@@ -97,7 +104,6 @@ public class VK_ManagerScript : MonoBehaviour
         }
         
         //눈동자 원위치
-        LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, duration, new Color(0f, 0f, 0f, 0f), ArrowDisplay);
         LJWConverter.Instance.PositionTransform(false, 0f, duration, PupilOriginPos, PupilBone.transform);
         
         yield return new WaitForSeconds(duration);
@@ -126,13 +132,13 @@ public class VK_ManagerScript : MonoBehaviour
     }
     private IEnumerator OnPupilExit_IE()
     {
-        yield return StartCoroutine(EndTurn(3f));
+        yield return StartCoroutine(EndTurn(1.5f));
         Debug.Log("눈동자를 제어하지 못해서 턴이 종료되었습니다!");
     }
     
     #endregion
 
-    #region 화살표 입력 함수
+    #region 화살표 관련 함수
 
     private void ClickKeyCodeArrow()
     {
@@ -162,19 +168,21 @@ public class VK_ManagerScript : MonoBehaviour
 
         if (ArrowQueue.Count == 0)
         {
-            StartCoroutine(EndTurn(3f));
+            StartCoroutine(EndTurn(1.5f));
             Debug.Log("모든 화살표를 소화하였으므로 턴을 종료합니다!");
         }
     }
     private void SpawnArrows(int num)
     {
         Debug.Log($"총 {num}개의 화살표를 생성했습니다!");
-        var startPos = num % 2 == 0 ? new Vector3(-1.5f * num / 2 + 0.75f, -3f, 0f) :  new Vector3(-1.5f * (num - 1) / 2, -3f, 0f);
+        var startPos = num % 2 == 0 ? new Vector3(-1.5f * num / 2 + 0.75f, 0f, 0f) :  new Vector3(-1.5f * (num - 1) / 2, 0f, 0f);
         for (var i = 0; i < num; i++)
         {
             var random = Random.Range(0, 4);
-            var arrow = Instantiate(Arrow, startPos, Quaternion.Euler(new Vector3(0f, 0f, -90f * random)));
-            startPos += new Vector3(1.5f, 0f, 0f);
+            var arrow = Instantiate(Arrow, ArrowSpawnPos.transform);
+            arrow.transform.localPosition = startPos;
+            arrow.transform.localRotation = Quaternion.Euler(new Vector3(0f, 0f, -90f * random));
+            startPos += new Vector3(1.5f,0f, 0f);
             arrow.name = random switch
             {
                 0 => "UpArrow",
@@ -185,22 +193,6 @@ public class VK_ManagerScript : MonoBehaviour
             };
             ArrowQueue.Enqueue(arrow);
         }
-    }
-
-    #endregion
-
-    #region 타이머 관련 함수
-
-    private void ResetTimerSlider(float wait)
-    {
-        LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, wait, new Color(0.17f, 1f, 0.17f, 1f), TimerSlider);
-        LJWConverter.Instance.ConvertSpriteRendererSize(false, 0f, wait, new Vector2(11f, 1.6f), TimerSlider);
-    }
-
-    private void MinimizeTimerSlider(float duration)
-    {
-        LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, duration, new Color(1f, 0.17f, 0.17f, 1f), TimerSlider);
-        LJWConverter.Instance.ConvertSpriteRendererSize(false, 0f, duration, new Vector2(0f, 1.6f), TimerSlider);
     }
 
     #endregion

@@ -59,13 +59,16 @@ public class LJWConverter : MonoBehaviour
     
 
     ///<summary> Transform 위치 </summary>
-    private Dictionary<Transform, Coroutine> TransformPosCoroutines { get; set; } = new Dictionary<Transform, Coroutine>();
+    private Dictionary<Transform, Coroutine> TransformPositionCoroutines { get; set; } = new Dictionary<Transform, Coroutine>();
     ///<summary> Transform 회전 </summary>
     private Dictionary<Transform, Coroutine> TransformRotationCoroutines { get; set; } = new Dictionary<Transform, Coroutine>();
     ///<summary> Transform 크기 </summary>
     private Dictionary<Transform, Coroutine> TransformScaleCoroutines { get; set; } = new Dictionary<Transform, Coroutine>();
 
 
+    private Dictionary<TextMeshPro, Coroutine> TimerTMPCoroutine { get; set; } = new Dictionary<TextMeshPro, Coroutine>();
+    
+    
 
     private void Awake()
     {
@@ -108,7 +111,6 @@ public class LJWConverter : MonoBehaviour
     {
         if (!dictionary.TryGetValue(key, out var value)) 
             return;
-        
         StopCoroutine(value);
         dictionary.Remove(key);
     }
@@ -286,6 +288,8 @@ public class LJWConverter : MonoBehaviour
     {
         //작업 개시로부터 지난 시간
         var pastDeltaTime = Time.unscaledTime - startTime;
+        var per = Mathf.Max(0.001f, pastDeltaTime - wait) / duration;
+        var evaluation = curve?.Evaluate(per) ?? per;
     
         if(pastDeltaTime > duration + wait)//타임 아웃
         {
@@ -300,10 +304,7 @@ public class LJWConverter : MonoBehaviour
         }
         else if(pastDeltaTime >= wait)//액티브
         {
-            var per = Mathf.Max(0.001f, pastDeltaTime - wait) / duration;
-            var evaluation = curve?.Evaluate(per) ?? per;
             targetImage.color = Color.Lerp(startColor, endColor, evaluation);
-            
             yield return new WaitForSecondsRealtime(0.02f);
             ImageColorCoroutines[targetImage] = StartCoroutine(GradientImageColor_UnscaledTime(wait, duration, startTime, endColor, startColor, targetImage, curve));
         }
@@ -312,6 +313,8 @@ public class LJWConverter : MonoBehaviour
     {
         //작업 개시로부터 지난 시간
         var pastDeltaTime = Time.time - startTime;
+        var per = Mathf.Max(0.001f, pastDeltaTime - wait) / duration;
+        var evaluation = curve?.Evaluate(per) ?? per;
     
         if(pastDeltaTime > duration + wait)//타임 아웃
         {
@@ -326,10 +329,7 @@ public class LJWConverter : MonoBehaviour
         }
         else if(pastDeltaTime >= wait)//액티브
         {
-            var per = Mathf.Max(0.001f, pastDeltaTime - wait) / duration;
-            var evaluation = curve?.Evaluate(per) ?? per;
             targetImage.color = Color.Lerp(startColor, endColor, evaluation);
-
             yield return new WaitForSeconds(0.02f);
             ImageColorCoroutines[targetImage] = StartCoroutine(GradientImageColor_ScaledTime(wait, duration, startTime, endColor, startColor, targetImage, curve));
         }
@@ -1031,7 +1031,7 @@ public class LJWConverter : MonoBehaviour
     /// <param name="curve"> 적용할 애니메이션 커브 </param>
     public void PositionTransform(bool unscaledTime, float wait, float duration, Vector3 endPos, Transform targetTransform, AnimationCurve curve = null)
     {
-        CheckAndStartCoroutine(TransformPosCoroutines, targetTransform,
+        CheckAndStartCoroutine(TransformPositionCoroutines, targetTransform,
             unscaledTime
                 ? StartCoroutine(PositionTransform_UnscaledTime(wait, duration, Time.unscaledTime, endPos, targetTransform.localPosition, targetTransform, curve))
                 : StartCoroutine(PositionTransform_ScaledTime(wait, duration, Time.time, endPos, targetTransform.localPosition, targetTransform, curve)));    
@@ -1045,13 +1045,13 @@ public class LJWConverter : MonoBehaviour
         {
             targetTransform.localPosition = endPos;
             yield return new WaitForSecondsRealtime(0.02f);
-            TransformPosCoroutines.Remove(targetTransform);
+            TransformPositionCoroutines.Remove(targetTransform);
             yield break;
         }
         else if(pastDeltaTime < wait)//대기
         {
             yield return new WaitForSecondsRealtime(0.02f);
-            TransformPosCoroutines[targetTransform] = StartCoroutine(PositionTransform_UnscaledTime(wait, duration, startTime, endPos, startPos, targetTransform, curve));
+            TransformPositionCoroutines[targetTransform] = StartCoroutine(PositionTransform_UnscaledTime(wait, duration, startTime, endPos, startPos, targetTransform, curve));
         }
         else if(pastDeltaTime >= wait)//액티브
         {
@@ -1060,7 +1060,7 @@ public class LJWConverter : MonoBehaviour
             targetTransform.localPosition = Vector3.Lerp(startPos, endPos, evaluation);
 
             yield return new WaitForSecondsRealtime(0.02f);
-            TransformPosCoroutines[targetTransform] = StartCoroutine(PositionTransform_UnscaledTime(wait, duration, startTime, endPos, startPos, targetTransform, curve));
+            TransformPositionCoroutines[targetTransform] = StartCoroutine(PositionTransform_UnscaledTime(wait, duration, startTime, endPos, startPos, targetTransform, curve));
         }
     }
     private IEnumerator PositionTransform_ScaledTime(float wait, float duration, float startTime, Vector3 endPos, Vector3 startPos, Transform targetTransform, AnimationCurve curve)
@@ -1072,13 +1072,13 @@ public class LJWConverter : MonoBehaviour
         {
             targetTransform.localPosition = endPos;
             yield return new WaitForSeconds(0.02f);
-            TransformPosCoroutines.Remove(targetTransform);
+            TransformPositionCoroutines.Remove(targetTransform);
             yield break;
         }
         else if(pastDeltaTime < wait)//대기
         {
             yield return new WaitForSeconds(0.02f);
-            TransformPosCoroutines[targetTransform] = StartCoroutine(PositionTransform_ScaledTime(wait, duration, startTime, endPos, startPos, targetTransform, curve));
+            TransformPositionCoroutines[targetTransform] = StartCoroutine(PositionTransform_ScaledTime(wait, duration, startTime, endPos, startPos, targetTransform, curve));
             yield break;
         }
         else if(pastDeltaTime >= wait)//액티브
@@ -1088,7 +1088,7 @@ public class LJWConverter : MonoBehaviour
             targetTransform.localPosition = Vector3.Lerp(startPos, endPos, evaluation);
 
             yield return new WaitForSeconds(0.02f);
-            TransformPosCoroutines[targetTransform] = StartCoroutine(PositionTransform_ScaledTime(wait, duration, startTime, endPos, startPos, targetTransform, curve));
+            TransformPositionCoroutines[targetTransform] = StartCoroutine(PositionTransform_ScaledTime(wait, duration, startTime, endPos, startPos, targetTransform, curve));
         }
     }
     
@@ -1447,5 +1447,121 @@ public class LJWConverter : MonoBehaviour
     }
     
     #endregion
+
     
+    
+    public void SetIntTimerTMP(bool unscaledTime, float wait, float duration, TextMeshPro targetTMP)
+    {
+        CheckAndStartCoroutine(TimerTMPCoroutine, targetTMP,
+            unscaledTime
+                ? StartCoroutine(SetIntTimerTMP_UnscaledTime(wait, duration, Time.unscaledTime, targetTMP))
+                : StartCoroutine(SetIntTimerTMP_ScaledTime(wait, duration, Time.time, targetTMP)));
+    }
+    private IEnumerator SetIntTimerTMP_UnscaledTime(float wait, float duration, float startTime, TextMeshPro targetTMP)
+    {
+        while (true)
+        {
+            var pastDeltaTime = Time.unscaledTime - startTime;
+            var per = Mathf.Max(0.001f, pastDeltaTime) / wait;
+
+            if (per > 1f)
+                break;
+            
+            var temp = Mathf.Lerp(0f, duration, per);
+            targetTMP.text = Mathf.CeilToInt(temp).ToString();
+            yield return new WaitForSecondsRealtime(0.02f);
+        }
+        
+        while (true)
+        {
+            var pastDeltaTime = Time.unscaledTime - startTime - wait;
+            var per = Mathf.Max(0.001f, pastDeltaTime) / duration;
+            
+            if (per > 1f)
+                break;
+
+            targetTMP.text = Mathf.CeilToInt(duration - pastDeltaTime).ToString();
+            yield return new WaitForSecondsRealtime(0.02f);
+        }
+        
+        targetTMP.text = "0";
+    }
+    private IEnumerator SetIntTimerTMP_ScaledTime(float wait, float duration, float startTime, TextMeshPro targetTMP)
+    {
+        while (true)
+        {
+            var pastDeltaTime = Time.time - startTime;
+            var per = Mathf.Max(0.001f, pastDeltaTime) / wait;
+
+            if (per > 1f)
+                break;
+            
+            var temp = Mathf.Lerp(0f, duration, per);
+            targetTMP.text = Mathf.CeilToInt(temp).ToString();
+            yield return new WaitForSeconds(0.02f);
+        }
+        
+        while (true)
+        {
+            var pastDeltaTime = Time.time - startTime - wait;
+            var per = Mathf.Max(0.001f, pastDeltaTime) / duration;
+            
+            if (per > 1f)
+                break;
+
+            targetTMP.text = Mathf.CeilToInt(duration - pastDeltaTime).ToString();
+            yield return new WaitForSeconds(0.02f);
+        }
+        
+        targetTMP.text = "0";
+    }
+
+    public void EndIntTimerTMP(bool unscaledTime, float wait, float duration, TextMeshPro targetTMP)
+    {
+        CheckAndStartCoroutine(TimerTMPCoroutine, targetTMP,
+            unscaledTime
+                ? StartCoroutine(EndIntTimerTMP_UnscaledTime(wait, duration, Time.unscaledTime, int.Parse(targetTMP.text), targetTMP))
+                : StartCoroutine(EndIntTimerTMP_ScaledTime(wait, duration, Time.time, int.Parse(targetTMP.text), targetTMP)));
+    }
+    private IEnumerator EndIntTimerTMP_UnscaledTime(float wait, float duration, float startTime, int current, TextMeshPro targetTMP)
+    {
+        yield return new WaitForSecondsRealtime(wait);
+
+        while (true)
+        {
+            var pastDeltaTime = Time.unscaledTime - startTime - wait;
+            var per = Mathf.Max(0.001f, pastDeltaTime) / duration;
+
+            if (per > 1f)
+                break;
+
+            var temp = Mathf.Lerp(current, 0f, per);
+            targetTMP.text = Mathf.CeilToInt(temp).ToString();
+            yield return new WaitForSecondsRealtime(0.02f);
+        }
+        
+        targetTMP.text = "0";
+    }
+    private IEnumerator EndIntTimerTMP_ScaledTime(float wait, float duration, float startTime, int current, TextMeshPro targetTMP)
+    {
+        yield return new WaitForSeconds(wait);
+        
+        while (true)
+        {
+            var pastDeltaTime = Time.time - startTime - wait;
+            var per = Mathf.Max(0.001f, pastDeltaTime) / duration;
+
+            if (per > 1f)
+                break;
+
+            var temp = Mathf.Lerp(current, 0f, per);
+            targetTMP.text = Mathf.CeilToInt(temp).ToString();
+            yield return new WaitForSeconds(0.02f);
+        }
+        
+        targetTMP.text = "0";
+    }
+
+
+
 }
