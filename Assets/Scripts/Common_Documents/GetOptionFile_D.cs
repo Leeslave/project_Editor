@@ -12,11 +12,10 @@ public class GetOptionFile_D : BatchField_D
 
     [SerializeField] TMP_Text Text;
     
-    [SerializeField] Tabs_D[] Tabs;
+    [SerializeField] public Tabs_D[] Tabs;
     [SerializeField] TMP_Text[] TabsText;
     [SerializeField] GameObject[] Processes;
-    [SerializeField] GameObject[] MPSub;
-    [SerializeField] GameObject[] NewsSub;
+    [SerializeField] GameObject Folders;
     [SerializeField] GameObject image;
 
     [SerializeField] public InfChange IC;
@@ -70,12 +69,7 @@ public class GetOptionFile_D : BatchField_D
         Processes[0].SetActive(true);
         Processes[0].transform.SetAsLastSibling();
 
-        Tabs[1].gameObject.SetActive(true);
-        TabsText[1].text = "Change Option";
-        Tabs[1].Subs.AddRange(MPSub);
-        
-        ToDoList.SetActive(true);
-        gameObject.SetActive(false);
+        Tabs[2].gameObject.SetActive(true);
     }
 
 
@@ -112,14 +106,15 @@ public class GetOptionFile_D : BatchField_D
         Title.text = CurNews.Title;
         Date.text = CurNews.Date;
         Reporter.text = CurNews.Reporter;
-        for (int i = 0; i < CurNews.CountM; i++) TMN.ActiveText(CurNews.Main[i]);
+        for (int i = 0; i < CurNews.CountM; i++)
+        {
+            TMN.ActiveText(CurNews.Main[i]);
+        }
+        TMN.AnsNews = CurNews;
 
         Processes[1].SetActive(true);
         Processes[1].transform.SetAsLastSibling();
         Processes[1].transform.position = Vector3.zero;
-
-        ToDoList.SetActive(true);
-        gameObject.SetActive(false);
     }
     protected override IEnumerator BatchType3()
     {
@@ -139,15 +134,16 @@ public class GetOptionFile_D : BatchField_D
     public void CommonBatch()
     {
         if(CurOpen!=0) Tabs[0].OpenTab();
-        for (int i = 1; i < Tabs.Length; i++)
+        if (Tabs[2].gameObject.activeSelf)
         {
-            Tabs[i].Subs.Clear();
-            Tabs[i].gameObject.SetActive(false);
+            IC.CloseFolder();
+            Tabs[2].gameObject.SetActive(false);
         }
         foreach (GameObject s in Processes) s.SetActive(false);
         Text.text = Normal;
         image.SetActive(true);
     }
+
     protected override void BatchFail()
     {
         Text.text = Error;

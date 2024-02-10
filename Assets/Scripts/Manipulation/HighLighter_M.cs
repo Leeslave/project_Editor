@@ -21,7 +21,7 @@ public class HighLighter_M : MonoBehaviour
         if (IsFolder == 1)
         {
             Files = new List<string>();
-            MyUi.textReader("Manipulation/" + name, ref Files);
+            MyUi.textReader("GameData/Manipulation/" + name, ref Files);
         }
         ColorOff = Clicker.color;
         ColorHigh = Clicker.color + new Color(0, 0, 0, 0.5f);

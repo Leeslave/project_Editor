@@ -8,6 +8,7 @@ public class DB_M : MonoBehaviour
 {
     [SerializeField] Windows_M DBFolder;
     [SerializeField] Windows_M NewsFolder;
+    [SerializeField] Windows_M DocsFolder;
     [SerializeField] Sprite spr;
 
     public int Month;
@@ -31,7 +32,8 @@ public class DB_M : MonoBehaviour
         foreach (PeopleIndex a in PeopleList.PL)
         {
             DBFolder.NewIcon(a.name_e, spr, 1);
-            FaceImages.Add(a.name_e, Resources.LoadAll<Sprite>("Manipulation/" + a.name_e));
+
+            FaceImages.Add(a.name_e, Resources.LoadAll<Sprite>("GameData/Manipulation/" + a.name_e));
         }
         DBFolder.gameObject.SetActive(false);
         //Read News Data
@@ -47,6 +49,9 @@ public class DB_M : MonoBehaviour
             ReadMain(NewsList[i], Files[i] + "\\Main.txt");
         }
         NewsFolder.gameObject.SetActive(false);
+        //Read Docs Data
+        // 정해지면 넣음
+        DocsFolder.gameObject.SetActive(false);
         //Read Instructions
         Instructions = JsonConvert.DeserializeObject<Instruction>(File.ReadAllText(CurPath + $"\\Documents\\{Month}_{Day}.json"));
     }

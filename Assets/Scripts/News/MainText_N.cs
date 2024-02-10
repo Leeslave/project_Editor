@@ -3,12 +3,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
+using UnityEditor.Build;
 
 public class MainText_N : MonoBehaviour
 {
     [SerializeField] TextMannager_N TM;
     [SerializeField] TMP_Text Text;
     [SerializeField] RectTransform ReBuild;
+    [SerializeField] bool IsNews;
     /*[NonSerialized]*/ public int MyInd;
     [NonSerialized] public bool OnButton;
     TMP_InputField Field;
@@ -74,7 +76,12 @@ public class MainText_N : MonoBehaviour
 
         gameObject.SetActive(false);
         Text.gameObject.SetActive(true);
-        TM.TDN.CheckList(DocsType,MyInd,Field.text);
+        CheckMyText();
         LayoutRebuilder.ForceRebuildLayoutImmediate(ReBuild);
+    }
+
+    public void CheckMyText()
+    {
+        TM.ValidText(IsNews, MyInd, Text.text);
     }
 }

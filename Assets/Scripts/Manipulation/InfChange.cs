@@ -24,6 +24,7 @@ public class InfChange : MonoBehaviour
     [SerializeField] Image ImageDrager;
     [SerializeField] TMP_Text Terminal;
     [SerializeField] GameObject Reviser;
+    [SerializeField] ToDoList_N TDN;
 
     [NonSerialized] public int s = 0;
     [NonSerialized] public int FaceNum = 0;
@@ -42,6 +43,7 @@ public class InfChange : MonoBehaviour
     Peoples PeopleList;
     PeopleIndex CurPeople;
 
+    [NonSerialized] public List<Tuple<string, int, int, int>> PeopleCorrect = new List<Tuple<string, int, int,int>>();
 
     private void Start()
     {
@@ -88,6 +90,7 @@ public class InfChange : MonoBehaviour
                         Drager_Image.transform.GetChild(1).GetComponent<Image>().sprite
                             = DB.FaceImages[CurPeople.name_e][CurFile.transform.GetSiblingIndex()];
                         Drager_Image.SetActive(true);
+                        ValidData(2, "");
                     }
                     CurFile = null;
                     TouchAble = false;
@@ -114,6 +117,8 @@ public class InfChange : MonoBehaviour
         }
     }
 
+    [SerializeField] GetOptionFile_D GD;
+
     public void OpenFolder(HighLighter_M ss)
     {
         Reviser.SetActive(false);
@@ -138,6 +143,7 @@ public class InfChange : MonoBehaviour
                 cnt.name = ss.Files[i];
                 cnt.transform.GetChild(2).GetComponent<TMP_Text>().text = ss.Files[i];
             }
+            GD.Tabs[2].Subs[0] = Files;
             Files.SetActive(true);
         }
         else
@@ -150,6 +156,7 @@ public class InfChange : MonoBehaviour
                 cnt.transform.GetChild(2).GetComponent<TMP_Text>().text = $"Face{i + 1}";
                 cnt.transform.GetChild(1).GetComponent<Image>().sprite = DB.FaceImages[CurPeople.name_e][i];
             }
+            GD.Tabs[2].Subs[0] = Faces;
             Faces.SetActive(true);
         }
         Folders.SetActive(false);
@@ -168,6 +175,7 @@ public class InfChange : MonoBehaviour
         CurFolder = null;
         Files.SetActive(false);
         Faces.SetActive(false);
+        GD.Tabs[2].Subs[0] = Folders;
         Folders.SetActive(true);
     }
 
@@ -187,6 +195,32 @@ public class InfChange : MonoBehaviour
         var s = Country.text.Split(' ');
         var s2 = Job.text.Split(' ');
         DB.ChangeInfo(CurPeople.name_e, s[s.Length - 1], s2[s2.Length-1],FaceNum);
+    }
+
+    public void ValidData(int ind, string text)
+    {
+        foreach(var k in PeopleCorrect)
+        {
+            print(ind);
+            if(k.Item1.Equals(CurPeople.name_e) && k.Item2 == ind)
+            {
+                switch (ind)
+                {
+                    case 0:
+                        if (DB.InfSub[0][k.Item3].TrimEnd() == text[10..]) TDN.CheckList(2, -1, true, k.Item4);
+                        else TDN.CheckList(2, -1, false, k.Item4);
+                        break;
+                    case 1:
+                        if (DB.InfSub[1][k.Item3].TrimEnd() == Country.text[6..]) TDN.CheckList(2, -1, true, k.Item4);
+                        else TDN.CheckList(2, -1, false, k.Item4);
+                        break;
+                    default:
+                        if (FaceNum == k.Item3) TDN.CheckList(2, -1, true, k.Item4);
+                        else TDN.CheckList(2, -1, false, k.Item4);
+                        break;
+                }
+            }
+        }
     }
 
     public bool IsTouchAble() { return TouchAble; }

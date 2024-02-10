@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -8,7 +9,8 @@ public class ToDoList_N : MonoBehaviour
 {
     [SerializeField] DB_M DB;
     [SerializeField] TMP_Text[] Texts;
-
+    [SerializeField] TextMannager_N TextM;
+    [SerializeField] InfChange InfM;
 
     string NRed = "#FF0000";
     string DRed = "#800000";
@@ -40,7 +42,7 @@ public class ToDoList_N : MonoBehaviour
 
     // 2: Info, 1 : Docs, 0 : News
     List<List<ToDoIndex>> ToDoIndexes;
-    string[] sub = { "국적", "나라", "얼굴" };
+    string[] sub = { "국적", "직업", "얼굴" };
     string[] sub2 = { "추가", "삭제", "변경" };
     private void Start()
     {
@@ -49,23 +51,25 @@ public class ToDoList_N : MonoBehaviour
         
         string cnt = "";
         if(DB.Instructions.InfoInst!=null)
-        foreach(var i in DB.Instructions.InfoInst)
-        {
-            Texts[ToDoCount].text = $"<color={NRed}>Info</color> {i.Target} {sub[i.ToDo]} 변경";
-            if(i.ToDo != 2) cnt = $"{DB.InfSub[i.ToDo][i.Before].Trim('\r')} > {DB.InfSub[i.ToDo][i.After].Trim('\r')}";
-            else cnt = $"Face{i.Before} > Face{i.After}";
+            foreach(var i in DB.Instructions.InfoInst)
+            {
+                Texts[ToDoCount].text = $"<color={NRed}>Info</color> {i.Target} {sub[i.ToDo]} 변경";
+                if(i.ToDo != 2) cnt = $"{DB.InfSub[i.ToDo][i.Before].Trim('\r')} > {DB.InfSub[i.ToDo][i.After].Trim('\r')}";
+                else cnt = $"Face{i.Before} > Face{i.After}";
 
-            Texts[ToDoCount].text += $"<size=20>\n\n{cnt}</size>";
-            ToDoIndexes[2].Add(new ToDoIndex(0, i.ToDo,$"{i.Target} {sub[i.ToDo]}", cnt,0,$"{i.After}"));
-            Texts[ToDoCount].gameObject.SetActive(true);
-            ToDoCount++;
-        }
+                Texts[ToDoCount].text += $"<size=20>\n\n{cnt}</size>";
+
+                InfM.PeopleCorrect.Add(new Tuple<string,int,int,int>(i.Target, i.ToDo,i.After, ToDoCount));
+                ToDoIndexes[2].Add(new ToDoIndex(0, i.ToDo,$"{i.Target} {sub[i.ToDo]}", cnt,0,$"{i.After}"));
+                Texts[ToDoCount].gameObject.SetActive(true);
+                ToDoCount++;
+            }
         
         if(DB.Instructions.NewsInst!=null)
             foreach (var i in DB.Instructions.NewsInst)
             {
                 Texts[ToDoCount].text =
-                    $"<color=#FF0000>News</color> {i.Line}번째 줄";
+                    $"<color=#FF0000>News</color> {i.Line+1}번째 줄";
                 if (i.ToDo == 0)
                 {
                     Texts[ToDoCount].text += $" 추가<size=20>\n\n {i.Goal}</size>";
@@ -81,7 +85,9 @@ public class ToDoList_N : MonoBehaviour
                     Texts[ToDoCount].text += $" 변경<size=20>\n\n {i.Normal} > {i.Revise}</size>";
                     cnt = $"{i.Normal} > {i.Revise}";
                 }
-                ToDoIndexes[0].Add(new ToDoIndex(ToDoCount,i.ToDo, $"{i.Line}번째 줄 {sub2[i.ToDo]}",cnt,i.Line,i.Goal));
+                TextM.NewsAnsLine[i.Line] = true;
+                TextM.NewsChange[i.Line] = i.Goal;
+                ToDoIndexes[0].Add(new ToDoIndex(ToDoCount,i.ToDo, $"{i.Line+1}번째 줄 {sub2[i.ToDo]}",cnt,i.Line,i.Goal));
                 Texts[ToDoCount].gameObject.SetActive(true);
                 ToDoCount++;
             }
@@ -89,7 +95,7 @@ public class ToDoList_N : MonoBehaviour
             foreach (var i in DB.Instructions.DocsInst)
             {
                 Texts[ToDoCount].text =
-                    $"<color=#FF0000>Docs</color> {i.Line}번째 줄";
+                    $"<color=#FF0000>Docs</color> {i.Line+1}번째 줄";
                 if (i.ToDo == 0)
                 {
                     Texts[ToDoCount].text += $" 추가<size=20>\n\n {i.Goal}</size>";
@@ -105,7 +111,9 @@ public class ToDoList_N : MonoBehaviour
                     Texts[ToDoCount].text += $" 변경<size=20>\n\n {i.Normal} > {i.Revise}</size>";
                     cnt = $"{i.Normal} > {i.Revise}";
                 }
-                ToDoIndexes[1].Add(new ToDoIndex(ToDoCount, i.ToDo, $"{i.Line}번째 줄 {sub2[i.ToDo]}", cnt,i.Line,i.Goal));
+                TextM.DocsAnsLine[i.Line] = true;
+                TextM.DocsChange[i.Line] = i.Goal;
+                ToDoIndexes[1].Add(new ToDoIndex(ToDoCount, i.ToDo, $"{i.Line+1}번째 줄 {sub2[i.ToDo]}", cnt,i.Line,i.Goal));
                 Texts[ToDoCount].gameObject.SetActive(true);
                 ToDoCount++;
             }
@@ -113,30 +121,16 @@ public class ToDoList_N : MonoBehaviour
     }
 
     string[] sub3 = { "News", "Docs", "Info" };
-    public void CheckList(int type, int line, string text)
+
+    public void CheckList(int type, int line, bool Clear, int DoLine = -1)
     {
-        foreach(var k in ToDoIndexes[type])
-        {
-            if(line == k.goalLine)
-            {
-                
-                if (k.type == 1) continue;
-                else
-                {
-                    print(text);
-                    print(k.goal) ;
-                    if(k.goal.Equals(text) && !k.IsClear)
-                    {
-                        k.IsClear = true;
-                        Texts[k.line].text = $"<s><color={DRed}>{sub3[type]}</color><color={DWhite}> {k.line1}<size=20>\n\n {k.line2}</color></size></s>";
-                    }
-                    else if (!k.goal.Equals(text) && k.IsClear)
-                    {
-                        k.IsClear = false;
-                        Texts[k.line].text = $"<color={NRed}>{sub3[type]}</color><color={NWhite}> {k.line1}<size=20>\n\n {k.line2}</color></size>";
-                    }
-                }
-            }
-        }
+        print(Clear);
+        ToDoIndex k = null;
+        if (DoLine == -1) { foreach (var s in ToDoIndexes[type]) if (s.goalLine == line) k = s; }
+        else k = ToDoIndexes[type][DoLine];
+        if (Clear)
+            Texts[k.line].text = $"<s><color={DRed}>{sub3[type]}</color><color={DWhite}> {k.line1}<size=20>\n\n {k.line2}</color></size></s>";
+        else
+            Texts[k.line].text = $"<color={NRed}>{sub3[type]}</color><color={NWhite}> {k.line1}<size=20>\n\n {k.line2}</color></size>";
     }
 }

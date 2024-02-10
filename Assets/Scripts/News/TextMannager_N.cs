@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq.Expressions; 
-using TMPro;
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +9,19 @@ public class TextMannager_N : MonoBehaviour
     [SerializeField] MainText_N[] MainTexts;
     [SerializeField] public ToDoList_N TDN;
 
+    [NonSerialized] public News AnsNews;
+    //[NonSerialized] public Docs DocsAns;
+
+    [NonSerialized] public bool[] NewsAnsLine = new bool[20];
+    [NonSerialized] public string[] NewsChange = new string[20];
+
+    [NonSerialized] public bool[] DocsAnsLine = new bool[20];
+    [NonSerialized] public string[] DocsChange = new string[20];
+
+    bool IsClear = false;
+
     int ActivateText = 0;
+
     private void Start()
     {
         foreach (var k in Texts) if (k.activeSelf) ActivateText++;
@@ -59,6 +69,28 @@ public class TextMannager_N : MonoBehaviour
             {
                 MainTexts[i].MyInd = Texts[i].transform.GetSiblingIndex() - 4;
             }
+        }
+    }
+
+    public void ValidText(bool IsNews, int line, string text)
+    {
+        if (IsNews)
+        {
+            if (NewsAnsLine[line])
+            {
+                if (text.Equals(NewsChange[line])) TDN.CheckList(0, line, true);
+                else TDN.CheckList(0, line, false);
+            }
+            else if (!text.Equals(AnsNews.Main[line])) for (int i = 0; i < AnsNews.CountM; i++) if (NewsAnsLine[i]) MainTexts[i].CheckMyText();
+        }
+        else
+        {
+            if (DocsAnsLine[line])
+            {
+                if (text.Equals(DocsChange[line])) TDN.CheckList(1, line, true);
+                else TDN.CheckList(1, line, false);
+            }
+            //else if (!text.Equals(AnsDocs.Main[line])) for (int i = 0; i < AnsDocs.CountM; i++) if (DocsAnsLine[i]) MainTexts[i].CheckMyText();
         }
     }
 }

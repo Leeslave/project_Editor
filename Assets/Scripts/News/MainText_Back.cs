@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class MainText_Back : Buttons_M
 {
     [SerializeField] TextMannager_N TM;
-    [SerializeField] GameObject Field;
+    GameObject Field;
     [SerializeField] GameObject Text;
     [SerializeField] Color AfColor;
     [SerializeField] int MyInd;
@@ -18,6 +18,7 @@ public class MainText_Back : Buttons_M
     protected override void Awake()
     {
         base.Awake();
+        Field = transform.GetChild(0).gameObject;
     }
 
     protected override void Click(PointerEventData Data)

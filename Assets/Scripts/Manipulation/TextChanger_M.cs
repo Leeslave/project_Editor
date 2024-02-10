@@ -5,6 +5,10 @@ using TMPro;
 
 public class TextChanger_M : MonoBehaviour
 {
+    [SerializeField] InfChange IC;
+
+    [SerializeField] int Ind;
+
     RectTransform s;
     RectTransform S;
     TMP_Text j;
@@ -21,6 +25,7 @@ public class TextChanger_M : MonoBehaviour
     public void Changer(string a)
     {
         j.text = a;
+        IC.ValidData(Ind, a);
         Invoke("SizeChange", 0.05f);
     }
 
