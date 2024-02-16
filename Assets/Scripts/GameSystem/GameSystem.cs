@@ -21,8 +21,18 @@ public class GameSystem : MonoBehaviour
     public int time { get; private set; }  = 0;   // 현재 시간
 
     ///  현재 플레이 위치
-    public World location { get; private set; }  // 현재 지역
-    public int position { get; private set; }    // 현재 위치
+    public World location;  // 현재 지역
+    public int position;    // 현재 위치
+
+    /// <summary>
+    /// 위치 값 설정
+    /// </summary>
+    /// <param name="newPos">설정할 새 위치</param>
+    public void SetPosition(int newPos)
+    {
+        position = newPos;
+    }
+
 
     // 스크린 활성화 여부
     public bool isScreenOn = false; 
@@ -38,6 +48,35 @@ public class GameSystem : MonoBehaviour
             }
             return workResult;
         }
+    }
+
+    /// <summary>
+    /// 업무 완료 여부 설정
+    /// </summary>
+    /// <param name="workCode">설정할 업무의 코드명</param>
+    /// <param name="isClear">업무 완료 여부</param>
+    public void ClearTask(string workCode)
+    {
+        // 코드에 해당하는 업무 불러오기
+        Work currentWork = null;
+        foreach (var work in today.workList)
+        {
+            if (work.Key.code == workCode)
+            {
+                currentWork = work.Key;
+                break;
+            }
+        }
+
+        // 업무 불일치 오류
+        if (currentWork == null)
+        {
+            Debug.Log("Work doesn't Match");
+            return;
+        }
+
+        // 업무 완료로 전환
+        today.workList[currentWork] = true;
     }
 
     /// 플레이 데이터 
@@ -75,26 +114,6 @@ public class GameSystem : MonoBehaviour
         }
     }
 
-    
-    /// <summary>
-    /// 지역 값 설정
-    /// </summary>
-    /// <param name="newLocation">설정할 새 지역</param>
-    public void SetLocation(World newLocation)
-    {
-        location = newLocation;
-    }
-
-
-    /// <summary>
-    /// 위치 값 설정
-    /// </summary>
-    /// <param name="newPos">설정할 새 위치</param>
-    public void SetPosition(int newPos)
-    {
-        position = newPos;
-    }
-
 
     ///<summary>
     /// 날짜 전환 (게임 저장)
@@ -117,7 +136,7 @@ public class GameSystem : MonoBehaviour
 
         // 해당 날짜 불러오기
         this.date = date;
-        SetTime(0);
+        time = 0;
 
         // 게임 저장 (튜토리얼 날짜 제외)
         if (date > 1)
@@ -126,9 +145,10 @@ public class GameSystem : MonoBehaviour
         }
 
 
-        // TODO: 메인 월드 재로드, 로딩 씬으로 대체
         if (SceneManager.GetActiveScene().name == "MainWorld")
+        {
             SceneManager.LoadScene("DayLoading");
+        }
     }
 
     ///<summary>
@@ -140,35 +160,11 @@ public class GameSystem : MonoBehaviour
         if (_time < 0 || _time >= 4)
             return;
         time = _time;
-    }
 
-    /// <summary>
-    /// 업무 완료 여부 설정
-    /// </summary>
-    /// <param name="workCode">설정할 업무의 코드명</param>
-    /// <param name="isClear">업무 완료 여부</param>
-    public void ClearTask(string workCode)
-    {
-        // 코드에 해당하는 업무 불러오기
-        Work currentWork = null;
-        foreach (var work in today.workList)
+        if (SceneManager.GetActiveScene().name == "MainWorld")
         {
-            if (work.Key.code == workCode)
-            {
-                currentWork = work.Key;
-                break;
-            }
+            WorldSceneManager.Instance.ReloadWorld();
         }
-
-        // 업무 불일치 오류
-        if (currentWork == null)
-        {
-            Debug.Log("Work doesn't Match");
-            return;
-        }
-
-        // 업무 완료로 전환
-        today.workList[currentWork] = true;
     }
 
 

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using Newtonsoft.Json;
 using UnityEngine;
 
-public class NPC : MonoBehaviour
+public class NPC : WorldObject
 {   
     /**
     대사 실행 오브젝트

@@ -11,6 +11,12 @@ public class Location : MonoBehaviour
 {
     [SerializeField]
     private string locationName; // 지역명
+
+    private bool isActive;  // 현재 활성화 여부
+
+    [SerializeField]
+    public int bgmNumber;   // BGM 번호
+
     [SerializeField]
     private int connectLen;     // 연결 가능 최대 길이
     [SerializeField]
@@ -23,18 +29,58 @@ public class Location : MonoBehaviour
     public GameObject npcPrefab;   // NPC 생성용 프리팹
     public float sizeMultiplier = 1;    // NPC 크기 배율
 
-    void OnEnable()
+
+    /// <summary>
+    /// 현재 지역을 활성화/비활성화
+    /// </summary>
+    public void ActiveLocation(bool _active)
     {
-        MovePosition(GameSystem.Instance.position);
-        SetButtonActive(WorldSceneManager.Instance.isMoveOpen);
+        // 변화 없음 예외
+        if (isActive == _active)
+            return;
+        
+        // 활성화
+        if (_active)
+        {
+            // 음악 활성화
+            WorldSceneManager.Instance.worldBGM.OverlapPlay(bgmNumber);
+
+            // 해당하는 위치 활성화
+            SetPosition(GameSystem.Instance.position);
+        }
+        // 비활성화
+        else
+        {
+            // 위치 전부 비활성화
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                transform.GetChild(i).gameObject.SetActive(false);
+            }
+        }
     }
+
+
+    /// <summary>
+    /// 지역 재로딩, 날짜&시간대 재적용
+    /// </summary>
+    public void ReloadLocation()
+    {
+        
+        // NPC 새로 생성
+        SetObjects(GameSystem.Instance.date, GameSystem.Instance.time);
+
+        // 기본으로 비활성화
+        ActiveLocation(false);
+    }
+
 
 
     /// <summary>
     /// 지역 내 이동
     /// </summary>
     /// <param name="newPos">이동할 새 위치</param>
-    public void MovePosition(int newPos)
+    [HideInInspector]
+    public void SetPosition(int newPos)
     {
         // 위치값 오류
         if (newPos < 0 || newPos >= transform.childCount)
@@ -57,9 +103,6 @@ public class Location : MonoBehaviour
             }
             transform.GetChild(i).gameObject.SetActive(false);
         }
-
-        // 위치값 새로설정
-        WorldSceneManager.Instance.SetPosition(newPos);
     }
 
 
@@ -74,7 +117,7 @@ public class Location : MonoBehaviour
             return;
         }
 
-        MovePosition(newPos);
+        SetPosition(newPos);
     }
 
 
@@ -89,7 +132,7 @@ public class Location : MonoBehaviour
             return;
         }
 
-        MovePosition(newPos);
+        SetPosition(newPos);
     }
 
 
@@ -112,7 +155,7 @@ public class Location : MonoBehaviour
     /// </summary>
     /// <param name="date">날짜</param>
     /// <param name="time">시간대</param>
-    public void SetNPC(int date, int time)
+    public void SetObjects(int date, int time)
     {
         // 이전 오브젝트들 삭제
         foreach(var oldNPC in npcList)
