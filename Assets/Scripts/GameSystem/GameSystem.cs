@@ -17,22 +17,7 @@ public class GameSystem : MonoBehaviour
     */ 
 
     /// 현재 플레이 시각
-    public int date { get; private set; } = 0;   // 오늘 날짜 인덱스
-    public int time { get; private set; }  = 0;   // 현재 시간
-
-    ///  현재 플레이 위치
-    public World location;  // 현재 지역
-    public int position;    // 현재 위치
-
-    /// <summary>
-    /// 위치 값 설정
-    /// </summary>
-    /// <param name="newPos">설정할 새 위치</param>
-    public void SetPosition(int newPos)
-    {
-        position = newPos;
-    }
-
+    public GameData gameData = new();
 
     // 스크린 활성화 여부
     public bool isScreenOn = false; 
@@ -83,8 +68,8 @@ public class GameSystem : MonoBehaviour
     private List<SaveData> saveList = new();    // 저장 데이터
     private List<DailyData> dailyList = new();     // 날짜별 데이터
 
-    public SaveData player { get { return saveList[date]; } }      // 오늘 세이브 데이터
-    public DailyData today { get { return dailyList[date]; } }    // 오늘 날짜 데이터
+    public SaveData player { get { return saveList[gameData.date]; } }      // 오늘 세이브 데이터
+    public DailyData today { get { return dailyList[gameData.date]; } }    // 오늘 날짜 데이터
 
 
     // 싱글턴
@@ -124,7 +109,7 @@ public class GameSystem : MonoBehaviour
         // 다음 날짜로 이동시
         if (date == -1)
         {
-            date = this.date + 1;
+            date = gameData.date + 1;
         }
 
         // 날짜 오류
@@ -135,8 +120,8 @@ public class GameSystem : MonoBehaviour
         }
 
         // 해당 날짜 불러오기
-        this.date = date;
-        time = 0;
+        gameData.date = date;
+        gameData.time = 0;
 
         // 게임 저장 (튜토리얼 날짜 제외)
         if (date > 1)
@@ -159,7 +144,7 @@ public class GameSystem : MonoBehaviour
     {
         if (_time < 0 || _time >= 4)
             return;
-        time = _time;
+        gameData.time = _time;
 
         if (SceneManager.GetActiveScene().name == "MainWorld")
         {

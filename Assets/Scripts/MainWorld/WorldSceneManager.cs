@@ -31,20 +31,21 @@ public class WorldSceneManager : MonoBehaviour
     [Header("지역 데이터")]
     [SerializeField]
     private Location[] locationList;    // 지역 오브젝트 리스트
-    private int CurrentIndex { get { return (int)GameSystem.Instance.location; } }    // 현재 지역
+    private int CurrentIndex { get { return (int)GameSystem.Instance.gameData.location; } }    // 현재 지역
+
     public SoundManager worldBGM;  // 지역 내 배경음악
+    
+    public bool isMoving { get; private set; } = false;    // 지역 내 이동 버튼 활성화 여부
 
     [Header("지역 이동 효과")]
     public float moveDelay;     // 지역 이동 딜레이
     [SerializeField]
     private Image curtain;      // 지역 이동 효과 이미지
 
-    public bool isMoving { get; private set; } = false;    // 지역 내 이동 버튼 활성화 여부
-
-
     /// 싱글턴 선언
     private static WorldSceneManager _instance;
     public static WorldSceneManager Instance { get { return _instance; } }
+
 
     /// 씬이 새로 로딩될때마다 월드 재로딩
     void Awake()
@@ -94,7 +95,7 @@ public class WorldSceneManager : MonoBehaviour
         locationList[CurrentIndex].ActiveLocation(false);
 
         // 현재 지역 설정
-        GameSystem.Instance.location = location;
+        GameSystem.Instance.gameData.SetLocation(location);
 
         // 새 지역 활성화
         locationList[CurrentIndex].ActiveLocation(true);

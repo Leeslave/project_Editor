@@ -5,8 +5,19 @@ using UnityEngine.UI;
 
 public abstract class WorldObject : MonoBehaviour
 {
-    public int type; // 상호작용 타입
+    public World location;  // 장소
+    public int position;    // 장소 내 위치
     public int count = 0;   // 상호작용 가능 횟수 (0 : 무제한)
+
+    public string awakeParam = "";   // Active 함수 매개변수
+    public string clickParam = "";   // Click 함수 매개변수
+
+    protected WorldObject(int _location, int _position)
+    {
+        location = (World)_location;
+        position = _position;
+    }
+
 
     // 오브젝트 클릭 시
     public virtual void ObjectClicked()
@@ -20,6 +31,15 @@ public abstract class WorldObject : MonoBehaviour
 
     }
 
+
+    public virtual void Copy(WorldObject @object)
+    {
+        location = @object.location;
+        position = @object.position;
+        awakeParam = @object.awakeParam;
+        clickParam = @object.clickParam;
+    }
+
     void Awake()
     {
         // 버튼 이벤트 할당
@@ -27,5 +47,10 @@ public abstract class WorldObject : MonoBehaviour
         {
             bt.onClick.AddListener(ObjectClicked);
         }
+    }
+
+    void OnEnable()
+    {
+        ObjectActive();
     }
 }
