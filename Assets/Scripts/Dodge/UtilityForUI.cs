@@ -32,6 +32,11 @@ public static class MyUi
         entry.callback.AddListener((data) => { Event((PointerEventData)data); });
         eventTrigger.triggers.Add(entry);
     }
+    public static Vector3 GetMousePos()
+    {
+        Vector3 cnt = Camera.main.ScreenToWorldPoint(Input.mousePosition); cnt.z = 0;
+        return cnt;
+    }
 
     public static void ButtonInit(EventTrigger eventTrigger, Action<PointerEventData> OnPointer, Action<PointerEventData> OutPointer, Action<PointerEventData> ClickPointer)
     {
