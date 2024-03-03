@@ -151,7 +151,7 @@ public class MakeTile : MonoBehaviour
         {
             Instantiate(Key).transform.position = new Vector3(Cnt[i].Item1 * Move_X + 5, Cnt[i].Item2 * Move_Y + 5, 0);
         }
-        Instantiate(Fire).transform.position = new Vector3(Cnt[KeyNum].Item1 * Move_X + 5, Cnt[KeyNum].Item2 * Move_Y + 5, 0);
+        if(IsCalcFog) Instantiate(Fire).transform.position = new Vector3(Cnt[KeyNum].Item1 * Move_X + 5, Cnt[KeyNum].Item2 * Move_Y + 5, 0);
         Instantiate(Compass).transform.position = new Vector3(Cnt[KeyNum+1].Item1 * Move_X + 5, Cnt[KeyNum+1].Item2 * Move_Y + 5, 0);
     }
 }
