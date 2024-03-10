@@ -18,7 +18,7 @@ public static class FileReader
     public static List<List<string>> ReadCSV(string file)
     {
 
-        TextAsset data = Resources.Load("GameData/" + file) as TextAsset;
+        TextAsset data = Resources.Load(file) as TextAsset;
         if (data == null)
         {
             Debug.Log("ERROR: CSV FILE CANNOT FOUND");
@@ -53,7 +53,4 @@ public static class FileReader
         }
         return rowList;
     }
-
-
-    
 }

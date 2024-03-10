@@ -21,37 +21,62 @@ public class NPC : WorldObject
     public int talkCount = 0;   // 대화 횟수 카운트
 
 
-    public NPC(int _location, int _position, string _awakeParam, string _clickParam) : base(_location, _position)
+    public NPC(World _location, int _position, string _awakeParam, string _clickParam) : base(_location, _position)
     {
         awakeParam = _awakeParam;
         clickParam = _clickParam;
     }
 
 
-    public override void ObjectActive()
+    public override void OnActive()
     {
         talkData[0] = null;
         if (awakeParam is not "")
         {
-            talkData[0] = Chat.Instance.GetChatData(awakeParam);
+            talkData[0] = DataLoader.GetChatData(awakeParam);
         }
-
         talkData[1] = null;
         if (clickParam is not "")
         {
-            talkData[1] = Chat.Instance.GetChatData(clickParam);
+            talkData[1] = DataLoader.GetChatData(clickParam);
         }
 
-        if (talkData[0] is not null) Chat.Instance.StartChat(talkData[0]);
+        if (talkData[0] is not null)
+        {
+            Chat.Instance.StartChat(talkData[0]);
+        }
     }
 
 
-    public override void ObjectClicked()
+    public override void OnClicked()
     {
         if (talkData[1] is not null)
         {
             Chat.Instance.StartChat(talkData[1]);
         }
+    }
+
+
+    public void SetPosition()
+    {
+        // 이미지 설정
+        if (image != null)
+        {
+            var newSprite = GetComponent<Image>().sprite = Chat.GetSprite(image);
+            if(newSprite == null)
+            {
+                Debug.Log($"NPC IMAGE CANNOT FOUND : {image}");
+            }
+        }
+
+        // 위치 설정
+        RectTransform rect = GetComponent<RectTransform>();
+        rect.anchorMin = pos;
+        rect.anchorMax = pos;
+        
+        // 크기 설정
+        rect.sizeDelta = size;
+        rect.localScale = new Vector3(1f,1f,1f);
     }
 
     public override void Copy(WorldObject @object)
@@ -66,10 +91,6 @@ public class NPC : WorldObject
         pos = npc.pos;
         size = npc.size;
         talkData = new List<Paragraph>[2];
-        talkData[0] = new();
-        talkData[0].AddRange(npc.talkData[0]);
-        talkData[1] = new();
-        talkData[1].AddRange(npc.talkData[1]);
         talkCount = npc.talkCount;
     }
 }

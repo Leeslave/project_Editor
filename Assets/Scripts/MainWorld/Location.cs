@@ -24,10 +24,7 @@ public class Location : MonoBehaviour
     private List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
 
     [SerializeField]
-    private List<WorldObject> objList = new();  // NPC 리스트
-    private static readonly string NPCPATH = "/Resources/Chat/Text/"; // NPC 파일 경로
-    private static readonly string CGPATH = "Chat/Character/";    // 캐릭터 파일 경로
-    public GameObject objPrefab;   // NPC 생성용 프리팹
+    private List<WorldObject> objList = new();  // WorldObject 리스트
     public float sizeMultiplier = 1;    // NPC 크기 배율
 
 
@@ -64,9 +61,9 @@ public class Location : MonoBehaviour
     /// <summary>
     /// 지역 재로딩, 날짜&시간대 재적용
     /// </summary>
+    [HideInInspector]
     public void ReloadLocation()
     {
-        
         // NPC 새로 생성
         SetObjects();
 
@@ -107,8 +104,7 @@ public class Location : MonoBehaviour
 
 
     // 연결된 맵 왼쪽으로 이동
-    [SerializeField]
-    private void MoveLeft()
+    public void MoveLeft()
     {
         int newPos = GameSystem.Instance.gameData.position - 1;
         if (newPos < 0)
@@ -122,8 +118,7 @@ public class Location : MonoBehaviour
 
 
     // 연결된 맵 오른쪽으로 이동
-    [SerializeField]
-    private void MoveRight()
+    public void MoveRight()
     {
         int newPos = GameSystem.Instance.gameData.position + 1;
         if (newPos > connectLen)
@@ -163,7 +158,8 @@ public class Location : MonoBehaviour
             Destroy(oldObj.gameObject);
         }
 
-        List<WorldObject> dataList = ObjectDatabase.objDataList[(int)locationName];
+        // 새 오브젝트 정보 불러오기
+        List<WorldObject> dataList = ObjectDatabase.List[(int)locationName];
 
         // 리스트 초기화
         objList = new();
@@ -171,42 +167,23 @@ public class Location : MonoBehaviour
         // NPC들 생성
         foreach(WorldObject _data in dataList)
         {
-            GameObject newObj = Instantiate(objPrefab);     // instantiate 
-            newObj.transform.SetParent(transform.GetChild(_data.position)); // set Parent
-            newObj.name = _data.name;
+            GameObject newObj = Instantiate(WorldSceneManager.Instance.objPrefab, transform.GetChild(_data.position));     // instantiate 
+            // newObj.name = _data.name;
 
             // 타입에 따라 컴포넌트 추가
             if (_data is WorldEffect)
             {
-                // newObj.AddComponent<
+                var newComponent = newObj.AddComponent<WorldEffect>();
+                newComponent.Copy(_data as WorldEffect);
             }
             if(_data is NPC)
             {
-                newObj.GetComponent<NPC>().Copy(_data);
+                var newComponent = newObj.AddComponent<NPC>();
+                newComponent.Copy(_data as NPC);
+
+                newComponent.SetPosition();
             }
-            objList.Add(newObj.GetComponent<NPC>());
-
-            // // NPC transform 설정
-            // if (_data.image != null)
-            // {
-            //     // 이미지 설정
-            //     Sprite newSprite = Chat.GetSprite(CGPATH + _data.image + "_stand");
-            //     if(newSprite == null)
-            //     {
-            //         Debug.Log($"NPC IMAGE CANNOT FOUND : {CGPATH + _data.image}");
-            //     }
-            //     newObj.GetComponent<Image>().sprite = newSprite;
-
-            //     RectTransform rect = newObj.GetComponent<RectTransform>();
-            //     // 위치 설정
-            //     Debug.Log(_data.pos);
-            //     rect.anchorMin = _data.pos;
-            //     rect.anchorMax = _data.pos;
-            //     Debug.Log($"Anchor applied : {rect.anchorMin} ~ {rect.anchorMax}");
-            //     // 크기 설정
-            //     rect.sizeDelta = _data.size * sizeMultiplier;
-            //     rect.localScale = new Vector3(1f,1f,1f);
-            // }
+            objList.Add(newObj.GetComponent<WorldObject>());
         }
 
         Debug.Log($"{gameObject.name} : {objList.Count}개 NPC 생성됨");

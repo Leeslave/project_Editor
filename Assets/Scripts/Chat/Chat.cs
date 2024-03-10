@@ -146,22 +146,6 @@ public class Chat : MonoBehaviour
 
 
     /// <summary>
-    /// 경로에서 대화 데이터 불러오기
-    /// </summary>
-    /// <param name="path"></param>
-    /// <returns></returns>
-    public List<Paragraph> GetChatData(string path)
-    {
-        FileStream fs = new FileStream(path, FileMode.Open);
-        byte[] buffer = new byte[fs.Length];
-        fs.Read(buffer, 0, (int)fs.Length);
-        string jsonText = System.Text.Encoding.UTF8.GetString(buffer);
-        
-        Dialogue wrapper = JsonConvert.DeserializeObject<Dialogue>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-        return wrapper.chatList;
-    }
-
-    /// <summary>
     /// 대사 넘기기 함수
     /// </summary>
     public void SkipChat()

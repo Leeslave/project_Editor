@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-
-/// JSON 파싱 클래스 : DailyData 기본값
 [Serializable]
 public class DailyWrapper
 { 

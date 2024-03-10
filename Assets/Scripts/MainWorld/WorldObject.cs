@@ -12,21 +12,21 @@ public abstract class WorldObject : MonoBehaviour
     public string awakeParam = "";   // Active 함수 매개변수
     public string clickParam = "";   // Click 함수 매개변수
 
-    protected WorldObject(int _location, int _position)
+    protected WorldObject(World _location, int _position)
     {
-        location = (World)_location;
+        location = _location;
         position = _position;
     }
 
 
     // 오브젝트 클릭 시
-    public virtual void ObjectClicked()
+    public virtual void OnClicked()
     {
 
     }
 
     // 오브젝트 활성화 시
-    public virtual void ObjectActive()
+    public virtual void OnActive()
     {
 
     }
@@ -45,12 +45,12 @@ public abstract class WorldObject : MonoBehaviour
         // 버튼 이벤트 할당
         if (TryGetComponent(out Button bt))
         {
-            bt.onClick.AddListener(ObjectClicked);
+            bt.onClick.AddListener(OnClicked);
         }
     }
 
     void OnEnable()
     {
-        ObjectActive();
+        OnActive();
     }
 }

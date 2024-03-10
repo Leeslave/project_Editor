@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class ObjectDatabase
 {
-    public static List<List<WorldObject>> objDataList;
+    public static List<List<WorldObject>> List;
 
 
     /// <summary>
@@ -13,20 +13,22 @@ public static class ObjectDatabase
     /// </summary>
     public static void Read()
     {
-        var dataList = FileReader.ReadCSV($"World/ObjectData_{GameSystem.Instance.gameData.date}");
-
+        var dataList = FileReader.ReadCSV($"GameData/World/ObjectData_{GameSystem.Instance.gameData.date}");
         // 데이터 목록 초기화
-        if (objDataList is null)
+        if (List is null)
         {
-            objDataList = new();
+            List = new();
             for(int i = 0; i < Enum.GetValues(typeof(World)).Length; i++)
             {
-                objDataList.Add(new());
+                List.Add(new());
             }
         }
         else
         {
-            objDataList.Clear();
+            foreach(var iter in List)
+            {
+                iter.Clear();
+            }
         }
 
         // 각 데이터를 종류별로 생성
@@ -35,17 +37,17 @@ public static class ObjectDatabase
             switch(obj[(int)DataColumn.type])
             {
                 case "npc":
-                    NPC newNPC = new(int.Parse(obj[(int)DataColumn.location]), int.Parse(obj[(int)DataColumn.position]), obj[(int)DataColumn.OnAwake], obj[(int)DataColumn.OnClick]);
+                    NPC newNPC = new(Enum.Parse<World>(obj[(int)DataColumn.location]), int.Parse(obj[(int)DataColumn.position]), obj[(int)DataColumn.OnAwake], obj[(int)DataColumn.OnClick]);
                     newNPC.image = obj[(int)DataColumn.image];
-                    newNPC.pos = new Vector2(int.Parse(obj[(int)DataColumn.posX]), int.Parse(obj[(int)DataColumn.posY]));
-                    newNPC.size = new Vector2(int.Parse(obj[(int)DataColumn.sizeX]), int.Parse(obj[(int)DataColumn.sizeY]));
+                    newNPC.pos = new Vector2(float.Parse(obj[(int)DataColumn.posX]), float.Parse(obj[(int)DataColumn.posY]));
+                    newNPC.size = new Vector2(float.Parse(obj[(int)DataColumn.sizeX]), float.Parse(obj[(int)DataColumn.sizeY]));
 
-                    objDataList[(int)newNPC.location].Add(newNPC);
+                    List[(int)newNPC.location].Add(newNPC);
                     break;
                 case "effect":
-                    WorldEffect newEffect = new(int.Parse(obj[(int)DataColumn.location]), int.Parse(obj[(int)DataColumn.position]));
+                    WorldEffect newEffect = new(Enum.Parse<World>(obj[(int)DataColumn.location]), int.Parse(obj[(int)DataColumn.position]));
 
-                    objDataList[(int)newEffect.location].Add(newEffect);
+                    List[(int)newEffect.location].Add(newEffect);
                     break;
             }
         }

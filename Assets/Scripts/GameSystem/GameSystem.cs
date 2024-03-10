@@ -1,11 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Newtonsoft.Json;
+
 
 public class GameSystem : MonoBehaviour
 {
@@ -35,35 +31,6 @@ public class GameSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 업무 완료 여부 설정
-    /// </summary>
-    /// <param name="workCode">설정할 업무의 코드명</param>
-    /// <param name="isClear">업무 완료 여부</param>
-    public void ClearTask(string workCode)
-    {
-        // 코드에 해당하는 업무 불러오기
-        Work currentWork = null;
-        foreach (var work in today.workList)
-        {
-            if (work.Key.code == workCode)
-            {
-                currentWork = work.Key;
-                break;
-            }
-        }
-
-        // 업무 불일치 오류
-        if (currentWork == null)
-        {
-            Debug.Log("Work doesn't Match");
-            return;
-        }
-
-        // 업무 완료로 전환
-        today.workList[currentWork] = true;
-    }
-
     /// 플레이 데이터 
     private List<SaveData> saveList = new();    // 저장 데이터
     private List<DailyData> dailyList = new();     // 날짜별 데이터
@@ -87,8 +54,8 @@ public class GameSystem : MonoBehaviour
             _instance = this;
             DontDestroyOnLoad(gameObject);
 
-            saveList = GameLoader.LoadSaveData();     // 세이브 데이터 로드
-            dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드  
+            saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
+            dailyList = DataLoader.LoadGameData();     // 게임 데이터 로드  
 
             // 초기 데이터 설정 (로딩 씬 설정 후 삭제)
             SetDate(0);
@@ -126,10 +93,11 @@ public class GameSystem : MonoBehaviour
         // 게임 저장 (튜토리얼 날짜 제외)
         if (date > 1)
         {
-            GameLoader.SavePlayerData(saveList);
+            DataLoader.SavePlayerData(saveList);
         }
 
-
+        ObjectDatabase.Read();
+        
         if (SceneManager.GetActiveScene().name == "MainWorld")
         {
             SceneManager.LoadScene("DayLoading");
@@ -148,10 +116,40 @@ public class GameSystem : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == "MainWorld")
         {
+            ObjectDatabase.Read();
             WorldSceneManager.Instance.ReloadWorld();
         }
     }
 
+
+    /// <summary>
+    /// 업무 완료 여부 설정
+    /// </summary>
+    /// <param name="workCode">설정할 업무의 코드명</param>
+    /// <param name="isClear">업무 완료 여부</param>
+    public void ClearTask(string workCode)
+    {
+        // 코드에 해당하는 업무 불러오기
+        Work currentWork = null;
+        foreach (var work in today.workList)
+        {
+            if (work.Key.code == workCode)
+            {
+                currentWork = work.Key;
+                break;
+            }
+        }
+
+        // 업무 불일치 오류
+        if (currentWork == null)
+        {
+            Debug.Log("Work doesn't Match");
+            return;
+        }
+
+        // 업무 완료로 전환
+        today.workList[currentWork] = true;
+    }
 
     /// <summary>
     /// 해당 씬 로드
@@ -160,96 +158,5 @@ public class GameSystem : MonoBehaviour
     public static void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
-    }
-}
-
-public static class GameLoader
-{
-    /*****
-    * 게임 데이터 저장, 로드 시스템
-        - Json 파싱으로 게임 데이터 로드
-        - Json 파싱으로 플레이어 데이터 저장, 로드
-    */
-    [SerializeField]
-    private static readonly string GAMEDATAPATH = Application.dataPath + "/Resources/GameData/Main/dailyData.json";   // 게임 데이터 파일 경로
-    [SerializeField]
-    private static readonly string SAVEPATH = Application.dataPath + "/Resources/Save/savedata.json";    // 세이브 파일 경로
-
-    [Serializable]
-    class GameDataWrapper { public List<DailyWrapper> days = new(); }     // JsonUtility용 DailyData들 Wrapper
-    
-
-
-    /// JSON으로부터 게임 데이터를 로드
-    public static List<DailyData> LoadGameData()
-    {
-        // daily 초기화
-        List<DailyData> result = new();
-
-        // 파일 읽어오기
-        if (!File.Exists(GAMEDATAPATH))
-        {
-            throw new Exception($"GAME DATA CANNOT FOUND : ${GAMEDATAPATH}");
-            // 치명적 오류, 게임 종료시키기
-        }
-        FileStream fileStream = new FileStream(GAMEDATAPATH, FileMode.Open);
-        byte[] data = new byte[fileStream.Length];
-        fileStream.Read(data, 0, data.Length);
-        fileStream.Close();
-
-        // jsonString 읽어오기
-        string jsonText = Encoding.UTF8.GetString(data);
-
-        //Wrapper로 파싱
-        GameDataWrapper wrapper = JsonConvert.DeserializeObject<GameDataWrapper>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-
-        // Wrapper를 DailyData로 전환
-        foreach (DailyWrapper element in wrapper.days)
-        {
-            result.Add(new DailyData(element));
-        }
-
-        return result;
-    }
-
-    /// 플레이어 데이터 JSON에서 로드
-    public static List<SaveData> LoadSaveData()
-    {
-        // 파일 읽어오기
-        if (!File.Exists(SAVEPATH))
-        {
-            throw new Exception($"SAVE DATA CANNOT FOUND : ${SAVEPATH}");
-            // 치명적 오류, 게임 종료시키기
-        }
-        FileStream fileStream = new FileStream(SAVEPATH, FileMode.Open);
-        byte[] data = new byte[fileStream.Length];
-        fileStream.Read(data, 0, data.Length);
-        fileStream.Close();
-
-        // jsonString 읽어오기
-        string jsonText = Encoding.UTF8.GetString(data);
-
-        // Wrapper로 파싱
-        SaveWrapper wrapper = JsonConvert.DeserializeObject<SaveWrapper>(jsonText,  new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-
-        return wrapper.list;
-    }
-
-    /// 플레이어 데이터 JSON 저장
-    public static void SavePlayerData(List<SaveData> saveList)
-    {
-        SaveWrapper wrapper = new();
-        foreach (var iter in saveList)
-        {
-            wrapper.list.Add(iter);
-        }
-
-        // json String으로 파싱
-        string jsonText = JsonConvert.SerializeObject(wrapper,   new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-
-        FileStream fileStream = new FileStream(SAVEPATH, FileMode.Create);
-        byte[] data = Encoding.UTF8.GetBytes(jsonText);
-        fileStream.Write(data, 0, data.Length);
-        fileStream.Close();
     }
 }

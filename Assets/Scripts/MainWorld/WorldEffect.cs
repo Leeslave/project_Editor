@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WorldEffect : WorldObject
 {
-    public WorldEffect(int _location, int _position) : base(_location, _position)
+    public WorldEffect(World _location, int _position) : base(_location, _position)
     {
         
     }

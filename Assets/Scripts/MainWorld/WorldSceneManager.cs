@@ -36,6 +36,7 @@ public class WorldSceneManager : MonoBehaviour
     public SoundManager worldBGM;  // 지역 내 배경음악
     
     public bool isMoving { get; private set; } = false;    // 지역 내 이동 버튼 활성화 여부
+    public GameObject objPrefab;
 
     [Header("지역 이동 효과")]
     public float moveDelay;     // 지역 이동 딜레이
