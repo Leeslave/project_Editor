@@ -12,7 +12,14 @@ public class GameSystem : MonoBehaviour
         날짜, 시간대, 진행상황 적용
     */ 
 
-    /// 현재 플레이 시각
+    /// 플레이 데이터 
+    private List<SaveData> saveList = new();    // 저장 데이터
+    private List<DailyData> dailyList = new();     // 날짜별 데이터
+
+    public SaveData player { get { return saveList[gameData.date]; } }      // 오늘 세이브 데이터
+    public DailyData today { get { return dailyList[gameData.date]; } }    // 오늘 날짜 데이터
+
+    /// 오늘 날짜 데이터
     public GameData gameData = new();
 
     // 스크린 활성화 여부
@@ -30,14 +37,6 @@ public class GameSystem : MonoBehaviour
             return workResult;
         }
     }
-
-    /// 플레이 데이터 
-    private List<SaveData> saveList = new();    // 저장 데이터
-    private List<DailyData> dailyList = new();     // 날짜별 데이터
-
-    public SaveData player { get { return saveList[gameData.date]; } }      // 오늘 세이브 데이터
-    public DailyData today { get { return dailyList[gameData.date]; } }    // 오늘 날짜 데이터
-
 
     // 싱글턴
     private static GameSystem _instance;
@@ -57,7 +56,6 @@ public class GameSystem : MonoBehaviour
             saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
             dailyList = DataLoader.LoadGameData();     // 게임 데이터 로드  
 
-            // 초기 데이터 설정 (로딩 씬 설정 후 삭제)
             SetDate(0);
         }
         else
@@ -119,6 +117,24 @@ public class GameSystem : MonoBehaviour
             ObjectDatabase.Read();
             WorldSceneManager.Instance.ReloadWorld();
         }
+    }
+
+
+    /// <summary>
+    /// 특정 업무의 오늘 스테이지 번호 반환
+    /// </summary>
+    /// <param name="workCode"></param>
+    /// <returns></returns>
+    public int GetTask(string workCode)
+    {
+        foreach(var work in today.workList)
+        {
+            if (work.Key.code == workCode)
+            {
+                return work.Key.stage;
+            }
+        }
+        return -1;
     }
 
 
