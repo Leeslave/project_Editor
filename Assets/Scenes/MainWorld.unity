@@ -273,7 +273,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &34851271
 RectTransform:
   m_ObjectHideFlags: 0
@@ -837,7 +837,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1354808982}
         m_TargetAssemblyTypeName: Location, Assembly-CSharp
-        m_MethodName: MoveLeft
+        m_MethodName: MoveRight
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1601,7 +1601,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &485906445
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1636,14 +1636,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locationName: Bar
+  locationName: 1
+  bgmNumber: 0
   connectLen: 2
   buttons:
   - {fileID: 1763992759}
   - {fileID: 1760448142}
   - {fileID: 1730859568}
-  npcList: []
-  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  objList: []
   sizeMultiplier: 1
 --- !u!1 &490362231
 GameObject:
@@ -2299,7 +2299,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &733594949
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2470,7 +2470,7 @@ PrefabInstance:
     - target: {fileID: 146488411006183171, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 744271676}
+      objectReference: {fileID: 0}
     - target: {fileID: 146488411006183171, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -2518,17 +2518,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 146488411006183170, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
   m_PrefabInstance: {fileID: 744271674}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &744271676 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5248995500710110166, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
-  m_PrefabInstance: {fileID: 744271674}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 744271677}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2648ba1f5e2865643bf94b036c9a7d0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &744271677 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 146488411006183173, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
@@ -3004,7 +2993,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &820184484
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3082,7 +3071,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &844649769
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3117,14 +3106,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locationName: Cafe
+  locationName: 2
+  bgmNumber: 0
   connectLen: 2
   buttons:
   - {fileID: 1059813960}
   - {fileID: 264084387}
   - {fileID: 22606968}
-  npcList: []
-  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  objList: []
   sizeMultiplier: 1
 --- !u!1 &847676104
 GameObject:
@@ -3142,7 +3131,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &847676105
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3177,14 +3166,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locationName: Restaurant
+  locationName: 3
+  bgmNumber: 0
   connectLen: 2
   buttons:
   - {fileID: 1014531642}
   - {fileID: 811128012}
   - {fileID: 1033084442}
-  npcList: []
-  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  objList: []
   sizeMultiplier: 1
 --- !u!1 &861285814
 GameObject:
@@ -3203,7 +3192,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &861285815
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3893,6 +3882,7 @@ MonoBehaviour:
   - {fileID: 1062608863}
   - {fileID: 1325233860}
   worldBGM: {fileID: 1057474062}
+  objPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
   moveDelay: 0.5
   curtain: {fileID: 756446686}
 --- !u!4 &1057474061
@@ -4156,7 +4146,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1062608862
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4190,13 +4180,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locationName: Office2
+  locationName: 6
+  bgmNumber: 0
   connectLen: 1
   buttons:
   - {fileID: 2060748706}
   - {fileID: 1719538816}
-  npcList: []
-  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  objList: []
   sizeMultiplier: 1
 --- !u!1 &1115329608
 GameObject:
@@ -4410,7 +4400,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1191931263
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5030,7 +5020,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1325233859
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5064,12 +5054,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locationName: Interrogate
+  locationName: 7
+  bgmNumber: 0
   connectLen: 1
   buttons:
   - {fileID: 1789688942}
-  npcList: []
-  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  objList: []
   sizeMultiplier: 1
 --- !u!1 &1341910684
 GameObject:
@@ -5200,7 +5190,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locationName: Street
+  locationName: 0
+  bgmNumber: 0
   connectLen: 2
   buttons:
   - {fileID: 103925067}
@@ -5208,8 +5199,7 @@ MonoBehaviour:
   - {fileID: 201459180}
   - {fileID: 764214312}
   - {fileID: 133427307}
-  npcList: []
-  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  objList: []
   sizeMultiplier: 0.8
 --- !u!1 &1361372139
 GameObject:
@@ -5777,7 +5767,7 @@ PrefabInstance:
     - target: {fileID: 146488411006183171, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1519300020}
+      objectReference: {fileID: 0}
     - target: {fileID: 146488411006183171, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -5821,17 +5811,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 146488411006183170, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
   m_PrefabInstance: {fileID: 1519300018}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1519300020 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5248995500710110166, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
-  m_PrefabInstance: {fileID: 1519300018}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1519300021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2648ba1f5e2865643bf94b036c9a7d0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1519300021 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 146488411006183173, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
@@ -5987,7 +5966,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1630178849
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6764,7 +6743,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1757182140
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7758,7 +7737,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1846315222
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7794,7 +7773,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locationName: Hallway
+  locationName: 4
+  bgmNumber: 0
   connectLen: 3
   buttons:
   - {fileID: 1519300021}
@@ -7804,8 +7784,7 @@ MonoBehaviour:
   - {fileID: 791806269}
   - {fileID: 1602820574}
   - {fileID: 1159230854}
-  npcList: []
-  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  objList: []
   sizeMultiplier: 1
 --- !u!1 &1863535829
 GameObject:
@@ -7891,7 +7870,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1888378987
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7928,7 +7907,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 768bad57d1aba98478b56081ab098752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  locationName: Office
+  locationName: 5
+  bgmNumber: 0
   connectLen: 2
   buttons:
   - {fileID: 1960885789}
@@ -7937,8 +7917,7 @@ MonoBehaviour:
   - {fileID: 1491944208}
   - {fileID: 1636461612}
   - {fileID: 349718602}
-  npcList: []
-  npcPrefab: {fileID: 7307037406944028266, guid: d91d2dcd41b8e44438f00715754c7e7f, type: 3}
+  objList: []
   sizeMultiplier: 1
 --- !u!1 &1946445606
 GameObject:
@@ -8570,7 +8549,8 @@ PrefabInstance:
       propertyPath: location
       value: 4
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5248995500710110166, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
 --- !u!1001 &2676285751237239777
 PrefabInstance:

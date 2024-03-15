@@ -2,13 +2,13 @@ using System;
 
 
 /// 반응 함수
-public abstract class ChatAction
+public abstract class Action
 {
     public string param;
     public abstract int Invoke();
 }
 
-public class DayChangeAction : ChatAction
+public class DayChangeAction : Action
 {
     public override int Invoke()
     {
@@ -24,7 +24,7 @@ public class DayChangeAction : ChatAction
     }
 }
 
-public class TimeChangeAction : ChatAction
+public class TimeChangeAction : Action
 {
     public override int Invoke()
     {
@@ -40,7 +40,7 @@ public class TimeChangeAction : ChatAction
     }
 }
 
-public class ChatJumpAction : ChatAction
+public class ChatJumpAction : Action
 {
     public override int Invoke()
     {

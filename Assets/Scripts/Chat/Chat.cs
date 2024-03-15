@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System;
+using System.IO;
+using Newtonsoft.Json;
 
 public class Chat : MonoBehaviour
 {
@@ -64,8 +66,8 @@ public class Chat : MonoBehaviour
     private Queue<Paragraph> logList;   // 대화 기록 리스트
 
     /// 이벤트
-    private ChatAction action;    // 대사 반응 함수
-    private ChatAction[] choiceActions = new ChatAction[3];    // 선택지 이벤트
+    private Action action;    // 대사 반응 함수
+    private Action[] choiceActions = new Action[3];    // 선택지 이벤트
 
     /// 싱글턴 선언
     private static Chat _instance;
@@ -79,7 +81,7 @@ public class Chat : MonoBehaviour
             isTalk = false;     //대사 초기화
 
             // 이벤트 초기화
-            choiceActions = new ChatAction[3];
+            choiceActions = new Action[3];
 
             // chat UI 초기화
             chatUI = transform.GetChild(0).gameObject;
@@ -141,6 +143,7 @@ public class Chat : MonoBehaviour
 
         SetChat(paragraph);  // 대사 타입에 따라 설정
     }
+
 
     /// <summary>
     /// 대사 넘기기 함수
@@ -471,9 +474,9 @@ public class Chat : MonoBehaviour
     /// <param name="func"></param>
     /// <param name="param"></param>
     /// <returns></returns>
-    public static ChatAction GetAction(string func, string param)
+    public static Action GetAction(string func, string param)
     {
-        ChatAction result;
+        Action result;
 
         switch (func)
         {
