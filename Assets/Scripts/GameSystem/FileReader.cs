@@ -30,8 +30,8 @@ public static class FileReader
 
         if (lines.Length <= 1)
         {
-            Debug.Log("ERROR: CSV FILE EMPTY");
-            return null;
+            Debug.Log("WARNING: CSV FILE EMPTY");
+            return new List<List<string>>();
         }
 
 		//첫 줄 Data index

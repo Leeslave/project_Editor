@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class ObjectDatabase
 {
-    public static List<List<WorldObject>> List;
+    public static List<List<WorldObjectData>> List;
 
 
     /// <summary>
@@ -37,15 +37,16 @@ public static class ObjectDatabase
             switch(obj[(int)DataColumn.type])
             {
                 case "npc":
-                    NPC newNPC = new(Enum.Parse<World>(obj[(int)DataColumn.location]), int.Parse(obj[(int)DataColumn.position]), obj[(int)DataColumn.OnAwake], obj[(int)DataColumn.OnClick]);
-                    newNPC.image = obj[(int)DataColumn.image];
-                    newNPC.pos = new Vector2(float.Parse(obj[(int)DataColumn.posX]), float.Parse(obj[(int)DataColumn.posY]));
-                    newNPC.size = new Vector2(float.Parse(obj[(int)DataColumn.sizeX]), float.Parse(obj[(int)DataColumn.sizeY]));
+                    NPCData newNPC = new()
+                    {
+                        anchor = new Vector2(float.Parse(obj[(int)DataColumn.posX]), float.Parse(obj[(int)DataColumn.posY])),
+                        size = new Vector2(float.Parse(obj[(int)DataColumn.sizeX]), float.Parse(obj[(int)DataColumn.sizeY]))
+                    };
 
                     List[(int)newNPC.location].Add(newNPC);
                     break;
                 case "effect":
-                    WorldEffect newEffect = new(Enum.Parse<World>(obj[(int)DataColumn.location]), int.Parse(obj[(int)DataColumn.position]));
+                    EffectData newEffect = new();
 
                     List[(int)newEffect.location].Add(newEffect);
                     break;

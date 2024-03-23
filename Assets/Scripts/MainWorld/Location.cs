@@ -24,7 +24,7 @@ public class Location : MonoBehaviour
     private List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
 
     [SerializeField]
-    private List<WorldObject> objList = new();  // WorldObject 리스트
+    private List<GameObject> objList = new();  // WorldObject 리스트
     public float sizeMultiplier = 1;    // NPC 크기 배율
 
 
@@ -155,35 +155,33 @@ public class Location : MonoBehaviour
         // 이전 오브젝트들 삭제
         foreach(var oldObj in objList)
         {
-            Destroy(oldObj.gameObject);
+            Destroy(oldObj);
         }
 
         // 새 오브젝트 정보 불러오기
-        List<WorldObject> dataList = ObjectDatabase.List[(int)locationName];
+        List<WorldObjectData> dataList = ObjectDatabase.List[(int)locationName];
 
         // 리스트 초기화
         objList = new();
 
         // NPC들 생성
-        foreach(WorldObject _data in dataList)
+        foreach(WorldObjectData _data in dataList)
         {
-            GameObject newObj = Instantiate(WorldSceneManager.Instance.objPrefab, transform.GetChild(_data.position));     // instantiate 
-            // newObj.name = _data.name;
+            GameObject newObj = Instantiate(_data.prefab, transform.GetChild(_data.position));     // instantiate 
+            newObj.name = _data.objName;
 
             // 타입에 따라 컴포넌트 추가
-            if (_data is WorldEffect)
+            if (_data is EffectData)
             {
-                var newComponent = newObj.AddComponent<WorldEffect>();
-                newComponent.Copy(_data as WorldEffect);
+                newObj.GetComponent<WorldEffect>().data = _data as EffectData;
             }
-            if(_data is NPC)
+            if(_data is NPCData)
             {
-                var newComponent = newObj.AddComponent<NPC>();
-                newComponent.Copy(_data as NPC);
-
-                newComponent.SetPosition();
+                newObj.GetComponent<NPC>().data = _data as NPCData;
+                newObj.GetComponent<NPC>().SetPosition();
             }
-            objList.Add(newObj.GetComponent<WorldObject>());
+            
+            objList.Add(newObj);
         }
 
         Debug.Log($"{gameObject.name} : {objList.Count}개 NPC 생성됨");

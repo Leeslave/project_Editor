@@ -19,6 +19,24 @@ public enum World {
     Interrogate
 }
 
+[Serializable]
+public enum ObjectType {
+    /**
+    월드 내 생성 오브젝트 목록
+    */
+    Klayton,
+    Clover,
+    Henderson,
+    Walter,
+    King,
+    Rex,
+    Kennedy,
+    Price,
+    Monk,
+    Mechanic,
+    Reporter,
+}
+
 public class WorldSceneManager : MonoBehaviour 
 {
     /**
