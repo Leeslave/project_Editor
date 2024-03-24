@@ -116,6 +116,8 @@ public class GetOptionFile_D : BatchField_D
         Processes[1].transform.SetAsLastSibling();
         Processes[1].transform.position = Vector3.zero;
     }
+
+    // Docs
     protected override IEnumerator BatchType3()
     {
         return base.BatchType3();

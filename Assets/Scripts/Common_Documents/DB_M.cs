@@ -18,8 +18,9 @@ public class DB_M : MonoBehaviour
     public Peoples PeopleList;
     public Dictionary<string, Sprite[]> FaceImages = new Dictionary<string, Sprite[]>();
     public News[] NewsList;
-    public Instruction Instructions; 
+    public Instruction Instructions;
 
+    public Docs[] DocsList;
 
     void Awake()
     {

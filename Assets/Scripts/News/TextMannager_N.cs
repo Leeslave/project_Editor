@@ -1,13 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TextMannager_N : MonoBehaviour
 {
-    [SerializeField] GameObject[] Texts;
-    [SerializeField] MainText_N[] MainTexts;
+    
     [SerializeField] public ToDoList_N TDN;
+
+
+    [SerializeField] GameObject TextsPref;
+
+    [NonSerialized] List<GameObject> Texts;
+    [NonSerialized] List<MainText_N> MainTexts;
 
     [NonSerialized] public News AnsNews;
     //[NonSerialized] public Docs DocsAns;
@@ -22,9 +28,12 @@ public class TextMannager_N : MonoBehaviour
 
     int ActivateText = 0;
 
-    private void Start()
+    private void Awake()
     {
-        foreach (var k in Texts) if (k.activeSelf) ActivateText++;
+        Texts = new List<GameObject>(); Texts.Add(TextsPref);
+        for (int i = 0; i < 9; i++) Texts.Add(Instantiate(TextsPref,TextsPref.transform.parent));
+        MainTexts = new List<MainText_N>();
+        foreach (var k in Texts) MainTexts.Add(k.GetComponentInChildren<MainText_N>());
     }
 
     int CurOpen = 0;
@@ -39,7 +48,7 @@ public class TextMannager_N : MonoBehaviour
 
     public void ActiveText(string Text,int ind = -1)
     {
-        for(int i = 0; i < Texts.Length; i++)
+        for(int i = 0; i < Texts.Count; i++)
         {
             if (!Texts[i].activeSelf)
             {
@@ -63,7 +72,7 @@ public class TextMannager_N : MonoBehaviour
 
     public void ResetIndex()
     {
-        for(int i = 0; i < Texts.Length; i++)
+        for(int i = 0; i < Texts.Count; i++)
         {
             if (Texts[i].activeSelf)
             {

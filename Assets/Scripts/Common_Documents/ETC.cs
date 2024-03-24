@@ -47,6 +47,23 @@ public class News
     }
 }
 
+/*----------------- Docs Data --------------------------*/
+[Serializable]
+public class Docs
+{
+    public string Subject;
+    public int Month;
+    public int Date;
+    public string Recorder;
+    public List<string> RecorderTexts;
+    public List<int> RecorderTextInd;
+    public List<string> SubjectTexts;
+    public List<string> Time_Action;
+    public List<int> SubjectAns;
+    public List<int> ActionAns;
+}
+
+
 /*------------------ Instructions Data ---------------------*/
 
 [Serializable]
