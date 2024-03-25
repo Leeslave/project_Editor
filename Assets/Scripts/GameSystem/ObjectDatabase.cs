@@ -34,23 +34,24 @@ public static class ObjectDatabase
         // 각 데이터를 종류별로 생성
         foreach(var obj in dataList)
         {
-            switch(obj[(int)DataColumn.type])
-            {
-                case "npc":
-                    NPCData newNPC = new()
-                    {
-                        anchor = new Vector2(float.Parse(obj[(int)DataColumn.posX]), float.Parse(obj[(int)DataColumn.posY])),
-                        size = new Vector2(float.Parse(obj[(int)DataColumn.sizeX]), float.Parse(obj[(int)DataColumn.sizeY]))
-                    };
+            Debug.Log(obj[(int)DataColumn.type]);
+            // switch(obj[(int)DataColumn.type])
+            // {
+            //     case "npc":
+            //         NPCData newNPC = new()
+            //         {
+            //             anchor = new Vector2(float.Parse(obj[(int)DataColumn.posX]), float.Parse(obj[(int)DataColumn.posY])),
+            //             size = new Vector2(float.Parse(obj[(int)DataColumn.sizeX]), float.Parse(obj[(int)DataColumn.sizeY]))
+            //         };
 
-                    List[(int)newNPC.location].Add(newNPC);
-                    break;
-                case "effect":
-                    EffectData newEffect = new();
+            //         List[(int)newNPC.location].Add(newNPC);
+            //         break;
+            //     case "effect":
+            //         EffectData newEffect = new();
 
-                    List[(int)newEffect.location].Add(newEffect);
-                    break;
-            }
+            //         List[(int)newEffect.location].Add(newEffect);
+            //         break;
+            // }
         }
     }
 }

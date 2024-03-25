@@ -107,7 +107,6 @@ public class WorldSceneManager : MonoBehaviour
     /// 지역 변경
     /// </summary>
     /// <remarks>지역을 변경하고 지역 내 위치 동기화
-    [HideInInspector]
     public void MoveLocation(World location)
     {
         // 기존 지역 비활성화
@@ -115,6 +114,24 @@ public class WorldSceneManager : MonoBehaviour
 
         // 현재 지역 설정
         GameSystem.Instance.gameData.SetLocation(location);
+
+        // 새 지역 활성화
+        locationList[CurrentIndex].ActiveLocation(true);
+    }
+
+
+    /// <summary>
+    /// 지역 변경
+    /// </summary>
+    /// <remarks>지역을 변경하고 지역 내 위치 동기화
+    public void MoveLocation(string location)
+    {
+        World newLocation = Enum.Parse<World>(location);
+        // 기존 지역 비활성화
+        locationList[CurrentIndex].ActiveLocation(false);
+
+        // 현재 지역 설정
+        GameSystem.Instance.gameData.SetLocation(newLocation);
 
         // 새 지역 활성화
         locationList[CurrentIndex].ActiveLocation(true);

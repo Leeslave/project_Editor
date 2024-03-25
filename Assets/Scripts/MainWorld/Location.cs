@@ -88,6 +88,9 @@ public class Location : MonoBehaviour
 
         // 페이드인아웃 효과 실행
         StartCoroutine(WorldSceneManager.Instance.FadeInOut());
+        
+        // 장소 데이터 변경
+        GameSystem.Instance.gameData.SetPosition(newPos);
 
         // 이동할 장소 활성화
         transform.GetChild(newPos).gameObject.SetActive(true);
