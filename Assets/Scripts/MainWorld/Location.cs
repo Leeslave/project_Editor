@@ -55,6 +55,8 @@ public class Location : MonoBehaviour
                 transform.GetChild(i).gameObject.SetActive(false);
             }
         }
+
+        isActive = _active;
     }
 
 

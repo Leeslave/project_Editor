@@ -45,9 +45,8 @@ public class DebugConsole : MonoBehaviour
                 break;
             case "playerData" :
                 SaveData player = GameSystem.Instance.player;
-                DailyData today = GameSystem.Instance.today;
                 output += $"Current Date Index: {GameSystem.Instance.gameData.date}\n";
-                output += $"Current location: {today.startLocation}\n";
+                output += $"Current location: {GameSystem.Instance.gameData.location}\n";
                 output += $"Current time: {GameSystem.Instance.gameData.time}\n";
                 output += $"Current renown: {player.renown}\n";
                 break;
