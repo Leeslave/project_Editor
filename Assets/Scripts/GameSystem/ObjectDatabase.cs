@@ -3,15 +3,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class ObjectDatabase
+public class ObjectDatabase : MonoBehaviour
 {
+    private enum ObjectType {
+        /**
+        월드 내 생성 오브젝트 목록
+        */
+        Klayton,
+        Clover,
+        Henderson,
+        Walter,
+        King,
+        Rex,
+        Kennedy,
+        Price,
+        Monk,
+        Mechanic,
+        Reporter,
+        none,
+    }
+
+    public List<WorldObjectData> objectDatas; 
+
     public static List<List<WorldObjectData>> List;
 
+    private static ObjectDatabase _instance;
+    public static ObjectDatabase Instance { get { return _instance; } }
+
+    void Awake()
+    {
+        if (!_instance)
+            _instance = this;
+        else
+            Destroy(gameObject);
+    }
 
     /// <summary>
     /// 오브젝트 데이터들을 불러오기
     /// </summary>
-    public static void Read()
+    public void Read()
     {
         var dataList = FileReader.ReadCSV($"GameData/World/ObjectData_{GameSystem.Instance.gameData.date}");
         // 데이터 목록 초기화
@@ -34,37 +64,38 @@ public static class ObjectDatabase
         // 각 데이터를 종류별로 생성
         foreach(var obj in dataList)
         {
-            Debug.Log(obj[(int)DataColumn.type]);
-            // switch(obj[(int)DataColumn.type])
-            // {
-            //     case "npc":
-            //         NPCData newNPC = new()
-            //         {
-            //             anchor = new Vector2(float.Parse(obj[(int)DataColumn.posX]), float.Parse(obj[(int)DataColumn.posY])),
-            //             size = new Vector2(float.Parse(obj[(int)DataColumn.sizeX]), float.Parse(obj[(int)DataColumn.sizeY]))
-            //         };
+            switch(obj[(int)DataColumn.type])
+            {
+                // NPC 데이터 생성
+                case "npc":
+                    NPCData newNPC = objectDatas[(int)Enum.Parse<ObjectType>(obj[(int)DataColumn.name])] as NPCData;
+                    newNPC.location = Enum.Parse<World>(obj[(int)DataColumn.location]);
+                    newNPC.anchor = new Vector2(float.Parse(obj[(int)DataColumn.posX]), float.Parse(obj[(int)DataColumn.posY]));
+                    newNPC.position = int.Parse(obj[(int)DataColumn.position]);
 
-            //         List[(int)newNPC.location].Add(newNPC);
-            //         break;
-            //     case "effect":
-            //         EffectData newEffect = new();
-
-            //         List[(int)newEffect.location].Add(newEffect);
-            //         break;
-            // }
+                    newNPC.awakeParam = obj[(int)DataColumn.OnAwake];
+                    newNPC.clickParam = obj[(int)DataColumn.OnClick];
+                    List[(int)newNPC.location].Add(newNPC);
+                    break;
+                // 이펙트 데이터 생성
+                case "effect":
+                    EffectData newEffect = new();
+                    newEffect.location = Enum.Parse<World>(obj[(int)DataColumn.location]);
+                    List[(int)newEffect.location].Add(newEffect);
+                    break;
+            }
         }
     }
 }
 
 internal enum DataColumn {
     type,
+    name,
     location,
     position,
     OnAwake,
     OnClick,
-    image,
     posX,
     posY,
-    sizeX,
-    sizeY,
+    size,
 }

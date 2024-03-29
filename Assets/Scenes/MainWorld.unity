@@ -3835,10 +3835,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1057474061}
   - component: {fileID: 1057474060}
+  - component: {fileID: 1057474064}
   - component: {fileID: 1057474062}
   - component: {fileID: 1057474063}
   m_Layer: 7
-  m_Name: WorldSceneManager
+  m_Name: WorldManager
   m_TagString: GameSystem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4003,6 +4004,31 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1057474064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057474059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b68033b5bb505b74cbf4a454845010fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectDatas:
+  - {fileID: 11400000, guid: 06a257c243010f74abe22de335c08fcf, type: 2}
+  - {fileID: 11400000, guid: 5226c3eb4348f464aaa0378a61ea4161, type: 2}
+  - {fileID: 11400000, guid: 9971abb7755a39348bd59b8a7a45eef4, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: ce079b633e8863e4d9428bd0fbc3b2a1, type: 2}
+  - {fileID: 11400000, guid: 9f82e6dcbce0e814fa96c096b6283747, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 09643002339734bbf9da3ce91ced62bc, type: 2}
 --- !u!1001 &1059813958
 PrefabInstance:
   m_ObjectHideFlags: 0

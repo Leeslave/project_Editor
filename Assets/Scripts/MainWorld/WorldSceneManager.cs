@@ -19,23 +19,6 @@ public enum World {
     Interrogate
 }
 
-[Serializable]
-public enum ObjectType {
-    /**
-    월드 내 생성 오브젝트 목록
-    */
-    Klayton,
-    Clover,
-    Henderson,
-    Walter,
-    King,
-    Rex,
-    Kennedy,
-    Price,
-    Monk,
-    Mechanic,
-    Reporter,
-}
 
 public class WorldSceneManager : MonoBehaviour 
 {
@@ -53,7 +36,7 @@ public class WorldSceneManager : MonoBehaviour
 
     public SoundManager worldBGM;  // 지역 내 배경음악
     
-    public bool isMoving { get; private set; } = false;    // 지역 내 이동 버튼 활성화 여부
+    public bool IsMoving { get; private set; } = false;    // 지역 내 이동 버튼 활성화 여부
     public GameObject objPrefab;
 
     [Header("지역 이동 효과")]
@@ -99,8 +82,8 @@ public class WorldSceneManager : MonoBehaviour
     /// </summary>
     public void SetMoveActive()
     {
-        isMoving = !isMoving;
-        locationList[CurrentIndex].SetButtonActive(isMoving);
+        IsMoving = !IsMoving;
+        locationList[CurrentIndex].SetButtonActive(IsMoving);
     }
 
     /// <summary>

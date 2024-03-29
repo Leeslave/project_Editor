@@ -94,7 +94,7 @@ public class GameSystem : MonoBehaviour
             DataLoader.SavePlayerData(saveList);
         }
 
-        ObjectDatabase.Read();
+        ObjectDatabase.Instance.Read();
         
         if (SceneManager.GetActiveScene().name == "MainWorld")
         {
@@ -114,7 +114,7 @@ public class GameSystem : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == "MainWorld")
         {
-            ObjectDatabase.Read();
+            ObjectDatabase.Instance.Read();
             WorldSceneManager.Instance.ReloadWorld();
         }
     }
