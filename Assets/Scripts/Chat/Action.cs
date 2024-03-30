@@ -1,5 +1,7 @@
 using System;
 using System.Diagnostics;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 /// 반응 함수
@@ -18,6 +20,7 @@ public class DayChangeAction : Action
         if(int.TryParse(param, out int dayIndex))
         {
             GameSystem.Instance.SetDate(dayIndex);
+            SceneManager.LoadScene("DayLoading");
             return 0;
         }
         else
@@ -86,5 +89,26 @@ public class ChatJumpAction : Action
             return -1;
         }
         
+    }
+}
+
+
+// 오브젝트 삭제 액션
+public class RemoveAction : Action
+{
+    public override int Invoke()
+    {
+        param = param.Replace(" ", "");
+        string[] paramList = param.Split(',');
+
+        int position;
+        string name = paramList[1];
+
+        if (!int.TryParse(paramList[0], out position))
+        {
+            return -1;
+        }
+        WorldSceneManager.Instance.CurrentLocation.RemoveObject(position, name);
+        return 0;
     }
 }

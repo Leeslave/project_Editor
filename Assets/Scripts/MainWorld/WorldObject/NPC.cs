@@ -9,8 +9,6 @@ public class NPC : WorldObject<NPCData>
     대사 실행 오브젝트
     - 타입에 따라 타이밍 맞춰 대사 실행
     */
-
-
     public override void OnActive()
     {
         data.awakeTalk = null;
@@ -42,18 +40,13 @@ public class NPC : WorldObject<NPCData>
 
     public void SetPosition()
     {
-        // 이미지 설정
-        if (data.image != null)
-        {
-            GetComponent<Image>().sprite = data.image;
-        }
-
         // 위치 설정
         RectTransform rect = GetComponent<RectTransform>();
         rect.anchorMin = data.anchor;
         rect.anchorMax = data.anchor;
         
         // 크기 설정
+        Debug.Log(data.size);
         rect.sizeDelta *= data.size;
         rect.localScale = new Vector3(1f,1f,1f);
     }

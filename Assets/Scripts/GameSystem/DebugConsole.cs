@@ -1,24 +1,19 @@
 using UnityEngine;
 using TMPro;
 using System;
+using Unity.VisualScripting;
+using UnityEditor.Build.Content;
+using UnityEngine.SceneManagement;
 
-public class DebugConsole : MonoBehaviour
+public class DebugConsole : SingletonObject<DebugConsole>
 {
     public GameObject console;
     public TMP_Text consoleText;
     public TMP_InputField input;
-    private static DebugConsole _instance;
-    void Awake()
+
+    new void Awake()
     {
-        if (_instance == null)
-        {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        base.Awake();
     }
 
     void Update()
@@ -69,6 +64,10 @@ public class DebugConsole : MonoBehaviour
                     GameSystem.Instance.today.workList[work] = true;
                 }
                 GameSystem.LoadScene("Screen");
+                break;
+            case "DaySkip":
+                GameSystem.Instance.SetDate();
+                SceneManager.LoadScene("DayLoading");
                 break;
         }
 

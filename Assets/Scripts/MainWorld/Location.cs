@@ -23,7 +23,7 @@ public class Location : MonoBehaviour
     private List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
 
     [SerializeField]
-    private List<GameObject> objList = new();  // WorldObject 리스트
+    private List<List<GameObject>> objList = new();  // WorldObject 리스트
     public float sizeMultiplier = 1;    // NPC 크기 배율
 
 
@@ -95,6 +95,19 @@ public class Location : MonoBehaviour
 
         // 이동할 장소 활성화
         transform.GetChild(newPos).gameObject.SetActive(true);
+        // 이동할 장소의 오브젝트 활성화
+        foreach(var obj in objList[newPos])
+        {
+            if (obj.TryGetComponent(out NPC npc))
+            {
+                npc.OnActive();
+            }
+            else 
+            {
+                obj.TryGetComponent(out WorldEffect effect);
+                effect.OnActive();
+            }
+        }
         // 나머지 장소 비활성화
         for(int i = 0; i < transform.childCount; i++)
         {
@@ -156,17 +169,11 @@ public class Location : MonoBehaviour
     /// <param name="time">시간대</param>
     public void SetObjects()
     {
-        // 이전 오브젝트들 삭제
-        foreach(var oldObj in objList)
-        {
-            Destroy(oldObj);
-        }
+        // 오브젝트 리스트 초기화
+        ClearObjects();
 
         // 새 오브젝트 정보 불러오기
         List<WorldObjectData> dataList = ObjectDatabase.List[(int)locationName];
-
-        // 리스트 초기화
-        objList = new();
 
         // NPC들 생성
         foreach(WorldObjectData _data in dataList)
@@ -176,8 +183,8 @@ public class Location : MonoBehaviour
                 continue;
             }
             
-            GameObject newObj = Instantiate(_data.prefab, transform.GetChild(_data.position));     // instantiate 
-            newObj.name = _data.objName;
+            GameObject newObj = Instantiate(ObjectDatabase.Instance.prefabs[(int)_data.objType], transform.GetChild(_data.position));     // instantiate 
+            newObj.name = _data.name;
 
             // 타입에 따라 컴포넌트 추가
             if (_data is EffectData)
@@ -190,7 +197,41 @@ public class Location : MonoBehaviour
                 newObj.GetComponent<NPC>().SetPosition();
             }
             
-            objList.Add(newObj);
+            objList[_data.position].Add(newObj);
+        }
+    }
+
+
+    /// <summary>
+    /// 특정 오브젝트 삭제
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="name"></param>
+    public void RemoveObject(int position, string name)
+    {
+        var obj = objList[position].Find(data => data.name == name);
+        if (obj != null)
+        {
+            objList[position].Remove(obj);
+            Destroy(obj);
+        }
+    }
+
+
+    public void ClearObjects()
+    {
+        foreach(var iter in objList)
+        {
+            foreach(var obj in iter)
+            {
+                Destroy(obj);
+            }
+        }
+
+        objList = new List<List<GameObject>>(transform.childCount);
+        for (int i = 0; i < objList.Capacity; i++)
+        {
+            objList.Add(new());
         }
     }
 }

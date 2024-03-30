@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Object Data", menuName = "Scriptable Object/World Object Data", order = int.MaxValue)]
-public class WorldObjectData : ScriptableObject
+public class WorldObjectData
 {
     public int time;    // 시간대
-    public GameObject prefab;   // 오브젝트 프리팹
-    public string objName;  // 오브젝트 이름
+    public string name;    // 오브젝트 이름
+    public ObjectType objType;  // 오브젝트 타입
     [HideInInspector]
     public World location;  // 장소
     [HideInInspector]
