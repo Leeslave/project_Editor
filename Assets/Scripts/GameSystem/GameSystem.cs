@@ -114,7 +114,6 @@ public class GameSystem : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == "MainWorld")
         {
-            ObjectDatabase.Instance.Read();
             WorldSceneManager.Instance.ReloadWorld();
         }
     }

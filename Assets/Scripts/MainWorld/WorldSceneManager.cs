@@ -16,7 +16,9 @@ public enum World {
     Hallway,
     Office,
     Office2,
-    Interrogate
+    Interrogate,
+    
+    MAX
 }
 
 
@@ -37,7 +39,6 @@ public class WorldSceneManager : MonoBehaviour
     public SoundManager worldBGM;  // 지역 내 배경음악
     
     public bool IsMoving { get; private set; } = false;    // 지역 내 이동 버튼 활성화 여부
-    public GameObject objPrefab;
 
     [Header("지역 이동 효과")]
     public float moveDelay;     // 지역 이동 딜레이
@@ -109,15 +110,7 @@ public class WorldSceneManager : MonoBehaviour
     /// <remarks>지역을 변경하고 지역 내 위치 동기화
     public void MoveLocation(string location)
     {
-        World newLocation = Enum.Parse<World>(location);
-        // 기존 지역 비활성화
-        locationList[CurrentIndex].ActiveLocation(false);
-
-        // 현재 지역 설정
-        GameSystem.Instance.gameData.SetLocation(newLocation);
-
-        // 새 지역 활성화
-        locationList[CurrentIndex].ActiveLocation(true);
+        MoveLocation(Enum.Parse<World>(location));
     }
 
 

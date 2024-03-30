@@ -15,7 +15,6 @@ public class Location : MonoBehaviour
 
     private bool isActive;  // 현재 활성화 여부
 
-    [SerializeField]
     public int bgmNumber;   // BGM 번호
 
     [SerializeField]
@@ -172,6 +171,11 @@ public class Location : MonoBehaviour
         // NPC들 생성
         foreach(WorldObjectData _data in dataList)
         {
+            if (_data.time != GameSystem.Instance.gameData.time)
+            {
+                continue;
+            }
+            
             GameObject newObj = Instantiate(_data.prefab, transform.GetChild(_data.position));     // instantiate 
             newObj.name = _data.objName;
 
@@ -188,7 +192,5 @@ public class Location : MonoBehaviour
             
             objList.Add(newObj);
         }
-
-        Debug.Log($"{gameObject.name} : {objList.Count}개 NPC 생성됨");
     }
 }

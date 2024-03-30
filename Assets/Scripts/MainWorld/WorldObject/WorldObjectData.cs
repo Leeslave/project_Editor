@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Object Data", menuName = "Scriptable Object/World Object Data", order = int.MaxValue)]
 public class WorldObjectData : ScriptableObject
 {
+    public int time;    // 시간대
     public GameObject prefab;   // 오브젝트 프리팹
     public string objName;  // 오브젝트 이름
     [HideInInspector]

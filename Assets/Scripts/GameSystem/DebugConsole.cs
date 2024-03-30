@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System;
 
 public class DebugConsole : MonoBehaviour
 {
@@ -39,7 +40,7 @@ public class DebugConsole : MonoBehaviour
                 output += $"오늘의 업무 현황\n";
                 foreach(var work in todayData.workList.Keys)
                 {
-                    output += $"WORK: {work.code}, Stage: {work.stage.ToString()} = Done: {todayData.workList[work]}";
+                    output += $"WORK: {work.code}, Stage: {work.stage} = Done: {todayData.workList[work]}";
                 }
                 output += "\n";
                 break;
@@ -50,9 +51,16 @@ public class DebugConsole : MonoBehaviour
                 output += $"Current time: {GameSystem.Instance.gameData.time}\n";
                 output += $"Current renown: {player.renown}\n";
                 break;
+            case "worldObjects":
+                for(int i = 0; i < ObjectDatabase.List.Count; i++)
+                {
+                    output += $"{(World)i}지역 Object : {ObjectDatabase.List[i].Count}개\n";
+                }
+                break;
             case "help" :
                 output += $"todayData: show today's Date, Work Status\n";
                 output += $"playerData: show current date Index, location, time and renown\n";
+                output += $"worldObjects: show every world's object counts\n";
                 output += $"clear: clear all today works\n";
                 break;
             case "clear" :
