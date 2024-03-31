@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
-public class GameSystem : MonoBehaviour
+public class GameSystem : SingletonObject<GameSystem>
 {
     /**
     * 게임 내 데이터 관리 시스템
@@ -38,30 +38,16 @@ public class GameSystem : MonoBehaviour
         }
     }
 
-    // 싱글턴
-    private static GameSystem _instance;
-    public static GameSystem Instance
+
+    new void Awake()
     {
-        get { return _instance; }
-    }
+        base.Awake();
 
+        Debug.Log("AWAKEN");
+        saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
+        dailyList = DataLoader.LoadGameData();     // 게임 데이터 로드  
 
-    private void Awake()
-    {
-        if (!_instance)
-        {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-
-            saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
-            dailyList = DataLoader.LoadGameData();     // 게임 데이터 로드  
-
-            SetDate(0);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        SetDate(0);
     }
 
 
@@ -87,6 +73,8 @@ public class GameSystem : MonoBehaviour
         // 해당 날짜 불러오기
         gameData.date = date;
         gameData.time = 0;
+        gameData.SetLocation(today.startLocation);
+        gameData.SetPosition(today.startPosition);
 
         // 게임 저장 (튜토리얼 날짜 제외)
         if (date > 1)
@@ -95,11 +83,6 @@ public class GameSystem : MonoBehaviour
         }
 
         ObjectDatabase.Instance.Read();
-        
-        if (SceneManager.GetActiveScene().name == "MainWorld")
-        {
-            SceneManager.LoadScene("DayLoading");
-        }
     }
 
     ///<summary>
@@ -114,7 +97,6 @@ public class GameSystem : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == "MainWorld")
         {
-            ObjectDatabase.Instance.Read();
             WorldSceneManager.Instance.ReloadWorld();
         }
     }

@@ -16,11 +16,13 @@ public enum World {
     Hallway,
     Office,
     Office2,
-    Interrogate
+    Interrogate,
+    
+    MAX
 }
 
 
-public class WorldSceneManager : MonoBehaviour 
+public class WorldSceneManager : Singleton<WorldSceneManager> 
 {
     /**
     * MainWorld 씬 매니저
@@ -32,30 +34,23 @@ public class WorldSceneManager : MonoBehaviour
     [Header("지역 데이터")]
     [SerializeField]
     private Location[] locationList;    // 지역 오브젝트 리스트
-    private int CurrentIndex { get { return (int)GameSystem.Instance.gameData.location; } }    // 현재 지역
+    public Location CurrentLocation { get { return locationList[(int)GameSystem.Instance.gameData.location]; } }
+    
 
     public SoundManager worldBGM;  // 지역 내 배경음악
     
     public bool IsMoving { get; private set; } = false;    // 지역 내 이동 버튼 활성화 여부
-    public GameObject objPrefab;
 
     [Header("지역 이동 효과")]
     public float moveDelay;     // 지역 이동 딜레이
     [SerializeField]
     private Image curtain;      // 지역 이동 효과 이미지
 
-    /// 싱글턴 선언
-    private static WorldSceneManager _instance;
-    public static WorldSceneManager Instance { get { return _instance; } }
-
 
     /// 씬이 새로 로딩될때마다 월드 재로딩
-    void Awake()
+    new void Awake()
     {
-        if (!_instance)
-            _instance = this;
-        else
-            Destroy(gameObject);
+        base.Awake();
 
         ReloadWorld();
     }
@@ -73,7 +68,7 @@ public class WorldSceneManager : MonoBehaviour
         }
 
         // 현재 지역 활성화
-        locationList[CurrentIndex].ActiveLocation(true);
+        CurrentLocation.ActiveLocation(true);
     }
 
 
@@ -83,7 +78,7 @@ public class WorldSceneManager : MonoBehaviour
     public void SetMoveActive()
     {
         IsMoving = !IsMoving;
-        locationList[CurrentIndex].SetButtonActive(IsMoving);
+        CurrentLocation.SetButtonActive(IsMoving);
     }
 
     /// <summary>
@@ -93,13 +88,13 @@ public class WorldSceneManager : MonoBehaviour
     public void MoveLocation(World location)
     {
         // 기존 지역 비활성화
-        locationList[CurrentIndex].ActiveLocation(false);
+        CurrentLocation.ActiveLocation(false);
 
         // 현재 지역 설정
         GameSystem.Instance.gameData.SetLocation(location);
 
         // 새 지역 활성화
-        locationList[CurrentIndex].ActiveLocation(true);
+        CurrentLocation.ActiveLocation(true);
     }
 
 
@@ -109,15 +104,7 @@ public class WorldSceneManager : MonoBehaviour
     /// <remarks>지역을 변경하고 지역 내 위치 동기화
     public void MoveLocation(string location)
     {
-        World newLocation = Enum.Parse<World>(location);
-        // 기존 지역 비활성화
-        locationList[CurrentIndex].ActiveLocation(false);
-
-        // 현재 지역 설정
-        GameSystem.Instance.gameData.SetLocation(newLocation);
-
-        // 새 지역 활성화
-        locationList[CurrentIndex].ActiveLocation(true);
+        MoveLocation(Enum.Parse<World>(location));
     }
 
 

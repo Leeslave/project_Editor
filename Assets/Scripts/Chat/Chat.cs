@@ -7,7 +7,7 @@ using System;
 using System.IO;
 using Newtonsoft.Json;
 
-public class Chat : MonoBehaviour
+public class Chat : Singleton<Chat>
 {
     /**
     대사 출력 코드
@@ -16,8 +16,15 @@ public class Chat : MonoBehaviour
     - 스킵하기를 눌러서 대사 종료 (이벤트 함수 실행, Ending 선택지 제외)
     - 대사 출력 후 로그 텍스트에 1개씩 추가 
     */
+    private GameObject chatUI
+    {
+        get
+        {
+            return transform.GetChild(0).gameObject;
+        }
+    }
+
     [Header("UI 요소")]
-    private GameObject chatUI;  // chat UI 오브젝트
     [SerializeField]
     private Image background;   // 배경 이미지
     [SerializeField]
@@ -61,7 +68,6 @@ public class Chat : MonoBehaviour
     
     [Space(10)] 
     [Header("대화 상태")]
-    public bool isTalk;      // 현재 대화 활성화 여부
     private Queue<Paragraph> chatList;   // 대화 리스트
     private Queue<Paragraph> logList;   // 대화 기록 리스트
 
@@ -69,28 +75,12 @@ public class Chat : MonoBehaviour
     private Action action;    // 대사 반응 함수
     private Action[] choiceActions = new Action[3];    // 선택지 이벤트
 
-    /// 싱글턴 선언
-    private static Chat _instance;
-    public static Chat Instance { get { return _instance; } }
-    public void Awake()
+    new void Awake()
     {
-        if(!_instance)
-        {
-            _instance = this;   // 싱글톤 할당
+        base.Awake();
 
-            isTalk = false;     //대사 초기화
-
-            // 이벤트 초기화
-            choiceActions = new Action[3];
-
-            // chat UI 초기화
-            chatUI = transform.GetChild(0).gameObject;
-            chatUI.SetActive(false);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        // 이벤트 초기화
+        choiceActions = new Action[3];
     }
 
     ///<summary>
@@ -109,7 +99,6 @@ public class Chat : MonoBehaviour
         // 대화 리스트 할당
         chatList = new Queue<Paragraph>(_chatList);
         logList = new Queue<Paragraph>();   
-        isTalk = true;
 
         chatUI.SetActive(true);
         NextChat();        
@@ -133,7 +122,6 @@ public class Chat : MonoBehaviour
         // 마지막 대사 이후 or index 오류
         if (chatList.Count <= 0)
         {
-            Debug.Log($"Chat OFF : Left {logList.Count}");
             FinishChat();    // Chat 종료 및 비활성화
             return;
         }
@@ -158,7 +146,6 @@ public class Chat : MonoBehaviour
     {
         background.sprite = null;   // 배경 초기화
         WorldSceneManager.Instance.worldBGM.Resume();
-        isTalk = false;             // 대화 종료
         ClearLog();
         chatUI.SetActive(false);    // UI 종료
     }
@@ -259,22 +246,33 @@ public class Chat : MonoBehaviour
             TalkParagraph talk = para as TalkParagraph;
 
             // 배경 활성화
-            if (talk.background != null)
+            if (talk.chatType == "CutScene")
             {
-                background.sprite = GetSprite(BACKGROUNDFILEPATH + talk.background);    // 배경 이미지 설정 
+                if (talk.background != null)
+                {
+                    background.sprite = GetSprite(BACKGROUNDFILEPATH + talk.background);    // 배경 이미지 설정 
+                }
+                if (background.sprite != null)
+                    background.gameObject.SetActive(true);      // 배경 이미지 활성화
             }
-            if (background.sprite != null)
-                background.gameObject.SetActive(true);      // 배경 이미지 활성화
-
+            
             // 캐릭터 CG 활성화
             if (talk.characterL != null)
             {
-                characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterL.fileName}", talk.characterL.index);
+                if (characterL.sprite == null ||
+                    (characterL.sprite.name != talk.characterL.fileName))
+                {
+                    characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterL.fileName}", talk.characterL.index);
+                }
                 characterL.gameObject.SetActive(true);
             }
             if (talk.characterR != null)
             {
-                characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterR.fileName}", talk.characterR.index);
+                if (characterR.sprite == null ||
+                    (characterR.sprite.name != talk.characterR.fileName))
+                {
+                    characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterR.fileName}", talk.characterR.index);
+                }
                 characterR.gameObject.SetActive(true);
             }
             
@@ -385,15 +383,16 @@ public class Chat : MonoBehaviour
     /// 대화 스킵 버튼
     public void OnSkipPressed()
     {
+        Debug.Log("Skip Pressed");
         while(true)
         {
             // 대사 종료까지 반복
-            if (isTalk == false)
+            if (chatList.Count == 0)
             {
                 return;
             }
             // 도중 선택지까지 반복
-            if (chatList.Peek() is ChoiceParagraph)
+            if (chatList.Peek().hasAction())
             {
                 NextChat();
                 return;
@@ -489,6 +488,9 @@ public class Chat : MonoBehaviour
         case "TimeChange":
             result = new TimeChangeAction();
             break;
+        case "Remove":
+            result = new RemoveAction();
+            break;
         default:
             return null;
         }
@@ -541,7 +543,6 @@ public class Chat : MonoBehaviour
     /// <returns></returns>
     public static Sprite GetSprite(string filePath, int i)
     {
-        Debug.Log($"Get Image : {filePath}");
         Sprite[] result = Resources.LoadAll<Sprite>(filePath);
 
         if (result == null)

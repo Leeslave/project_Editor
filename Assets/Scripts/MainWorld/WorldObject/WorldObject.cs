@@ -13,10 +13,4 @@ public abstract class WorldObject<T> : MonoBehaviour where T : WorldObjectData
     {
 
     }
-
-
-    void OnEnable()
-    {
-        OnActive();
-    }
 }
