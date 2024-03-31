@@ -34,7 +34,7 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
                     {
                         time = int.Parse(obj[(int)DataColumn.time]),
                         name = obj[(int)DataColumn.name],
-                        objType = Enum.Parse<ObjectType>(obj[(int)DataColumn.obj]),
+                        objType = Enum.Parse<ObjectType>(obj[(int)DataColumn.objType]),
 
                         location = Enum.Parse<World>(obj[(int)DataColumn.location]),
                         position = int.Parse(obj[(int)DataColumn.position]),
@@ -52,6 +52,8 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
                 case "effect":
                     EffectData newEffect = new()
                     {
+                        time = int.Parse(obj[(int)DataColumn.time]),
+                        name = obj[(int)DataColumn.name],
                         location = Enum.Parse<World>(obj[(int)DataColumn.location])
                     };
 
@@ -105,7 +107,7 @@ internal enum DataColumn {
     time,
     type,
     name,
-    obj,
+    objType,
     location,
     position,
     OnAwake,
