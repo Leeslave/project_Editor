@@ -11,12 +11,12 @@ public class EventDoor : Door
 
     public override void OnClick()
     {
+        // 지역 이동
+        base.OnClick();
+        
         // 반응 획득
         GetAction();
         action.Invoke();
-
-        // 지역 이동
-        base.OnClick();
     }
 
     private void GetAction()
