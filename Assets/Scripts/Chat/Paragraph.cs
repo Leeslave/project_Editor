@@ -26,6 +26,15 @@ public abstract class Paragraph
         public string keyword;      // 텍스트상의 변수 키워드
         public string variableName; // 해당하는 변수코드명
     }
+
+    public virtual bool hasAction()
+    {
+        if (action != null)
+        {
+            return true;
+        }
+        return false;
+    }
 }
 
 [Serializable]
@@ -80,6 +89,20 @@ public class ChoiceParagraph : Paragraph
     - 대화 선택지들
     */
     public List<Choice> choiceList = null; // 선택지들 리스트
+
+    public override bool hasAction()
+    {
+        bool hasChoiceAction = false;
+        foreach(var choice in choiceList)
+        {
+            if (choice.reaction != null)
+            {
+                hasChoiceAction = true;
+                break;
+            }
+        }
+        return base.hasAction() || hasChoiceAction;
+    }
 }
 
 [Serializable]
