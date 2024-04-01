@@ -82,7 +82,10 @@ public class GameSystem : SingletonObject<GameSystem>
             DataLoader.SavePlayerData(saveList);
         }
 
-        ObjectDatabase.Instance.Read();
+        if (ObjectDatabase.Instance != null)
+        {
+            ObjectDatabase.Instance.Read();
+        }
     }
 
     ///<summary>
