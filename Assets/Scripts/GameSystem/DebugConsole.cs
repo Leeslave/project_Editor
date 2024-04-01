@@ -1,23 +1,19 @@
 using UnityEngine;
 using TMPro;
+using System;
+using Unity.VisualScripting;
+using UnityEditor.Build.Content;
+using UnityEngine.SceneManagement;
 
-public class DebugConsole : MonoBehaviour
+public class DebugConsole : SingletonObject<DebugConsole>
 {
     public GameObject console;
     public TMP_Text consoleText;
     public TMP_InputField input;
-    private static DebugConsole _instance;
-    void Awake()
+
+    new void Awake()
     {
-        if (_instance == null)
-        {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        base.Awake();
     }
 
     void Update()
@@ -39,21 +35,27 @@ public class DebugConsole : MonoBehaviour
                 output += $"오늘의 업무 현황\n";
                 foreach(var work in todayData.workList.Keys)
                 {
-                    output += $"WORK: {work.code}, Stage: {work.stage.ToString()} = Done: {todayData.workList[work]}";
+                    output += $"WORK: {work.code}, Stage: {work.stage} = Done: {todayData.workList[work]}";
                 }
                 output += "\n";
                 break;
             case "playerData" :
                 SaveData player = GameSystem.Instance.player;
-                DailyData today = GameSystem.Instance.today;
-                output += $"Current Date Index: {GameSystem.Instance.date}\n";
-                output += $"Current location: {today.startLocation}\n";
-                output += $"Current time: {GameSystem.Instance.time}\n";
+                output += $"Current Date Index: {GameSystem.Instance.gameData.date}\n";
+                output += $"Current location: {GameSystem.Instance.gameData.location}\n";
+                output += $"Current time: {GameSystem.Instance.gameData.time}\n";
                 output += $"Current renown: {player.renown}\n";
+                break;
+            case "worldObjects":
+                for(int i = 0; i < ObjectDatabase.List.Count; i++)
+                {
+                    output += $"{(World)i}지역 Object : {ObjectDatabase.List[i].Count}개\n";
+                }
                 break;
             case "help" :
                 output += $"todayData: show today's Date, Work Status\n";
                 output += $"playerData: show current date Index, location, time and renown\n";
+                output += $"worldObjects: show every world's object counts\n";
                 output += $"clear: clear all today works\n";
                 break;
             case "clear" :
@@ -62,6 +64,10 @@ public class DebugConsole : MonoBehaviour
                     GameSystem.Instance.today.workList[work] = true;
                 }
                 GameSystem.LoadScene("Screen");
+                break;
+            case "DaySkip":
+                GameSystem.Instance.SetDate();
+                SceneManager.LoadScene("DayLoading");
                 break;
         }
 
