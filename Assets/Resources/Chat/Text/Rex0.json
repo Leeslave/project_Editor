@@ -5,8 +5,8 @@
             "talker": "클레이튼",
             "text":"그래서 아침부터 무슨 호들갑이지? 렉스?",
             "characterL": {
-                "fileName": "Klayton",
-                "index": 0
+                "fileName": "Klayton_CG",
+                "index": 1
             } 
         },
         {
@@ -15,8 +15,8 @@
             "text":"클레이튼씨!! 빨리 오셔서 이것 좀 보세요!",
             "fontSize": "large",
             "characterL": {
-                "fileName": "Klayton",
-                "index": 0
+                "fileName": "Klayton_CG",
+                "index": 1
             } ,
             "characterR": {
                 "fileName": "Rex",
@@ -28,8 +28,12 @@
             "talker": "클레이튼",
             "text":"쓸데없는 호들갑이면 가만있지...",
             "characterL": {
-                "fileName": "Klayton",
-                "index": 0
+                "fileName": "Klayton_CG",
+                "index": 1
+            },
+            "characterR": {
+                "fileName": "Rex",
+                "index": 3
             } 
         },
         {
@@ -38,6 +42,10 @@
             "text":"클로버씨가 체포됐대요. 빨리 이것 좀 보세요!",
             "fontSize": "large",
             "bgm": "STOP",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 1
+            },
             "characterR": {
                 "fileName": "Rex",
                 "index": 3
@@ -47,6 +55,10 @@
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "렉스",
             "text":"클로버씨 관련 내용이 오늘 클레이튼씨 업무로 내려왔어요.",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 1
+            },
             "characterR": {
                 "fileName": "Rex",
                 "index": 3
@@ -66,7 +78,7 @@
             "talker": "클레이튼",
             "text":"그게 무슨 말이지?",
             "characterL": {
-                "fileName": "Klayton",
+                "fileName": "Klayton_CG",
                 "index": 2
             },"characterR": {
                 "fileName": "Rex",
