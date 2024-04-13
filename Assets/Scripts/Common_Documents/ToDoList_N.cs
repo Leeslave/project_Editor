@@ -50,7 +50,6 @@ public class ToDoList_N : MonoBehaviour
         for (int i = 0; i < 3; i++) ToDoIndexes.Add(new List<ToDoIndex>());
         
         string cnt = "";
-        if(DB.Instructions.InfoInst!=null)
             foreach(var i in DB.Instructions.InfoInst)
             {
                 Texts[ToDoCount].text = $"<color={NRed}>Info</color> {i.Target} {sub[i.ToDo]} 변경";
@@ -65,7 +64,6 @@ public class ToDoList_N : MonoBehaviour
                 ToDoCount++;
             }
         
-        if(DB.Instructions.NewsInst!=null)
             foreach (var i in DB.Instructions.NewsInst)
             {
                 Texts[ToDoCount].text =
@@ -91,32 +89,14 @@ public class ToDoList_N : MonoBehaviour
                 Texts[ToDoCount].gameObject.SetActive(true);
                 ToDoCount++;
             }
-        if(DB.Instructions.DocsInst != null)
-            foreach (var i in DB.Instructions.DocsInst)
-            {
-                Texts[ToDoCount].text =
-                    $"<color=#FF0000>Docs</color> {i.Line+1}번째 줄";
-                if (i.ToDo == 0)
-                {
-                    Texts[ToDoCount].text += $" 추가<size=20>\n\n {i.Goal}</size>";
-                    cnt = $"{i.Goal}";
-                }
-                else if (i.ToDo == 1)
-                {
-                    Texts[ToDoCount].text += $" 삭제";
-                    cnt = "";
-                }
-                else
-                {
-                    Texts[ToDoCount].text += $" 변경<size=20>\n\n {i.Normal} > {i.Revise}</size>";
-                    cnt = $"{i.Normal} > {i.Revise}";
-                }
-                TextM.DocsAnsLine[i.Line] = true;
-                TextM.DocsChange[i.Line] = i.Goal;
-                ToDoIndexes[1].Add(new ToDoIndex(ToDoCount, i.ToDo, $"{i.Line+1}번째 줄 {sub2[i.ToDo]}", cnt,i.Line,i.Goal));
-                Texts[ToDoCount].gameObject.SetActive(true);
-                ToDoCount++;
-            }
+        foreach(var i in DB.Instructions.DocsInst)
+        {
+            Texts[ToDoCount].text = $"<color=#FF0000>Docs</color> {i.Name}의 취조록 조사";
+            ToDoIndexes[1].Add(new ToDoIndex(ToDoCount, 0, i.Name ,"", 0,""));
+            Texts[ToDoCount].gameObject.SetActive(true);
+            ToDoCount++;
+        }
+
         //gameObject.SetActive(false);
     }
 
@@ -124,13 +104,22 @@ public class ToDoList_N : MonoBehaviour
 
     public void CheckList(int type, int line, bool Clear, int DoLine = -1)
     {
-        print(Clear);
         ToDoIndex k = null;
         if (DoLine == -1) { foreach (var s in ToDoIndexes[type]) if (s.goalLine == line) k = s; }
         else k = ToDoIndexes[type][DoLine];
-        if (Clear)
-            Texts[k.line].text = $"<s><color={DRed}>{sub3[type]}</color><color={DWhite}> {k.line1}<size=20>\n\n {k.line2}</color></size></s>";
+        if (type != 1)
+        {
+            if (Clear)
+                Texts[k.line].text = $"<s><color={DRed}>{sub3[type]}</color><color={DWhite}> {k.line1}<size=20>\n\n {k.line2}</color></size></s>";
+            else
+                Texts[k.line].text = $"<color={NRed}>{sub3[type]}</color><color={NWhite}> {k.line1}<size=20>\n\n {k.line2}</color></size>";
+        }
         else
-            Texts[k.line].text = $"<color={NRed}>{sub3[type]}</color><color={NWhite}> {k.line1}<size=20>\n\n {k.line2}</color></size>";
+        {
+            if (Clear)
+                Texts[k.line].text = $"<s><color={DRed}>{sub3[type]}</color><color={DWhite}> {k.line1}의 취조록 조사</color></s>";
+            else
+                Texts[k.line].text = $"<color={NRed}>{sub3[type]}</color><color={NWhite}> {k.line1}의 취조록 조사</color></size>";
+        }
     }
 }

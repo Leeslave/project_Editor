@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -9,16 +10,17 @@ public class DB_M : MonoBehaviour
     [SerializeField] Windows_M DBFolder;
     [SerializeField] Windows_M NewsFolder;
     [SerializeField] Windows_M DocsFolder;
+    [SerializeField] GameObject Secret;
     [SerializeField] Sprite spr;
 
     public int Month;
     public int Day;
 
     public List<string[]> InfSub = new List<string[]>(2);
-    public Peoples PeopleList;
-    public Dictionary<string, Sprite[]> FaceImages = new Dictionary<string, Sprite[]>();
+    public List<PeopleIndex> PeopleList;
     public News[] NewsList;
-    public Instruction Instructions;
+    public List<Instruction> InstructionList;
+    [NonSerialized] public Instruction Instructions;
 
     public Docs[] DocsList;
 
@@ -29,44 +31,38 @@ public class DB_M : MonoBehaviour
         InfSub.Add(File.ReadAllText(CurPath + $"\\Manipulation\\Countries.txt").Split('\n'));
         InfSub.Add(File.ReadAllText(CurPath + $"\\Manipulation\\Jobs.txt").Split('\n'));
 
-        PeopleList = JsonUtility.FromJson<Peoples>(File.ReadAllText(CurPath + "\\Manipulation\\People.json"));
-        foreach (PeopleIndex a in PeopleList.PL)
-        {
-            DBFolder.NewIcon(a.name_e, spr, 1);
-
-            FaceImages.Add(a.name_e, Resources.LoadAll<Sprite>("GameData/Manipulation/" + a.name_e));
-        }
+        for (int i = 0; i < PeopleList.Count - 1; i++) DBFolder.NewIcon(PeopleList[i].name_e, spr, 1);
         DBFolder.gameObject.SetActive(false);
         //Read News Data
-        var Files = Directory.GetDirectories(CurPath + "\\News");
-        NewsList = new News[Files.Length];
 
-        for (int i = 0; i < Files.Length; i++)
+        for (int i = 0; i < NewsList.Length - 1; i++)
         {
-            string cnt = Files[i][(CurPath.Length + 6)..].Replace('_','/');
-            NewsFolder.NewIcon(name: cnt, Image: spr,2);
-            NewsList[i] = new News();
-            NewsList[i].publishDay = cnt;
-            ReadMain(NewsList[i], Files[i] + "\\Main.txt");
+            NewsFolder.NewIcon(NewsList[i].publishDay, spr, 2);
+            var j = NewsList[i].Main[0].Split('\n');
+            if (j.Length != 1) NewsList[i].Main = j;
         }
         NewsFolder.gameObject.SetActive(false);
         //Read Docs Data
-        // 정해지면 넣음
+        foreach (var k in DocsList) DocsFolder.NewIcon(name: k.Subject, Image: spr, 3);
         DocsFolder.gameObject.SetActive(false);
-        //Read Instructions
-        Instructions = JsonConvert.DeserializeObject<Instruction>(File.ReadAllText(CurPath + $"\\Documents\\{Month}_{Day}.json"));
+
+        foreach(var k in InstructionList)
+        {
+            if (k.Month == Month && k.date == Day) { Instructions = k; break; }
+        }
+        Secret.gameObject.SetActive(false);
     }
 
     public PeopleIndex FindPeople(string name)
     {
-        foreach(PeopleIndex a in PeopleList.PL)
+        foreach(PeopleIndex a in PeopleList)
         {
             if ((a.name_e.ToLower() == name.ToLower() || a.name_k == name)) return a;
         }
         return null;
     }
 
-    public void ChangeInfo(string name,string Country,string Job, int Face)
+    /*public void ChangeInfo(string name,string Country,string Job, int Face)
     {
         foreach(PeopleIndex a in PeopleList.PL)
         {
@@ -78,7 +74,7 @@ public class DB_M : MonoBehaviour
                 break;
             }
         }
-    }
+    }*/
 
     public News FindNews(string Date)
     {
@@ -89,7 +85,16 @@ public class DB_M : MonoBehaviour
         return null;
     }
 
-    void ReadMain(News N, string path)
+    public Docs FindDocs(string Name)
+    {
+        foreach(Docs a in DocsList)
+        {
+            if (a.Subject == Name) return a;
+        }
+        return null;
+    }
+
+  /*  void ReadMain(News N, string path)
     {
         StreamReader reader = new StreamReader(path);
         N.Title = reader.ReadLine();
@@ -101,5 +106,5 @@ public class DB_M : MonoBehaviour
             N.Main[N.CountM++] = line;
         }
         reader.Close();
-    }
+    }*/
 }

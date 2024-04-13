@@ -14,7 +14,15 @@ public class LoginProcess_D : MonoBehaviour
     [SerializeField] string id;
     [SerializeField] string pw;
 
+    [SerializeField] GameObject SecretFolder;
+    [SerializeField] Windows_M Secrets;
+    [SerializeField] string id_S;
+    [SerializeField] string pw_S;
+
     int LoginTry = 3;
+
+    bool S = false;
+
 
     private void OnEnable()
     {
@@ -29,7 +37,14 @@ public class LoginProcess_D : MonoBehaviour
         }
         else if (ID.text == id && PW.text == pw)
         {
-            LoginTry = 3;
+            LoginTry = 4;
+            Process.SetActive(true);
+            gameObject.SetActive(false);
+        }
+        else if (ID.text == id_S && PW.text == pw_S)
+        {
+            LoginTry = 4;
+            SecretFolder.SetActive(true);
             Process.SetActive(true);
             gameObject.SetActive(false);
         }

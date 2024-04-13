@@ -29,7 +29,8 @@ public class MainText_Back : Buttons_M
         Field.SetActive(true);
         image.color = BfColor;
         Text.SetActive(false);
-        TMN.OpenText(MyInd);
+        if (TMN != null) TMN.OpenText(MyInd);
+        //else
     }
     protected override void OnPointer(PointerEventData data)
     {

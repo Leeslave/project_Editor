@@ -30,10 +30,13 @@ public class TextMannager_N : MonoBehaviour
 
     private void Awake()
     {
-        Texts = new List<GameObject>(); Texts.Add(TextsPref);
-        for (int i = 0; i < 9; i++) Texts.Add(Instantiate(TextsPref,TextsPref.transform.parent));
+        Texts = new List<GameObject>{ TextsPref}; for (int i = 0; i < 10; i++)Texts.Add(Instantiate(TextsPref,TextsPref.transform.parent));
         MainTexts = new List<MainText_N>();
-        foreach (var k in Texts) MainTexts.Add(k.GetComponentInChildren<MainText_N>());
+        foreach (var k in Texts)
+        {
+            k.SetActive(false);
+            MainTexts.Add(k.transform.GetChild(0).GetComponent<MainText_N>());
+        }
     }
 
     int CurOpen = 0;
@@ -83,23 +86,11 @@ public class TextMannager_N : MonoBehaviour
 
     public void ValidText(bool IsNews, int line, string text)
     {
-        if (IsNews)
-        {
-            if (NewsAnsLine[line])
+        if (NewsAnsLine[line])
             {
                 if (text.Equals(NewsChange[line])) TDN.CheckList(0, line, true);
                 else TDN.CheckList(0, line, false);
             }
-            else if (!text.Equals(AnsNews.Main[line])) for (int i = 0; i < AnsNews.CountM; i++) if (NewsAnsLine[i]) MainTexts[i].CheckMyText();
-        }
-        else
-        {
-            if (DocsAnsLine[line])
-            {
-                if (text.Equals(DocsChange[line])) TDN.CheckList(1, line, true);
-                else TDN.CheckList(1, line, false);
-            }
-            //else if (!text.Equals(AnsDocs.Main[line])) for (int i = 0; i < AnsDocs.CountM; i++) if (DocsAnsLine[i]) MainTexts[i].CheckMyText();
-        }
+        else if (!text.Equals(AnsNews.Main[line])) for (int i = 0; i < AnsNews.Main.Length; i++) if (NewsAnsLine[i]) MainTexts[i].CheckMyText();
     }
 }
