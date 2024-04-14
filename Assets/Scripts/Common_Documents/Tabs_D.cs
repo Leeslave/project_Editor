@@ -36,7 +36,6 @@ public class Tabs_D : Buttons_M
     public void OpenTab()
     {
         foreach (GameObject s in Subs) s.SetActive(true);
-        if (MyIndex == 0 && GOF.CurType == 1) GOF.IC.CloseFolder();
         image.color = OpenColor;
         GOF.ChangeTab(MyIndex);
         IsOpened = true;

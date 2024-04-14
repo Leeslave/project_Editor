@@ -40,7 +40,6 @@ public class InfChange : MonoBehaviour
     /* private List<List <string>> CommandList_Back = new List<List<string>>();
      private List<List<string>> CommandList_Go = new List<List<string>>();*/
 
-    Peoples PeopleList;
     PeopleIndex CurPeople;
 
     [NonSerialized] public List<Tuple<string, int, int, int>> PeopleCorrect = new List<Tuple<string, int, int,int>>();
@@ -88,7 +87,7 @@ public class InfChange : MonoBehaviour
                     {
                         Drager_Image.name = CurFile.transform.GetSiblingIndex().ToString();
                         Drager_Image.transform.GetChild(1).GetComponent<Image>().sprite
-                            = DB.FaceImages[CurPeople.name_e][CurFile.transform.GetSiblingIndex()];
+                            = CurPeople.Faces[CurFile.transform.GetSiblingIndex()];
                         Drager_Image.SetActive(true);
                         ValidData(2, "");
                     }
@@ -148,13 +147,13 @@ public class InfChange : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < DB.FaceImages[CurPeople.name_e].Length; i++)
+            for (int i = 0; i < CurPeople.Faces.Count; i++)
             {
                 cnt = Faces.transform.GetChild(i).gameObject;
                 cnt.SetActive(true);
                 cnt.name = $"Face{i+1}";
                 cnt.transform.GetChild(2).GetComponent<TMP_Text>().text = $"Face{i + 1}";
-                cnt.transform.GetChild(1).GetComponent<Image>().sprite = DB.FaceImages[CurPeople.name_e][i];
+                cnt.transform.GetChild(1).GetComponent<Image>().sprite = CurPeople.Faces[i];
             }
             GD.Tabs[2].Subs[0] = Faces;
             Faces.SetActive(true);
@@ -184,24 +183,23 @@ public class InfChange : MonoBehaviour
         CurPeople = FindPeople;
         Name.text = "name : " + FindPeople.name_k;
         Age.text = "Age : " + FindPeople.age;
-        Sex.text = "Sex : " + FindPeople.sex;
+        Sex.text = "Sex : " + (FindPeople.isMan ? "Male" : "Female");
         Country.text = "Country : " + FindPeople.country;
-        Job.text = "Job : " + FindPeople.job;
-        Face.sprite = DB.FaceImages[FindPeople.name_e][FindPeople.face];
+        if (FindPeople.belong != Belonging.Unknown) Job.text = "Job : " + FindPeople.belong + " " + (FindPeople.part == Part.None ? "": FindPeople.part + " ") + FindPeople.job;
+        else Job.text = "Job : Unknown";
+        Face.sprite = FindPeople.Faces[FindPeople.curFace];
     }
 
     public void SaveChange()
     {
         var s = Country.text.Split(' ');
         var s2 = Job.text.Split(' ');
-        DB.ChangeInfo(CurPeople.name_e, s[s.Length - 1], s2[s2.Length-1],FaceNum);
     }
 
     public void ValidData(int ind, string text)
     {
         foreach(var k in PeopleCorrect)
         {
-            print(ind);
             if(k.Item1.Equals(CurPeople.name_e) && k.Item2 == ind)
             {
                 switch (ind)

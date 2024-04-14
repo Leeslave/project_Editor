@@ -106,7 +106,7 @@ public class GetOptionFile_D : BatchField_D
         Title.text = CurNews.Title;
         Date.text = CurNews.Date;
         Reporter.text = CurNews.Reporter;
-        for (int i = 0; i < CurNews.CountM; i++)
+        for (int i = 0; i < CurNews.Main.Length; i++)
         {
             TMN.ActiveText(CurNews.Main[i]);
         }
@@ -118,9 +118,66 @@ public class GetOptionFile_D : BatchField_D
     }
 
     // Docs
+    [SerializeField] TextMannager_D Docs_Record;
+    [SerializeField] TextMannager_D Docs_Act;
+    [SerializeField] TMP_Text Recorder;
+    [SerializeField] TMP_Text Subject;
+
     protected override IEnumerator BatchType3()
     {
-        return base.BatchType3();
+        CommonBatch();
+        CurType = 2;
+        image.SetActive(false);
+        Docs CurDocs = DB.FindDocs(AN.IconName);
+        string cnt = "";
+        WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
+        foreach (string s in Waittexts)
+        {
+            cnt += s;
+
+            for (int i = 0; i <= 10; i++)
+            {
+                Text.text = cnt + $"<size=20>{i * 10}% </size>";
+                yield return wfs;
+            }
+            cnt += " <size=20>Complete!\n</size>";
+        }
+        Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
+        yield return new WaitForSeconds(LoadingTime2);
+        Text.text = Normal;
+        image.SetActive(true);
+        AttatchAble = true;
+        Recorder.text = $"Recorder : {CurDocs.Recorder}";
+        Subject.text = $"Subject : {CurDocs.Subject}";
+
+        int RC = 0;
+        int SC = 0;
+        for(int i = 0; i < CurDocs.RecorderTexts.Count + CurDocs.SubjectTexts.Count; i++)
+        {
+            if (RC < CurDocs.RecorderTexts.Count) 
+            {
+                if (CurDocs.RecorderTextInd[RC] == i) Docs_Record.AddText(CurDocs.RecorderTexts[RC++], new Color(0, 0.5f, 0, 1), IsTouchAble: false);
+                else Docs_Record.AddText(CurDocs.SubjectTexts[SC++], new Color(0.5f, 0, 0),TextAlignmentOptions.Right);
+            }
+            else Docs_Record.AddText(CurDocs.SubjectTexts[SC++], new Color(0.5f, 0, 0), TextAlignmentOptions.Right);
+        }
+        foreach (var k in CurDocs.Time_Action) Docs_Act.AddText(k, Color.black);
+
+
+        Docs_Record.MyAns = CurDocs.SubjectAns[0];
+        Docs_Act.MyAns = CurDocs.ActionAns[0];
+
+        Processes[2].SetActive(true);
+        Processes[2].transform.SetAsLastSibling();
+        Processes[2].transform.position = Vector3.zero;
+
+        Processes[3].SetActive(true);
+        Processes[3].transform.SetAsLastSibling();
+        Processes[3].transform.position = Vector3.zero;
+
+        Processes[4].SetActive(true);
+        Processes[4].transform.SetAsLastSibling();
+        Processes[4].transform.position = Vector3.zero;
     }
     protected override IEnumerator BatchType4()
     {
@@ -150,6 +207,7 @@ public class GetOptionFile_D : BatchField_D
     {
         Text.text = Error;
     }
+
     public void ChangeTab(int index)
     {
         Tabs[CurOpen].CloseTab();

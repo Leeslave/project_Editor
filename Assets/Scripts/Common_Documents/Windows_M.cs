@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class Windows_M : MonoBehaviour
 {
-    [Header("- Window Å©±â")]
+    [Header("- Window í¬ê¸°")]
     [SerializeField] protected int Size_X;
     [SerializeField] protected int Size_Y;
-    [Header("- Icon Å©±â")]
+    [Header("- Icon í¬ê¸°")]
     [SerializeField] protected int Icon_Size_X;
     [SerializeField] protected int Icon_Size_Y;
-    [Header("- °£°İ")]
+    [Header("- ê°„ê²©")]
     [SerializeField] protected int Space_X;
     [SerializeField] protected int Space_Y;
 
@@ -25,17 +25,18 @@ public class Windows_M : MonoBehaviour
     protected RectTransform MyRect;
 
     protected bool[,] Occupied;
-    [Header("µû·Î »çÀü¿¡ »ı¼ºµÈ Iconµé\nµû·Î ¾È ³Ö¾îµÎ¸é ¹ö±× ³³´Ï´Ù.")]
+    [Header("ë”°ë¡œ ì‚¬ì „ì— ìƒì„±ëœ Iconë“¤\në”°ë¡œ ì•ˆ ë„£ì–´ë‘ë©´ ë²„ê·¸ ë‚©ë‹ˆë‹¤.")]
     [SerializeField] List<GameObject> EarlyIcon;
-    [Header("(ÁÖÀÇ) IconSampleÀ» ¹«Á¶°Ç Field¿¡ »ı¼ºÇÑ ÈÄ\n±âº»ÀûÀÎ PrefabÀ» Àû¿ëÇÑ ÈÄ ³Ö¾îÁÖ¼¼¿ä.")]
+    [Header("(ì£¼ì˜) IconSampleì„ ë¬´ì¡°ê±´ Fieldì— ìƒì„±í•œ í›„\nê¸°ë³¸ì ì¸ Prefabì„ ì ìš©í•œ í›„ ë„£ì–´ì£¼ì„¸ìš”.")]
     
     [SerializeField] GameObject IconSample;
-    [Header("Ç®¸µ ¼ö(ÃÖ´ë 30)")]
+    [Header("í’€ë§ ìˆ˜(ìµœëŒ€ 30)")]
     int PoolingNum;
     protected GameObject[] Icons;
     protected UIICons[] IconsScript;
     protected bool[] IconUseAble;
 
+    [SerializeField] bool j = false;
     private void Awake()
     {
         Windows_M WM = GetComponent<Windows_M>();
@@ -54,16 +55,17 @@ public class Windows_M : MonoBehaviour
         for (int i = 0; i < PoolingNum; i++) IconUseAble[i] = true;
         for (int i = 0; i < EarlyIcon.Count; i++) IconUseAble[i] = false;
         EarlyIcon.Clear();
+        if(j) gameObject.SetActive(false);
     }
 
     /// <summary>
-    /// Window ÀÚÃ¼ÀÇ Size º¯°æ.
+    /// Window ìì²´ì˜ Size ë³€ê²½.
     /// </summary>
     protected virtual void SizeChanger()
     {
         MyRect = GetComponent<RectTransform>();
         MyRect.sizeDelta = new Vector2(Size_X, Size_Y);
-        // Icon ¹èÄ¡ °ø°£ °è»ê
+        // Icon ë°°ì¹˜ ê³µê°„ ê³„ì‚°
         NumX = (Size_X + Space_X) / (Space_X + Icon_Size_X);
         NumY = (Size_Y + Space_Y) / (Space_Y + Icon_Size_Y);
         Occupied = new bool[NumY, NumX];
@@ -74,12 +76,12 @@ public class Windows_M : MonoBehaviour
     }
 
     /// <summary>
-    /// µå·¡±×¿¡ ÀÇÇÑ ICon ÀÌµ¿.
-    /// ÀÌ¹Ì ÇØ´ç À§Ä¡¿¡ ¹èÄ¡µÈ IconÀÌ ÀÖÀ¸¸é ÀÌµ¿ÇÏÁö ¸øÇÔ.
+    /// ë“œë˜ê·¸ì— ì˜í•œ ICon ì´ë™.
+    /// ì´ë¯¸ í•´ë‹¹ ìœ„ì¹˜ì— ë°°ì¹˜ëœ Iconì´ ìˆìœ¼ë©´ ì´ë™í•˜ì§€ ëª»í•¨.
     /// </summary>
-    /// <param name="Call"> ÀÌµ¿À» ¿äÃ»ÇÑ Icon </param>
-    /// <param name="Dragged"> µå·¡±×·Î µû·Î ¿òÁ÷ÀÌ´Â Cnt </param>
-    /// <param name="CallLay"> IconÀÌ ÀÚÃ¼ÀûÀ¸·Î °¡Áö°í ÀÖ´Â OccupiedÀÇ ÁÖ¼Ò </param>
+    /// <param name="Call"> ì´ë™ì„ ìš”ì²­í•œ Icon </param>
+    /// <param name="Dragged"> ë“œë˜ê·¸ë¡œ ë”°ë¡œ ì›€ì§ì´ëŠ” Cnt </param>
+    /// <param name="CallLay"> Iconì´ ìì²´ì ìœ¼ë¡œ ê°€ì§€ê³  ìˆëŠ” Occupiedì˜ ì£¼ì†Œ </param>
     public virtual void BatchByMove(GameObject Call,Transform Dragged,ref Tuple<int,int>CallLay)
     {
         if (!CanMove) return;
@@ -97,9 +99,9 @@ public class Windows_M : MonoBehaviour
     }
 
     /// <summary>
-    /// Icon »ı¼ºÀÌ µÉ ¶§ Window¿¡ ¹èÄ¡ÇØÁÜ.
+    /// Icon ìƒì„±ì´ ë  ë•Œ Windowì— ë°°ì¹˜í•´ì¤Œ.
     /// </summary>
-    /// <param name="a"> »ı¼ºµÇ´Â Icon </param>
+    /// <param name="a"> ìƒì„±ë˜ëŠ” Icon </param>
     /// <returns></returns>
     public virtual Tuple<int,int> BatchByCreate(GameObject a)
     {
@@ -118,12 +120,12 @@ public class Windows_M : MonoBehaviour
     }
 
     /// <summary>
-    /// Icon »ı¼º. ±âº»ÀûÀ¸·Î »ç¿ëµÇ´Â UIIconsÀÌ¿ÜÀÇ ´Ù¸¥ °ÍÀ» »ç¿ë ½Ã ¼öÁ¤ ÇÊ¿ä.
+    /// Icon ìƒì„±. ê¸°ë³¸ì ìœ¼ë¡œ ì‚¬ìš©ë˜ëŠ” UIIconsì´ì™¸ì˜ ë‹¤ë¥¸ ê²ƒì„ ì‚¬ìš© ì‹œ ìˆ˜ì • í•„ìš”.
     /// </summary>
-    /// <param name="AttatchAble"> ¸Ş¼¼Áö¿¡ Ã·ºÎ °¡´É ¿©ºÎ </param>
-    /// <param name="OpenProcess"> Å¬¸¯ ½Ã ½ÇÇàµÇ´Â ÇÁ·Î¼¼½º </param>
-    /// <param name="name"> ÀÌ¸§ </param>
-    /// <param name="Image"> ÀÌ¹ÌÁö </param>
+    /// <param name="AttatchAble"> ë©”ì„¸ì§€ì— ì²¨ë¶€ ê°€ëŠ¥ ì—¬ë¶€ </param>
+    /// <param name="OpenProcess"> í´ë¦­ ì‹œ ì‹¤í–‰ë˜ëŠ” í”„ë¡œì„¸ìŠ¤ </param>
+    /// <param name="name"> ì´ë¦„ </param>
+    /// <param name="Image"> ì´ë¯¸ì§€ </param>
     public virtual GameObject NewIcon(string name, Sprite Image,int type = -1, bool AttatchAble = false, GameObject OpenProcess = null)
     {
         for(int i = 0; i < PoolingNum; i++)
@@ -139,15 +141,15 @@ public class Windows_M : MonoBehaviour
         return null;
     }
     /// <summary>
-    /// Æ¯Á¤ ÀÛ¾÷À» ÅëÇØ LayOutÀÌ º¯°æµÈ IconÀÇ ±âÁ¸ LayOutÀ» ÀÌ¿ë °¡´ÉÇÏ°Ô º¯°æ
+    /// íŠ¹ì • ì‘ì—…ì„ í†µí•´ LayOutì´ ë³€ê²½ëœ Iconì˜ ê¸°ì¡´ LayOutì„ ì´ìš© ê°€ëŠ¥í•˜ê²Œ ë³€ê²½
     /// </summary>
-    /// <param name="CallLay"> IconÀÇ ÇöÀç LayOut»ó¿¡¼­ÀÇ À§Ä¡ </param>
+    /// <param name="CallLay"> Iconì˜ í˜„ì¬ LayOutìƒì—ì„œì˜ ìœ„ì¹˜ </param>
     public virtual void RemoveIcon(Tuple<int,int> CallLay)
     {
         Occupied[CallLay.Item2,CallLay.Item1] = false;
     }
     /// <summary>
-    /// ÇØ´ç PoolNumÀÇ IconÀ» Pooling °¡´ÉÇÏ°Ô º¯°æ.
+    /// í•´ë‹¹ PoolNumì˜ Iconì„ Pooling ê°€ëŠ¥í•˜ê²Œ ë³€ê²½.
     /// </summary>
     /// <param name="ind"></param>
     public virtual void ClearIcon(int ind)

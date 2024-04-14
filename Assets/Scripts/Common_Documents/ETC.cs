@@ -1,7 +1,41 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
+// ETC Data
+
+public enum Country
+{
+    아스토츠카,
+    아슬라니아,
+    주렌,
+    리퍼블리카
+}
+
+public enum Belonging
+{
+    언론부,
+    사상경찰부,
+    Unknown
+}
+
+public enum Part
+{
+    A팀,
+    B팀,
+    C팀,
+    None
+}
+
+public enum Job
+{
+    인턴,
+    대리,
+    과장,
+    총책,
+    사령관
+}
 
 /*------------------ Info Data ---------------------*/
 
@@ -10,12 +44,14 @@ public class PeopleIndex
 {
     public string name_k;
     public string name_e;
-    public string job;
-    public string sex;
-    public string country;
-    public string key;
     public string age;
-    public int face;
+    public Country country;
+    public Belonging belong;
+    public Part part;
+    public Job job;
+    public bool isMan;
+    public List<Sprite> Faces;
+    public int curFace;
 }
 
 public class Peoples
@@ -32,18 +68,11 @@ public class News
     public string Title;
     public string Date;
     public string Reporter;
+    [Multiline(10)]
     public string[] Main; /*= new string[50];*/
-    public int CountM; /*= 0;*/
-    public string[] Revise; /*= new string[4];*/
-    public int CountR; /*= 0;*/
-    public List<int> Errors; /*= new List<int>(4);*/
     public News()
     {
         Main = new string[50];
-        Revise = new string[4];
-        Errors = new List<int>(4);
-        CountM = 0;
-        CountR = 0;
     }
 }
 
@@ -69,6 +98,8 @@ public class Docs
 [Serializable]
 public class Instruction
 {
+    public string test;
+    public int Month, date;
     [JsonProperty("Info")]
     public info[] InfoInst;
     [JsonProperty("News")]
@@ -109,16 +140,8 @@ public class news
 [Serializable]
 public class docs
 {
-    /*
-     * 0 : 추가
-     * 1 : 삭제
-     * 2 : 변경
-     */
-    public int ToDo;
-    public int Line;
-    public string Normal;
-    public string Revise;
-    public string Goal;
+    public string Name;
+    public int Count;
 }
 
 
