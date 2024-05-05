@@ -6,7 +6,7 @@ using Unity.VisualScripting;
 
 public class LoadEncrypted : MonoBehaviour
 {
-    private ADFGVXGameManager _gameManager;
+    private ADFGVXGameManager GameManager { get; set; }
     
     public BasicText Title { get; set; }
     public BasicInputField EncryptedTextTitle { get; set; }
@@ -16,7 +16,7 @@ public class LoadEncrypted : MonoBehaviour
 
     private void Awake()
     {
-        _gameManager = FindObjectOfType<ADFGVXGameManager>();
+        GameManager = FindObjectOfType<ADFGVXGameManager>();
         
         Title = this.transform.GetChild(0).GetComponent<BasicText>();
         EncryptedTextTitle = this.transform.GetChild(1).GetComponent<BasicInputField>();
@@ -69,8 +69,8 @@ public class LoadEncrypted : MonoBehaviour
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, reader.ReadLine(), true, EncryptedTextBody.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, reader.ReadLine(), true, EncryptedTextWriter.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, reader.ReadLine(), true, EncryptedTextDate.TextTMP);
-            LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, "Decrypted-" + EncryptedTextTitle.StringBuffer, true, _gameManager.DisplayDecrypted.DecryptedTextTitle.TextTMP);
-            _gameManager.CutAvailabilityInputForWhile(0f, 1.5f);
+            LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, "Decrypted-" + EncryptedTextTitle.StringBuffer, true, GameManager.DisplayDecrypted.DecryptedTextTitle.TextTMP);
+            GameManager.CutAvailabilityInputForWhile(0f, 1.5f);
             reader.Close();   
         }
         else

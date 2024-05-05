@@ -5,7 +5,7 @@ using TMPro;
 
 public class KeyPriorityTranspose : MonoBehaviour
 {
-    private ADFGVXGameManager _gameManager;
+    private ADFGVXGameManager GameManager { get; set; }
 
     public BasicText Title { get; set; }
     public BasicInputField KeyInputField { get; set; }
@@ -22,7 +22,7 @@ public class KeyPriorityTranspose : MonoBehaviour
 
     private void Awake()
     {
-        _gameManager = FindObjectOfType<ADFGVXGameManager>();
+        GameManager = FindObjectOfType<ADFGVXGameManager>();
 
         Title = this.transform.GetChild(0).GetComponent<BasicText>();
         KeyInputField = this.transform.GetChild(1).GetComponent<BasicInputField>();
@@ -47,7 +47,7 @@ public class KeyPriorityTranspose : MonoBehaviour
         ClearTransposedMatrix();
         ReverseTransposeLines.Initialize();
 
-        ReverseTransposeLines.SetAvailability(_gameManager.CurrentSystemMode != ADFGVXGameManager.SystemMode.Decryption);
+        ReverseTransposeLines.SetAvailability(GameManager.CurrentSystemMode != ADFGVXGameManager.SystemMode.Decryption);
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ public class KeyPriorityTranspose : MonoBehaviour
             ReverseTransposeLines.InputFieldTMP.color = new Color(1f, 0.3f, 0.3f, 1f);
             ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * 9, 82f);
         }
-        else if((ReverseTransposeLines.StringBuffer.Length != 2 * _gameManager.WritePlain.PlainTextBody.StringBuffer.Length) || (ReverseTransposeLines.StringBuffer.Length % value.Length != 0))
+        else if((ReverseTransposeLines.StringBuffer.Length != 2 * GameManager.WritePlain.PlainTextBody.StringBuffer.Length) || (ReverseTransposeLines.StringBuffer.Length % value.Length != 0))
         {
             //평문 전체를 전치하지 못했거나 키값이 유효하지 않다면
             ReverseTransposeLines.InputFieldTMP.color = new Color(1f, 0.3f, 0.3f, 1f);
@@ -130,7 +130,7 @@ public class KeyPriorityTranspose : MonoBehaviour
     /// </summary>
     public void OnTransposeDown()
     {
-        switch (_gameManager.CurrentSystemMode)
+        switch (GameManager.CurrentSystemMode)
         {
             case ADFGVXGameManager.SystemMode.Decryption: 
             {
@@ -138,7 +138,7 @@ public class KeyPriorityTranspose : MonoBehaviour
                 KeyInputField.IsFlash = false;
                 
                 //빈칸을 제거하여 반환
-                var encryptedText = _gameManager.LoadEncrypted.EncryptedTextBody.TextTMP.text.Replace(" ", "");
+                var encryptedText = GameManager.LoadEncrypted.EncryptedTextBody.TextTMP.text.Replace(" ", "");
                 
                 
                 var key = KeyInputField.StringBuffer;
@@ -178,10 +178,10 @@ public class KeyPriorityTranspose : MonoBehaviour
                 StartCoroutine(CircumventRow(0));
         
                 //복호화해야하는 순서 계산하여 출력
-                _gameManager.BilateralSubstitute.UpdateTransposedTextDisplayAndTable();
+                GameManager.BilateralSubstitute.UpdateTransposedTextDisplayAndTable();
 
                 //전치가 완료될 때까지 전체 입력 차단
-                _gameManager.CutAvailabilityInputForWhile(0f, (RowLength + LineLength) * 0.1f);
+                GameManager.CutAvailabilityInputForWhile(0f, (RowLength + LineLength) * 0.1f);
                 
                 break;
             }

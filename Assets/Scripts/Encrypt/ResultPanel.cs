@@ -8,24 +8,24 @@ using Random = UnityEngine.Random;
 
 public class ResultPanel : MonoBehaviour
 {
-    public ADFGVXGameManager GameManager { get; set; }
-    
-    public BasicButton CloseButton { get; set; }
+    private ADFGVXGameManager GameManager { get; set; }
+
+    private BasicButton CloseButton { get; set; }
     public TextMeshPro Title { get; set; }
-    public TextMeshPro Result { get; set; } 
+    private TextMeshPro Result { get; set; } 
     
     private void Awake()
     {
-        GameManager = GameObject.FindObjectOfType<ADFGVXGameManager>();
+        GameManager = FindObjectOfType<ADFGVXGameManager>();
         
-        CloseButton = this.transform.GetChild(0).GetComponent<BasicButton>();
-        Title = this.transform.GetChild(1).GetChild(0).GetComponent<TextMeshPro>();
-        Result = this.transform.GetChild(2).GetChild(0).GetComponent<TextMeshPro>();
+        CloseButton = transform.GetChild(0).GetComponent<BasicButton>();
+        Title = transform.GetChild(1).GetChild(0).GetComponent<TextMeshPro>();
+        Result = transform.GetChild(2).GetChild(0).GetComponent<TextMeshPro>();
     }
 
     public void ClosePanel()
     {
-        this.transform.position = new Vector3(-350f, 0f, 0f);
+        transform.position = new Vector3(-350f, 0f, 0f);
         GameManager.SetAvailable(true);
     }
 

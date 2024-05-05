@@ -1545,6 +1545,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a44eded0a874dc4780e3a15d8490e72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  encryptTargetData: 
 --- !u!1 &112579928
 GameObject:
   m_ObjectHideFlags: 0
@@ -2334,7 +2335,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC554\uD638\uD654 \uB370\uC774\uD130 \uBD88\uB7EC\uC624\uAE30"
+  m_text: "\uC554\uD638\uD654 \uB370\uC774\uD130 \uB85C\uB4DC\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8d6c81e723e61fb47b48ac24b9f012ec, type: 2}
   m_sharedMaterial: {fileID: 2217423988375855100, guid: 8d6c81e723e61fb47b48ac24b9f012ec, type: 2}
@@ -7916,7 +7917,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uD3C9\uBB38 \uB370\uC774\uD130 \uC791\uC131\uD558\uAE30"
+  m_text: "\uD3C9\uBB38 \uB370\uC774\uD130 \uC785\uB825 \uD544\uB4DC\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8d6c81e723e61fb47b48ac24b9f012ec, type: 2}
   m_sharedMaterial: {fileID: 2217423988375855100, guid: 8d6c81e723e61fb47b48ac24b9f012ec, type: 2}
@@ -24702,6 +24703,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1500645429}
+  - component: {fileID: 1500645430}
   m_Layer: 0
   m_Name: CurrentMode
   m_TagString: Untagged
@@ -24726,6 +24728,18 @@ Transform:
   m_Father: {fileID: 112532040}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1500645430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500645428}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd4ab903165fff747a8b8db8ebb4b932, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1515533523
 GameObject:
   m_ObjectHideFlags: 0
@@ -26760,6 +26774,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1472704928}
         m_TargetAssemblyTypeName: DisplayEncrypted_ForGame, Assembly-CSharp
         m_MethodName: Initialize
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1500645430}
+        m_TargetAssemblyTypeName: CurrentMode, Assembly-CSharp
+        m_MethodName: SwitchSystem
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -32944,7 +32970,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC554\uD638\uD654 \uBAA8\uB4DC"
+  m_text: "\uBCF5\uD638\uD654 \uBAA8\uB4DC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8d6c81e723e61fb47b48ac24b9f012ec, type: 2}
   m_sharedMaterial: {fileID: 2217423988375855100, guid: 8d6c81e723e61fb47b48ac24b9f012ec, type: 2}
