@@ -45,7 +45,7 @@ public class PatternManager : MonoBehaviour
     int PatternNum = 0;             // Num of Pattern(?? ??)
 
     List<List<int[]>> PTLE = new List<List<int[]>>();       // ??????? List
-    AudioSource AL;
+    public Audio_DG AD;
 
     // ??? ??? ???(?????)
     public Transform SPCNT;
@@ -81,7 +81,7 @@ public class PatternManager : MonoBehaviour
 
     private void Awake()
     {
-        AL = GetComponent<AudioSource>();
+        AD = GetComponent<Audio_DG>();
         for (int i = 0; i < 26; i++)            // SPCNT?? x?? ???????? x?? 1?? ???????? ??? ????? SPT(??), SPB(??)?? ??????. ?? ?? ??? ?? ?????? y?? ?????? 18
         {
             SPT[i] = new Vector2(SPCNT.position.x + i, SPCNT.position.y);
@@ -102,7 +102,6 @@ public class PatternManager : MonoBehaviour
     {
         if (!IsTest) StartCoroutine(MakeEasyPattern());
         else { StartPT(2); ErrorObject.SetActive(true); }
-        MusicOn();
     }
 
     public void StartInit()
@@ -114,6 +113,7 @@ public class PatternManager : MonoBehaviour
 
     public void NextPattern(ref int HPForPattern, int change = 1)
     {
+        CamShake(0.5f);
         if(CurPattern == 0)
         {
             HPForPattern -= change;
@@ -144,12 +144,7 @@ public class PatternManager : MonoBehaviour
         }
         else
         {
-            if (GameSystem.Instance != null) 
-            {
-                GameSystem.Instance.ClearTask("Dodge");
-                LoadTestTrash.Instance.LoadScene = "Screen";
-                SceneManager.LoadScene("LoadT");
-            }
+            StartPT(2);
         }
 
     }
@@ -157,11 +152,30 @@ public class PatternManager : MonoBehaviour
     Vector3 Left = new Vector3(-10.65f,3.5f,0);
     Vector3 Right = new Vector3(10.65f, 3.5f, 0);
     // EZ
-    IEnumerator MakeEasyPattern()     // 1?????? ????? ?????? ??????.
+    IEnumerator MakeEasyPattern(bool IsTu = false)     // 1?????? ????? ?????? ??????.
     {
         /*PlatTop.SetActive(true); PlatTop.SetActive(true);*/
+        AD.MusicOn();
         yield return OneSec;
-        List<int[]> CurPT = PTLE[Random.Range(0, PatternNum)];     // ????? ???? ?? ????? 1???? ?????? ??????
+        int NextPtNum = Random.Range(0, PatternNum + 1);
+        print(NextPtNum);
+        List<int[]> CurPT = new List<int[]>();
+        if (NextPtNum < PatternNum) CurPT = PTLE[Random.Range(0, PatternNum)];     // ????? ???? ?? ????? 1???? ?????? ??????
+        else
+        {
+            for(int i = 0; i < 10; i++) CurPT.Add(new int[25]);
+            for (int i = 0; i < 25; i++)
+            {
+                List<int> L = new List<int>();
+                    for (int x = 0; x < 1; x++)
+                    {
+                        int cnt = Random.Range(1, 9);
+                        while (L.Contains(cnt)) cnt = Random.Range(1, 9);
+                        L.Add(cnt);
+                    }
+                for (int x = 0; x < 10; x++) CurPT[x][i] = i % 2 == 0 ? (L.Contains(x) ? 1 : 0) : 0;
+            }
+        }
         for (int CurRepeat = 0; CurRepeat < 2; CurRepeat++)             // ???? 2? ??? ????
         {
             if(CurRepeat % 2 == 0)
@@ -190,24 +204,39 @@ public class PatternManager : MonoBehaviour
                 Hand3_2.SetActive(false);
                 yield return TwoSec;
             }
-            for (int x = 0; x < CurPT[0].Length; x++)
+            int cnt = Random.Range(0, 4);
+            int XL = CurPT[0].Length - 1, YL = CurPT.Count - 1; 
+            switch (cnt)
             {
-                for (int y = 0; y < CurPT.Count; y++)
-                {
-                    if (CurPT[y][x] == 1)                          // ?? ?? ????????? ?????? ????
+                case 0:
+                    for (int x = 0; x < CurPT[0].Length; x++)
                     {
-                        if (CurRepeat % 2 == 0)
-                        {
-                            BM.MakeSmallBul(Vector2.left * 10, Vector2.zero).transform.position = SPRE[y].position;
-                        }
-                        else
-                        {
-                            BM.MakeSmallBul(Vector2.right * 10, Vector2.zero).transform.position = SPLE[y].position;
-                        }
+                        for (int y = 0; y < CurPT.Count; y++) if (CurPT[y][x] == 1) { if (CurRepeat % 2 == 0) BM.MakeSmallBul(Vector2.left * 10, Vector2.zero).transform.position = SPRE[y].position; else BM.MakeSmallBul(Vector2.right * 10, Vector2.zero).transform.position = SPLE[y].position; }
+                        yield return new WaitForSeconds(BulletInterv);
+                    }break;
+                case 1:
+                    for (int x = 0; x < CurPT[0].Length; x++)
+                    {
+                        for (int y = 0; y < CurPT.Count; y++) if (CurPT[y][XL - x] == 1) { if (CurRepeat % 2 == 0) BM.MakeSmallBul(Vector2.left * 10, Vector2.zero).transform.position = SPRE[y].position; else BM.MakeSmallBul(Vector2.right * 10, Vector2.zero).transform.position = SPLE[y].position; }
+                        yield return new WaitForSeconds(BulletInterv);
                     }
-                }
-                yield return new WaitForSeconds(BulletInterv);
+                    break;
+                case 2:
+                    for (int x = 0; x < CurPT[0].Length; x++)
+                    {
+                        for (int y = 0; y < CurPT.Count; y++) if (CurPT[YL - y][XL - x] == 1) { if (CurRepeat % 2 == 0) BM.MakeSmallBul(Vector2.left * 10, Vector2.zero).transform.position = SPRE[y].position; else BM.MakeSmallBul(Vector2.right * 10, Vector2.zero).transform.position = SPLE[y].position; }
+                        yield return new WaitForSeconds(BulletInterv);
+                    }
+                    break;
+                case 3:
+                    for (int x = 0; x < CurPT[0].Length; x++)
+                    {
+                        for (int y = 0; y < CurPT.Count; y++) if (CurPT[YL - y][x] == 1) { if (CurRepeat % 2 == 0) BM.MakeSmallBul(Vector2.left * 10, Vector2.zero).transform.position = SPRE[y].position; else BM.MakeSmallBul(Vector2.right * 10, Vector2.zero).transform.position = SPLE[y].position; }
+                        yield return new WaitForSeconds(BulletInterv);
+                    }
+                    break;
             }
+
             yield return new WaitForSeconds(RepeatInterv);
         }
         yield return OneSec;
@@ -219,7 +248,8 @@ public class PatternManager : MonoBehaviour
     // Normal                   N1 -> N2 -> Hard
     IEnumerator PatternN1()       // Play Time : 25s
     {
-        MusicOff();
+        MainCam.transform.position = new Vector3(0, 0, -2);
+        AD.NoiszeOn();
         Hand2.SetActive(true);
         CurPattern = 1;
         // ??? ?????? ????
@@ -229,7 +259,7 @@ public class PatternManager : MonoBehaviour
 
         yield return OneSec;
 
-        MusicOn();
+        //AD.MusicOn(1);
         WaitForSeconds SecC = new WaitForSeconds(BulletInterv * 1.4f);
 
         /*
@@ -242,7 +272,7 @@ public class PatternManager : MonoBehaviour
         int dk = -1;                        // K?? ?????
         int k = 7;                          // ?? ??? ????? ???????? ???
         bool jk = true;                     // ?????? ??? ??????? ???? ???
-        for (int i = 0; i < 110; i++)       // ?? 110???? ???? ??????
+        for (int i = 0; i < 140; i++)       // ?? 110???? ???? ??????
         {
             /*
              ?? 30???? ????????? ??, ?????? ?????? ????? ??????
@@ -276,7 +306,8 @@ public class PatternManager : MonoBehaviour
 
     IEnumerator PatternN2()
     {
-        MusicOff();
+        MainCam.transform.position = new Vector3(0, 0, -2);
+        AD.NoiszeOn();
         CurPattern = 2;
         // ??? ?????? ????
         MakeGlitch(0.1f, 0.5f, 0.7f);
@@ -284,7 +315,7 @@ public class PatternManager : MonoBehaviour
         MakeGlitch(0, 0, 0);
         yield return OneSec;
 
-        MusicOn();
+        AD.MusicOn(1);
         // ??? ?? ???? ????? ??? y??. ???? ?????? ???.
         float MidY = (SPLE[4].position.y + SPLE[5].position.y) / 2;
 
@@ -412,16 +443,6 @@ public class PatternManager : MonoBehaviour
             case 2: StartCoroutine(ChangePT(PatternN2())); break;
         }
     }
-
-    public void MusicOn()
-    {
-        AL.Play();
-    }
-
-    public void MusicOff()
-    {
-        AL.Stop();
-    }
     
     // ???? ???????? ?????? ???????, ????? ???? ?????? ????? ???? ?????? ??????? ????
     // ?????? ??? ??? ???? ?????? ???? ????
@@ -440,7 +461,7 @@ public class PatternManager : MonoBehaviour
 
     void ReadExternalPattern()  // Read Pattern In Resources Folder. Name of The Pattern File Must be Pattern_X ( ex) Pattern_1, Pattern_2)
     {
-        for (int i = 1; i < 5; i++)
+        for (int i = 5; i <= 5; i++)
         {
             string tmp = "Text/Dodge/Pattern_" + i.ToString();
             TextAsset textFile = Resources.Load(tmp) as TextAsset;

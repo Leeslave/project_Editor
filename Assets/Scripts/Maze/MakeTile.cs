@@ -13,8 +13,6 @@ public class MakeTile : MonoBehaviour
     public GameObject RWall;
     public GameObject Player;
     public GameObject Key;
-    public GameObject Fire;
-    public GameObject Compass;
     public MazeMap Maze_Inf;
     public GameObject Clear;
     public GameObject Fog;
@@ -39,10 +37,34 @@ public class MakeTile : MonoBehaviour
         GetDifficulty();
         Maze_Inf = new MazeMap();
         Maze_Inf.MazeMaking(Col, Row);
-        Player.transform.position = new Vector3(Maze_Inf.Player_X * Move_X + 5, Maze_Inf.Player_Y * Move_Y + 5f, 0);
         CreateLevel();
         MakeItems();
+
+        //MakeTutorial();
+
+        
+
+        Player.transform.position = new Vector3(Maze_Inf.Player_X * Move_X + 5, Maze_Inf.Player_Y * Move_Y + 5f, 0);
+        
     }
+
+    void MakeTutorial()
+    {
+        Player.GetComponent<PlayerMove>().Sight = 5;
+        //IsCalcFog = true;
+        Timer.NowTime = 999;
+        Timer.gameObject.SetActive(true);
+        
+        Maze_Inf = new MazeMap();
+        Col = Row = 20;
+        KeyNum = 1;
+        Maze_Inf.MazeMaking(Col, Row,true);
+        MakeItems(true);
+
+        CreateLevel();
+        
+    }
+
     // �ӽ�(���� �̱����� � ������ �� �� ��������)
     void GetDifficulty()
     {
@@ -122,6 +144,8 @@ public class MakeTile : MonoBehaviour
                     GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10+10, 0), transform.rotation);
                     if (Maze_Inf.Maze[x, Y].Exit == Vector3.up) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
                 }
+                if (Maze_Inf.Maze[x,y].Test)
+                    Instantiate(Key).transform.position = new Vector3(x * Move_X + 5, y * Move_Y + 5, 0);
             }
         }
     }
@@ -129,29 +153,38 @@ public class MakeTile : MonoBehaviour
     // Key ����
     // ��� Key�� ��ġ�� ��ġ�� ������, �÷��̾�� Ư�� �Ÿ� �̻��� ��ġ���� �����ǵ��� ��.
 
-    void MakeItems()
+    void MakeItems(bool IsTu = false)
     {
-        List<Tuple<int, int>> Cnt = new List<Tuple<int, int>>() { };
-        Vector3 CCnt = new Vector3(Maze_Inf.Player_X, Maze_Inf.Player_Y);
-        Tuple<int,int> a;
-        double z = 0;
-        for (int i = 0; i < KeyNum + 2; i++)
+        if (IsTu)
         {
-            do
+            float x = Maze_Inf.Player_X-1, y = Maze_Inf.Player_Y;
+            Instantiate(Key).transform.position = new Vector3(x-- * Move_X + 5,y * Move_Y + 5 , 0);
+        }
+        else
+        {
+            List<Tuple<int, int>> Cnt = new List<Tuple<int, int>>() { };
+            Vector3 CCnt = new Vector3(Maze_Inf.Player_X, Maze_Inf.Player_Y);
+            Tuple<int, int> a;
+            double z = 0;
+            for (int i = 0; i < KeyNum + 2; i++)
             {
-                int x = Random.Range(0, Row);
-                int y = Random.Range(0, Col);
-                a = new Tuple<int, int>(Random.Range(0, Row), Random.Range(0, Col));
-                z = Vector3.Magnitude(CCnt - new Vector3(x, y, 0));
+                do
+                {
+                    int x = Random.Range(0, Row);
+                    int y = Random.Range(0, Col);
+                    a = new Tuple<int, int>(Random.Range(0, Row), Random.Range(0, Col));
+                    z = Vector3.Magnitude(CCnt - new Vector3(x, y, 0));
+                }
+                while (Cnt.Contains(a) && z >= (KeyWeight * 10));
+                Cnt.Add(a);
             }
-            while (Cnt.Contains(a) && z >= (KeyWeight * 10));
-            Cnt.Add(a);
+            for (int i = 0; i < KeyNum; i++)
+            {
+                GameObject cnt = Instantiate(Key);
+                Player.GetComponent<PlayerMove>().KeysTrans.Add(cnt.transform);
+                cnt.transform.position = new Vector3(Cnt[i].Item1 * Move_X + 5, Cnt[i].Item2 * Move_Y + 5, 0);
+            }
+
         }
-        for(int i = 0; i < KeyNum; i++)
-        {
-            Instantiate(Key).transform.position = new Vector3(Cnt[i].Item1 * Move_X + 5, Cnt[i].Item2 * Move_Y + 5, 0);
-        }
-        if(IsCalcFog) Instantiate(Fire).transform.position = new Vector3(Cnt[KeyNum].Item1 * Move_X + 5, Cnt[KeyNum].Item2 * Move_Y + 5, 0);
-        Instantiate(Compass).transform.position = new Vector3(Cnt[KeyNum+1].Item1 * Move_X + 5, Cnt[KeyNum+1].Item2 * Move_Y + 5, 0);
     }
 }

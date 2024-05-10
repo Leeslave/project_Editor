@@ -24,13 +24,18 @@ public class MazeTimer : MonoBehaviour
         Rect = GetComponent<RectTransform>();
     }
 
+    private void OnEnable()
+    {
+        Timer.text = string.Format("{0:0.00}", NowTime);
+    }
+
 
     /// <summary>
     /// 현재 남은 시간이 10초 미만일 경우, 화면이 점점 어두워지는 연출을 통해 게임 오버를 연출
     /// </summary>
     private void Update()
     {
-        if (NowTime > 0)
+        if (NowTime > 0 && NowTime <= 900)
         {
             NowTime -= Time.deltaTime;
             Timer.text = string.Format("{0:0.00}", NowTime);
