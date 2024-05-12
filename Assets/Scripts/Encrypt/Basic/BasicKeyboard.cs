@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class BasicKeyboard : MonoBehaviour
 {
@@ -11,32 +9,31 @@ public class BasicKeyboard : MonoBehaviour
     public static BasicKeyboard Instance { get; private set; } = null;
 
     /// <summary>
-    /// 이 딕셔너리에는 키 코드에 따른 메소드가 바인드되어 있음 - There is a methond matches with keycode in this dictionary
+    /// 이 딕셔너리에는 키 코드에 따른 메소드가 바인드되어 있음 - There is a method matches with keycode in this dictionary
     /// </summary>
-    public Dictionary<KeyCode, Action> keyDictionary { get; set; }
-    
+    private Dictionary<KeyCode, System.Action> KeyDictionary { get; set; }
     
     public BasicInputField ConnectedInputField { get; set; }
 
-    public string LastInputKeyCode { get; set; } = "";
-    public bool IsKeyHoldingDown { get; set; } = false;
-    public int HoldingDownCounter { get; set; } = 0;
-    public int ContinuousInputCounter { get; set; } = 0;
+    private string LastInputKeyCode { get; set; } = "";
+    private bool IsKeyHoldingDown { get; set; } = false;
+    private int HoldingDownCounter { get; set; } = 0;
+    private int ContinuousInputCounter { get; set; } = 0;
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(this.gameObject);
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
             if (Instance != this)
-                Destroy(this.gameObject);
+                Destroy(gameObject);
         }
 
-        keyDictionary = new Dictionary<KeyCode, Action>
+        KeyDictionary = new Dictionary<KeyCode, System.Action>
         {
             {KeyCode.Alpha0, KeyDown_0 },
             {KeyCode.Alpha1, KeyDown_1 },
@@ -82,7 +79,7 @@ public class BasicKeyboard : MonoBehaviour
 
     void Update()
     {
-        foreach (var dic in keyDictionary)
+        foreach (var dic in KeyDictionary)
         {
             //키 다운
             if (Input.GetKeyDown(dic.Key))
@@ -128,7 +125,7 @@ public class BasicKeyboard : MonoBehaviour
 
     private void FixedUpdate()
     {
-        foreach (var dic in keyDictionary)
+        foreach (var dic in KeyDictionary)
         {
             //0.02초마다 키 입력을 확인한다
             if (Input.GetKey(dic.Key))
@@ -138,10 +135,10 @@ public class BasicKeyboard : MonoBehaviour
                     HoldingDownCounter++;
 
                 //인풋 카운터가 3을 넘어가면 인풋 딜레이가 짧아진다
-                float countinuousInputDelay = (ContinuousInputCounter > 3) ? 2 : 10;
+                float continuousInputDelay = (ContinuousInputCounter > 3) ? 2 : 10;
 
                 //홀드가 인풋 딜레이를 넘어섰다면
-                if (HoldingDownCounter > countinuousInputDelay)
+                if (HoldingDownCounter > continuousInputDelay)
                 {
                     //홀드 카운트를 0으로 초기화하고 인풋 카운터가 증가한다
                     HoldingDownCounter = 0;
