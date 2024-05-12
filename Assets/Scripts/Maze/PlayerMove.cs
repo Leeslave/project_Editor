@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.IO;
+using Cinemachine;
+using System.Reflection;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -67,6 +69,7 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField] List<Transform> Marks;
     [NonSerialized] public List<Transform> KeysTrans = new List<Transform>();
+    [SerializeField] CinemachineVirtualCamera CV;
 
     void Awake()
     {
@@ -93,6 +96,8 @@ public class PlayerMove : MonoBehaviour
         KeyText.text = $"{KeyTrain.Count - 1}/{MT.KeyNum}";
     }
 
+
+    [SerializeField] float speed = 5;
     void FixedUpdate()
     {
         if (MoveAble && MS)
@@ -102,12 +107,12 @@ public class PlayerMove : MonoBehaviour
             // 이동 제어
             if (Input.GetButton("Horizontal"))
             {
-                NX = Input.GetAxisRaw("Horizontal") * 10;
+                NX = Input.GetAxisRaw("Horizontal") * Time.deltaTime * speed;
                 Dir = NX < 0 ? Vector3.left : Vector3.right;
             }
             else if (Input.GetButton("Vertical"))
             {
-                NY = Input.GetAxisRaw("Vertical") * 10;
+                NY = Input.GetAxisRaw("Vertical") * Time.deltaTime * speed;
                 Dir = NY < 0 ? Vector3.down : Vector3.up;
             }
 
@@ -117,7 +122,7 @@ public class PlayerMove : MonoBehaviour
                 AS.Play();
                 bool IsMoveNext = true;     // 다음 이동 시, 조건이 만족되지 않은 출구, 벽과 부딪힌다면 이동하지 않음을 결정. 
 
-                rayHit = Physics2D.Raycast(transform.position, Dir, 10, LayerMask.GetMask("Plat"));
+                rayHit = Physics2D.Raycast(transform.position, Dir, 2.5f, LayerMask.GetMask("Plat"));
 
                 if (rayHit.collider != null)
                 {
@@ -183,14 +188,14 @@ public class PlayerMove : MonoBehaviour
                             if (j > 40) j = 40;
                             VCnt = (KeysTrans[i].position - transform.position).normalized;
                             Marks[i].gameObject.SetActive(true);
-                            Marks[i].transform.position = transform.position + (VCnt) * j;
+                            Marks[i].transform.position = transform.position + (VCnt) * (j - 5);
                             Marks[i].transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(VCnt.y, VCnt.x) * Mathf.Rad2Deg);
                         }
                     }
                 }
                 // 플레이어의 수직 혹은 수평 이동키가 입력 되었을 경우 InputDelay 전까진 다음 입력을 받을 수 없게 함
-                MoveAble = false;
-                Invoke("AbleMove", InputDelay);
+                /*MoveAble = false;
+                Invoke("AbleMove", InputDelay);*/
             }
         }
     }
