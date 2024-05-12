@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScreenManager : MonoBehaviour
+public class ScreenManager : Singleton<ScreenManager>
 {
     /**
     * 스크린 관리 스크립트
@@ -37,35 +37,21 @@ public class ScreenManager : MonoBehaviour
         TryOff
     }
 
-    // 싱글턴
-    private static ScreenManager _instance;
-    public static ScreenManager Instance
-    {
-        get { return _instance; }
-    }
 
-    void Awake()
+    new void Awake()
     {
-        // 싱글턴 설정
-        if(!_instance)
+        base.Awake();
+
+        // 현재 스크린 상태 설정
+        if(GameSystem.Instance.isScreenOn)
         {
-            _instance = this;
-
-            // 현재 스크린 상태 설정
-            if(GameSystem.Instance.isScreenOn)
-            {
-                /// 바탕 화면으로 설정
-                SetScreen(ScreenMode.On);
-            }
-            else
-            {
-                /// 부팅 대기 화면으로 설정
-                SetScreen(ScreenMode.Off);
-            }
+            /// 바탕 화면으로 설정
+            SetScreen(ScreenMode.On);
         }
         else
         {
-            Destroy(gameObject);
+            /// 부팅 대기 화면으로 설정
+            SetScreen(ScreenMode.Off);
         }
     }
 
