@@ -1,5 +1,5 @@
 {
-    "name": "day3Office",
+    "name": "day5Office",
     "image": "Clover",
     "position": 0,
     "anchor": { "x": 0.4, "y": 0.33 },
@@ -8,7 +8,7 @@
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"클레이튼씨! 오셨네요!",
+            "text":"안녕하세요. 클레이튼씨.",
             "characterL": {
                 "fileName": "Klayton",
                 "index": 0
@@ -21,7 +21,7 @@
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"좋은 아침일세. 클로버.",
+            "text":"좋은 아침일세.",
             "characterL": {
                 "fileName": "Klayton",
                 "index": 0
@@ -34,7 +34,7 @@
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"오늘은 조금 늦으셨네요? 평소랑 다르게 좀 아슬아슬 하셨어요.",
+            "text":"드디어 오늘부터 실전 업무가 나오는 날입니다. 준비는 되셨나요?",
             "characterL": {
                 "fileName": "Klayton",
                 "index": 0
@@ -47,7 +47,7 @@
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"출근은 일찍 했는데, 핸더슨한테 붙잡혀서 강제 티타임 시간을 가졌지.",
+            "text":"준비를 할게 있나? 어서 진행하도록 하지.",
             "characterL": {
                 "fileName": "Klayton",
                 "index": 0
@@ -60,7 +60,7 @@
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"아하, 그런거였군요. 저는 혹시 클레이튼씨에게 무슨 일이라도, 생긴 줄 알았어요.",
+            "text":"넵! 그러면 메일을 확인해주세요!",
             "characterL": {
                 "fileName": "Klayton",
                 "index": 0
@@ -73,7 +73,7 @@
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"아무튼, 아무 일 없으시다니 다행이네요! 오늘은 설명 드릴 임무가 많아서 조금 빠르게 진행하도록 할게요.",
+            "text":"오늘부턴, 딱히 제 안내가 필요없을 거에요!",
             "characterL": {
                 "fileName": "Klayton",
                 "index": 0
@@ -82,41 +82,6 @@
                 "fileName": "Clover",
                 "index": 3
             } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"좋은 자세야.",
-            "characterL": {
-                "fileName": "Klayton",
-                "index": 0
-            } ,
-            "characterR": {
-                "fileName": "Clover",
-                "index": 3
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"메일 먼저 확인하시고, 업무 프로그램을 실행해주세요!",
-            "characterL": {
-                "fileName": "Klayton",
-                "index": 0
-            } ,
-            "characterR": {
-                "fileName": "Clover",
-                "index": 3
-            } 
-        },
-        {
-            "$type": "ChoiceParagraph, Assembly-CSharp",
-            "chatType": "Choice",
-            "choiceList": [
-                {
-                    "text": "알겠네."
-                }
-            ]
         }
     ]
 }
