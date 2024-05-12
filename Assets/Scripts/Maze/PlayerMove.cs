@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System.IO;
+using Cinemachine;
+using System.Reflection;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -34,6 +36,8 @@ public class PlayerMove : MonoBehaviour
     public GameObject DirMark;
     // 우측 상단에 띄울 Icon(횟불)
     public GameObject FireIcon;
+    [SerializeField] AudioSource AS;
+    [SerializeField] List<AudioClip> Clips;
     // 휙득한 Key들의 Object를 저장하는 List
     // 이 때 추후 계산 상의 편의를 위해 Player Object를 0번에 저장한다.
     List<GameObject> KeyTrain = new List<GameObject>();
@@ -63,9 +67,14 @@ public class PlayerMove : MonoBehaviour
 
     bool IsCom = false;
 
+    [SerializeField] List<Transform> Marks;
+    [NonSerialized] public List<Transform> KeysTrans = new List<Transform>();
+    [SerializeField] CinemachineVirtualCamera CV;
+
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
+        AS = GetComponent<AudioSource>();
         Bf_X = transform.position.x;
         Bf_Y = transform.position.y;
         MoveAble = true;
@@ -77,9 +86,18 @@ public class PlayerMove : MonoBehaviour
     private void Start()
     {
         CalcFog();
+        for (int i = 0; i < MT.KeyNum; i++) Marks[i].gameObject.SetActive(true);
+        for (int i = 0; i < MT.KeyNum; i++)
+        {
+            VCnt = (KeysTrans[i].position - transform.position).normalized;
+            Marks[i].transform.position = transform.position + (VCnt) * 7;
+            Marks[i].transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(VCnt.y, VCnt.x) * Mathf.Rad2Deg);
+        }
         KeyText.text = $"{KeyTrain.Count - 1}/{MT.KeyNum}";
     }
 
+
+    [SerializeField] float speed = 5;
     void FixedUpdate()
     {
         if (MoveAble && MS)
@@ -89,20 +107,22 @@ public class PlayerMove : MonoBehaviour
             // 이동 제어
             if (Input.GetButton("Horizontal"))
             {
-                NX = Input.GetAxisRaw("Horizontal") * 10;
+                NX = Input.GetAxisRaw("Horizontal") * Time.deltaTime * speed;
                 Dir = NX < 0 ? Vector3.left : Vector3.right;
             }
             else if (Input.GetButton("Vertical"))
             {
-                NY = Input.GetAxisRaw("Vertical") * 10;
+                NY = Input.GetAxisRaw("Vertical") * Time.deltaTime * speed;
                 Dir = NY < 0 ? Vector3.down : Vector3.up;
             }
 
             if (NX != 0 || NY != 0)   // 움직임을 감지
             {
+                AS.clip = Clips[0];
+                AS.Play();
                 bool IsMoveNext = true;     // 다음 이동 시, 조건이 만족되지 않은 출구, 벽과 부딪힌다면 이동하지 않음을 결정. 
 
-                rayHit = Physics2D.Raycast(transform.position, Dir, 10, LayerMask.GetMask("Plat"));
+                rayHit = Physics2D.Raycast(transform.position, Dir, 2.5f, LayerMask.GetMask("Plat"));
 
                 if (rayHit.collider != null)
                 {
@@ -122,7 +142,10 @@ public class PlayerMove : MonoBehaviour
                             File.Move($"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty}",
                                       $"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty+1}");
                             File.Create($"Assets\\Resources\\GameData\\Maze\\C");
-                            SceneManager.LoadScene("TestT");
+
+                            GameSystem.Instance.ClearTask("Dodge");
+                            LoadTestTrash.Instance.LoadScene = "Screen";
+                            SceneManager.LoadScene("LoadT");
                         }
                     }
                 }
@@ -131,9 +154,9 @@ public class PlayerMove : MonoBehaviour
                 
                 if (rayHit.collider != null && IsMoveNext)
                 {
-                    switch (rayHit.collider.name)
+                    switch (rayHit.collider.tag)
                     {
-                        case "Key(Clone)":
+                        case "Key":
                             // 플레이어의 뒤를 따라오는 Key의 특성 상, 플레이어와 충돌할 수 있음으로, 해당 연산에 영향을 받지 않는 tag 및 layer로 변경.
                             KeyTrain.Add(rayHit.collider.gameObject);
                             rayHit.collider.tag = "Untagged";
@@ -141,20 +164,8 @@ public class PlayerMove : MonoBehaviour
                             // 현재 맨 뒤의 Object의 직전 이동 위치로 Key의 위치를 정함
                             rayHit.collider.gameObject.transform.position = LastTrans;
                             KeyText.text = $"{KeyTrain.Count - 1}/{MT.KeyNum}";
-                            break;
-                        // 나침반 아이템을 먹었을 경우, 출구의 위치를 표시하는 화살표 생성
-                        case "Compass(Clone)":
-                            Destroy(rayHit.collider.gameObject);
-                            IsCom = true;
-                            DirMark.SetActive(true);
-                            DirIcon.SetActive(true);
-                            break;
-                        // 횟불 아이템을 먹었을 경우, 30초간 무조건 시야 범위 안의 모든 안개를 걷어낸다.
-                        case "Fire(Clone)":
-                            Destroy(rayHit.collider.gameObject);
-                            IsFire = true;
-                            FireIcon.SetActive(true);
-                            Invoke("FireOff", 30);
+                            AS.clip = Clips[1];
+                            AS.Play();
                             break;
                     }
                 }
@@ -166,18 +177,25 @@ public class PlayerMove : MonoBehaviour
                     Bf_X = transform.position.x;
                     Bf_Y = transform.position.y;
                     transform.Translate(new Vector3(NX, NY, 0));
-                    maincam.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
                     CalcFog();
-                    if (IsCom)
+                    for (int i = 0; i < MT.KeyNum; i++)
                     {
-                        VCnt = (MT.Clear.transform.position - transform.position).normalized;
-                        DirMark.transform.position = transform.position + (VCnt) * 7;
-                        DirMark.transform.rotation = Quaternion.Euler(0,0,Mathf.Atan2(VCnt.y,VCnt.x) * Mathf.Rad2Deg);
+                        VCnt = KeysTrans[i].position - transform.position;
+                        float j = Vector3.Magnitude(VCnt);
+                        if (j <= 10 || KeysTrans[i].CompareTag("Untagged")) Marks[i].gameObject.SetActive(false);
+                        else
+                        {
+                            if (j > 40) j = 40;
+                            VCnt = (KeysTrans[i].position - transform.position).normalized;
+                            Marks[i].gameObject.SetActive(true);
+                            Marks[i].transform.position = transform.position + (VCnt) * (j - 5);
+                            Marks[i].transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(VCnt.y, VCnt.x) * Mathf.Rad2Deg);
+                        }
                     }
                 }
                 // 플레이어의 수직 혹은 수평 이동키가 입력 되었을 경우 InputDelay 전까진 다음 입력을 받을 수 없게 함
-                MoveAble = false;
-                Invoke("AbleMove", InputDelay);
+                /*MoveAble = false;
+                Invoke("AbleMove", InputDelay);*/
             }
         }
     }
