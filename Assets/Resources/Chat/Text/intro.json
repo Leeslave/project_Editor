@@ -1,0 +1,85 @@
+{
+    "chatList": [
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "chatType": "CutScene",
+            "text":".....",
+            "textDelay": 0.6,
+            "background": "black"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "chatType": "CutScene",
+            "text":"한치 앞도 모르는 것이 사람의 인생입니다."
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "chatType": "CutScene",
+            "text":"오늘도 무슨 일이 벌어질지 모른다 생각하면 신나지 않나요?"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "chatType": "CutScene",
+            "text":"국민 여러분들께서도 오늘 하루 어떤 일이 있을지 상상해보며 출근해보시는건 어떤가요?"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "chatType": "CutScene",
+            "text":"그럼 오늘 하루도 파이팅입니다!"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"...",
+            "textDelay": 0.6
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"평화롭군."
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"일은 무슨 일이 벌어져. 오늘도 조용히 지나갔으면 좋겠군."
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "text": "주머니에서 진동이 느껴진다."
+        },
+        {
+            "$type": "ChoiceParagraph, Assembly-CSharp",
+            "chatType": "Choice",
+            "choiceList": [
+                {
+                    "text": "전화기를 확인한다."
+                }
+            ]
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"클레이튼씨 비상입니다. 당장 사무실로 와주세요",
+            "characterR": {
+                "fileName": "Rex",
+                "index": 3
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"하..."
+        },
+        {
+            "$type": "ChoiceParagraph, Assembly-CSharp",
+            "chatType": "Choice",
+            "choiceList": [
+                {
+                    "text": "사무실로 가자",
+                    "reaction": "Remove",
+                    "reactionParam": "0, intro"
+                }
+            ]
+        }
+    ]
+}

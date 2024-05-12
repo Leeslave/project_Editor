@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScreenManager : MonoBehaviour
+public class ScreenManager : Singleton<ScreenManager>
 {
     /**
     * 스크린 관리 스크립트
@@ -37,35 +37,21 @@ public class ScreenManager : MonoBehaviour
         TryOff
     }
 
-    // 싱글턴
-    private static ScreenManager _instance;
-    public static ScreenManager Instance
-    {
-        get { return _instance; }
-    }
 
-    void Awake()
+    new void Awake()
     {
-        // 싱글턴 설정
-        if(!_instance)
+        base.Awake();
+
+        // 현재 스크린 상태 설정
+        if(GameSystem.Instance.isScreenOn)
         {
-            _instance = this;
-
-            // 현재 스크린 상태 설정
-            if(GameSystem.Instance.isScreenOn)
-            {
-                /// 바탕 화면으로 설정
-                SetScreen(ScreenMode.On);
-            }
-            else
-            {
-                /// 부팅 대기 화면으로 설정
-                SetScreen(ScreenMode.Off);
-            }
+            /// 바탕 화면으로 설정
+            SetScreen(ScreenMode.On);
         }
         else
         {
-            Destroy(gameObject);
+            /// 부팅 대기 화면으로 설정
+            SetScreen(ScreenMode.Off);
         }
     }
 
@@ -84,6 +70,15 @@ public class ScreenManager : MonoBehaviour
             bootPanel.SetActive(false);
             // 탈출 버튼 비활성화
             returnButton.SetActive(false);
+        }
+        else if (screenMode == ScreenMode.TryOff)
+        {
+            //바탕화면 비활성화
+            desktop.SetActive(false);
+            // 부팅패널 활성화
+            bootPanel.SetActive(true);
+            // 탈출 버튼 활성화
+            returnButton.SetActive(true);
         }
         else
         {
@@ -104,17 +99,20 @@ public class ScreenManager : MonoBehaviour
     /// </summary>
     /// <remarks>
     /// <para>- Off -> On : 전원 키기</para>
-    /// <para>- On -> TryOff -> GetOff -> Off : 전원 끄기 -> 한번 더 눌러 전원 끄기</para>
+    /// <para>- On -> TryOff -> Off : 전원 끄기 -> 한번 더 눌러 전원 끄기</para>
     /// </remarks>
     public void OnPowerClicked()
     {
+        Debug.Log("Power Clicked");
+        StopAllCoroutines();
+
         switch (currentBootStatus)
         {
             case ScreenMode.Off:
-                StartCoroutine("BootScreen");
+                StartCoroutine(BootScreen());
                 break;
             case ScreenMode.On:
-                StartCoroutine("OffScreen");
+                StartCoroutine(OffScreen());
                 break;
             case ScreenMode.TryOff:
                 SetScreen(ScreenMode.Off);
@@ -131,6 +129,17 @@ public class ScreenManager : MonoBehaviour
             return;
         StopAllCoroutines();
         StartCoroutine("BootScreen");
+    }
+
+    /// <summary>
+    /// 스크린종료 후 이전씬으로 돌아가기
+    /// </summary>
+    /// <param name="sceneName">돌아갈 특정 씬</param>
+    public void OnReturnClicked(string sceneName)
+    {
+        if (sceneName == null || sceneName == "")
+            sceneName = "MainWorld";
+        GameSystem.LoadScene(sceneName);
     }
 
     /**
@@ -169,10 +178,13 @@ public class ScreenManager : MonoBehaviour
         // 종료 시도
         SetScreen(ScreenMode.TryOff);
 
-        // 종료 대기
-        bootCLI.text = $"\n\n${(int)powerOffDelay}초 내로 전원 버튼을 다시 눌러 전원 끄기...";
+        // 종료 알림
+        bootCLI.text = $"\n\n{(int)powerOffDelay}초 내로 전원 버튼을 다시 눌러 전원 끄기...";
+        bootCLI.gameObject.SetActive(true);
 
-        yield return new WaitUntil(() => currentBootStatus == ScreenMode.Off || Time.time >= powerOffDelay);
+        // 종료 대기
+        float startTime = Time.time;
+        yield return new WaitUntil(() => currentBootStatus == ScreenMode.Off || Time.time - startTime >= powerOffDelay);
 
         // 전원 종료시
         if(currentBootStatus == ScreenMode.Off)
@@ -186,17 +198,5 @@ public class ScreenManager : MonoBehaviour
         {
             SetScreen(ScreenMode.On);
         }
-    }
-
-    /**
-    * 스크린에서 복귀 함수
-    * - 스크린에서 나오기 버튼 클릭시 실행
-    * - 해당하는 씬으로 돌아감
-    */
-    public void OnReturnClicked(string sceneName)
-    {
-        if (sceneName == null || sceneName == "")
-            sceneName = "MainWorld";
-        GameSystem.LoadScene(sceneName);
     }
 }

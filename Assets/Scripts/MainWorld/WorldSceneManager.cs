@@ -16,10 +16,13 @@ public enum World {
     Hallway,
     Office,
     Office2,
-    Interrogate
+    Interrogate,
+    
+    MAX
 }
 
-public class WorldSceneManager : MonoBehaviour 
+
+public class WorldSceneManager : Singleton<WorldSceneManager> 
 {
     /**
     * MainWorld 씬 매니저
@@ -27,54 +30,73 @@ public class WorldSceneManager : MonoBehaviour
     *   - 지역 내 위치 이동
     *   - 지역 간 이동
     */
-    [Header("인트로 데이터")]
-    [SerializeField]
-    private DayIntro intro;      // 인트로 오브젝트
 
     [Header("지역 데이터")]
     [SerializeField]
-    private GameObject[] locationList;    // 지역 오브젝트 리스트
-    [SerializeField]
-    private GameObject LeftButton;      // 왼쪽 이동 버튼
-    [SerializeField]
-    private GameObject RightButton;     // 오른쪽 이동 버튼
+    private Location[] locationList;    // 지역 오브젝트 리스트
+    public Location CurrentLocation { get { return locationList[(int)GameSystem.Instance.gameData.location]; } }
+    
 
-    [Header("NPC 생성 정보")]
-    [SerializeField]
-    private List<GameObject> npcList = new();     // 모든 지역 NPC 리스트
-    [SerializeField]
-    private GameObject npcPrefab;   // NPC 생성용 프리팹
+    public SoundManager worldBGM;  // 지역 내 배경음악
+    
+    public bool IsMoving { get; private set; } = false;    // 지역 내 이동 버튼 활성화 여부
 
-    private void Start()
+    [Header("지역 이동 효과")]
+    public float moveDelay;     // 지역 이동 딜레이
+    [SerializeField]
+    private Image curtain;      // 지역 이동 효과 이미지
+
+
+    /// 씬이 새로 로딩될때마다 월드 재로딩
+    new void Awake()
     {
-        // 추가 인트로 실행 (날짜 변경 후 0시에만)
-        if (GameSystem.Instance.currentTime == 0)
+        base.Awake();
+
+        ReloadWorld();
+    }
+
+
+    /// <summary>
+    /// 월드 재로딩, 날짜&시간대 재적용
+    /// </summary>
+    public void ReloadWorld()
+    {
+        // 모든 지역 리로드
+        foreach(var iter in locationList)
         {
-            if (intro)
-                StartCoroutine(WaitForIntro());
+            iter.ReloadLocation();
         }
-        else
-        {
-            // 위치 설정
-            MoveLocation(GameSystem.Instance.currentLocation.ToString());
 
-            // npc 생성
-            SetWorldObject(); 
-        }              
+        // 현재 지역 활성화
+        CurrentLocation.ActiveLocation(true);
     }
 
-    // 인트로 오브젝트 대기
-    IEnumerator WaitForIntro()
+
+    /// <summary>
+    /// 지역 이동 버튼 활성화
+    /// </summary>
+    public void SetMoveActive()
     {
-        intro.gameObject.SetActive(true);
-        yield return new WaitUntil(() => intro.isFinished);
-        
-        // 위치 설정
-        MoveLocation(GameSystem.Instance.currentLocation.ToString());
-
-        // npc 생성
-        SetWorldObject();
+        IsMoving = !IsMoving;
+        CurrentLocation.SetButtonActive(IsMoving);
     }
+
+    /// <summary>
+    /// 지역 변경
+    /// </summary>
+    /// <remarks>지역을 변경하고 지역 내 위치 동기화
+    public void MoveLocation(World location)
+    {
+        // 기존 지역 비활성화
+        CurrentLocation.ActiveLocation(false);
+
+        // 현재 지역 설정
+        GameSystem.Instance.gameData.SetLocation(location);
+
+        // 새 지역 활성화
+        CurrentLocation.ActiveLocation(true);
+    }
+
 
     /// <summary>
     /// 지역 변경
@@ -82,173 +104,23 @@ public class WorldSceneManager : MonoBehaviour
     /// <remarks>지역을 변경하고 지역 내 위치 동기화
     public void MoveLocation(string location)
     {
-        World newLocation;
-        try
-        {
-            // 이동할 지역 설정
-            newLocation = Enum.Parse<World>(location);
-        }
-        catch(ArgumentException)
-        {
-            Debug.Log($"LOCATION LOAD FAILED : Invalid location Name {location}");
-            return;
-        }
-
-        // 해당하는 지역만 활성화
-        for(int i = 0; i < locationList.Length; i++)
-        {
-            locationList[i].SetActive(false);
-            if (i == (int)newLocation)
-                locationList[i].SetActive(true);
-        }
-
-        // 현재 지역 설정
-        GameSystem.Instance.currentLocation = newLocation;
-
-        // 지역 내 위치 동기화
-        MovePosition(GameSystem.Instance.currentPosition.ToString());
+        MoveLocation(Enum.Parse<World>(location));
     }
 
-    /// <summary>
-    /// 지역 내 이동
-    /// </summary>
-    /// <remarks>지역 내 위치를 이동
-    public void MovePosition(string position)
-    {
-        int newPos;
-
-        // 좌, 우로 이동
-        switch (position)
-        {
-            case "Left":
-                newPos = GameSystem.Instance.currentPosition - 1;
-                break;
-            case "Right":
-                newPos = GameSystem.Instance.currentPosition + 1;
-                break;
-            default:
-                if(!int.TryParse(position, out newPos))
-                {
-                    Debug.Log($"WORLD MOVE ERROR : Cannot move to position {position}");
-                    return;
-                }
-                break;
-        }
-        
-
-        // 현재 월드 오브젝트
-        Transform currentWorldObject = locationList[(int)GameSystem.Instance.currentLocation].transform;
-
-        // 위치값 예외 처리
-        if (newPos < 0 || newPos >= currentWorldObject.childCount)
-        {
-            Debug.Log($"WORLD MOVE ERROR : Invalid position {newPos}");
-            return;
-        }
-
-        // 양쪽 이동 버튼 설정
-        LeftButton.SetActive(true);
-        RightButton.SetActive(true);    
-        
-        if (newPos == 0)
-        {
-            LeftButton.SetActive(false);
-        }
-        else if(newPos == currentWorldObject.childCount - 1)
-        {
-            RightButton.SetActive(false);
-        }
-        
-        // 해당 위치 활성화
-        for(int i = 0; i < currentWorldObject.childCount; i++)
-        {
-            currentWorldObject.GetChild(i).gameObject.SetActive(false);
-            if (i == newPos)
-                currentWorldObject.GetChild(i).gameObject.SetActive(true);
-        }
-
-        // 현재 위치 설정
-        GameSystem.Instance.currentPosition = newPos;
-    }
 
     /// <summary>
-    /// 시간대 변경
+    /// 화면 전환 효과
     /// </summary>
-    /// <remarks>시간대를 변경하고 현재 지역 동기화
-    public void ChangeTime()
+    public IEnumerator FadeInOut()
     {
-        /**
-        시간대 변경에 따른 지역들 동기화
-        - NPC들 활성화, 위치 동기화
-        - 지역들 배경 이미지 변경
-        - 바로 다음 시간대로만 변경
-        */
-
-        // 시간대 변경
-        int time = GameSystem.Instance.currentTime + 1;
-
-        // 날짜 변경 (시간대 4일시)
-        if (time == 4)
+        float elapsedTime = 0f;
+        
+        // 점점 밝아지기
+        while (elapsedTime < moveDelay)
         {
-            GameSystem.Instance.SetDate();
-            SetWorldObject();
-            return;
-        }
-
-        // 해당시간으로 설정
-        GameSystem.Instance.SetTime(time);
-
-        // NPC 데이터 
-        SetWorldObject();
-    }
-
-    /// <summary>
-    /// 현재 시간대의 월드 오브젝트 설정
-    /// </summary>
-    private void SetWorldObject()
-    {
-        // 이전 오브젝트들 삭제
-        foreach(var oldNPC in npcList)
-        {
-            Destroy(oldNPC);
-        }
-
-        // 리스트 초기화
-        npcList = new();
-        // 새 오브젝트 데이터
-        List<string> npcFiles = GameSystem.Instance.today.npcList[GameSystem.Instance.currentTime];
-        if (npcFiles == null)
-            return;
-
-        // 오브젝트들 생성 및 위치 설정
-        foreach(var newNPCName in npcFiles)
-        {
-            // 새 오브젝트 생성
-            GameObject newObject = Instantiate(npcPrefab);
-            Debug.Log($"Create New NPC : {newNPCName}");
-
-            // 생성한 오브젝트 정보 로드
-            NPC newNPC = newObject.GetComponent<NPC>();
-            newNPC.npcFileName = newNPCName;
-            newNPC.GetData();
-
-            // 오브젝트 정보 로드 실패
-            if (newObject == null)
-            {
-                Debug.Log($"NPC CREATE FAIED : ${newNPCName}");
-                continue;
-            }
-            
-            // NPC 정보
-            NPCData newNPCData = newNPC.npcData;
-
-            // 오브젝트 transform 설정
-            newObject.transform.SetParent(locationList[(int)newNPCData.location].transform.GetChild(newNPCData.locationIndex));
-            newObject.GetComponent<RectTransform>().anchoredPosition = newNPCData.position;
-            newObject.GetComponent<RectTransform>().localScale = new Vector3(1f,1f,1f);
-
-            // 생성 완료, 리스트에 추가
-            npcList.Add(newObject);
+            curtain.color = Color.Lerp(Color.black, Color.clear, elapsedTime / moveDelay);
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
     }
 }

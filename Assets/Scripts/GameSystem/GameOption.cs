@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOption : MonoBehaviour
+public class GameOption : SingletonObject<GameOption>
 {
     /**
     게임 옵션 컨트롤러
@@ -16,6 +16,18 @@ public class GameOption : MonoBehaviour
         - 언어?
     */
     
+    /// 해상도 설정
+    private int resolutionX = 1200;
+    private int resolutionY = 900;
+    
+
+    new void Awake()
+    {
+        base.Awake();
+        Screen.SetResolution(resolutionX, resolutionY, false);  // 해상도 고정
+    }
+
+
     public Button optionButton;
 
     void Update()
@@ -35,10 +47,12 @@ public class GameOption : MonoBehaviour
         GameSystem.LoadScene("SaveSelect");
     }
 
+
     public void LoadStartMenu()
     {
         GameSystem.LoadScene("Start");
     }
+
 
     public void QuitGame()
     {

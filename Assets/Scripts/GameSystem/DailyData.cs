@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-
-/// JSON 파싱 클래스 : DailyData 기본값
 [Serializable]
 public class DailyWrapper
 { 
@@ -21,8 +19,6 @@ public class DailyWrapper
 
 
     public List<Work> workList = new();
-
-    public List<string>[] npcList = new List<string>[4];
 }
 
 [Serializable]
@@ -56,9 +52,6 @@ public class DailyData
 
     /// 업무 정보
     public Dictionary<Work, bool> workList = new();
-
-    /// NPC 정보
-    public List<string>[] npcList = new List<string>[4];
 
     /// Wrapper에서 생성자
     public DailyData(DailyWrapper wrapper)
@@ -95,10 +88,6 @@ public class DailyData
         {
             workList.Add(work, false);
         }
-        
-
-        // NPC 
-        npcList = wrapper.npcList;
     }
     
 }
@@ -135,6 +124,11 @@ public class DayTime
     {
         hour = _hour;
         minute = _minute;
+    }
+
+    public override string ToString()
+    {
+        return $"{hour:D2}:{minute:D2}";
     }
 }
 

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 [Serializable]
-public class Paragraph
+public abstract class Paragraph
 {
     /**
     상속용 대사 클래스
@@ -14,7 +14,8 @@ public class Paragraph
         CutScene : 컷씬
     */
     public string chatType = "Normal";    // 대사 타입
-    public List<CharacterCG> characters = new();  // 캐릭터 CG 리스트
+    public CharacterCG characterL = null;  // 왼쪽 캐릭터 CG
+    public CharacterCG characterR = null;   // 오른쪽 캐릭터 CG
     public string bgm = null;         // 배경음악
     public string action = null;    // 대화 후 반응
     public string actionParam = null;    // 반응 매개변수
@@ -25,23 +26,59 @@ public class Paragraph
         public string keyword;      // 텍스트상의 변수 키워드
         public string variableName; // 해당하는 변수코드명
     }
+
+    public virtual bool hasAction()
+    {
+        if (action != null)
+        {
+            return true;
+        }
+        return false;
+    }
 }
 
 [Serializable]
-public class NormalParagraph : Paragraph
+public class TalkParagraph : Paragraph
 {
     /**
     일반 대사/컷씬 클래스
     - 기본적인 대화
     - 컷씬용 배경
     */
-    public string talker;  // 발화자
+    public string talker = "";  // 발화자
     public string talkerInfo = "";    // 발화자 설명
-    public string text;  // 내용
+    public string text = "";  // 내용
     public List<VariableReplace> variables = new(); // 변수값
-    public int fontSize = 16;   // 글자 크기
-    public float textDelay = 0.3f;      // 텍스트간 딜레이
+
+    // 글자 크기 기본값들
+    public const int NORMALFONTSIZE = 16; 
+    public const int LARGEFONTSIZE = 32;
+    public const int SMALLFONTSIZE = 10;
+
+    public string fontSize = "normal";   // 글자 크기
+    public float textDelay = 0.4f;      // 텍스트간 딜레이
     public string background = null;  // 배경 이미지
+
+
+    public int GetFontSize()
+    {
+        switch(fontSize)
+        {
+            case "large":
+                return LARGEFONTSIZE;
+            case "small":
+                return SMALLFONTSIZE;
+            case "normal":default:
+                return NORMALFONTSIZE;
+
+        }
+    }
+
+    public TalkParagraph(string text)
+    {
+        talker = "";
+        this.text = text;
+    }
 }   
 
 [Serializable]
@@ -52,8 +89,21 @@ public class ChoiceParagraph : Paragraph
     - 대화 선택지들
     */
     public List<Choice> choiceList = null; // 선택지들 리스트
-}
 
+    public override bool hasAction()
+    {
+        bool hasChoiceAction = false;
+        foreach(var choice in choiceList)
+        {
+            if (choice.reaction != null)
+            {
+                hasChoiceAction = true;
+                break;
+            }
+        }
+        return base.hasAction() || hasChoiceAction;
+    }
+}
 
 [Serializable]
 public class Choice
