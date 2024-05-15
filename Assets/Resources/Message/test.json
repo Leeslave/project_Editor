@@ -1,0 +1,38 @@
+{
+  "chatList": [
+    {
+      "$type": "TalkParagraph, Assembly-CSharp",
+      "talker": "클로버",
+      "text":"짜잔! 안녕하세요! 클레이튼씨, 헤헤..",
+      "characterR": {
+        "fileName": "Clover",
+        "index": 1
+      }
+    },
+    {
+      "$type": "ChoiceParagraph, Assembly-CSharp",
+      "chatType": "Choice",
+      "choiceList": [
+        {
+          "text": "자네는?"
+        },
+        {
+          "text": "3반의 클로버 아닌가?"
+        }
+      ]
+    },
+    {
+      "$type": "TalkParagraph, Assembly-CSharp",
+      "talker": "클로버",
+      "text":"어라? 렉스씨한테 연락 못받으셨나요?",
+      "characterL": {
+        "fileName": "Klayton",
+        "index": 0
+      },
+      "characterR": {
+        "fileName": "Clover",
+        "index": 0
+      }
+    }
+  ]
+}

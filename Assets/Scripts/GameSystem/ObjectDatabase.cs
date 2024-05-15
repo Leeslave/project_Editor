@@ -7,7 +7,8 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
 {
     public List<GameObject> prefabs;       // 데이터 리스트
 
-    public static List<List<WorldObjectData>> List = new();        // 해당 날자의 WorldObject들
+    public static List<List<WorldObjectData>> ObjectList = new();        // 해당 날자의 WorldObject들
+    public static List<MessageData> MessageList = new();        // 해당 날짜의 메시지들
     public string dataPath;
 
 
@@ -46,7 +47,7 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
                         clickParam = obj[(int)DataColumn.OnClick]
                     };
 
-                    List[(int)newNPC.location].Add(newNPC);
+                    ObjectList[(int)newNPC.location].Add(newNPC);
                     break;
                 // 이펙트 데이터 생성
                 case "effect":
@@ -54,10 +55,23 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
                     {
                         time = int.Parse(obj[(int)DataColumn.time]),
                         name = obj[(int)DataColumn.name],
+                        objType = Enum.Parse<ObjectType>(obj[(int)DataColumn.objType]),
                         location = Enum.Parse<World>(obj[(int)DataColumn.location])
                     };
 
-                    List[(int)newEffect.location].Add(newEffect);
+                    ObjectList[(int)newEffect.location].Add(newEffect);
+                    break;
+                // 메시지 데이터 생성
+                case "message":
+                    MessageData newMessage = new()
+                    {
+                        time = int.Parse(obj[(int)DataColumn.time]),
+                        name = obj[(int)DataColumn.name],
+                        objType = Enum.Parse<ObjectType>(obj[(int)DataColumn.objType]),
+                        awakeParam = obj[(int)DataColumn.OnAwake]
+                    };
+
+                    MessageList.Add(newMessage);
                     break;
             }
         }
@@ -67,17 +81,17 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
     private void ClearList()
     {
         // 리스트 초기화
-        List = new();
+        ObjectList = new();
         for(int i = 0; i < (int)World.MAX; i++)
         {
-            List.Add(new());
+            ObjectList.Add(new());
         }
     }
 
     public void DebugList()
     {
-        Debug.Log($"Total location Count : {List.Count}");
-        foreach(var iter in List)
+        Debug.Log($"Total location Count : {ObjectList.Count}");
+        foreach(var iter in ObjectList)
         {
             Debug.Log($"NPC Count : {iter.Count}");
         }

@@ -14,7 +14,7 @@ public class RealEnd : MonoBehaviour
     [SerializeField] Sprite sprite2;
     [SerializeField] TMP_Text text;
 
-    // ¿£µù
+    // ì—”ë”©
     // Input
     public void Ending(bool Clear)
     {
@@ -22,7 +22,7 @@ public class RealEnd : MonoBehaviour
         StartCoroutine(EEE());
     }
 
-    // ¿£µù ½Ã ¿¬Ãâ
+    // ì—”ë”© ì‹œ ì—°ì¶œ
     IEnumerator EEE()
     {
         string cnt;
@@ -55,16 +55,16 @@ public class RealEnd : MonoBehaviour
             text.text += a;
             yield return w1;
         }
-        // Á¾·á ¹öÆ° »ı¼º
+        // ì¢…ë£Œ ë²„íŠ¼ ìƒì„±
         transform.GetChild(3).gameObject.SetActive(true);
 
-        // Á¾·á ¹öÆ°¿¡ Á¾·á ±â´É ÇÒ´ç
+        // ì¢…ë£Œ ë²„íŠ¼ì— ì¢…ë£Œ ê¸°ëŠ¥ í• ë‹¹
         MyUi.AddEvent(transform.GetChild(3).gameObject.GetComponent<EventTrigger>(), EventTriggerType.PointerClick,Exit);
 
         yield break;
     }
 
-    // Á¾·á ¹öÆ°
+    // ì¢…ë£Œ ë²„íŠ¼
     void Exit(PointerEventData a)
     {
         Debug.Log("!");
