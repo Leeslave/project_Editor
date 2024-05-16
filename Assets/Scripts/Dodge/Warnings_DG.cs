@@ -14,8 +14,10 @@ public class Warnings_DG : MonoBehaviour
         IM = GetComponent<Image>();
     }
 
+    Color rr = new Color(1, 0, 0, 0.5f);
     private void OnEnable()
     {
+        IM.color = rr;
         StartCoroutine(EE());
     }
 

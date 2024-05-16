@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour
@@ -24,7 +25,9 @@ public class Player : MonoBehaviour
     public Sprite Unzip;
     public Sprite Zip;
 
-    int HPForPattern = 3;    // 일반 패턴용 HP
+    public int InitHP = 2;
+
+    int HPForPattern = 2;    // 일반 패턴용 HP
 
     public int speed;               // 플레이어의 좌 우 이동 속도
     public bool MoveAble = true;    // 플레이어 조작 가능 상태를 나타냄
@@ -37,8 +40,11 @@ public class Player : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody2D>();
         rigid.velocity = new Vector2(0, -speed);
+        AS.Stop();
+        HPForPattern = InitHP;
         // Particle Object Pooling
         for (int i = 0; i < 9; i++) { PtL.Add(Instantiate(Particle)); PtL[i].SetActive(false); }
+        for (int i = 0; i < 3 - HPForPattern; i++) Unzips[i].gameObject.SetActive(false);
     }
     private void Update()
     {
@@ -65,6 +71,7 @@ public class Player : MonoBehaviour
             StartCoroutine(ChangeColor(RayHit.collider.gameObject));
             // 중복으로 충돌을 탐지하는 것을 막기 위해 한번 충돌 된 이후 0.2초 이후에 충돌 판정이 가능하게 함.
             RayAble = false;
+            AS.Play();
             Invoke("CanRay", 0.2f);
         }
     }
@@ -77,6 +84,7 @@ public class Player : MonoBehaviour
 
     void CanRay()
     {
+        AS.Stop();
         RayAble = true;
     }
 
@@ -96,7 +104,6 @@ public class Player : MonoBehaviour
             // PatternManager 및 Timer 참조
             PM.EndPT(false);
             PM.NextPattern(ref HPForPattern,0);
-            PM.MusicOn();
             PM.ErrorObject.SetActive(false);
         }
         
@@ -112,13 +119,14 @@ public class Player : MonoBehaviour
         rigid.velocity = new Vector2(0, -speed);
     }
 
+    [SerializeField] AudioSource AS;
     // 탄막과 충돌했을 때
     // PM과 TM관련은 PatternManager 및 Timer 참조
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Bullet"))
         {
-            PM.MusicOff();
+            PM.AD.MusicOff(true);
             MoveAble = false;
             if (PM.IsEnd) PM.Clear();
             else
@@ -135,23 +143,29 @@ public class Player : MonoBehaviour
                 gameObject.SetActive(false);
             }
             foreach (Image s in Unzips) s.sprite = Zip;
-            if(HPForPattern > 0) HPForPattern = 3;
+            if(HPForPattern > 0) HPForPattern = InitHP;
         }
         else if (collision.CompareTag("Trace"))
         {
-            collision.gameObject.SetActive(false);
-            if (HPForPattern == 1) { foreach (Image s in Unzips) s.gameObject.SetActive(false); }
-            else if (HPForPattern > 1) Unzips[3 - HPForPattern].sprite = Unzip;
-            PM.NextPattern(ref HPForPattern);
+            if (PM.CurPattern == 2) GameClear();
+            else
+            {
+                collision.gameObject.SetActive(false);
+                if (HPForPattern == 1) { foreach (Image s in Unzips) s.gameObject.SetActive(false); }
+                else if (HPForPattern > 1) Unzips[3 - HPForPattern].sprite = Unzip;
+                PM.NextPattern(ref HPForPattern);
+            }
         }
     }
 
     public void GameClear()
     {
-        PM.EndPT(false);
-        EndG.SetActive(true);
-        gameObject.SetActive(false);
-        Invoke("RealEnd", 1);
+        if (GameSystem.Instance != null)
+        {
+            GameSystem.Instance.ClearTask("Dodge");
+            LoadTestTrash.Instance.LoadScene = "Screen";
+            SceneManager.LoadScene("LoadT");
+        }
     }
 
     void OnGameOver()
