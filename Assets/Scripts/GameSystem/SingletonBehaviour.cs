@@ -47,10 +47,9 @@ public class SingletonObject<T>: MonoBehaviour
     {
         get
         {
-            if (_instance == null)
+            if (!_instance)
             {
                 _instance = FindObjectOfType<T>();
-                DontDestroyOnLoad(_instance.gameObject);
             }
             return _instance;
         }

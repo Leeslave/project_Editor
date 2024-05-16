@@ -1,8 +1,5 @@
 using UnityEngine;
 using TMPro;
-using System;
-using Unity.VisualScripting;
-using UnityEditor.Build.Content;
 using UnityEngine.SceneManagement;
 
 public class DebugConsole : SingletonObject<DebugConsole>
@@ -47,9 +44,9 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 output += $"Current renown: {player.renown}\n";
                 break;
             case "worldObjects":
-                for(int i = 0; i < ObjectDatabase.List.Count; i++)
+                for(int i = 0; i < ObjectDatabase.ObjectList.Count; i++)
                 {
-                    output += $"{(World)i}지역 Object : {ObjectDatabase.List[i].Count}개\n";
+                    output += $"{(World)i}지역 Object : {ObjectDatabase.ObjectList[i].Count}개\n";
                 }
                 break;
             case "help" :
