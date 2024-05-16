@@ -12,4 +12,6 @@ public class MsgManager : SingletonObject<MsgManager>
 
         messages = ObjectDatabase.MessageList;
     }
+    
+    
 }
