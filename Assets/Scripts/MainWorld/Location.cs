@@ -173,7 +173,7 @@ public class Location : MonoBehaviour
         ClearObjects();
 
         // 새 오브젝트 정보 불러오기
-        List<WorldObjectData> dataList = ObjectDatabase.List[(int)locationName];
+        List<WorldObjectData> dataList = ObjectDatabase.ObjectList[(int)locationName];
 
         // NPC들 생성
         foreach(WorldObjectData _data in dataList)
