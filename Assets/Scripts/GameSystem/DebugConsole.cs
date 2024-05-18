@@ -54,7 +54,6 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 output += $"playerData: show current date Index, location, time and renown\n";
                 output += $"worldObjects: show every world's object counts\n";
                 output += $"clear: clear all today works\n";
-                output += $"DaySkip: skip one day\n";
                 break;
             case "clear" :
                 foreach(var work in GameSystem.Instance.today.workList.Keys)
