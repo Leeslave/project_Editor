@@ -25,8 +25,10 @@ public class MsgManager : SingletonObject<MsgManager>
     private int messageIndex;
     public GameObject BackButton;
     
-    void Awake()
+    new void Awake()
     {
+        base.Awake();
+        
         GetMessages();
 
         // 메시지 패널 생성
