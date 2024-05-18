@@ -17,8 +17,9 @@ public class MailManager : Singleton<MailManager>
     public float panelSize = 60;
 
     
-    void Awake()
+    new void Awake()
     {
+        base.Awake();
         // 메일 컨텍스트 초기화
         mailList.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
         
