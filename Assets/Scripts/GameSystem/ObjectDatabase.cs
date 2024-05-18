@@ -86,6 +86,8 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
         {
             ObjectList.Add(new());
         }
+
+        MessageList = new();
     }
 
     public void DebugList()
