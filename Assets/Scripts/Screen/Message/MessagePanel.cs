@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MessagePanel : MonoBehaviour
@@ -13,6 +10,9 @@ public class MessagePanel : MonoBehaviour
         isRead = false;
     }
 
+    /// <summary>
+    /// 메시지 패널 활성화 클릭이벤트
+    /// </summary>
     public void Onclicked()
     {
         isRead = true;

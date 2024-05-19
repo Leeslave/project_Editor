@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class MailManager : Singleton<MailManager>
 {
@@ -43,6 +41,10 @@ public class MailManager : Singleton<MailManager>
     }
 
 
+    /// <summary>
+    /// 메일 보기 (활성화)
+    /// </summary>
+    /// <param name="title">보여줄 메일 제목</param>
     public void ActiveMail(string title)
     {
         mailPanel.text = mailData[title];
@@ -50,6 +52,9 @@ public class MailManager : Singleton<MailManager>
     }
 
 
+    /// <summary>
+    /// 메일 비활성화
+    /// </summary>
     public void OffMail()
     {
         mailPanel.text = "";

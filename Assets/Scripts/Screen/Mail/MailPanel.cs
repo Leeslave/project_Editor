@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -17,6 +14,9 @@ public class MailPanel : MonoBehaviour
         isActive = false;
     }
 
+    /// <summary>
+    /// 메일 활성화/비활성화 클릭 이벤트
+    /// </summary>
     public void OnClick()
     {
         if (!isActive)

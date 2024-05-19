@@ -17,6 +17,7 @@ public abstract class Paragraph
     public CharacterCG characterL = null;  // 왼쪽 캐릭터 CG
     public CharacterCG characterR = null;   // 오른쪽 캐릭터 CG
     public string bgm = null;         // 배경음악
+    public string background = null;  // 배경 이미지
     public string action = null;    // 대화 후 반응
     public string actionParam = null;    // 반응 매개변수
     
@@ -57,7 +58,6 @@ public class TalkParagraph : Paragraph
 
     public string fontSize = "normal";   // 글자 크기
     public float textDelay = 0.4f;      // 텍스트간 딜레이
-    public string background = null;  // 배경 이미지
 
 
     public int GetFontSize()
