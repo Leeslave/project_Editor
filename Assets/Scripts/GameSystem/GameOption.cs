@@ -26,8 +26,7 @@ public class GameOption : SingletonObject<GameOption>
         base.Awake();
         Screen.SetResolution(resolutionX, resolutionY, false);  // 해상도 고정
     }
-
-
+    
     public Button optionButton;
 
     void Update()

@@ -1616,7 +1616,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 816834950}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: GameOption, Assembly-CSharp
         m_MethodName: LoadStartMenu
         m_Mode: 1
@@ -2290,7 +2290,6 @@ GameObject:
   - component: {fileID: 816834946}
   - component: {fileID: 816834945}
   - component: {fileID: 816834949}
-  - component: {fileID: 816834950}
   m_Layer: 5
   m_Name: SaveSelectCanvas
   m_TagString: Untagged
@@ -2355,7 +2354,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -2393,19 +2392,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0917f36df817e804cb884697548e6fdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &816834950
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 816834944}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d11a755b7c4cbaf43916d095e627ed55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  optionButton: {fileID: 0}
 --- !u!1001 &819354099
 PrefabInstance:
   m_ObjectHideFlags: 0

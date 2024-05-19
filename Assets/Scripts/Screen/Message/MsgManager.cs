@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MsgManager : SingletonObject<MsgManager>
+public class MsgManager : Singleton<MsgManager>
 {
     [Header("사용자 정보")]
     private int currentMessage;
