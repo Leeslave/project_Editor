@@ -29133,18 +29133,18 @@ MonoBehaviour:
   Secret: {fileID: 57108935}
   spr: {fileID: 21300000, guid: bbefeea62f1246e4387f4c60a8b552d5, type: 3}
   Month: 12
-  Day: 28
+  Day: 7
   PeopleList:
   - name_k: "\uD074\uB808\uC774\uD2BC"
     name_e: Clayton
     age: 42
     country: 1
     belong: 0
-    part: 1
+    part: 0
     job: 2
     isMan: 1
     Faces:
-    - {fileID: 21300000, guid: 4acc80ba650e57a4291853eafc0f6d9a, type: 3}
+    - {fileID: 21300000, guid: 3fa907014725113499c5c5ee876936a2, type: 3}
     curFace: 0
   - name_k: "\uD578\uB354\uC2A8"
     name_e: Henderson
@@ -29155,19 +29155,18 @@ MonoBehaviour:
     job: 3
     isMan: 1
     Faces:
-    - {fileID: 21300000, guid: 2eef50fa5ae824149b3291acc3c57f66, type: 3}
+    - {fileID: 21300000, guid: ad7783d0f579008489977e8d57b688ac, type: 3}
     curFace: 0
   - name_k: "\uD074\uB85C\uBC84"
     name_e: Clover
     age: 29
     country: 2
     belong: 0
-    part: 0
+    part: 2
     job: 1
     isMan: 0
     Faces:
-    - {fileID: 21300000, guid: 60ea1524732d2064b985cdc00410c276, type: 3}
-    - {fileID: 21300000, guid: 2dbaca19ef5be414097728e594572ccb, type: 3}
+    - {fileID: 21300000, guid: 8390e4fbd719ca14faafdb374484bb16, type: 3}
     curFace: 0
   - name_k: "\uC6D4\uD130"
     name_e: Walter
@@ -29178,7 +29177,7 @@ MonoBehaviour:
     job: 4
     isMan: 0
     Faces:
-    - {fileID: 21300000, guid: 32378c046aacfc649aa611f59234f209, type: 3}
+    - {fileID: 21300000, guid: 72702663038e3be49a4cccb48c08969a, type: 3}
     curFace: 0
   - name_k: Unknown
     name_e: Unknown
@@ -29192,11 +29191,11 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 8d5c368506fa16b41950374adf966946, type: 3}
     curFace: 0
   NewsList:
-  - publishDay: 12/21
+  - publishDay: 12/07
     Title: "\uD1B5\uCE58\uC790 \"\uB354\uD0B9\"\uC758 \uC9C0\uC9C0\uC728, \uC9C0\uB09C
       \uB2EC \uB300\uBE44 25% \uC0C1\uC2B9"
     Date: "\uC81C\uAD6D\uB825 17\uB144 12\uC6D4 21\uC77C (\uD654)"
-    Reporter: "\uC774\uC0C1\uD604 \uAE30\uC790"
+    Reporter: "\uB370\uC774\uBE0C \uAE30\uC790"
     Main:
     - "\uC601\uAD11\uC2A4\uB7EC\uC6B4 \uD1B5\uCE58\uC790 \"\uB354\uD0B9\"\uC758 \uC9C0\uC9C0\uC728\uC774
       \uC9C0\uB09C \uB2EC \uB300\uBE44 10% \uC0C1\uC2B9\uD558\uC5EC \uAD6D\uAC00\uC758
@@ -29242,7 +29241,37 @@ MonoBehaviour:
       \uB354\uC6B1 \uC0C1\uC2B9\uD558\uC5EC \uC6B0\uB9AC\uC758 \uAD6D\uAC00\uAC00
       \uB354\uC6B1 \uAC15\uD558\uACE0 \uBC88\uC601\uD558\uB294 \uBBF8\uB798\uB97C
       \uD5A5\uD574 \uB098\uC544\uAC00\uAE30\uB97C \uAE30\uB300\uD569\uB2C8\uB2E4."
+  - publishDay: 0
+    Title: '-'
+    Date: '-'
+    Reporter: '-'
+    Main:
+    - '-'
   InstructionList:
+  - test: 12/07
+    Month: 12
+    date: 7
+    InfoInst:
+    - ToDo: 0
+      Target: Clover
+      Before: 2
+      After: 1
+    NewsInst:
+    - ToDo: 2
+      Line: 0
+      Normal: 10%
+      Revise: 25%
+      Goal: "\uC601\uAD11\uC2A4\uB7EC\uC6B4 \uD1B5\uCE58\uC790 \"\uB354\uD0B9\"\uC758
+        \uC9C0\uC9C0\uC728\uC774 \uC9C0\uB09C \uB2EC \uB300\uBE44 25% \uC0C1\uC2B9\uD558\uC5EC
+        \uAD6D\uAC00\uC758 \uC548\uC815\uACFC \uBC88\uC601\uC774 \uD55C\uCE35 \uD655\uACE0\uD574\uC84C\uC74C\uC744
+        \uAE30\uC058\uAC8C \uC54C\uB824\uB4DC\uB9BD\uB2C8\uB2E4."
+    - ToDo: 0
+      Line: 8
+      Normal: 
+      Revise: 
+      Goal: "\uAD6D\uBBFC\uB4E4\uC758 \uD589\uBCF4\uACE0\uAC00 \uBC88\uC601\uC744
+        \uC704\uD558\uC5EC, \uC601\uAD11\uC2A4\uB7EC\uC6B4 \uD1B5\uCE58\uC790 \"\uB354\uD0B9\""
+    DocsInst: []
   - test: 12/21
     Month: 12
     date: 21

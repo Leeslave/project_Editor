@@ -22,9 +22,9 @@ public enum Belonging
 
 public enum Part
 {
-    A팀,
-    B팀,
-    C팀,
+    정보1반,
+    정보2반,
+    정보3반,
     None
 }
 
