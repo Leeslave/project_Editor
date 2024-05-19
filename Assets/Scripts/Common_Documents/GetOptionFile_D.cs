@@ -11,7 +11,7 @@ public class GetOptionFile_D : BatchField_D
     [SerializeField] GameObject ToDoList;
 
     [SerializeField] TMP_Text Text;
-    
+
     [SerializeField] public Tabs_D[] Tabs;
     [SerializeField] TMP_Text[] TabsText;
     [SerializeField] GameObject[] Processes;
@@ -52,7 +52,7 @@ public class GetOptionFile_D : BatchField_D
         foreach (string s in Waittexts)
         {
             cnt += s;
-            
+
             for (int i = 0; i <= 10; i++)
             {
                 Text.text = cnt + $"<size=20>{i * 10}% </size>";
@@ -68,8 +68,6 @@ public class GetOptionFile_D : BatchField_D
 
         Processes[0].SetActive(true);
         Processes[0].transform.SetAsLastSibling();
-
-        Tabs[2].gameObject.SetActive(true);
     }
 
 
@@ -77,7 +75,7 @@ public class GetOptionFile_D : BatchField_D
     [SerializeField] TMP_Text Date;
     [SerializeField] TMP_Text Reporter;
     [SerializeField] TextMannager_N TMN;
-    
+
     // News
     protected override IEnumerator BatchType2()
     {
@@ -152,12 +150,12 @@ public class GetOptionFile_D : BatchField_D
 
         int RC = 0;
         int SC = 0;
-        for(int i = 0; i < CurDocs.RecorderTexts.Count + CurDocs.SubjectTexts.Count; i++)
+        for (int i = 0; i < CurDocs.RecorderTexts.Count + CurDocs.SubjectTexts.Count; i++)
         {
-            if (RC < CurDocs.RecorderTexts.Count) 
+            if (RC < CurDocs.RecorderTexts.Count)
             {
                 if (CurDocs.RecorderTextInd[RC] == i) Docs_Record.AddText(CurDocs.RecorderTexts[RC++], new Color(0, 0.5f, 0, 1), IsTouchAble: false);
-                else Docs_Record.AddText(CurDocs.SubjectTexts[SC++], new Color(0.5f, 0, 0),TextAlignmentOptions.Right);
+                else Docs_Record.AddText(CurDocs.SubjectTexts[SC++], new Color(0.5f, 0, 0), TextAlignmentOptions.Right);
             }
             else Docs_Record.AddText(CurDocs.SubjectTexts[SC++], new Color(0.5f, 0, 0), TextAlignmentOptions.Right);
         }
@@ -192,12 +190,6 @@ public class GetOptionFile_D : BatchField_D
 
     public void CommonBatch()
     {
-        if(CurOpen!=0) Tabs[0].OpenTab();
-        if (Tabs[2].gameObject.activeSelf)
-        {
-            IC.CloseFolder();
-            Tabs[2].gameObject.SetActive(false);
-        }
         foreach (GameObject s in Processes) s.SetActive(false);
         Text.text = Normal;
         image.SetActive(true);

@@ -167,13 +167,13 @@ public class PatternManager : MonoBehaviour
             for (int i = 0; i < 25; i++)
             {
                 List<int> L = new List<int>();
-                    for (int x = 0; x < 1; x++)
+                    for (int x = 0; x < 2; x++)
                     {
                         int cnt = Random.Range(1, 9);
                         while (L.Contains(cnt)) cnt = Random.Range(1, 9);
                         L.Add(cnt);
                     }
-                for (int x = 0; x < 10; x++) CurPT[x][i] = i % 2 == 0 ? (L.Contains(x) ? 1 : 0) : 0;
+                for (int x = 0; x < 10; x++) CurPT[x][i] = i % 4 == 0 ? (L.Contains(x) ? 1 : 0) : 0;
             }
         }
         for (int CurRepeat = 0; CurRepeat < 2; CurRepeat++)             // ???? 2? ??? ????
@@ -461,7 +461,7 @@ public class PatternManager : MonoBehaviour
 
     void ReadExternalPattern()  // Read Pattern In Resources Folder. Name of The Pattern File Must be Pattern_X ( ex) Pattern_1, Pattern_2)
     {
-        for (int i = 5; i <= 5; i++)
+        for (int i = 0; i <= 5; i++)
         {
             string tmp = "Text/Dodge/Pattern_" + i.ToString();
             TextAsset textFile = Resources.Load(tmp) as TextAsset;

@@ -113,8 +113,10 @@ public class info
 {
     /*
      * 0 : 국적
-     * 1 : 나라
+     * 1 : 직업
      * 2 : 얼굴
+     * 3 : 부서
+     * 4 : 소속
      */
     public int ToDo;
     public string Target;

@@ -7,6 +7,8 @@ using UnityEngine;
 // 해당 게임의 모든 I/O 입출력은 해당 코드를 통해 이루어짐
 public class DB_M : MonoBehaviour
 {
+    public static DB_M DB_Docs;
+
     [SerializeField] Windows_M DBFolder;
     [SerializeField] Windows_M NewsFolder;
     [SerializeField] Windows_M DocsFolder;
@@ -16,7 +18,7 @@ public class DB_M : MonoBehaviour
     public int Month;
     public int Day;
 
-    public List<string[]> InfSub = new List<string[]>(2);
+    public List<string[]> InfSub = new List<string[]>(4);
     public List<PeopleIndex> PeopleList;
     public News[] NewsList;
     public List<Instruction> InstructionList;
@@ -26,10 +28,14 @@ public class DB_M : MonoBehaviour
 
     void Awake()
     {
+        if (DB_Docs != null) { Destroy(gameObject); return; }
+        DB_Docs = this;
         string CurPath = Directory.GetCurrentDirectory() + "\\Assets\\Resources\\GameData";
         // Read Manipulation Data
-        InfSub.Add(File.ReadAllText(CurPath + $"\\Manipulation\\Countries.txt").Split('\n'));
-        InfSub.Add(File.ReadAllText(CurPath + $"\\Manipulation\\Jobs.txt").Split('\n'));
+        InfSub.Add(Enum.GetNames(typeof(Country)));
+        InfSub.Add(Enum.GetNames(typeof(Belonging)));
+        InfSub.Add(Enum.GetNames(typeof(Part)));
+        InfSub.Add(Enum.GetNames(typeof(Job)));
 
         for (int i = 0; i < PeopleList.Count - 1; i++) DBFolder.NewIcon(PeopleList[i].name_e, spr, 1);
         DBFolder.gameObject.SetActive(false);

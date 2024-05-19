@@ -11,7 +11,8 @@ public class MainText_N : MonoBehaviour
     [SerializeField] TMP_Text Text;
     [SerializeField] RectTransform ReBuild;
     [SerializeField] bool IsNews;
-    /*[NonSerialized]*/ public int MyInd;
+    /*[NonSerialized]*/
+    public int MyInd;
     [NonSerialized] public bool OnButton;
     TMP_InputField Field;
     [SerializeField] TMP_Text FieldText;
@@ -31,7 +32,7 @@ public class MainText_N : MonoBehaviour
     bool GetEnter = false;
     void Enter(string text)
     {
-        if(!OnButton)
+        if (!OnButton)
         {
             Text.text = Field.text;
             gameObject.SetActive(false);
@@ -47,13 +48,26 @@ public class MainText_N : MonoBehaviour
             LayoutRebuilder.ForceRebuildLayoutImmediate(ReBuild);
         }
     }
+
+
+    public void AddUnder()
+    {
+        TM.ActiveText("Empty", MyInd);
+    }
+
+    public void DelSelf()
+    {
+        TM.RemoveText(MyInd);
+    }
+
+
     public void DelLine()
     {
         Text.text = "";
         Field.text = "";
         MyRect.sizeDelta = new Vector2(550, 40);
     }
-    public void AddLine(string text,int Ind)
+    public void AddLine(string text, int Ind)
     {
         Text.text = text;
         MyInd = Ind;
@@ -82,6 +96,6 @@ public class MainText_N : MonoBehaviour
 
     public void CheckMyText()
     {
-        TM.ValidText(IsNews, MyInd, Text.text);
+        TM.ValidText(IsNews, transform.parent.GetSiblingIndex() - 4, Text.text);
     }
 }

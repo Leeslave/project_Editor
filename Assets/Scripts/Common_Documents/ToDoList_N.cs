@@ -42,7 +42,7 @@ public class ToDoList_N : MonoBehaviour
 
     // 2: Info, 1 : Docs, 0 : News
     List<List<ToDoIndex>> ToDoIndexes;
-    string[] sub = { "국적", "직업", "얼굴" };
+    string[] sub = { "국적", "직업", "얼굴", "부서", "소속"};
     string[] sub2 = { "추가", "삭제", "변경" };
     private void Start()
     {
@@ -97,7 +97,7 @@ public class ToDoList_N : MonoBehaviour
             ToDoCount++;
         }
 
-        //gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 
     string[] sub3 = { "News", "Docs", "Info" };
