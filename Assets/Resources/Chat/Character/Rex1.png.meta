@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 3649b986afe4e3c42a13cfe1b95a754f
+guid: c1aae5fca5420914fbd7f029e0ace7ae
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 16384
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -102,8 +102,20 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
-    buildTarget: iPhone
+    buildTarget: Windows Store Apps
     maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 16384
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -117,13 +129,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Henderson_0
+      name: Rex_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 4096
-        width: 1024
-        height: 2048
+        y: 0
+        width: 2048
+        height: 4096
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,41 +143,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: edc33a83cc6c73241baaaf1934ac2df4
-      internalID: 1163873748
+      spriteID: ce0661a66ed3ada44b2cb7c51cf48323
+      internalID: 37353839
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Henderson_1
-      rect:
-        serializedVersion: 2
-        x: 1024
-        y: 4096
-        width: 1024
-        height: 2048
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 30ae923c072a592408961361c7e31ed8
-      internalID: 1304414739
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Henderson_2
+      name: Rex_1
       rect:
         serializedVersion: 2
         x: 2048
-        y: 4096
-        width: 1024
-        height: 2048
+        y: 0
+        width: 2048
+        height: 4096
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -173,20 +164,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 48bdf3518f9933944a8394596d70a53b
-      internalID: -693759282
+      spriteID: a19e379749c121d478fc2aab7c6bdd4e
+      internalID: -1922154062
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Henderson_3
+      name: Rex_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 2048
-        width: 1024
-        height: 2048
+        x: 4096
+        y: 0
+        width: 2048
+        height: 4096
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -194,8 +185,50 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c7c070e60ae88344b8ce2d2b36fe7985
-      internalID: 1862736104
+      spriteID: 4e34ee5203f20f645889a11659634e10
+      internalID: 1664960392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rex_3
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 0
+        width: 2048
+        height: 4096
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 448a1b07f0bdf00448da3f8b6934e287
+      internalID: -1274705943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rex_4
+      rect:
+        serializedVersion: 2
+        x: 8192
+        y: 0
+        width: 2048
+        height: 4096
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74b8427581ada5d4a8b13189157af525
+      internalID: 807599768
       vertices: []
       indices: 
       edges: []
@@ -211,10 +244,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Henderson_2: -693759282
-      Henderson_0: 1163873748
-      Henderson_1: 1304414739
-      Henderson_3: 1862736104
+      Rex_3: -1274705943
+      Rex_1: -1922154062
+      Rex_2: 1664960392
+      Rex_0: 37353839
+      Rex_4: 807599768
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
