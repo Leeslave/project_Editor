@@ -69,16 +69,7 @@ public class LJWConverter : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            if (Instance != this)
-                Destroy(gameObject);
-        }
+        Instance = this;
     }
     
     
@@ -494,7 +485,7 @@ public class LJWConverter : MonoBehaviour
     /// <param name="targetTMP"></param>
     public void PrintTMPByDuration(bool unscaledTime, float wait, float duration, string value, bool clear, TextMeshPro targetTMP)
     {
-        if(clear)
+        if (clear)
             targetTMP.text = "";
         
         CheckAndStartCoroutine(TMPPrintCoroutines, targetTMP,

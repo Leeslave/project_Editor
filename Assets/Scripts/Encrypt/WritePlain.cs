@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 
@@ -24,6 +25,7 @@ public class WritePlain : MonoBehaviour
     public void Initialize()
     {
         PlainTextBody.Initialize();
+        PlainTextBody.InputFieldTMP.color = new Color(1f, 1f, 1f, 1f);
         PrimeNumDisplay.TextTMP.text = "사용 가능한 암호키 길이: NULL";
     }
 
@@ -63,7 +65,7 @@ public class WritePlain : MonoBehaviour
         {
             var result = "사용 가능한 암호키 길이: ";
             for (var i = 2; i <= 9; i++)
-                if (2 * length % i == 0)
+                if (length % i == 0)
                     result += i + ", ";
             PrimeNumDisplay.TextTMP.text = result.Substring(0, result.Length - 2);
         }

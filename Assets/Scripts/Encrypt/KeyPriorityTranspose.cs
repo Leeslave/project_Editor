@@ -44,21 +44,13 @@ public class KeyPriorityTranspose : MonoBehaviour
     public void Initialize() {
         KeyInputField.Initialize();
         KeyPriority.TextTMP.text = "_ _ _ _ _ _ _ _ _";
+        KeyInputField.InputFieldTMP.color = new Color(1f, 1f, 1f, 1f);
+        KeyPriority.TextTMP.color = new Color(1f, 1f, 1f, 1f);
+        
         ClearTransposedMatrix();
+        
         ReverseTransposeLines.Initialize();
-
         ReverseTransposeLines.SetAvailability(GameManager.CurrentSystemMode != ADFGVXGameManager.SystemMode.Decryption);
-    }
-
-    /// <summary>
-    /// 일정 시간 동안 입력을 차단한다
-    /// </summary>
-    /// <param name="wait"> 대기 시간 </param>
-    /// <param name="duration"> 차단 시간 </param>
-    public void CutAvailabilityInputForWhile(float wait, float duration)
-    {
-        KeyInputField.CutAvailabilityForWhile(wait, duration);
-        ReverseTransposeLines.CutAvailabilityForWhile(wait, duration);
     }
     
     /// <summary>
@@ -103,25 +95,62 @@ public class KeyPriorityTranspose : MonoBehaviour
         KeyPriority.TextTMP.text = result;
         
         //행렬 디스플레이 비움
-        ClearTransposedMatrix();
-        
-        if (value.Length == 0 || value.Length == 1)
+        for (var i = 0; i < 9; i++)
         {
-            //키의 길이는 0이나 1이 될 수 없다
-            ReverseTransposeLines.InputFieldTMP.color = new Color(1f, 0.3f, 0.3f, 1f);
-            ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * 9, 82f);
+            TempLine[i] = "";
+            TransposeLines[i].text = "";
         }
-        else if((ReverseTransposeLines.StringBuffer.Length != 2 * GameManager.WritePlain.PlainTextBody.StringBuffer.Length) || (ReverseTransposeLines.StringBuffer.Length % value.Length != 0))
+        
+        //키가 없다면 초기화
+        if (KeyInputField.StringBuffer.Length == 0)
         {
-            //평문 전체를 전치하지 못했거나 키값이 유효하지 않다면
-            ReverseTransposeLines.InputFieldTMP.color = new Color(1f, 0.3f, 0.3f, 1f);
-            ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * value.Length, 82f);
+            KeyInputField.InputFieldTMP.color = new Color(1f, 1f, 1f, 1f);
+            KeyPriority.TextTMP.color = new Color(1f, 1f, 1f, 1f);
+            return;
+        }
+        
+        //길이가 1인 키는 사용할 수 없음
+        if (KeyInputField.StringBuffer.Length == 1)
+        {
+            KeyInputField.InputFieldTMP.color = new Color(1f, 0.17f, 0.17f, 1f);
+            KeyPriority.TextTMP.color = new Color(1f, 0.17f, 0.17f, 1f);
+            return;
+        }
+
+        if (GameManager.CurrentSystemMode == ADFGVXGameManager.SystemMode.Encryption)
+        {
+            var color = GameManager.WritePlain.PlainTextBody.StringBuffer.Length % KeyInputField.StringBuffer.Length != 0 
+                ? new Color(1f, 0.17f, 0.17f, 1f) 
+                : new Color(0.17f, 1f, 1f, 1f);
+            KeyInputField.InputFieldTMP.color = color;
+            KeyPriority.TextTMP.color = color;
+            
+            if (value.Length == 0 || value.Length == 1)
+            {
+                //키의 길이는 0이나 1이 될 수 없다
+                ReverseTransposeLines.InputFieldTMP.color = new Color(1f, 0.3f, 0.3f, 1f);
+                ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * 9, 82f);
+            }
+            else if((ReverseTransposeLines.StringBuffer.Length != 2 * GameManager.WritePlain.PlainTextBody.StringBuffer.Length) || (ReverseTransposeLines.StringBuffer.Length % value.Length != 0))
+            {
+                //평문 전체를 전치하지 못했거나 키값이 유효하지 않다면
+                ReverseTransposeLines.InputFieldTMP.color = new Color(1f, 0.3f, 0.3f, 1f);
+                ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * value.Length, 82f);
+            }
+            else
+            {
+                //색을 통해서 플레이어에게 현재 역전치 내용이 유효함을 알린다
+                ReverseTransposeLines.InputFieldTMP.color = new Color(0.3f, 1f, 0.3f, 1f);
+                ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * value.Length, 82f);
+            }   
         }
         else
         {
-            //색을 통해서 플레이어에게 현재 역전치 내용이 유효함을 알린다
-            ReverseTransposeLines.InputFieldTMP.color = new Color(0.3f, 1f, 0.3f, 1f);
-            ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * value.Length, 82f);
+            var color = GameManager.LoadEncrypted.EncryptedTextBody.TextTMP.text.Replace(" ", "").Length % KeyInputField.StringBuffer.Length != 0 
+                ? new Color(1f, 0.17f, 0.17f, 1f) 
+                : new Color(0.17f, 1f, 1f, 1f);
+            KeyInputField.InputFieldTMP.color = color;
+            KeyPriority.TextTMP.color = color;
         }
     }
 
