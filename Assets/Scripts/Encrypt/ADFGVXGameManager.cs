@@ -61,6 +61,7 @@ public class ADFGVXGameManager : MonoBehaviour
             KeyPriorityTranspose.ReverseTransposeLines.CutAvailabilityForWhile(wait, duration);
         else
             KeyPriorityTranspose.ReverseTransposeLines.SetAvailability(false);
+        
         DisplayDecrypted.CutAvailabilityInputForWhile(wait, duration);
         BilateralSubstitute.CutAvailabilityInputForWhile(wait, duration);
         WritePlain.CutAvailabilityInputForWhile(wait, duration);

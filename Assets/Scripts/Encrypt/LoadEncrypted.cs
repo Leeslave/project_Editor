@@ -77,10 +77,9 @@ public class LoadEncrypted : MonoBehaviour
             //새로운 암호문을 로드하였으므로 전에 작업 내용은 파기
             GameManager.KeyPriorityTranspose.Initialize();
             GameManager.BilateralSubstitute.Initialize();
-            GameManager.DisplayDecrypted.Initialize();
             
             //출력하는 동안 차단
-            GameManager.CutAvailabilityInputForWhile(0f, 1.5f);
+            GameManager.CutAvailabilityInputForWhile(0f, 2f);
             reader.Close();   
         }
         else
