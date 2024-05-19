@@ -32,13 +32,11 @@ public class DisplayDecrypted : MonoBehaviour
         
         Initialize();
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
+    
     public void Initialize()
     {
         DecryptedTextBody.Initialize();
+        DecryptedTextTitle.TextTMP.text = "저장할 복호화 파일 이름";
         DecryptedTextWriter.TextTMP.text = "작성자: ANONYMOUS";
         DecryptedTextDate.TextTMP.text = "작성일: " + DateTime.Today.Year + "년 " + DateTime.Today.Month + "월 " + DateTime.Today.Day + "일";
     }

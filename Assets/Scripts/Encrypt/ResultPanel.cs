@@ -147,6 +147,11 @@ public class ResultPanel : MonoBehaviour
         Result.text += "\n";
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, "복호화 파일을 저장했습니다!", false, Result);
 
+        //성공했으므로 씬에서 나갈 준비
+        CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
+        CloseButton.OnMouseUpEvent.AddListener(() => {            
+            GameSystem.Instance.ClearTask("ADFGVX");
+            GameSystem.LoadScene("Screen"); });
         CloseButton.SetAvailability(true);
     }
 
@@ -327,6 +332,11 @@ public class ResultPanel : MonoBehaviour
         Result.text += "\n";
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, "암호화 파일을 저장했습니다!", false, Result);
 
+        //성공했으므로 씬에서 나갈 준비
+        CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
+        CloseButton.OnMouseUpEvent.AddListener(() => {            
+            GameSystem.Instance.ClearTask("ADFGVX");
+            GameSystem.LoadScene("Screen"); });
         CloseButton.SetAvailability(true);
     }
 

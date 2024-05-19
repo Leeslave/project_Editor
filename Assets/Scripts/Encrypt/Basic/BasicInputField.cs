@@ -42,10 +42,10 @@ public class BasicInputField : MonoBehaviour
     
     private void Awake()
     {
-        InputFieldTMP = this.transform.GetChild(0).GetComponent<TextMeshPro>();
-        InputFieldFrame = this.transform.GetChild(1).GetComponent<SpriteRenderer>();
-        InputFieldFill = this.transform.GetChild(2).GetComponent<SpriteRenderer>();
-        InputFieldCollider = this.transform.GetComponent<BoxCollider2D>();
+        InputFieldTMP = transform.GetChild(0).GetComponent<TextMeshPro>();
+        InputFieldFrame = transform.GetChild(1).GetComponent<SpriteRenderer>();
+        InputFieldFill = transform.GetChild(2).GetComponent<SpriteRenderer>();
+        InputFieldCollider = transform.GetComponent<BoxCollider2D>();
 
         InputFieldFill.color = Exit;
         
