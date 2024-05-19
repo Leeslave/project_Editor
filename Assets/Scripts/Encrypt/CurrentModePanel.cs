@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class CurrentMode : MonoBehaviour
+public class CurrentModePanel : MonoBehaviour
 {
     private ADFGVXGameManager GameManager { get; set; }
     

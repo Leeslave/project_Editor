@@ -9,20 +9,22 @@ public class LoadEncrypted : MonoBehaviour
     private ADFGVXGameManager GameManager { get; set; }
     
     public BasicText Title { get; set; }
-    public BasicInputField EncryptedTextTitle { get; set; }
+    private BasicInputField EncryptedTextTitle { get; set; }
     public BasicText EncryptedTextBody { get; set; }
-    public BasicText EncryptedTextWriter { get; set; }
-    public BasicText EncryptedTextDate { get; set; }
+    private BasicText EncryptedTextWriter { get; set; }
+    private BasicText EncryptedTextDate { get; set; }
+    private BasicText PrimeNumDisplay { get; set; }
 
     private void Awake()
     {
         GameManager = FindObjectOfType<ADFGVXGameManager>();
         
-        Title = this.transform.GetChild(0).GetComponent<BasicText>();
-        EncryptedTextTitle = this.transform.GetChild(1).GetComponent<BasicInputField>();
-        EncryptedTextBody = this.transform.GetChild(2).GetComponent<BasicText>();
-        EncryptedTextWriter = this.transform.GetChild(3).GetComponent<BasicText>();
-        EncryptedTextDate = this.transform.GetChild(4).GetComponent<BasicText>();
+        Title = transform.GetChild(0).GetComponent<BasicText>();
+        EncryptedTextTitle = transform.GetChild(1).GetComponent<BasicInputField>();
+        EncryptedTextBody = transform.GetChild(2).GetComponent<BasicText>();
+        EncryptedTextWriter = transform.GetChild(3).GetComponent<BasicText>();
+        EncryptedTextDate = transform.GetChild(4).GetComponent<BasicText>();
+        PrimeNumDisplay = transform.GetChild(5).GetComponent<BasicText>();
         
         Initialize();
     }
@@ -36,6 +38,7 @@ public class LoadEncrypted : MonoBehaviour
         EncryptedTextBody.TextTMP.text = "";
         EncryptedTextWriter.TextTMP.text = "작성자: NULL";
         EncryptedTextDate.TextTMP.text = "작성자: NULL";
+        PrimeNumDisplay.TextTMP.text = "사용 가능한 암호키 길이: NULL";
     }
 
     /// <summary>
@@ -56,10 +59,7 @@ public class LoadEncrypted : MonoBehaviour
     {
         EncryptedTextTitle.SetAvailability(value);
     }
-    
-    /// <summary>
-    /// 
-    /// </summary>
+
     public void LoadEncryptedText()
     {
         var filePath = "Assets/Resources/GameData/Encrypt/Encrypted/" + EncryptedTextTitle.StringBuffer + ".txt";
@@ -70,7 +70,16 @@ public class LoadEncrypted : MonoBehaviour
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, reader.ReadLine(), true, EncryptedTextWriter.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, reader.ReadLine(), true, EncryptedTextDate.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1.5f, "Decrypted-" + EncryptedTextTitle.StringBuffer, true, GameManager.DisplayDecrypted.DecryptedTextTitle.TextTMP);
-            GameManager.CutAvailabilityInputForWhile(0f, 1.5f);
+
+            //암호 키 추천
+            CalculateKeyLength();
+            
+            //새로운 암호문을 로드하였으므로 전에 작업 내용은 파기
+            GameManager.KeyPriorityTranspose.Initialize();
+            GameManager.BilateralSubstitute.Initialize();
+            
+            //출력하는 동안 차단
+            GameManager.CutAvailabilityInputForWhile(0f, 2f);
             reader.Close();   
         }
         else
@@ -79,5 +88,19 @@ public class LoadEncrypted : MonoBehaviour
         }
     }
 
-
+    private void CalculateKeyLength()
+    {
+        var length = EncryptedTextBody.TextTMP.text.Replace(" ", "").Length;
+        
+        if (length <= 1)
+            PrimeNumDisplay.TextTMP.text = "사용 가능한 암호키 길이: NULL";
+        else
+        {
+            var result = "사용 가능한 암호키 길이: ";
+            for (var i = 2; i <= 9; i++)
+                if (length % i == 0)
+                    result += i + ", ";
+            PrimeNumDisplay.TextTMP.text = result.Substring(0, result.Length - 2);
+        }
+    }
 }
