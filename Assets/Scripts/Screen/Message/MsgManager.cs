@@ -25,6 +25,7 @@ public class MsgManager : SingletonObject<MsgManager>
     private int messageIndex;
     public GameObject BackButton;
     
+    
     public new void Awake()
     {
         base.Awake();
@@ -97,12 +98,19 @@ public class MsgManager : SingletonObject<MsgManager>
         messageIndex++;
     }
 
-
+    
+    /// <summary>
+    /// 메시지 완료
+    /// </summary>
     public void FinishMessage()
     {
         BackButton.SetActive(true);
     }
 
+    
+    /// <summary>
+    /// 메시지 패널 초기화
+    /// </summary>
     private void ClearMessage()
     {
         for (int i = 0; i < MsgPanel.childCount; i++)
@@ -114,6 +122,7 @@ public class MsgManager : SingletonObject<MsgManager>
         MsgPanel.position = new Vector3(MsgPanel.position.x, 0, MsgPanel.position.z);
     }
     
+    
     /// <summary>
     /// 메시지 불러오기
     /// </summary>
@@ -123,6 +132,4 @@ public class MsgManager : SingletonObject<MsgManager>
 
         messageDatas = ObjectDatabase.MessageList;
     }
-    
-    
 }
