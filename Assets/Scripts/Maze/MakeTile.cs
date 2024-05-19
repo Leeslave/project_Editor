@@ -31,16 +31,20 @@ public class MakeTile : MonoBehaviour
     [NonSerialized] public int KeyWeight;
 
     [SerializeField] string[] Paths;
+    [SerializeField] bool IsTuTo = false;
 
     void Awake()
     {
-        GetDifficulty();
-        Maze_Inf = new MazeMap();
-        Maze_Inf.MazeMaking(Col, Row);
-        CreateLevel();
-        MakeItems();
+        if (!IsTuTo)
+        {
+            GetDifficulty();
+            Maze_Inf = new MazeMap();
+            Maze_Inf.MazeMaking(Col, Row);
+            CreateLevel();
+            MakeItems();
 
-        //MakeTutorial();
+        }
+        else MakeTutorial();
 
         
 
@@ -51,12 +55,12 @@ public class MakeTile : MonoBehaviour
     void MakeTutorial()
     {
         Player.GetComponent<PlayerMove>().Sight = 5;
-        //IsCalcFog = true;
+        IsCalcFog = false;
         Timer.NowTime = 999;
         Timer.gameObject.SetActive(true);
         
         Maze_Inf = new MazeMap();
-        Col = Row = 20;
+        Col = Row = 15;
         KeyNum = 1;
         Maze_Inf.MazeMaking(Col, Row,true);
         MakeItems(true);
@@ -158,7 +162,10 @@ public class MakeTile : MonoBehaviour
         if (IsTu)
         {
             float x = Maze_Inf.Player_X-1, y = Maze_Inf.Player_Y;
-            Instantiate(Key).transform.position = new Vector3(x-- * Move_X + 5,y * Move_Y + 5 , 0);
+            var cnt = Instantiate(Key);
+            cnt.transform.position = new Vector3(x-- * Move_X + 5,y * Move_Y + 5 , 0);
+            SpriteRenderer s = cnt.GetComponent<SpriteRenderer>(); s.color = Color.green;
+            Player.GetComponent<PlayerMove>().KeysTrans.Add(cnt.transform);
         }
         else
         {
@@ -183,6 +190,10 @@ public class MakeTile : MonoBehaviour
                 GameObject cnt = Instantiate(Key);
                 Player.GetComponent<PlayerMove>().KeysTrans.Add(cnt.transform);
                 cnt.transform.position = new Vector3(Cnt[i].Item1 * Move_X + 5, Cnt[i].Item2 * Move_Y + 5, 0);
+                SpriteRenderer s = cnt.GetComponent<SpriteRenderer>();
+                if (i == 0) s.color = Color.green;
+                else if (i == 1) s.color = Color.blue;
+                else s.color = Color.red;
             }
 
         }
