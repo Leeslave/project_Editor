@@ -83,6 +83,7 @@ public class GetOptionFile_D : BatchField_D
         CurType = 2;
         image.SetActive(false);
         News CurNews = DB.FindNews(AN.IconName);
+        TMN.CurNews = CurNews;
         string cnt = "";
         WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
         foreach (string s in Waittexts)
@@ -104,7 +105,7 @@ public class GetOptionFile_D : BatchField_D
         Title.text = CurNews.Title;
         Date.text = CurNews.Date;
         Reporter.text = CurNews.Reporter;
-        for (int i = 0; i < CurNews.Main.Length; i++)
+        for (int i = 0; i < CurNews.Main.Count; i++)
         {
             TMN.ActiveText(CurNews.Main[i]);
         }

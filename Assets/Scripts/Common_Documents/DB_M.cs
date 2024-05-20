@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 // 해당 게임의 모든 I/O 입출력은 해당 코드를 통해 이루어짐
@@ -18,6 +19,7 @@ public class DB_M : MonoBehaviour
     public int Month;
     public int Day;
 
+    // 0 : 국, 1 : 부, 2 : 소, 3 ; 직
     public List<string[]> InfSub = new List<string[]>(4);
     public List<PeopleIndex> PeopleList;
     public News[] NewsList;
@@ -45,7 +47,7 @@ public class DB_M : MonoBehaviour
         {
             NewsFolder.NewIcon(NewsList[i].publishDay, spr, 2);
             var j = NewsList[i].Main[0].Split('\n');
-            if (j.Length != 1) NewsList[i].Main = j;
+            if (j.Length != 1) NewsList[i].Main = j.ToList();
         }
         NewsFolder.gameObject.SetActive(false);
         //Read Docs Data
