@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -14,9 +15,14 @@ public class ADFGVXGameManager : MonoBehaviour
     
     public enum SystemMode { Encryption, Decryption }
     public SystemMode CurrentSystemMode { get; set; } = SystemMode.Decryption;
-
-    [SerializeField] public string encryptTargetData;
-
+    
+    [SerializeField] public string encryptTargetText;
+    [SerializeField] public string encryptResultText;
+    [SerializeField] public string decryptTargetText;
+    [SerializeField] public string decryptResultText;
+    [SerializeField] public bool encryptClear;
+    [SerializeField] public bool decryptClear;
+    
     private void Awake()
     {
         LoadEncrypted = transform.GetChild(0).GetComponent<LoadEncrypted>();
@@ -27,6 +33,29 @@ public class ADFGVXGameManager : MonoBehaviour
         DisplayEncrypted = transform.GetChild(5).GetComponent<DisplayEncrypted>();
         ResultPanel = transform.GetChild(6).GetComponent<ResultPanel>();
         CurrentModePanel = transform.GetChild(7).GetComponent<CurrentModePanel>();
+
+        TextAsset stageText = Resources.Load<TextAsset>("GameData/Encrypt/ADFGVXStageData"); 
+        ADFGVXStageData stageData = JsonConvert.DeserializeObject<ADFGVXStageData>(stageText.text);
+        int stageNum = GameSystem.Instance.GetTask("ADFGVX");
+        stageNum = 0;
+
+        if (stageData.Decrypt.TryGetValue(stageNum.ToString(), out var decryptData))
+        {
+            Debug.Log($"이번 날짜의 Decrypt Task[targetText:{decryptData["targetText"]}, decryptKey:{decryptData["decryptKey"]}, resultText:{decryptData["resultText"]}");
+            decryptTargetText = decryptData["targetText"];
+            decryptResultText = decryptData["resultText"];
+        }
+        else
+            Debug.Log("이번 날짜의 Decrypt Task는 없음!");
+        
+        if (stageData.Encrypt.TryGetValue(stageNum.ToString(), out var encryptData))
+        {
+            Debug.Log($"이번 날짜의 Encrypt Task[targetText:{encryptData["targetText"]}, encryptKey:{encryptData["encryptKey"]}, resultText:{encryptData["resultText"]}");
+            encryptTargetText = encryptData["targetText"];
+            encryptResultText = encryptData["resultText"];
+        }
+        else
+            Debug.Log("이번 날짜의 Encrypt Task는 없음!");
     }
 
     public void SwitchSystemMode()
