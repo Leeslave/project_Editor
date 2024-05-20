@@ -123,8 +123,9 @@ public class PatternManager : MonoBehaviour
                 else
                 {
                     GameSystem.Instance.ClearTask("Dodge");
-                    LoadTestTrash.Instance.LoadScene = "Screen";
-                    SceneManager.LoadScene("LoadT");
+                    //LoadTestTrash.Instance.LoadScene = "Screen";
+                    //SceneManager.LoadScene("LoadT");
+                    GameSystem.LoadScene("Screen");
                 }
             }
             else
@@ -461,7 +462,7 @@ public class PatternManager : MonoBehaviour
 
     void ReadExternalPattern()  // Read Pattern In Resources Folder. Name of The Pattern File Must be Pattern_X ( ex) Pattern_1, Pattern_2)
     {
-        for (int i = 0; i <= 5; i++)
+        for (int i = 1; i <= 5; i++)
         {
             string tmp = "Text/Dodge/Pattern_" + i.ToString();
             TextAsset textFile = Resources.Load(tmp) as TextAsset;

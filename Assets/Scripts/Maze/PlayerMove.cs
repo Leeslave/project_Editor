@@ -126,7 +126,7 @@ public class PlayerMove : MonoBehaviour
             if (NX != 0 || NY != 0)   // 움직임을 감지
             {
                 Vector2 NextVec = new Vector2(NX, NY);
-                rayHit = Physics2D.CircleCast(rigid.position + NextVec, 3.5f, Vector2.zero, 3.5f, LayerMask.GetMask("Water"));
+                rayHit = Physics2D.CircleCast(rigid.position + NextVec, 2.5f, Vector2.zero, 1.5f, LayerMask.GetMask("Water"));
                 if (rayHit.collider != null) { if (!rayHit.collider.gameObject.CompareTag("ExitWall")) return; }
                 AS.clip = Clips[0];
                 AS.Play();
@@ -337,10 +337,6 @@ public class PlayerMove : MonoBehaviour
             }
             else           // 클리어
             {
-                File.Move($"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty}",
-                          $"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty + 1}");
-                File.Create($"Assets\\Resources\\GameData\\Maze\\C");
-
                 GameSystem.Instance.ClearTask("Maze");
                 GameSystem.LoadScene("Screen");
             }
