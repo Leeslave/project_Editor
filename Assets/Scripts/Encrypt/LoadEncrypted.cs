@@ -68,7 +68,7 @@ public class LoadEncrypted : MonoBehaviour
             return;
         }
         
-        var filePath = "Assets/Resources/GameData/Encrypt/Encrypted/" + EncryptedTextTitle.StringBuffer + ".txt";
+        var filePath = Application.dataPath + "/Resources/GameData/Encrypt/Encrypted/" + EncryptedTextTitle.StringBuffer + ".txt";
         if (new FileInfo(filePath).Exists)
         {
             var reader = new StreamReader(filePath, System.Text.Encoding.UTF8);

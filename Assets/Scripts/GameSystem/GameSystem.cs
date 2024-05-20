@@ -43,7 +43,6 @@ public class GameSystem : SingletonObject<GameSystem>
     {
         base.Awake();
 
-        Debug.Log("AWAKEN");
         saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
         dailyList = DataLoader.LoadGameData();     // 게임 데이터 로드  
 
