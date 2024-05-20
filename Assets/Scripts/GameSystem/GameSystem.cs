@@ -96,6 +96,7 @@ public class GameSystem : SingletonObject<GameSystem>
         
         // 시간대 적용
         gameData.time = _time;
+        isScreenOn = false;
 
         // 월드 리로드
         if (SceneManager.GetActiveScene().name == "MainWorld")

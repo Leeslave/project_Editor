@@ -151,7 +151,7 @@ public class ResultPanel : MonoBehaviour
         GameManager.decryptClear = true;
         
         //만약 암호화 태스크가 존재했고, 이미 클리어한 상태라면
-        if (GameManager.encryptClear && GameManager.encryptTargetText != "")
+        if (GameManager.encryptClear && GameManager.decryptClear)
         {
             //모든 태스크을 완료했으므로 씬에서 나갈 준비
             CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
@@ -353,7 +353,7 @@ public class ResultPanel : MonoBehaviour
         GameManager.encryptClear = true;
         
         //만약 복호화 태스크가 존재했고, 이미 클리어한 상태라면
-        if (GameManager.decryptClear && GameManager.decryptTargetText != "")
+        if (GameManager.decryptClear && GameManager.encryptClear)
         {
             //모든 태스크을 완료했으므로 씬에서 나갈 준비
             CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
