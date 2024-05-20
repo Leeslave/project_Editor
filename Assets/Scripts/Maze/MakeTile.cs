@@ -35,15 +35,16 @@ public class MakeTile : MonoBehaviour
 
     void Awake()
     {
-        if (!IsTuTo)
+        try
         {
-            GetDifficulty();
-            Maze_Inf = new MazeMap();
-            Maze_Inf.MazeMaking(Col, Row);
-            CreateLevel();
-            MakeItems();
-
+            Difficulty = GameSystem.Instance.GetTask("Maze");
         }
+        catch
+        {
+            Difficulty = 0;
+        }
+
+        if (Difficulty != 0) GetDifficulty();
         else MakeTutorial();
 
         
@@ -72,10 +73,7 @@ public class MakeTile : MonoBehaviour
     // �ӽ�(���� �̱����� � ������ �� �� ��������)
     void GetDifficulty()
     {
-        
-        String Path = "Assets\\Resources\\GameData\\Maze";
-        if (File.Exists(Path + "\\C")) File.Delete("\\C");
-        Difficulty = Directory.GetFiles(Path)[0][Path.Length+1] - '0';
+        Difficulty--;
         int[] cs = new int[] { 3, 1, 2 };
         Col = Row = 10 + 5 * (int)(Difficulty / 3);
         KeyNum = cs[Difficulty % 3];
@@ -95,6 +93,11 @@ public class MakeTile : MonoBehaviour
             Timer.NowTime = 150;
             Timer.gameObject.SetActive(true);
         }
+
+        Maze_Inf = new MazeMap();
+        Maze_Inf.MazeMaking(Col, Row);
+        CreateLevel();
+        MakeItems();
     }
 
 
