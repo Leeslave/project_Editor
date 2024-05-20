@@ -120,8 +120,6 @@ public class GetOptionFile_D : BatchField_D
         {
             TMN.ActiveText(CurNews.Main[i]);
         }
-        TMN.AnsNews = CurNews;
-
         Processes[1].SetActive(true);
         Processes[1].transform.SetAsLastSibling();
         Processes[1].transform.position = Vector3.zero;

@@ -18,7 +18,6 @@ public class TextMannager_N : MonoBehaviour
     [NonSerialized] List<MainText_N> MainTexts;
     [NonSerialized] List<MainText_Back> Backs = new List<MainText_Back>();
 
-    [NonSerialized] public News AnsNews;
     [NonSerialized] public News CurNews;
     //[NonSerialized] public Docs DocsAns;
 
@@ -96,7 +95,10 @@ public class TextMannager_N : MonoBehaviour
             if (text.Equals(NewsChange[line]) && Texts[line].gameObject.activeSelf) TDN.CheckList(0, line, true);
             else TDN.CheckList(0, line, false);
         }
-        else if (!text.Equals(AnsNews.Main[line])) for (int i = 0; i < AnsNews.Main.Count; i++) if (NewsAnsLine[i]) MainTexts[i].CheckMyText();
+        else foreach(var k in MainTexts)
+            {
+                if (NewsAnsLine[k.MyInd]) ValidText(true, k.MyInd, k.Text.text);
+            }
     }
 
     private void OnDisable()
