@@ -143,9 +143,8 @@ public class DB_M : MonoBehaviour
         return null;
     }
 
-    public void EvaluateWork()
+    public void EvaluateWork(ref int[] Score)
     {
-
         int Score_Info = 0;
         for(int i = 0; i < Instructions.InfoInst.Length; i++) Score_Info += Instructions.Peoples[i].Evaluate(FindPeople(Instructions.InfoInst[i].Target));
 
@@ -157,10 +156,12 @@ public class DB_M : MonoBehaviour
         
         for(int i = 0; i < l; i++)
         {
-            if (EvalNews.Main[i] != Instructions.NewsMain[i]) Score_News--;
+            if (EvalNews.Main[i].TrimEnd('\n','\r') != Instructions.NewsMain[i].TrimEnd('\n', '\r')) Score_News--;
         }
 
-        print($"Info Score : {Score_Info}");
-        print($"News Score : {Score_News}");
+        int Score_Docs = 0;
+        // 추후 추가
+
+        Score[0] = Score_Info; Score[1] = Score_News; Score[2] = Score_Docs;
     }
 }

@@ -341,9 +341,8 @@ public class PlayerMove : MonoBehaviour
                           $"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty + 1}");
                 File.Create($"Assets\\Resources\\GameData\\Maze\\C");
 
-                GameSystem.Instance.ClearTask("Dodge");
-                LoadTestTrash.Instance.LoadScene = "Screen";
-                SceneManager.LoadScene("LoadT");
+                GameSystem.Instance.ClearTask("Maze");
+                GameSystem.LoadScene("Screen");
             }
         }
     }
