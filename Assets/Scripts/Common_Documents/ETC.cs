@@ -69,11 +69,7 @@ public class News
     public string Date;
     public string Reporter;
     [Multiline(10)]
-    public string[] Main; /*= new string[50];*/
-    public News()
-    {
-        Main = new string[50];
-    }
+    public List<string> Main; /*= new string[50];*/
 }
 
 /*----------------- Docs Data --------------------------*/

@@ -8,16 +8,18 @@ using UnityEditor.Build;
 public class MainText_N : MonoBehaviour
 {
     [SerializeField] TextMannager_N TM;
-    [SerializeField] TMP_Text Text;
+    public TMP_Text Text;
     [SerializeField] RectTransform ReBuild;
-    [SerializeField] bool IsNews;
-    /*[NonSerialized]*/
     public int MyInd;
     [NonSerialized] public bool OnButton;
+
     TMP_InputField Field;
     [SerializeField] TMP_Text FieldText;
-    [SerializeField] int DocsType; // 0 : N, 1 : Docs
     RectTransform MyRect;
+
+    MainText_Back Parent;
+
+    // 미사용 아님(다른 Script에서 수정됨)
     char LastChar = ' ';
     Vector2 Sub = new Vector3(0, 20);
 
@@ -25,6 +27,7 @@ public class MainText_N : MonoBehaviour
     {
         MyRect = GetComponent<RectTransform>();
         Field = GetComponent<TMP_InputField>();
+        Parent = transform.parent.GetComponent<MainText_Back>();
         Field.onEndEdit.AddListener(Enter);
         Field.onValueChanged.AddListener(Delete);
     }
@@ -57,7 +60,7 @@ public class MainText_N : MonoBehaviour
 
     public void DelSelf()
     {
-        TM.RemoveText(MyInd);
+        TM.RemoveText(Parent.MyInd);
     }
 
 
@@ -96,6 +99,6 @@ public class MainText_N : MonoBehaviour
 
     public void CheckMyText()
     {
-        TM.ValidText(IsNews, transform.parent.GetSiblingIndex() - 4, Text.text);
+        TM.ValidText(true, transform.parent.GetSiblingIndex() - 4, Text.text);
     }
 }

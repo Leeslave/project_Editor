@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,8 +16,10 @@ public class TextMannager_N : MonoBehaviour
 
     [NonSerialized] List<GameObject> Texts;
     [NonSerialized] List<MainText_N> MainTexts;
+    [NonSerialized] List<MainText_Back> Backs = new List<MainText_Back>();
 
     [NonSerialized] public News AnsNews;
+    [NonSerialized] public News CurNews;
     //[NonSerialized] public Docs DocsAns;
 
     [NonSerialized] public bool[] NewsAnsLine = new bool[20];
@@ -37,9 +40,10 @@ public class TextMannager_N : MonoBehaviour
         i = 0;
         foreach (var k in Texts)
         {
-            k.SetActive(false);
+            Backs.Add(k.GetComponent<MainText_Back>());
             MainTexts.Add(k.transform.GetChild(0).GetComponent<MainText_N>());
             MainTexts[i].MyInd = i++;
+            k.gameObject.SetActive(false);
         }
     }
 
@@ -79,14 +83,9 @@ public class TextMannager_N : MonoBehaviour
 
     public void ResetIndex()
     {
-        for (int i = 0; i < Texts.Count; i++)
-        {
-            if (Texts[i].activeSelf)
-            {
-                MainTexts[i].MyInd = Texts[i].transform.GetSiblingIndex() - 4;
-            }
-        }
-        for (int i = 0; i < AnsNews.Main.Length; i++) if (NewsAnsLine[i]) MainTexts[i].CheckMyText();
+        for (int i = 0; i < Texts.Count; i++) MainTexts[i].MyInd = Texts[i].transform.GetSiblingIndex() - 4;
+        for (int i = 0; i < MainTexts.Count; i++) if (NewsAnsLine[MainTexts[i].MyInd])
+                MainTexts[i].CheckMyText();
     }
 
     public void ValidText(bool IsNews, int line, string text)
@@ -94,9 +93,27 @@ public class TextMannager_N : MonoBehaviour
         text = text.TrimEnd('\r', '\n');
         if (NewsAnsLine[line])
         {
-            if (text.Equals(NewsChange[line])) TDN.CheckList(0, line, true);
+            if (text.Equals(NewsChange[line]) && Texts[line].gameObject.activeSelf) TDN.CheckList(0, line, true);
             else TDN.CheckList(0, line, false);
         }
-        else if (!text.Equals(AnsNews.Main[line])) for (int i = 0; i < AnsNews.Main.Length; i++) if (NewsAnsLine[i]) MainTexts[i].CheckMyText();
+        else if (!text.Equals(AnsNews.Main[line])) for (int i = 0; i < AnsNews.Main.Count; i++) if (NewsAnsLine[i]) MainTexts[i].CheckMyText();
+    }
+
+    private void OnDisable()
+    {
+        foreach(var k in MainTexts)
+        {
+            if (k.transform.parent.gameObject.activeSelf)
+            {
+                while (k.MyInd >= CurNews.Main.Count) CurNews.Main.Add("");
+                CurNews.Main[k.MyInd] = k.Text.text;
+            }
+        }
+        foreach (var k in Backs)
+        {
+            k.transform.SetSiblingIndex(k.MyInd + 4);
+            k.gameObject.SetActive(false);
+        }
+        ActivateText = 0;
     }
 }
