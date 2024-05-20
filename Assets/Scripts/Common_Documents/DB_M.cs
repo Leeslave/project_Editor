@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 // 해당 게임의 모든 I/O 입출력은 해당 코드를 통해 이루어짐
@@ -54,9 +55,49 @@ public class DB_M : MonoBehaviour
         foreach (var k in DocsList) DocsFolder.NewIcon(name: k.Subject, Image: spr, 3);
         DocsFolder.gameObject.SetActive(false);
 
+        // Set Instruction
         foreach(var k in InstructionList)
         {
-            if (k.Month == Month && k.date == Day) { Instructions = k; break; }
+            if (k.Month == Month && k.date == Day) { Instructions = k;
+                List<string> TargetSub = new List<string>();
+                foreach (var j in k.InfoInst)
+                {
+                    PeopleIndex s = new PeopleIndex();
+                    if (!TargetSub.Contains(j.Target))
+                    {
+                        s = new PeopleIndex(FindPeople(j.Target));
+                        k.Peoples.Add(s);
+                        TargetSub.Add(j.Target);
+                    }
+                    else foreach(var i in k.Peoples)if(i.name_e == j.Target) { s = i; break; }
+
+                    switch (j.ToDo)
+                    {
+                        case 0:
+                            s.country = (Country)j.After;
+                            break;
+                        case 1:
+                            s.job = (Job)j.After;
+                            break;
+                        case 2:
+                            s.curFace = j.After;
+                            break;
+                        case 3:
+                            s.belong = (Belonging)j.After;
+                            break;
+                        case 4:
+                            s.part = (Part)j.After;
+                            break;
+                    }
+                }
+                
+                News NewsSub = FindNews($"{Month}/" + Day.ToString("D2"));
+                int mx = -1; foreach (var j in k.NewsInst) if (j.Line > mx) mx = j.Line;
+                k.NewsMain = new List<string>(); foreach (var i in NewsSub.Main) k.NewsMain.Add(i); for (int I = 0; I < NewsSub.Main.Count + 1 - mx; I++) k.NewsMain.Add("");
+                foreach (var i in k.NewsInst) k.NewsMain[i.Line] = i.Goal; 
+
+                break; 
+            }
         }
         Secret.gameObject.SetActive(false);
     }
@@ -102,17 +143,24 @@ public class DB_M : MonoBehaviour
         return null;
     }
 
-  /*  void ReadMain(News N, string path)
+    public void EvaluateWork()
     {
-        StreamReader reader = new StreamReader(path);
-        N.Title = reader.ReadLine();
-        N.Date = reader.ReadLine();
-        N.Reporter = reader.ReadLine();
-        string line;
-        while ((line = reader.ReadLine()) != null)
+
+        int Score_Info = 0;
+        for(int i = 0; i < Instructions.InfoInst.Length; i++) Score_Info += Instructions.Peoples[i].Evaluate(FindPeople(Instructions.InfoInst[i].Target));
+
+
+        int Score_News = 0;
+        var EvalNews = FindNews($"{Month}/" + Day.ToString("D2"));
+        Score_News -= Mathf.Abs(EvalNews.Main.Count - Instructions.NewsMain.Count);
+        int l = Mathf.Min(EvalNews.Main.Count, Instructions.NewsMain.Count);
+        
+        for(int i = 0; i < l; i++)
         {
-            N.Main[N.CountM++] = line;
+            if (EvalNews.Main[i] != Instructions.NewsMain[i]) Score_News--;
         }
-        reader.Close();
-    }*/
+
+        print($"Info Score : {Score_Info}");
+        print($"News Score : {Score_News}");
+    }
 }

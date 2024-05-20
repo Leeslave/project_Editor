@@ -91,7 +91,7 @@ public class InfChange : MonoBehaviour
                         Drager_Image.transform.GetChild(1).GetComponent<Image>().sprite
                             = CurPeople.Faces[CurFile.transform.GetSiblingIndex()];
                         Drager_Image.SetActive(true);
-                        ValidData(2, "");
+                        ValidData(4, "");
                     }
                     CurFile = null;
                     TouchAble = false;
@@ -216,7 +216,16 @@ public class InfChange : MonoBehaviour
             {
                 switch (ind)
                 {
-                    case 0:
+                    case 4:
+                        if (FaceNum == k.Item3) TDN.CheckList(2, -1, true, k.Item4);
+                        else TDN.CheckList(2, -1, false, k.Item4);
+                        break;
+                    default:
+                        var j = text.Split(" ")[2];
+                        if (DB.InfSub[ind][k.Item3].TrimEnd() == j) TDN.CheckList(2, 01, true, k.Item4);
+                        else TDN.CheckList(2, -1, false, k.Item4);
+                        break;
+                    /*case 0:
                         if (DB.InfSub[0][k.Item3].TrimEnd() == text[10..]) TDN.CheckList(2, -1, true, k.Item4);
                         else TDN.CheckList(2, -1, false, k.Item4);
                         break;
@@ -224,10 +233,11 @@ public class InfChange : MonoBehaviour
                         if (DB.InfSub[1][k.Item3].TrimEnd() == country.text[6..]) TDN.CheckList(2, -1, true, k.Item4);
                         else TDN.CheckList(2, -1, false, k.Item4);
                         break;
-                    default:
-                        if (FaceNum == k.Item3) TDN.CheckList(2, -1, true, k.Item4);
-                        else TDN.CheckList(2, -1, false, k.Item4);
+                    case 2:
                         break;
+                    case 3:
+                        break;*/
+                        
                 }
             }
         }
