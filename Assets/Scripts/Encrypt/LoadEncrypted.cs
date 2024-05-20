@@ -62,6 +62,12 @@ public class LoadEncrypted : MonoBehaviour
 
     public void LoadEncryptedText()
     {
+        if (GameManager.decryptTargetText != EncryptedTextTitle.StringBuffer)
+        {
+            LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, "잘못된 파일 이름을 입력했습니다.", true, EncryptedTextBody.TextTMP);
+            return;
+        }
+        
         var filePath = "Assets/Resources/GameData/Encrypt/Encrypted/" + EncryptedTextTitle.StringBuffer + ".txt";
         if (new FileInfo(filePath).Exists)
         {
@@ -81,10 +87,6 @@ public class LoadEncrypted : MonoBehaviour
             //출력하는 동안 차단
             GameManager.CutAvailabilityInputForWhile(0f, 2f);
             reader.Close();   
-        }
-        else
-        {
-            LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, "잘못된 파일 이름을 입력했습니다.", true, EncryptedTextBody.TextTMP);
         }
     }
 
