@@ -91,10 +91,14 @@ public class GameSystem : SingletonObject<GameSystem>
     ///<param name="time">전환할 시간(마지막 시간대면 다음 날짜로)</param>
     public void SetTime(int _time)
     {
+        // 시간대 오류
         if (_time < 0 || _time >= 4)
             return;
+        
+        // 시간대 적용
         gameData.time = _time;
 
+        // 월드 리로드
         if (SceneManager.GetActiveScene().name == "MainWorld")
         {
             WorldSceneManager.Instance.ReloadWorld();

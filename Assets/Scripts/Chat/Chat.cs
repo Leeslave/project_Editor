@@ -484,7 +484,7 @@ public class Chat : Singleton<Chat>
             result = new ChatJumpAction();
             break;
         case "DayChange":
-            result = new DayChangeAction();
+            result = new HardDayChangeAction();
             break;
         case "TimeChange":
             result = new TimeChangeAction();

@@ -22,7 +22,11 @@ public class NPC : WorldObject<NPCData>
             data.clickTalk = DataLoader.GetChatData(data.clickParam);
         }
 
-        InitChat(data.awakeTalk);
+        if (!playAwake)
+        {
+            playAwake = true;
+            InitChat(data.awakeTalk);
+        }
     }
 
 

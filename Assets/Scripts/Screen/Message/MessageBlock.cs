@@ -1,13 +1,14 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class MessageBlock : MonoBehaviour
 {
     public TalkParagraph data;
 
-    public TMP_Text messageName;
+    public TMP_Text talker;
     public TMP_Text talk;
     private const float delayTick = 0.1f;
 
@@ -24,7 +25,7 @@ public class MessageBlock : MonoBehaviour
     /// </summary>
     public void SetText()
     {
-        messageName.text = data.talker;
+        talker.text = data.talker;
         GetComponent<Button>().onClick.RemoveAllListeners();
         StartCoroutine(PlayText());
     }

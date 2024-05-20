@@ -76,6 +76,7 @@ public class MsgManager : Singleton<MsgManager>
         // 메시지 오브젝트 생성
         GameObject newMsg;
         TalkParagraph newParagraph = msgs[messageIndex] as TalkParagraph;
+        
         if (newParagraph.talker == currentUser)
         {
             newMsg = Instantiate(msgPrefab_R, MsgPanel);

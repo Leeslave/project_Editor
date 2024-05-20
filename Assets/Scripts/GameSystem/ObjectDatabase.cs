@@ -85,7 +85,7 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
     {
         // 리스트 초기화
         ObjectList = new();
-        for(int i = 0; i < (int)World.MAX; i++)
+        for(int i = 0; i < (int)World.NullMax; i++)
         {
             ObjectList.Add(new());
         }

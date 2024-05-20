@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Door : MonoBehaviour
 {
-    public World dest;
-    public int destPos;
+    public World dest = World.NullMax;
+    public int destPos = -1;
 
     public virtual void OnClick()
     {
@@ -17,7 +17,13 @@ public class Door : MonoBehaviour
         }
 
         // 지역 이동 실행
-        GameSystem.Instance.gameData.SetPosition(destPos);
-        WorldSceneManager.Instance.MoveLocation(dest);
+        if (destPos >= 0)
+        {
+            GameSystem.Instance.gameData.SetPosition(destPos);
+        }
+        if (dest != World.NullMax)
+        {
+            WorldSceneManager.Instance.MoveLocation(dest);
+        }
     }
 }

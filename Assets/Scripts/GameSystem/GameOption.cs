@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOption : SingletonObject<GameOption>
+public class GameOption : Singleton<GameOption>
 {
     /**
     게임 옵션 컨트롤러
