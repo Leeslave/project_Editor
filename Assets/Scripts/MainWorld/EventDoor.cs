@@ -11,14 +11,12 @@ public class EventDoor : Door
 
     public override void OnClick()
     {
+        // 반응 무시 아니면 지역 이동
+        base.OnClick();
+        
         // 반응 획득
         GetAction();
-        if (action.Invoke() == 0)
-        {
-            // 반응 무시 아니면 지역 이동
-            base.OnClick();
-        }
-
+        action.Invoke();
     }
 
     private void GetAction()
