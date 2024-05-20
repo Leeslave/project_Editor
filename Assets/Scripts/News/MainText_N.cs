@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using System;
-using UnityEditor.Build;
+//using UnityEditor.Build;
 
 public class MainText_N : MonoBehaviour
 {
