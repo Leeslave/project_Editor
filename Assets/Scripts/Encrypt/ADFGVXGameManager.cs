@@ -4,6 +4,7 @@ using UnityEngine.Serialization;
 
 public class ADFGVXGameManager : MonoBehaviour
 {
+    private ADFGVXGameManager GameManager { get; set; }
     public LoadEncrypted LoadEncrypted { get; private set; }
     public KeyPriorityTranspose KeyPriorityTranspose { get; private set; }
     public BilateralSubstitute BilateralSubstitute { get; private set; }
@@ -33,11 +34,12 @@ public class ADFGVXGameManager : MonoBehaviour
         DisplayEncrypted = transform.GetChild(5).GetComponent<DisplayEncrypted>();
         ResultPanel = transform.GetChild(6).GetComponent<ResultPanel>();
         CurrentModePanel = transform.GetChild(7).GetComponent<CurrentModePanel>();
+        GameManager = FindObjectOfType<ADFGVXGameManager>();
 
         TextAsset stageText = Resources.Load<TextAsset>("GameData/Encrypt/ADFGVXStageData"); 
         ADFGVXStageData stageData = JsonConvert.DeserializeObject<ADFGVXStageData>(stageText.text);
         int stageNum = GameSystem.Instance.GetTask("ADFGVX");
-        stageNum = 0;
+        //stageNum = 0;
 
         if (stageData.Decrypt.TryGetValue(stageNum.ToString(), out var decryptData))
         {
@@ -46,7 +48,11 @@ public class ADFGVXGameManager : MonoBehaviour
             decryptResultText = decryptData["resultText"];
         }
         else
+        {
             Debug.Log("이번 날짜의 Decrypt Task는 없음!");
+            GameManager.decryptClear = true;
+        }
+            
         
         if (stageData.Encrypt.TryGetValue(stageNum.ToString(), out var encryptData))
         {
@@ -55,7 +61,11 @@ public class ADFGVXGameManager : MonoBehaviour
             encryptResultText = encryptData["resultText"];
         }
         else
+        {
             Debug.Log("이번 날짜의 Encrypt Task는 없음!");
+            GameManager.encryptClear = true;
+        }
+            
     }
 
     public void SwitchSystemMode()
