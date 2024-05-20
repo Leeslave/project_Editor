@@ -43,31 +43,42 @@ public class GetOptionFile_D : BatchField_D
     // Manipulation
     protected override IEnumerator BatchType1()
     {
-        IC.PeopleName = AN.IconName;
-        CurType = 1;
-        CommonBatch();
-        image.SetActive(false);
-        string cnt = "";
-        WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
-        foreach (string s in Waittexts)
+        bool Go = false;
+        foreach (var k in IC.PeopleCorrect) if (k.Item1 == AN.IconName) Go = true;
+
+        if (Go)
         {
-            cnt += s;
-
-            for (int i = 0; i <= 10; i++)
+            IC.PeopleName = AN.IconName;
+            CurType = 1;
+            CommonBatch();
+            image.SetActive(false);
+            string cnt = "";
+            WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
+            foreach (string s in Waittexts)
             {
-                Text.text = cnt + $"<size=20>{i * 10}% </size>";
-                yield return wfs;
-            }
-            cnt += " <size=20>Complete!\n</size>";
-        }
-        Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
-        yield return new WaitForSeconds(LoadingTime2);
-        Text.text = Normal;
-        image.SetActive(true);
-        AttatchAble = true;
+                cnt += s;
 
-        Processes[0].SetActive(true);
-        Processes[0].transform.SetAsLastSibling();
+                for (int i = 0; i <= 10; i++)
+                {
+                    Text.text = cnt + $"<size=20>{i * 10}% </size>";
+                    yield return wfs;
+                }
+                cnt += " <size=20>Complete!\n</size>";
+            }
+            Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
+            yield return new WaitForSeconds(LoadingTime2);
+            Text.text = Normal;
+            image.SetActive(true);
+            AttatchAble = true;
+
+            Processes[0].SetActive(true);
+            Processes[0].transform.SetAsLastSibling();
+        }
+        else
+        {
+            Text.text = "<size=40><color=#FF0000>401 Not Unauthorized</color></size>\n<color=#C8AF10>(x_x)</color>\n\nOops! Something's Wrong.\nDrag Correct Option File Here!";
+            AttatchAble = true;
+        }
     }
 
 

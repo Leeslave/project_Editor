@@ -36,6 +36,13 @@ public enum Job
     총책,
     사령관
 }
+/*----------------- Answer Data --------------------*/
+[Serializable]
+public class AnswerIndex
+{
+    
+    
+}
 
 /*------------------ Info Data ---------------------*/
 
@@ -52,6 +59,29 @@ public class PeopleIndex
     public bool isMan;
     public List<Sprite> Faces;
     public int curFace;
+
+    public PeopleIndex() { }
+
+    public PeopleIndex(PeopleIndex Target)
+    {
+        name_e = Target.name_e;
+        country = Target.country;
+        belong = Target.belong;
+        part = Target.part;
+        job = Target.job;
+        curFace = Target.curFace;
+    }
+
+    public int Evaluate(PeopleIndex Target)
+    {
+        int cnt = 0;
+        if (country != Target.country) cnt--;
+        if (belong != Target.belong) cnt--;
+        if (part != Target.part) cnt--;
+        if (job != Target.job) cnt--;
+        if (curFace != Target.curFace) cnt--;
+        return cnt;
+    }
 }
 
 public class Peoples
@@ -102,6 +132,11 @@ public class Instruction
     public news[] NewsInst;
     [JsonProperty("Docs")]
     public docs[] DocsInst;
+
+
+    // 정답 저장
+    public List<PeopleIndex> Peoples;
+    public List<string> NewsMain;
 }
 
 [Serializable]
