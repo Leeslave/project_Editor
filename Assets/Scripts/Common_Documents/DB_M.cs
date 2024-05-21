@@ -28,9 +28,10 @@ public class DB_M : MonoBehaviour
     [NonSerialized] public Instruction Instructions;
 
     public Docs[] DocsList;
-
+    private int stageInt;
     void Awake()
     {
+        stageInt = GameSystem.Instance.GetTask("Document");
         if (DB_Docs != null) { Destroy(gameObject); return; }
         DB_Docs = this;
         string CurPath = Directory.GetCurrentDirectory() + "\\Assets\\Resources\\GameData";

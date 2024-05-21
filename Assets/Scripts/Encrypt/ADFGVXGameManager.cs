@@ -1,6 +1,5 @@
 using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class ADFGVXGameManager : MonoBehaviour
 {
@@ -40,7 +39,7 @@ public class ADFGVXGameManager : MonoBehaviour
         ADFGVXStageData stageData = JsonConvert.DeserializeObject<ADFGVXStageData>(stageText.text);
         int stageNum = GameSystem.Instance.GetTask("ADFGVX");
         //stageNum = 0;
-
+        Debug.Log(stageNum);
         if (stageData.Decrypt.TryGetValue(stageNum.ToString(), out var decryptData))
         {
             Debug.Log($"이번 날짜의 Decrypt Task[targetText:{decryptData["targetText"]}, decryptKey:{decryptData["decryptKey"]}, resultText:{decryptData["resultText"]}");
