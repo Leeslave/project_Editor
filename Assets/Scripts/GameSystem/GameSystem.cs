@@ -74,11 +74,12 @@ public class GameSystem : SingletonObject<GameSystem>
         gameData.time = 0;
         gameData.SetLocation(today.startLocation);
         gameData.SetPosition(today.startPosition);
+        isScreenOn = false;
 
         // 게임 저장 (튜토리얼 날짜 제외)
         if (date > 1)
         {
-            DataLoader.SavePlayerData(saveList);
+            // DataLoader.SavePlayerData(saveList);
         }
 
         ObjectDatabase.Instance.Read();
@@ -96,7 +97,6 @@ public class GameSystem : SingletonObject<GameSystem>
         
         // 시간대 적용
         gameData.time = _time;
-        isScreenOn = false;
 
         // 월드 리로드
         if (SceneManager.GetActiveScene().name == "MainWorld")
