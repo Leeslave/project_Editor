@@ -31,10 +31,9 @@ public class DB_M : MonoBehaviour
     private int stageInt;
     void Awake()
     {
-        stageInt = GameSystem.Instance.GetTask("Document");
+        try { stageInt = GameSystem.Instance.GetTask("Document"); } catch (Exception e) { }
         if (DB_Docs != null) { Destroy(gameObject); return; }
         DB_Docs = this;
-        string CurPath = Directory.GetCurrentDirectory() + "\\Assets\\Resources\\GameData";
         // Read Manipulation Data
         InfSub.Add(Enum.GetNames(typeof(Country)));
         InfSub.Add(Enum.GetNames(typeof(Belonging)));
@@ -92,11 +91,17 @@ public class DB_M : MonoBehaviour
                     }
                 }
                 
-                News NewsSub = FindNews($"{Month}/" + Day.ToString("D2"));
-                int mx = -1; foreach (var j in k.NewsInst) if (j.Line > mx) mx = j.Line;
-                k.NewsMain = new List<string>(); foreach (var i in NewsSub.Main) k.NewsMain.Add(i); for (int I = 0; I < NewsSub.Main.Count + 1 - mx; I++) k.NewsMain.Add("");
-                foreach (var i in k.NewsInst) k.NewsMain[i.Line] = i.Goal; 
 
+                News NewsSub = FindNews($"{Month}/" + Day.ToString("D2"));
+                if (NewsSub != null)
+                {
+                    // Calculate Cur News's Maximum Line 
+                    int mx = -1; foreach (var j in k.NewsInst) if (j.Line > mx) mx = j.Line;
+                    // Add Over Line & Add News Main To Evaluate News Main
+                    k.NewsMain = new List<string>(); foreach (var i in NewsSub.Main) k.NewsMain.Add(i); for (int I = 0; I < NewsSub.Main.Count + 1 - mx; I++) k.NewsMain.Add("");
+                    // Apply Changes At Evaluate News
+                    foreach (var i in k.NewsInst) k.NewsMain[i.Line] = i.Goal;
+                }
                 break; 
             }
         }
@@ -146,10 +151,11 @@ public class DB_M : MonoBehaviour
 
     public void EvaluateWork(ref int[] Score)
     {
+        // Evaluate Info
         int Score_Info = 0;
         for(int i = 0; i < Instructions.InfoInst.Length; i++) Score_Info += Instructions.Peoples[i].Evaluate(FindPeople(Instructions.InfoInst[i].Target));
 
-
+        // Evaluate News
         int Score_News = 0;
         var EvalNews = FindNews($"{Month}/" + Day.ToString("D2"));
         Score_News -= Mathf.Abs(EvalNews.Main.Count - Instructions.NewsMain.Count);
@@ -160,6 +166,7 @@ public class DB_M : MonoBehaviour
             if (EvalNews.Main[i].TrimEnd('\n','\r') != Instructions.NewsMain[i].TrimEnd('\n', '\r')) Score_News--;
         }
 
+        // Evaluate Docs
         int Score_Docs = 0;
         // 추후 추가
 

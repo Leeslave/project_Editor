@@ -80,6 +80,8 @@ public class TextMannager_N : MonoBehaviour
         ResetIndex();
     }
 
+
+    // Reset Cur Index Of Texts
     public void ResetIndex()
     {
         for (int i = 0; i < Texts.Count; i++) MainTexts[i].MyInd = Texts[i].transform.GetSiblingIndex() - 4;
@@ -101,6 +103,7 @@ public class TextMannager_N : MonoBehaviour
             }
     }
 
+    // Reset All Texts
     private void OnDisable()
     {
         foreach(var k in MainTexts)

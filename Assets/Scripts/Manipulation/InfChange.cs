@@ -61,6 +61,7 @@ public class InfChange : MonoBehaviour
         }
     }
 
+
     public void TouchManager(GameObject cnt, int Type)
     {
         switch (Type)
@@ -120,6 +121,7 @@ public class InfChange : MonoBehaviour
 
     [SerializeField] GetOptionFile_D GD;
 
+    // Get Folder's Contents & Make Files
     public void OpenFolder(HighLighter_M ss)
     {
         Reviser.SetActive(false);
@@ -216,11 +218,11 @@ public class InfChange : MonoBehaviour
             {
                 switch (ind)
                 {
-                    case 4:
+                    case 4: // Image
                         if (FaceNum == k.Item3) TDN.CheckList(2, -1, true, k.Item4);
                         else TDN.CheckList(2, -1, false, k.Item4);
                         break;
-                    default:
+                    default:    // ETC
                         var j = text.Split(" ")[2];
                         if (DB.InfSub[ind][k.Item3].TrimEnd() == j) TDN.CheckList(2, 01, true, k.Item4);
                         else TDN.CheckList(2, -1, false, k.Item4);
