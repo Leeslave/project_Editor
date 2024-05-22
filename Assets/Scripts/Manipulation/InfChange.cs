@@ -214,6 +214,7 @@ public class InfChange : MonoBehaviour
     {
         foreach(var k in PeopleCorrect)
         {
+            
             if(k.Item1.Equals(CurPeople.name_e) && k.Item2 == ind)
             {
                 switch (ind)

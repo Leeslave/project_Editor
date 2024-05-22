@@ -87,13 +87,13 @@ public class DB_M : MonoBehaviour
                         case 1:
                             s.job = (Job)j.After;
                             break;
-                        case 2:
+                        case 4:
                             s.curFace = j.After;
                             break;
-                        case 3:
+                        case 2:
                             s.belong = (Belonging)j.After;
                             break;
-                        case 4:
+                        case 3:
                             s.part = (Part)j.After;
                             break;
                     }

@@ -145,9 +145,9 @@ public class info
     /*
      * 0 : 국적
      * 1 : 직업
-     * 2 : 얼굴
-     * 3 : 부서
-     * 4 : 소속
+     * 2 : 부서
+     * 3 : 소속
+     * 4 : 얼굴
      */
     public int ToDo;
     public string Target;
