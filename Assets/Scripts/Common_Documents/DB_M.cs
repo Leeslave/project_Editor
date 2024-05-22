@@ -20,7 +20,7 @@ public class DB_M : MonoBehaviour
     public int Month;
     public int Day;
 
-    // 0 : 국, 1 : 부, 2 : 소, 3 ; 직
+    // 0 : 국,  1 ; 직, 2 : 부, 3 : 소
     public List<string[]> InfSub = new List<string[]>(4);
     public List<PeopleIndex> PeopleList;
     public News[] NewsList;
@@ -43,9 +43,10 @@ public class DB_M : MonoBehaviour
         DB_Docs = this;
         // Read Manipulation Data
         InfSub.Add(Enum.GetNames(typeof(Country)));
+        InfSub.Add(Enum.GetNames(typeof(Job)));
         InfSub.Add(Enum.GetNames(typeof(Belonging)));
         InfSub.Add(Enum.GetNames(typeof(Part)));
-        InfSub.Add(Enum.GetNames(typeof(Job)));
+        
 
         for (int i = 0; i < PeopleList.Count - 1; i++) DBFolder.NewIcon(PeopleList[i].name_e, spr, 1);
         DBFolder.gameObject.SetActive(false);
