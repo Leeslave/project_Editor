@@ -369,6 +369,7 @@ public class Chat : Singleton<Chat>
             {
                 if (int.TryParse(para.bgm, out int result))
                 {
+                    WorldSceneManager.Instance.worldBGM.Pause();
                     bgm.SetClip(result);
                     bgm.Play();
                 }

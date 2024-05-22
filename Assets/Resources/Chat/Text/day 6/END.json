@@ -38,13 +38,8 @@
             "$type": "TalkParagraph, Assembly-CSharp",
             "chatType": "CutScene",
             "background": "PriceBye",
-            "choiceList": [
-                {
-                    "text": "End.",
-                    "reaction": "ExitGame",
-                    "reactionParam": "-1"
-                }
-            ]
+            "action": "ExitGame",
+            "actionParam": -1
         }
     ]
 }
