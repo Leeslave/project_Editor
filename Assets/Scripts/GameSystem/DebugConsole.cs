@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class DebugConsole : SingletonObject<DebugConsole>
 {
@@ -66,10 +65,10 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 break;
             case "nextday":
                 GameSystem.Instance.SetDate();
+                GameSystem.LoadScene("DayLoading");
                 break;
             case "nexttime":
                 GameSystem.Instance.SetTime(GameSystem.Instance.gameData.time + 1);
-                GameSystem.LoadScene("DayLoading");
                 break;
         }
 
