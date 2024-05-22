@@ -12,6 +12,17 @@ public abstract class Action
 }
 
 
+// 게임 종료 액션
+public class ExitGameAction : Action
+{
+    public override int Invoke()
+    {
+        GameSystem.LoadScene("Start");
+        return 0;
+    }
+}
+
+
 // 날짜 강제 변경 액션
 public class HardDayChangeAction : Action
 {

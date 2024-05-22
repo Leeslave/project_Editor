@@ -85,7 +85,7 @@ public class MsgManager : Singleton<MsgManager>
         {
             newMsg = Instantiate(msgPrefab_L, MsgPanel);
         }
-        MsgPanel.sizeDelta += new Vector2(0, panelSize);
+        MsgPanel.sizeDelta += new Vector2(0, newMsg.GetComponent<RectTransform>().sizeDelta.y);
         
         // 메시지 오브젝트 실행
         MessageBlock newBlock = newMsg.GetComponent<MessageBlock>();

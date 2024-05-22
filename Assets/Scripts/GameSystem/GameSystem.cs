@@ -135,6 +135,8 @@ public class GameSystem : SingletonObject<GameSystem>
         Work currentWork = null;
         foreach (var work in today.workList)
         {
+            if (work.Value == true)
+                continue;
             if (work.Key.code == workCode)
             {
                 currentWork = work.Key;

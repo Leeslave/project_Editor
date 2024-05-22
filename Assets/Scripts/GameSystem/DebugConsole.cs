@@ -32,7 +32,7 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 output += $"오늘의 업무 현황\n";
                 foreach(var work in todayData.workList.Keys)
                 {
-                    output += $"WORK: {work.code}, Stage: {work.stage} = Done: {todayData.workList[work]}";
+                    output += $"WORK: {work.code}, Stage: {work.stage} = Done: {todayData.workList[work]}\n";
                 }
                 output += "\n";
                 break;
@@ -60,7 +60,7 @@ public class DebugConsole : SingletonObject<DebugConsole>
             case "clear" :
                 foreach(var work in GameSystem.Instance.today.workList.Keys)
                 {
-                    GameSystem.Instance.today.workList[work] = true;
+                    GameSystem.Instance.ClearTask(work.code);
                 }
                 GameSystem.LoadScene("Screen");
                 break;
@@ -69,6 +69,7 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 break;
             case "nexttime":
                 GameSystem.Instance.SetTime(GameSystem.Instance.gameData.time + 1);
+                GameSystem.LoadScene("DayLoading");
                 break;
         }
 

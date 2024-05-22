@@ -7,7 +7,8 @@
             "$type": "TalkParagraph, Assembly-CSharp",
             "chatType": "CutScene",
             "background": "PriceBye",
-            "text":"시연이 종료되었습니다."
+            "text":"시연이 종료되었습니다.",
+            "bgm": 2
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
@@ -37,7 +38,13 @@
             "$type": "TalkParagraph, Assembly-CSharp",
             "chatType": "CutScene",
             "background": "PriceBye",
-            "text":"end."
+            "choiceList": [
+                {
+                    "text": "End.",
+                    "reaction": "ExitGame",
+                    "reactionParam": "-1"
+                }
+            ]
         }
     ]
 }

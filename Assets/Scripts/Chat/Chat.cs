@@ -492,6 +492,9 @@ public class Chat : Singleton<Chat>
         case "Remove":
             result = new RemoveAction();
             break;
+        case "ExitGame":
+            result = new ExitGameAction();
+            break;
         default:
             return null;
         }
