@@ -165,13 +165,17 @@ public class DB_M : MonoBehaviour
         // Evaluate News
         int Score_News = 0;
         var EvalNews = FindNews($"{Month}/" + Day.ToString("D2"));
-        Score_News -= Mathf.Abs(EvalNews.Main.Count - Instructions.NewsMain.Count);
-        int l = Mathf.Min(EvalNews.Main.Count, Instructions.NewsMain.Count);
-        
-        for(int i = 0; i < l; i++)
+        if (EvalNews != null)
         {
-            if (EvalNews.Main[i].TrimEnd('\n','\r') != Instructions.NewsMain[i].TrimEnd('\n', '\r')) Score_News--;
+            Score_News -= Mathf.Abs(EvalNews.Main.Count - Instructions.NewsMain.Count);
+            int l = Mathf.Min(EvalNews.Main.Count, Instructions.NewsMain.Count);
+        
+            for(int i = 0; i < l; i++)
+            {
+                if (EvalNews.Main[i].TrimEnd('\n','\r') != Instructions.NewsMain[i].TrimEnd('\n', '\r')) Score_News--;
+            }
         }
+        
 
         // Evaluate Docs
         int Score_Docs = 0;
