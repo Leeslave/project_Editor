@@ -126,7 +126,7 @@ public class PlayerMove : MonoBehaviour
             if (NX != 0 || NY != 0)   // 움직임을 감지
             {
                 Vector2 NextVec = new Vector2(NX, NY);
-                rayHit = Physics2D.CircleCast(rigid.position + NextVec, 2.5f, Vector2.zero, 1.5f, LayerMask.GetMask("Water"));
+                rayHit = Physics2D.CircleCast(rigid.position + NextVec, 2.5f, Vector2.zero, 2.0f, LayerMask.GetMask("Water"));
                 if (rayHit.collider != null) { if (!rayHit.collider.gameObject.CompareTag("ExitWall")) return; }
                 AS.clip = Clips[0];
                 AS.Play();
