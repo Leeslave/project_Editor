@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class ADFGVXGameManager : MonoBehaviour
 {
-    private ADFGVXGameManager GameManager { get; set; }
     public LoadEncrypted LoadEncrypted { get; private set; }
     public KeyPriorityTranspose KeyPriorityTranspose { get; private set; }
     public BilateralSubstitute BilateralSubstitute { get; private set; }
@@ -12,6 +11,7 @@ public class ADFGVXGameManager : MonoBehaviour
     public DisplayEncrypted DisplayEncrypted { get; private set; }
     public ResultPanel ResultPanel { get; private set; }
     public CurrentModePanel CurrentModePanel { get; set; }
+    public BasicButton ExitButton { get; set; }
     
     public enum SystemMode { Encryption, Decryption }
     public SystemMode CurrentSystemMode { get; set; } = SystemMode.Decryption;
@@ -33,12 +33,15 @@ public class ADFGVXGameManager : MonoBehaviour
         DisplayEncrypted = transform.GetChild(5).GetComponent<DisplayEncrypted>();
         ResultPanel = transform.GetChild(6).GetComponent<ResultPanel>();
         CurrentModePanel = transform.GetChild(7).GetComponent<CurrentModePanel>();
-        GameManager = FindObjectOfType<ADFGVXGameManager>();
+        ExitButton = transform.GetChild(8).GetComponent<BasicButton>();
+        
+        //종료 버튼에 이벤트 추가
+        ExitButton.OnMouseUpEvent.AddListener(() => GameSystem.LoadScene("Screen"));
 
+        //스테이지 정보 로드
         TextAsset stageText = Resources.Load<TextAsset>("GameData/Encrypt/ADFGVXStageData"); 
         ADFGVXStageData stageData = JsonConvert.DeserializeObject<ADFGVXStageData>(stageText.text);
         int stageNum = GameSystem.Instance.GetTask("ADFGVX");
-        //stageNum = 0;
         Debug.Log(stageNum);
         if (stageData.Decrypt.TryGetValue(stageNum.ToString(), out var decryptData))
         {
@@ -49,7 +52,7 @@ public class ADFGVXGameManager : MonoBehaviour
         else
         {
             Debug.Log("이번 날짜의 Decrypt Task는 없음!");
-            GameManager.decryptClear = true;
+            decryptClear = true;
         }
             
         
@@ -61,8 +64,8 @@ public class ADFGVXGameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("이번 날짜의 Encrypt Task는 없음!");
-            GameManager.encryptClear = true;
+            Debug.Log("이번 날짜의 Encrypt Task는 없음!"); 
+            encryptClear = true;
         }
             
     }
@@ -105,6 +108,7 @@ public class ADFGVXGameManager : MonoBehaviour
         WritePlain.CutAvailabilityInputForWhile(wait, duration);
         DisplayEncrypted.CutAvailabilityInputForWhile(wait, duration);
         CurrentModePanel.CutAvailabilityInputForWhile(wait, duration);
+        ExitButton.CutAvailabilityForWhile(wait, duration);
     }
 
     public void SetAvailable(bool value)
@@ -116,5 +120,6 @@ public class ADFGVXGameManager : MonoBehaviour
         WritePlain.SetAvailable(value);
         DisplayEncrypted.SetAvailable(value);
         CurrentModePanel.SetAvailable(value);
+        ExitButton.SetAvailability(value);
     }
 }
