@@ -1,226 +1,224 @@
+using Cinemachine;
 using System;
-using UnityEngine;
-using TMPro;
-using UnityEngine.Scripting;
-using System.Collections.Generic;
 using System.Collections;
-using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 using System.IO;
+using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMove : MonoBehaviour
 {
     [SerializeField]
     public MakeTile MT;
-    // X, YÃà ÀÌµ¿ ¼Óµµ
+    // X, Yì¶• ì´ë™ ì†ë„
     public float Move_X;
     public float Move_Y;
-    // PlayerÀÇ ÀÌµ¿ °¡´É ¿©ºÎ
+    // Playerì˜ ì´ë™ ê°€ëŠ¥ ì—¬ë¶€
     public bool MoveAble;
-    // ÀÔ·ÂÀÌ ¹ß»ıÇÑ ÀÌÈÄ ´ÙÀ½ ÀÔ·Â±îÁöÀÇ µô·¹ÀÌ ¼³Á¤
+    // ì…ë ¥ì´ ë°œìƒí•œ ì´í›„ ë‹¤ìŒ ì…ë ¥ê¹Œì§€ì˜ ë”œë ˆì´ ì„¤ì •
     public float InputDelay;
-    // ÇÃ·¹ÀÌ¾îÀÇ ½Ã¾ß
+    // í”Œë ˆì´ì–´ì˜ ì‹œì•¼
     public int Sight;
     // MainCamera
     public GameObject maincam;
     // KeyText
     public TMP_Text KeyText;
-    // Clear ½Ã ¶ç¿ï ¹®±¸
+    // Clear ì‹œ ë„ìš¸ ë¬¸êµ¬
     public GameObject Clear;
     // Timer
     public GameObject Timer;
-    // ¿ìÃø »ó´Ü¿¡ ¶ç¿ï Icon(³ªÄ§¹İ)
+    // ìš°ì¸¡ ìƒë‹¨ì— ë„ìš¸ Icon(ë‚˜ì¹¨ë°˜)
     public GameObject DirIcon;
-    // Ãâ±¸ À§Ä¡¸¦ ³ªÅ¸³»ÁÖ´Â È­»ìÇ¥
+    // ì¶œêµ¬ ìœ„ì¹˜ë¥¼ ë‚˜íƒ€ë‚´ì£¼ëŠ” í™”ì‚´í‘œ
     public GameObject DirMark;
-    // ¿ìÃø »ó´Ü¿¡ ¶ç¿ï Icon(È½ºÒ)
+    // ìš°ì¸¡ ìƒë‹¨ì— ë„ìš¸ Icon(íšŸë¶ˆ)
     public GameObject FireIcon;
-    // È×µæÇÑ KeyµéÀÇ Object¸¦ ÀúÀåÇÏ´Â List
-    // ÀÌ ¶§ ÃßÈÄ °è»ê »óÀÇ ÆíÀÇ¸¦ À§ÇØ Player Object¸¦ 0¹ø¿¡ ÀúÀåÇÑ´Ù.
-    List<GameObject> KeyTrain = new List<GameObject>();
-    // KeyTrainÀÇ ¸¶Áö¸· ObjectÀÇ ÀÌµ¿ Àü ¸¶Áö¸· À§Ä¡. Key È×µæ ½Ã ÇØ´ç KeyÀÇ À§Ä¡ Á¶Á¤À» À§ÇØ »ç¿ë
+    [SerializeField] AudioSource AS;
+    [SerializeField] List<AudioClip> Clips;
+    // íœ™ë“í•œ Keyë“¤ì˜ Objectë¥¼ ì €ì¥í•˜ëŠ” List
+    // ì´ ë•Œ ì¶”í›„ ê³„ì‚° ìƒì˜ í¸ì˜ë¥¼ ìœ„í•´ Player Objectë¥¼ 0ë²ˆì— ì €ì¥í•œë‹¤.
+    List<Rigidbody2D> KeyTrain = new List<Rigidbody2D>();
+    // KeyTrainì˜ ë§ˆì§€ë§‰ Objectì˜ ì´ë™ ì „ ë§ˆì§€ë§‰ ìœ„ì¹˜. Key íœ™ë“ ì‹œ í•´ë‹¹ Keyì˜ ìœ„ì¹˜ ì¡°ì •ì„ ìœ„í•´ ì‚¬ìš©
     Vector3 LastTrans;
 
-    // RayHit¿ë ÀÓ½Ã º¯¼ö
+    // RayHitìš© ì„ì‹œ ë³€ìˆ˜
     RaycastHit2D rayHit;
-    // PlayerÀÇ RigidBody Component¸¦ ´ãÀ» º¯¼ö
+    // Playerì˜ RigidBody Componentë¥¼ ë‹´ì„ ë³€ìˆ˜
     Rigidbody2D rigid;
-    // ÇÃ·¹ÀÌ¾îÀÇ ÀÌµ¿ °è»ê¿¡ »ç¿ëµÊ.
-    // Bf´Â ÀÌµ¿ Àü À§Ä¡, NÀº ÀÌµ¿ ÀÌÈÄ À§Ä¡
+    // í”Œë ˆì´ì–´ì˜ ì´ë™ ê³„ì‚°ì— ì‚¬ìš©ë¨.
+    // BfëŠ” ì´ë™ ì „ ìœ„ì¹˜, Nì€ ì´ë™ ì´í›„ ìœ„ì¹˜
     float Bf_X;
     float Bf_Y;
     float NX;
     float NY;
-    // ¸¶Áö¸· Å¬¸®¾î ¿¬Ãâ¿¡ »ç¿ë(¹® °³¹æ)
+    // ë§ˆì§€ë§‰ í´ë¦¬ì–´ ì—°ì¶œì— ì‚¬ìš©(ë¬¸ ê°œë°©)
     bool IsEnd = false;
     bool MS = true;
-    // ÇÃ·¹ÀÌ¾îÀÇ ÀÌµ¿ ¹æÇâÀ» ´ãÀ» ÀÓ½Ã º¯¼ö
+    // í”Œë ˆì´ì–´ì˜ ì´ë™ ë°©í–¥ì„ ë‹´ì„ ì„ì‹œ ë³€ìˆ˜
     Vector3 Dir;
 
     Vector3 VCnt;
 
-    // ÇöÀç ¾ÆÀÌÅÛÀ» ¸Ô¾ú´ÂÁö ¿©ºÎ
+    // í˜„ì¬ ì•„ì´í…œì„ ë¨¹ì—ˆëŠ”ì§€ ì—¬ë¶€
     bool IsFire = false;
 
-    bool IsCom = false;
+    [SerializeField] List<Transform> Marks;
+    [NonSerialized] public List<Transform> KeysTrans = new List<Transform>();
+    [SerializeField] CinemachineVirtualCamera CV;
+
+    List<Vector2> DirCommand = new List<Vector2>();
 
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
+        AS = GetComponent<AudioSource>();
         Bf_X = transform.position.x;
         Bf_Y = transform.position.y;
         MoveAble = true;
         Dir = Vector3.up;
-        KeyTrain.Add(gameObject);
         LastTrans = transform.position;
         maincam.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
     }
     private void Start()
     {
         CalcFog();
-        KeyText.text = $"{KeyTrain.Count - 1}/{MT.KeyNum}";
+        for (int i = 0; i < MT.KeyNum; i++) Marks[i].gameObject.SetActive(true);
+        for (int i = 0; i < MT.KeyNum; i++)
+        {
+            VCnt = (KeysTrans[i].position - transform.position).normalized;
+            Marks[i].transform.position = transform.position + (VCnt) * 7;
+            Marks[i].transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(VCnt.y, VCnt.x) * Mathf.Rad2Deg);
+        }
+        KeyText.text = $"{0}/{MT.KeyNum}";
+        LastMoveVal = transform.position;
     }
+
+    Vector3 LastMoveVal;
+    int GetKeyCount = 0;
+
+    [SerializeField] float speed = 5;
+
+    int KeyMoveSub = 0;
+    int KeyMoveGap = 10;
+
+    int[] KeySubSub = { 0, 10, 30, 60,100,150 };
 
     void FixedUpdate()
     {
         if (MoveAble && MS)
         {
+            Dir = Vector3.zero;
             NX = 0;
             NY = 0;
-            // ÀÌµ¿ Á¦¾î
+            // ì´ë™ ì œì–´
             if (Input.GetButton("Horizontal"))
             {
-                NX = Input.GetAxisRaw("Horizontal") * 10;
-                Dir = NX < 0 ? Vector3.left : Vector3.right;
+                NX = Input.GetAxisRaw("Horizontal") * Time.deltaTime * speed;
+                Dir += NX < 0 ? Vector3.left : Vector3.right;
             }
-            else if (Input.GetButton("Vertical"))
+            if (Input.GetButton("Vertical"))
             {
-                NY = Input.GetAxisRaw("Vertical") * 10;
-                Dir = NY < 0 ? Vector3.down : Vector3.up;
+                NY = Input.GetAxisRaw("Vertical") * Time.deltaTime * speed;
+                Dir += NY < 0 ? Vector3.down : Vector3.up;
             }
 
-            if (NX != 0 || NY != 0)   // ¿òÁ÷ÀÓÀ» °¨Áö
+            if (NX != 0 || NY != 0)   // ì›€ì§ì„ì„ ê°ì§€
             {
-                bool IsMoveNext = true;     // ´ÙÀ½ ÀÌµ¿ ½Ã, Á¶°ÇÀÌ ¸¸Á·µÇÁö ¾ÊÀº Ãâ±¸, º®°ú ºÎµúÈù´Ù¸é ÀÌµ¿ÇÏÁö ¾ÊÀ½À» °áÁ¤. 
+                Vector2 NextVec = new Vector2(NX, NY);
+                rayHit = Physics2D.CircleCast(rigid.position + NextVec, 2.5f, Vector2.zero, 2.0f, LayerMask.GetMask("Water"));
+                if (rayHit.collider != null) { if (!rayHit.collider.gameObject.CompareTag("ExitWall")) return; }
+                AS.clip = Clips[0];
+                AS.Play();
+                // ë‹¤ìŒ ì´ë™ ì‹œ, ì¡°ê±´ì´ ë§Œì¡±ë˜ì§€ ì•Šì€ ì¶œêµ¬, ë²½ê³¼ ë¶€ë”ªíŒë‹¤ë©´ ì´ë™í•˜ì§€ ì•ŠìŒì„ ê²°ì •. 
+                Bf_X = transform.position.x;
+                Bf_Y = transform.position.y;
 
-                rayHit = Physics2D.Raycast(transform.position, Dir, 10, LayerMask.GetMask("Plat"));
+                rigid.MovePosition(rigid.position + NextVec);
+                DirCommand.Add(NextVec);
+                if (DirCommand.Count > KeyMoveGap * GetKeyCount) DirCommand.RemoveAt(0);
+                if (KeyMoveSub < KeySubSub[GetKeyCount]) KeyMoveSub++;
+                CalcFog();
 
-                if (rayHit.collider != null)
-                {
-                    if(rayHit.collider.tag == "Wall")
+
+                rayHit = Physics2D.Raycast(transform.position, Dir, 1, LayerMask.GetMask("Default"));
+                if (rayHit.collider != null) if (rayHit.collider.CompareTag("Key"))
                     {
-                        IsMoveNext = false;
+                        // í”Œë ˆì´ì–´ì˜ ë’¤ë¥¼ ë”°ë¼ì˜¤ëŠ” Keyì˜ íŠ¹ì„± ìƒ, í”Œë ˆì´ì–´ì™€ ì¶©ëŒí•  ìˆ˜ ìˆìŒìœ¼ë¡œ, í•´ë‹¹ ì—°ì‚°ì— ì˜í–¥ì„ ë°›ì§€ ì•ŠëŠ” tag ë° layerë¡œ ë³€ê²½.
+                        KeyTrain.Add(rayHit.collider.gameObject.GetComponent<Rigidbody2D>());
+                        rayHit.collider.tag = "Untagged";
+                        rayHit.collider.gameObject.layer = 6;
+                        rayHit.collider.transform.position = transform.position;
+                        KeyText.text = $"{++GetKeyCount}/{MT.KeyNum}";
+                        AS.clip = Clips[1];
+                        AS.Play();
                     }
-                    else if(rayHit.collider.tag == "ExitWall")
+                for (int I = 0; I < KeyTrain.Count; I++) if (KeyMoveSub >= KeySubSub[I+1])
                     {
-                        if (!IsEnd)     // ¸ğµç Key¸¦ ¸ğ¾ÒÀ¸¸é Ãâ±¸¸¦ °³¹æÇÏ¸ç, ±×·¸Áö ¾ÊÀ¸¸é ÀÌµ¿ ºÒ°¡.
-                        {
-                            if (KeyTrain.Count - 1 == MT.KeyNum) { StartCoroutine(ClearGame()); }
-                            IsMoveNext = false;
-                        }
-                        else           // Å¬¸®¾î
-                        {
-                            File.Move($"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty}",
-                                      $"Assets\\Resources\\GameData\\Maze\\{MT.Difficulty+1}");
-                            File.Create($"Assets\\Resources\\GameData\\Maze\\C");
-                            SceneManager.LoadScene("TestT");
-                        }
+                        KeyTrain[I].MovePosition(KeyTrain[I].position + DirCommand[DirCommand.Count - (I + 1) * KeyMoveGap]);
+                    }
+
+
+                for (int i = 0; i < MT.KeyNum; i++)
+                {
+                    VCnt = KeysTrans[i].position - transform.position;
+                    float j = Vector3.Magnitude(VCnt);
+                    if (j <= 10 || KeysTrans[i].CompareTag("Untagged")) Marks[i].gameObject.SetActive(false);
+                    else
+                    {
+                        if (j > 40) j = 40;
+                        VCnt = (KeysTrans[i].position - transform.position).normalized;
+                        Marks[i].gameObject.SetActive(true);
+                        Marks[i].transform.position = transform.position + (VCnt) * (j - 5);
+                        Marks[i].transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(VCnt.y, VCnt.x) * Mathf.Rad2Deg);
                     }
                 }
-                // RayCast·Î ¾ÆÀÌÅÛ °¨Áö
-                rayHit = Physics2D.Raycast(transform.position, Dir, 10, LayerMask.GetMask("Default"));
-                
-                if (rayHit.collider != null && IsMoveNext)
-                {
-                    switch (rayHit.collider.name)
-                    {
-                        case "Key(Clone)":
-                            // ÇÃ·¹ÀÌ¾îÀÇ µÚ¸¦ µû¶ó¿À´Â KeyÀÇ Æ¯¼º »ó, ÇÃ·¹ÀÌ¾î¿Í Ãæµ¹ÇÒ ¼ö ÀÖÀ½À¸·Î, ÇØ´ç ¿¬»ê¿¡ ¿µÇâÀ» ¹ŞÁö ¾Ê´Â tag ¹× layer·Î º¯°æ.
-                            KeyTrain.Add(rayHit.collider.gameObject);
-                            rayHit.collider.tag = "Untagged";
-                            rayHit.collider.gameObject.layer = 6;
-                            // ÇöÀç ¸Ç µÚÀÇ ObjectÀÇ Á÷Àü ÀÌµ¿ À§Ä¡·Î KeyÀÇ À§Ä¡¸¦ Á¤ÇÔ
-                            rayHit.collider.gameObject.transform.position = LastTrans;
-                            KeyText.text = $"{KeyTrain.Count - 1}/{MT.KeyNum}";
-                            break;
-                        // ³ªÄ§¹İ ¾ÆÀÌÅÛÀ» ¸Ô¾úÀ» °æ¿ì, Ãâ±¸ÀÇ À§Ä¡¸¦ Ç¥½ÃÇÏ´Â È­»ìÇ¥ »ı¼º
-                        case "Compass(Clone)":
-                            Destroy(rayHit.collider.gameObject);
-                            IsCom = true;
-                            DirMark.SetActive(true);
-                            DirIcon.SetActive(true);
-                            break;
-                        // È½ºÒ ¾ÆÀÌÅÛÀ» ¸Ô¾úÀ» °æ¿ì, 30ÃÊ°£ ¹«Á¶°Ç ½Ã¾ß ¹üÀ§ ¾ÈÀÇ ¸ğµç ¾È°³¸¦ °È¾î³½´Ù.
-                        case "Fire(Clone)":
-                            Destroy(rayHit.collider.gameObject);
-                            IsFire = true;
-                            FireIcon.SetActive(true);
-                            Invoke("FireOff", 30);
-                            break;
-                    }
-                }
-                if (IsMoveNext)
-                {
-                    LastTrans = KeyTrain[KeyTrain.Count-1].transform.position;
-                    // KeyTrain¿¡ ´ã±ä ¸ğµç KeyµéÀÇ À§Ä¡¸¦ ÀÚ½Å ¹Ù·Î ¾ÕÀÇ ObjectÀÇ À§Ä¡·Î º¯°æÇÔ.(0Àº PlayerÀÓÀ¸·Î °è»ê ¾ÈÇÔ)
-                    for(int i = KeyTrain.Count - 1; i > 0; i--) KeyTrain[i].transform.position = KeyTrain[i - 1].transform.position;
-                    Bf_X = transform.position.x;
-                    Bf_Y = transform.position.y;
-                    transform.Translate(new Vector3(NX, NY, 0));
-                    maincam.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
-                    CalcFog();
-                    if (IsCom)
-                    {
-                        VCnt = (MT.Clear.transform.position - transform.position).normalized;
-                        DirMark.transform.position = transform.position + (VCnt) * 7;
-                        DirMark.transform.rotation = Quaternion.Euler(0,0,Mathf.Atan2(VCnt.y,VCnt.x) * Mathf.Rad2Deg);
-                    }
-                }
-                // ÇÃ·¹ÀÌ¾îÀÇ ¼öÁ÷ È¤Àº ¼öÆò ÀÌµ¿Å°°¡ ÀÔ·Â µÇ¾úÀ» °æ¿ì InputDelay Àü±îÁø ´ÙÀ½ ÀÔ·ÂÀ» ¹ŞÀ» ¼ö ¾ø°Ô ÇÔ
-                MoveAble = false;
-                Invoke("AbleMove", InputDelay);
+                // í”Œë ˆì´ì–´ì˜ ìˆ˜ì§ í˜¹ì€ ìˆ˜í‰ ì´ë™í‚¤ê°€ ì…ë ¥ ë˜ì—ˆì„ ê²½ìš° InputDelay ì „ê¹Œì§„ ë‹¤ìŒ ì…ë ¥ì„ ë°›ì„ ìˆ˜ ì—†ê²Œ í•¨
+                /*MoveAble = false;
+                Invoke("AbleMove", InputDelay);*/
             }
         }
     }
 
-    // °ÔÀÓ Å¬¸®¾î ¿¬Ãâ.
-    // ¸Ç µÚÀÇ KeyºÎÅÍ 0.5ÃÊµ¿¾È yÃàÀ¸·Î 5¸¸Å­ ÀÌµ¿½ÃÅ°°í ±× ÈÄ ÇØ´ç À§Ä¡¿¡¼­ ¹®À¸·Î ÀÌµ¿½ÃÅ´(ÀÌ ½Ã°£Àº KeyÀÇ À§Ä¡¿¡ µû¶ó ´Ù¸§)
-    // ¸ğµç Key°¡ µé¾î°¬À¸¸é ¹®ÀÌ °³¹æµÇ´Â ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ Àç»ı(ÇöÀç ÇØ´ç ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ¾ø±â¿¡ ³ÖÁö ¾ÊÀ½)
-    // ÀÌ ÈÄ ¹®¿¡ µé¾î°¡¸é °ÔÀÓÀÌ Å¬¸®¾î µÊ.
+    // ê²Œì„ í´ë¦¬ì–´ ì—°ì¶œ.
+    // ë§¨ ë’¤ì˜ Keyë¶€í„° 0.5ì´ˆë™ì•ˆ yì¶•ìœ¼ë¡œ 5ë§Œí¼ ì´ë™ì‹œí‚¤ê³  ê·¸ í›„ í•´ë‹¹ ìœ„ì¹˜ì—ì„œ ë¬¸ìœ¼ë¡œ ì´ë™ì‹œí‚´(ì´ ì‹œê°„ì€ Keyì˜ ìœ„ì¹˜ì— ë”°ë¼ ë‹¤ë¦„)
+    // ëª¨ë“  Keyê°€ ë“¤ì–´ê°”ìœ¼ë©´ ë¬¸ì´ ê°œë°©ë˜ëŠ” ì• ë‹ˆë©”ì´ì…˜ì´ ì¬ìƒ(í˜„ì¬ í•´ë‹¹ ì• ë‹ˆë©”ì´ì…˜ì´ ì—†ê¸°ì— ë„£ì§€ ì•ŠìŒ)
+    // ì´ í›„ ë¬¸ì— ë“¤ì–´ê°€ë©´ ê²Œì„ì´ í´ë¦¬ì–´ ë¨.
     IEnumerator ClearGame()
     {
         Timer.SetActive(false);
         Time.timeScale = 2;
         MS = false;
-        for (int i = KeyTrain.Count - 1; i > 0; i--)
+        for (int i = KeyTrain.Count - 1; i >= 0; i--)
         {
             for (int x = 0; x < 50; x++)
             {
-                KeyTrain[i].transform.Translate(0,0.1f,0);
+                KeyTrain[i].transform.Translate(0, 0.1f, 0);
                 yield return new WaitForSeconds(0.01f);
             }
             yield return new WaitForSeconds(0.5f);
             Vector3 cnt = (MT.Clear.transform.position - KeyTrain[i].transform.position).normalized;
             while (Vector3.Magnitude(MT.Clear.transform.position - KeyTrain[i].transform.position) > 1)
             {
-                KeyTrain[i].transform.Translate(cnt/2);
+                KeyTrain[i].transform.Translate(cnt / 2);
                 yield return new WaitForSeconds(0.01f);
             }
             yield return new WaitForSeconds(0.25f);
-            KeyTrain[i].SetActive(false);
+            KeyTrain[i].gameObject.SetActive(false);
             yield return new WaitForSeconds(0.5f);
         }
-        MT.Clear.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0,0);
-        MS = true; IsEnd = true;
+        MT.Clear.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
+        MS = true; IsEnd = true; MoveAble = true;
         Time.timeScale = 1;
     }
 
-    // ÇÃ·¹ÀÌ¾îÀÇ ½Ã¾ß ¹üÀ§¸¦ °è»êÇÔ ( Instantiate, SetActive°¡ ¾Æ´Ñ Åõ¸íµµ Á¶Àı·Î ÁøÇàÇÑ´Ù.)
-    // ÇÃ·¹ÀÌ¾î¸¦ Áß½ÉÀ¸·Î ÇÏ´Â ±æÀÌ°¡ SightÀÎ Á¤»ç°¢ÇüÀ» »ı°¢ÇÑ´Ù.
-    // ÇØ´ç Á¤»ç°¢ÇüÀ» ¹Ì·ÎÀÇ ÁÂÇ¥¿¡ ´ëÀÔÇÏ¿©, Æ¯Á¤ ºÎºĞÀÌ ¹Ì·ÎÀÇ ¾î¶² Col,Row¿¡ ÇØ´çÇÏ´ÂÁö ¿¬»êÇÑ ÈÄ
-    // ÇÃ·¹ÀÌ¾î¸¦ Áß½ÉÀ¸·Î ÇØ´ç ÁÂÇ¥·Î LayCast¸¦ ³¯·Á, º®°ú ºÎµúÈ÷Áö ¾Ê°í ÇØ´ç ÁÂÇ¥±îÁö µµ´ŞÇÑ´Ù¸é, ÇØ´ç ºÎºĞÀÇ ¾È°³¸¦ °È´Â´Ù(Åõ¸íµµ¸¦ 0À¸·Î ¼³Á¤)
-    // ÇÑ¹ø ½Ã¾ß°¡ ´ê¾Ò´ø ºÎºĞÀº, µû·Î »ı¼ºÇØ µÎ¾ú´ø List¿¡ ¹æ¹® ¿©ºÎ¸¦ ÀúÀåÇÏ¿© Â÷ÈÄ ¾È°³¸¦ »ı¼ºÇÏ´Â ¿¬»êÀ» ÇÒ ¶§ Á¶±İ Èå¸° ¾È°³·Î ¹Ù²Û´Ù.(Åõ¸íµµ¸¦ 0.5·Î ¼³Á¤)
-    // º®¿¡ ºÎµúÈù °æ¿ì ÇØ´ç ºÎºĞ¿¡ ¹æ¹®ÇÑ ÀûÀÌ ÀÖ¾úÀ¸¸é Èå¸° ¾È°³¸¦ »ı¼º.
-    // ¶ÇÇÑ ÇÃ·¹ÀÌ¾î°¡ ÀÌµ¿ÇÑ ¹æÇâÀÇ ¹İ´ëÀÌ¸ç °Å¸®°¡ Sight + 1ÀÎ ºÎºĞ¿¡ ´ëÇÑ ¾È°³ »ı¼º °ü·Ã ¿¬»êÀ» ÁøÇàÇÑ´Ù.
+    // í”Œë ˆì´ì–´ì˜ ì‹œì•¼ ë²”ìœ„ë¥¼ ê³„ì‚°í•¨ ( Instantiate, SetActiveê°€ ì•„ë‹Œ íˆ¬ëª…ë„ ì¡°ì ˆë¡œ ì§„í–‰í•œë‹¤.)
+    // í”Œë ˆì´ì–´ë¥¼ ì¤‘ì‹¬ìœ¼ë¡œ í•˜ëŠ” ê¸¸ì´ê°€ Sightì¸ ì •ì‚¬ê°í˜•ì„ ìƒê°í•œë‹¤.
+    // í•´ë‹¹ ì •ì‚¬ê°í˜•ì„ ë¯¸ë¡œì˜ ì¢Œí‘œì— ëŒ€ì…í•˜ì—¬, íŠ¹ì • ë¶€ë¶„ì´ ë¯¸ë¡œì˜ ì–´ë–¤ Col,Rowì— í•´ë‹¹í•˜ëŠ”ì§€ ì—°ì‚°í•œ í›„
+    // í”Œë ˆì´ì–´ë¥¼ ì¤‘ì‹¬ìœ¼ë¡œ í•´ë‹¹ ì¢Œí‘œë¡œ LayCastë¥¼ ë‚ ë ¤, ë²½ê³¼ ë¶€ë”ªíˆì§€ ì•Šê³  í•´ë‹¹ ì¢Œí‘œê¹Œì§€ ë„ë‹¬í•œë‹¤ë©´, í•´ë‹¹ ë¶€ë¶„ì˜ ì•ˆê°œë¥¼ ê±·ëŠ”ë‹¤(íˆ¬ëª…ë„ë¥¼ 0ìœ¼ë¡œ ì„¤ì •)
+    // í•œë²ˆ ì‹œì•¼ê°€ ë‹¿ì•˜ë˜ ë¶€ë¶„ì€, ë”°ë¡œ ìƒì„±í•´ ë‘ì—ˆë˜ Listì— ë°©ë¬¸ ì—¬ë¶€ë¥¼ ì €ì¥í•˜ì—¬ ì°¨í›„ ì•ˆê°œë¥¼ ìƒì„±í•˜ëŠ” ì—°ì‚°ì„ í•  ë•Œ ì¡°ê¸ˆ íë¦° ì•ˆê°œë¡œ ë°”ê¾¼ë‹¤.(íˆ¬ëª…ë„ë¥¼ 0.5ë¡œ ì„¤ì •)
+    // ë²½ì— ë¶€ë”ªíŒ ê²½ìš° í•´ë‹¹ ë¶€ë¶„ì— ë°©ë¬¸í•œ ì ì´ ìˆì—ˆìœ¼ë©´ íë¦° ì•ˆê°œë¥¼ ìƒì„±.
+    // ë˜í•œ í”Œë ˆì´ì–´ê°€ ì´ë™í•œ ë°©í–¥ì˜ ë°˜ëŒ€ì´ë©° ê±°ë¦¬ê°€ Sight + 1ì¸ ë¶€ë¶„ì— ëŒ€í•œ ì•ˆê°œ ìƒì„± ê´€ë ¨ ì—°ì‚°ì„ ì§„í–‰í•œë‹¤.
 
     void CalcFog()
     {
@@ -230,17 +228,17 @@ public class PlayerMove : MonoBehaviour
 
         for (int y = CurY - Sight + 1; y <= CurY + Sight - 1; y++)
         {
-            // ÇØ´ç ÁÂÇ¥°¡ ¹Ì·ÎÀÇ ¹üÀ§ ¹ÛÀÌ¸é ¿¬»êÇÏÁö ¾Ê´Â´Ù.
+            // í•´ë‹¹ ì¢Œí‘œê°€ ë¯¸ë¡œì˜ ë²”ìœ„ ë°–ì´ë©´ ì—°ì‚°í•˜ì§€ ì•ŠëŠ”ë‹¤.
             if (y >= MT.Col || y < 0) continue;
-            for(int x = CurX - Sight + 1; x <= CurX + Sight - 1; x++)
+            for (int x = CurX - Sight + 1; x <= CurX + Sight - 1; x++)
             {
                 if (x >= MT.Row || x < 0) continue;
                 for (int a = 0; a < 2; a++) for (int b = 0; b < 2; b++)
                     {
-                        // ÇÑ Ä­¿¡ ÃÑ 4°³ÀÇ ¾È°³°¡ Á¸ÀçÇÔÀ¸·Î, ÇØ´ç ºÎºĞÀÇ ¿¬»êÀ» À§ÇÑ °Í
+                        // í•œ ì¹¸ì— ì´ 4ê°œì˜ ì•ˆê°œê°€ ì¡´ì¬í•¨ìœ¼ë¡œ, í•´ë‹¹ ë¶€ë¶„ì˜ ì—°ì‚°ì„ ìœ„í•œ ê²ƒ
                         int dx = x * 2 + b;
                         int dy = y * 2 + a;
-                        // ·¹ÀÌÄÉ½ºÆ®¸¦ ³¯¸± º¤ÅÍ¿Í ÇØ´ç º¤ÅÍÀÇ °ª °è»ê
+                        // ë ˆì´ì¼€ìŠ¤íŠ¸ë¥¼ ë‚ ë¦´ ë²¡í„°ì™€ í•´ë‹¹ ë²¡í„°ì˜ ê°’ ê³„ì‚°
                         Vector3 RayVec = new Vector3(x * Move_X + 5 - 2.5f + 5 * b, y * Move_Y + 5 - 2.5f + 5 * a, 0) - transform.position;
                         float S = Vector3.Magnitude(RayVec) / Move_X;
                         if (S > Sight) continue;
@@ -252,15 +250,15 @@ public class PlayerMove : MonoBehaviour
                         }
                         else
                         {
-                            rayHit = Physics2D.Raycast(transform.position, RayVec, S * Move_X, LayerMask.GetMask("Plat"));
+                            rayHit = Physics2D.Raycast(transform.position, RayVec, S * Move_X, LayerMask.GetMask("Water"));
 
-                            // Ãæµ¹½Ã ¾È°³ Á¦°Å
+                            // ì¶©ëŒì‹œ ì•ˆê°œ ì œê±°
                             if (rayHit.collider == null)
                             {
                                 MT.Fogs[dy][dx].GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0);
                                 MT.IsFog[dy][dx] = true;
                             }
-                            // ÀÌµ¿Çß´ø ºÎºĞ ¹İ´ëÆíÀÇ °æ¿ì, ÇÑ¹ø ¾È°³¸¦ °ÈÀº ÀûÀÌ ÀÖÀ½À¸·Î, Èå¸° ¾È°³·Î Ç¥½Ã.
+                            // ì´ë™í–ˆë˜ ë¶€ë¶„ ë°˜ëŒ€í¸ì˜ ê²½ìš°, í•œë²ˆ ì•ˆê°œë¥¼ ê±·ì€ ì ì´ ìˆìŒìœ¼ë¡œ, íë¦° ì•ˆê°œë¡œ í‘œì‹œ.
                             else
                             {
                                 if (MT.IsFog[dy][dx] == true) MT.Fogs[dy][dx].GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f);
@@ -269,7 +267,7 @@ public class PlayerMove : MonoBehaviour
                     }
             }
         }
-        // Ãß°¡·Î ÀÌµ¿ ¹æÇâ ¹İ´ë ¹æÇâ¿¡ ´ëÇØ, °Å¸® + 1ÀÇ ¾È°³¿¡ ´ëÇØ ÀÌ¹Ì ¹àÇôÁø ±æÀÌ¸é Èå¸° ¾È°³¸¦ »ı¼º.
+        // ì¶”ê°€ë¡œ ì´ë™ ë°©í–¥ ë°˜ëŒ€ ë°©í–¥ì— ëŒ€í•´, ê±°ë¦¬ + 1ì˜ ì•ˆê°œì— ëŒ€í•´ ì´ë¯¸ ë°í˜€ì§„ ê¸¸ì´ë©´ íë¦° ì•ˆê°œë¥¼ ìƒì„±.
         if (Dir == Vector3.up)
         {
             if (CurY - Sight < 0) return;
@@ -279,7 +277,7 @@ public class PlayerMove : MonoBehaviour
                 for (int a = 0; a < 2; a++) for (int b = 0; b < 2; b++)
                     {
                         int dx = x * 2 + b;
-                        int dy = (CurY-Sight) * 2 + a;
+                        int dy = (CurY - Sight) * 2 + a;
                         if (MT.IsFog[dy][dx] == true) MT.Fogs[dy][dx].GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f);
                     }
             }
@@ -324,6 +322,23 @@ public class PlayerMove : MonoBehaviour
                         int dy = x * 2 + a;
                         if (MT.IsFog[dy][dx] == true) MT.Fogs[dy][dx].GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f);
                     }
+            }
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("ExitWall"))
+        {
+            if (!IsEnd)     // ëª¨ë“  Keyë¥¼ ëª¨ì•˜ìœ¼ë©´ ì¶œêµ¬ë¥¼ ê°œë°©í•˜ë©°, ê·¸ë ‡ì§€ ì•Šìœ¼ë©´ ì´ë™ ë¶ˆê°€.
+            {
+                if (GetKeyCount == MT.KeyNum) { StartCoroutine(ClearGame()); }
+                MoveAble = false;
+            }
+            else           // í´ë¦¬ì–´
+            {
+                GameSystem.Instance.ClearTask("Maze");
+                GameSystem.LoadScene("Screen");
             }
         }
     }

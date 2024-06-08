@@ -1,13 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Newtonsoft.Json;
 
-public class GameSystem : MonoBehaviour
+
+public class GameSystem : SingletonObject<GameSystem>
 {
     /**
     * 게임 내 데이터 관리 시스템
@@ -16,13 +12,15 @@ public class GameSystem : MonoBehaviour
         날짜, 시간대, 진행상황 적용
     */ 
 
-    /// 현재 플레이 시각
-    public int date { get; private set; } = 0;   // 오늘 날짜 인덱스
-    public int time { get; private set; }  = 0;   // 현재 시간
+    /// 플레이 데이터 
+    private List<SaveData> saveList = new();    // 저장 데이터
+    private List<DailyData> dailyList = new();     // 날짜별 데이터
 
-    ///  현재 플레이 위치
-    public World location { get; private set; }  // 현재 지역
-    public int position { get; private set; }    // 현재 위치
+    public SaveData player { get { return saveList[gameData.date]; } }      // 오늘 세이브 데이터
+    public DailyData today { get { return dailyList[gameData.date]; } }    // 오늘 날짜 데이터
+
+    /// 오늘 날짜 데이터
+    public GameData gameData = new();
 
     // 스크린 활성화 여부
     public bool isScreenOn = false; 
@@ -40,59 +38,15 @@ public class GameSystem : MonoBehaviour
         }
     }
 
-    /// 플레이 데이터 
-    private List<SaveData> saveList = new();    // 저장 데이터
-    private List<DailyData> dailyList = new();     // 날짜별 데이터
 
-    public SaveData player { get { return saveList[date]; } }      // 오늘 세이브 데이터
-    public DailyData today { get { return dailyList[date]; } }    // 오늘 날짜 데이터
-
-
-    // 싱글턴
-    private static GameSystem _instance;
-    public static GameSystem Instance
+    new void Awake()
     {
-        get { return _instance; }
-    }
+        base.Awake();
 
+        saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
+        dailyList = DataLoader.LoadGameData();     // 게임 데이터 로드  
 
-    private void Awake()
-    {
-        if (!_instance)
-        {
-            _instance = this;
-            DontDestroyOnLoad(gameObject);
-
-            saveList = GameLoader.LoadSaveData();     // 세이브 데이터 로드
-            dailyList = GameLoader.LoadGameData();     // 게임 데이터 로드  
-
-            // 초기 데이터 설정 (로딩 씬 설정 후 삭제)
-            SetDate(0);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
-    
-    /// <summary>
-    /// 지역 값 설정
-    /// </summary>
-    /// <param name="newLocation">설정할 새 지역</param>
-    public void SetLocation(World newLocation)
-    {
-        location = newLocation;
-    }
-
-
-    /// <summary>
-    /// 위치 값 설정
-    /// </summary>
-    /// <param name="newPos">설정할 새 위치</param>
-    public void SetPosition(int newPos)
-    {
-        position = newPos;
+        SetDate(0);
     }
 
 
@@ -105,7 +59,7 @@ public class GameSystem : MonoBehaviour
         // 다음 날짜로 이동시
         if (date == -1)
         {
-            date = this.date + 1;
+            date = gameData.date + 1;
         }
 
         // 날짜 오류
@@ -116,19 +70,19 @@ public class GameSystem : MonoBehaviour
         }
 
         // 해당 날짜 불러오기
-        this.date = date;
-        SetTime(0);
+        gameData.date = date;
+        gameData.time = 0;
+        gameData.SetLocation(today.startLocation);
+        gameData.SetPosition(today.startPosition);
+        isScreenOn = false;
 
         // 게임 저장 (튜토리얼 날짜 제외)
         if (date > 1)
         {
-            GameLoader.SavePlayerData(saveList);
+            // DataLoader.SavePlayerData(saveList);
         }
 
-
-        // TODO: 메인 월드 재로드, 로딩 씬으로 대체
-        if (SceneManager.GetActiveScene().name == "MainWorld")
-            SceneManager.LoadScene("DayLoading");
+        ObjectDatabase.Instance.Read();
     }
 
     ///<summary>
@@ -137,10 +91,38 @@ public class GameSystem : MonoBehaviour
     ///<param name="time">전환할 시간(마지막 시간대면 다음 날짜로)</param>
     public void SetTime(int _time)
     {
+        // 시간대 오류
         if (_time < 0 || _time >= 4)
             return;
-        time = _time;
+        
+        // 시간대 적용
+        gameData.time = _time;
+
+        // 월드 리로드
+        if (SceneManager.GetActiveScene().name == "MainWorld")
+        {
+            WorldSceneManager.Instance.ReloadWorld();
+        }
     }
+    
+
+    /// <summary>
+    /// 특정 업무의 오늘 스테이지 번호 반환
+    /// </summary>
+    /// <param name="workCode"></param>
+    /// <returns></returns>
+    public int GetTask(string workCode)
+    {
+        foreach(var work in today.workList)
+        {
+            if (work.Key.code == workCode)
+            {
+                return work.Key.stage;
+            }
+        }
+        return -1;
+    }
+
 
     /// <summary>
     /// 업무 완료 여부 설정
@@ -153,6 +135,8 @@ public class GameSystem : MonoBehaviour
         Work currentWork = null;
         foreach (var work in today.workList)
         {
+            if (work.Value == true)
+                continue;
             if (work.Key.code == workCode)
             {
                 currentWork = work.Key;
@@ -171,7 +155,6 @@ public class GameSystem : MonoBehaviour
         today.workList[currentWork] = true;
     }
 
-
     /// <summary>
     /// 해당 씬 로드
     /// </summary>
@@ -179,96 +162,5 @@ public class GameSystem : MonoBehaviour
     public static void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
-    }
-}
-
-public static class GameLoader
-{
-    /*****
-    * 게임 데이터 저장, 로드 시스템
-        - Json 파싱으로 게임 데이터 로드
-        - Json 파싱으로 플레이어 데이터 저장, 로드
-    */
-    [SerializeField]
-    private static readonly string GAMEDATAPATH = Application.dataPath + "/Resources/GameData/Main/dailyData.json";   // 게임 데이터 파일 경로
-    [SerializeField]
-    private static readonly string SAVEPATH = Application.dataPath + "/Resources/Save/savedata.json";    // 세이브 파일 경로
-
-    [Serializable]
-    class GameDataWrapper { public List<DailyWrapper> days = new(); }     // JsonUtility용 DailyData들 Wrapper
-    
-
-
-    /// JSON으로부터 게임 데이터를 로드
-    public static List<DailyData> LoadGameData()
-    {
-        // daily 초기화
-        List<DailyData> result = new();
-
-        // 파일 읽어오기
-        if (!File.Exists(GAMEDATAPATH))
-        {
-            throw new Exception($"GAME DATA CANNOT FOUND : ${GAMEDATAPATH}");
-            // 치명적 오류, 게임 종료시키기
-        }
-        FileStream fileStream = new FileStream(GAMEDATAPATH, FileMode.Open);
-        byte[] data = new byte[fileStream.Length];
-        fileStream.Read(data, 0, data.Length);
-        fileStream.Close();
-
-        // jsonString 읽어오기
-        string jsonText = Encoding.UTF8.GetString(data);
-
-        //Wrapper로 파싱
-        GameDataWrapper wrapper = JsonConvert.DeserializeObject<GameDataWrapper>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-
-        // Wrapper를 DailyData로 전환
-        foreach (DailyWrapper element in wrapper.days)
-        {
-            result.Add(new DailyData(element));
-        }
-
-        return result;
-    }
-
-    /// 플레이어 데이터 JSON에서 로드
-    public static List<SaveData> LoadSaveData()
-    {
-        // 파일 읽어오기
-        if (!File.Exists(SAVEPATH))
-        {
-            throw new Exception($"SAVE DATA CANNOT FOUND : ${SAVEPATH}");
-            // 치명적 오류, 게임 종료시키기
-        }
-        FileStream fileStream = new FileStream(SAVEPATH, FileMode.Open);
-        byte[] data = new byte[fileStream.Length];
-        fileStream.Read(data, 0, data.Length);
-        fileStream.Close();
-
-        // jsonString 읽어오기
-        string jsonText = Encoding.UTF8.GetString(data);
-
-        // Wrapper로 파싱
-        SaveWrapper wrapper = JsonConvert.DeserializeObject<SaveWrapper>(jsonText,  new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-
-        return wrapper.list;
-    }
-
-    /// 플레이어 데이터 JSON 저장
-    public static void SavePlayerData(List<SaveData> saveList)
-    {
-        SaveWrapper wrapper = new();
-        foreach (var iter in saveList)
-        {
-            wrapper.list.Add(iter);
-        }
-
-        // json String으로 파싱
-        string jsonText = JsonConvert.SerializeObject(wrapper,   new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-
-        FileStream fileStream = new FileStream(SAVEPATH, FileMode.Create);
-        byte[] data = Encoding.UTF8.GetBytes(jsonText);
-        fileStream.Write(data, 0, data.Length);
-        fileStream.Close();
     }
 }

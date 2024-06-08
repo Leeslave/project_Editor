@@ -1,0 +1,119 @@
+{
+    "name": "네임태그",
+    "image": "Nametag",
+    "position": 3,
+    "anchor": { "x": 0.11, "y": 0.25 },
+    "size": { "x": 150, "y": 150},
+    "triggerType": "Click",
+    "count": 1,
+    "chatList": [
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"패용하셨나요? 어라, 정장과 잘 어울리시네요.",
+            "characterR": {
+                "fileName": "Clover_CG",
+                "index": 4
+            }  
+        },
+        {
+            "$type": "ChoiceParagraph, Assembly-CSharp",
+            "chatType": "Choice",
+            "choiceList": [
+                {
+                    "text": "그래서 이 ID 카드는.."
+                },
+                {
+                    "text": "어디에 사용되지?"
+                }
+            ]
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"이제 스크린이 새로 도입되면서 새로운 신분증이 나왔다고 해요.",
+            "characterR": {
+                "fileName": "Clover_CG",
+                "index": 0
+            }  
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"새로워진 업무를 할때 필요하답니다. 자세한 내용은 직접 설명드릴께요.",
+            "characterR": {
+                "fileName": "Clover_CG",
+                "index": 0
+            }  
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"아무튼, 클레이튼씨 책상 위에 있는 PC가 이번에 새로 보급된 '스크린'이라는 장비에요.",
+            "characterR": {
+                "fileName": "Clover_CG",
+                "index": 0
+            }  
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"화면 우하단에 있는 전원버튼을..",
+            "characterR": {
+                "fileName": "Clover_CG",
+                "index": 0
+            }  
+        },
+        {
+            "$type": "ChoiceParagraph, Assembly-CSharp",
+            "chatType": "Choice",
+            "choiceList": [
+                {
+                    "text": "말 끊어서 미안하지만, 이미 알고 있네."
+                },
+                {
+                    "text": "집에서 이미 만져봐서 설명해줄 필요 없네."
+                }
+            ]
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"아, 그런가요? 렉스씨가 괜한 걱정을 하셨나보네요.",
+            "characterR": {
+                "fileName": "Clover_CG",
+                "index": 4
+            }  
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"그럼, 전원을 켜시면 못 본 화면이 떴을 거에요.",
+            "characterR": {
+                "fileName": "Clover_CG",
+                "index": 0
+            }  
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"아까 패용하신 ID 카드 뒷면에 적혀있는 직번으로 로그인하시면 됩니다.",
+            "characterR": {
+                "fileName": "Clover_CG",
+                "index": 0
+            }  
+        },
+        {
+            "$type": "ChoiceParagraph, Assembly-CSharp",
+            "chatType": "Choice",
+            "choiceList": [
+                {
+                    "text": "로그인 시스템은"
+                },
+                {
+                    "text": "구현 예정입니다."
+                }
+            ]
+        }
+    ]
+}

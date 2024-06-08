@@ -17,6 +17,7 @@ public abstract class Paragraph
     public CharacterCG characterL = null;  // 왼쪽 캐릭터 CG
     public CharacterCG characterR = null;   // 오른쪽 캐릭터 CG
     public string bgm = null;         // 배경음악
+    public string background = null;  // 배경 이미지
     public string action = null;    // 대화 후 반응
     public string actionParam = null;    // 반응 매개변수
     
@@ -25,6 +26,15 @@ public abstract class Paragraph
     {
         public string keyword;      // 텍스트상의 변수 키워드
         public string variableName; // 해당하는 변수코드명
+    }
+
+    public virtual bool hasAction()
+    {
+        if (action != null)
+        {
+            return true;
+        }
+        return false;
     }
 }
 
@@ -48,7 +58,6 @@ public class TalkParagraph : Paragraph
 
     public string fontSize = "normal";   // 글자 크기
     public float textDelay = 0.4f;      // 텍스트간 딜레이
-    public string background = null;  // 배경 이미지
 
 
     public int GetFontSize()
@@ -80,6 +89,20 @@ public class ChoiceParagraph : Paragraph
     - 대화 선택지들
     */
     public List<Choice> choiceList = null; // 선택지들 리스트
+
+    public override bool hasAction()
+    {
+        bool hasChoiceAction = false;
+        foreach(var choice in choiceList)
+        {
+            if (choice.reaction != null)
+            {
+                hasChoiceAction = true;
+                break;
+            }
+        }
+        return base.hasAction() || hasChoiceAction;
+    }
 }
 
 [Serializable]

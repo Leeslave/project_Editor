@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOption : MonoBehaviour
+public class GameOption : Singleton<GameOption>
 {
     /**
     게임 옵션 컨트롤러
@@ -20,27 +18,13 @@ public class GameOption : MonoBehaviour
     private int resolutionX = 1200;
     private int resolutionY = 900;
     
-    /// 싱글턴 선언
-    private static GameOption _instance;
-    public static GameOption Instance { get { return _instance; } }
 
-
-    void Awake()
+    new void Awake()
     {
-        if(!_instance)
-        {
-            _instance = this;   // 싱글톤 할당
-
-            
-            Screen.SetResolution(resolutionX, resolutionY, false);  // 해상도 고정
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        base.Awake();
+        Screen.SetResolution(resolutionX, resolutionY, false);  // 해상도 고정
     }
-
-
+    
     public Button optionButton;
 
     void Update()
