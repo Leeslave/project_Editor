@@ -10,11 +10,10 @@ public class MainText_Back : Buttons_M
 {
 
     [SerializeField] TextMannager_N TMN;
-    [SerializeField] TextMannager_D TMD;
     GameObject Field;
     [SerializeField] GameObject Text;
     [SerializeField] Color AfColor;
-    [SerializeField] int MyInd;
+    public int MyInd;
     
 
     protected override void Awake()

@@ -11,7 +11,7 @@ public class GetOptionFile_D : BatchField_D
     [SerializeField] GameObject ToDoList;
 
     [SerializeField] TMP_Text Text;
-    
+
     [SerializeField] public Tabs_D[] Tabs;
     [SerializeField] TMP_Text[] TabsText;
     [SerializeField] GameObject[] Processes;
@@ -43,33 +43,42 @@ public class GetOptionFile_D : BatchField_D
     // Manipulation
     protected override IEnumerator BatchType1()
     {
-        IC.PeopleName = AN.IconName;
-        CurType = 1;
-        CommonBatch();
-        image.SetActive(false);
-        string cnt = "";
-        WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
-        foreach (string s in Waittexts)
+        bool Go = false;
+        foreach (var k in IC.PeopleCorrect) if (k.Item1 == AN.IconName) Go = true;
+
+        if (Go)
         {
-            cnt += s;
-            
-            for (int i = 0; i <= 10; i++)
+            IC.PeopleName = AN.IconName;
+            CurType = 1;
+            CommonBatch();
+            image.SetActive(false);
+            string cnt = "";
+            WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
+            foreach (string s in Waittexts)
             {
-                Text.text = cnt + $"<size=20>{i * 10}% </size>";
-                yield return wfs;
+                cnt += s;
+
+                for (int i = 0; i <= 10; i++)
+                {
+                    Text.text = cnt + $"<size=20>{i * 10}% </size>";
+                    yield return wfs;
+                }
+                cnt += " <size=20>Complete!\n</size>";
             }
-            cnt += " <size=20>Complete!\n</size>";
+            Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
+            yield return new WaitForSeconds(LoadingTime2);
+            Text.text = Normal;
+            image.SetActive(true);
+            AttatchAble = true;
+
+            Processes[0].SetActive(true);
+            Processes[0].transform.SetAsLastSibling();
         }
-        Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
-        yield return new WaitForSeconds(LoadingTime2);
-        Text.text = Normal;
-        image.SetActive(true);
-        AttatchAble = true;
-
-        Processes[0].SetActive(true);
-        Processes[0].transform.SetAsLastSibling();
-
-        Tabs[2].gameObject.SetActive(true);
+        else
+        {
+            Text.text = "<size=40><color=#FF0000>401 Not Unauthorized</color></size>\n<color=#C8AF10>(x_x)</color>\n\nOops! Something's Wrong.\nDrag Correct Option File Here!";
+            AttatchAble = true;
+        }
     }
 
 
@@ -77,7 +86,7 @@ public class GetOptionFile_D : BatchField_D
     [SerializeField] TMP_Text Date;
     [SerializeField] TMP_Text Reporter;
     [SerializeField] TextMannager_N TMN;
-    
+
     // News
     protected override IEnumerator BatchType2()
     {
@@ -85,6 +94,7 @@ public class GetOptionFile_D : BatchField_D
         CurType = 2;
         image.SetActive(false);
         News CurNews = DB.FindNews(AN.IconName);
+        TMN.CurNews = CurNews;
         string cnt = "";
         WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
         foreach (string s in Waittexts)
@@ -106,12 +116,10 @@ public class GetOptionFile_D : BatchField_D
         Title.text = CurNews.Title;
         Date.text = CurNews.Date;
         Reporter.text = CurNews.Reporter;
-        for (int i = 0; i < CurNews.Main.Length; i++)
+        for (int i = 0; i < CurNews.Main.Count; i++)
         {
             TMN.ActiveText(CurNews.Main[i]);
         }
-        TMN.AnsNews = CurNews;
-
         Processes[1].SetActive(true);
         Processes[1].transform.SetAsLastSibling();
         Processes[1].transform.position = Vector3.zero;
@@ -152,12 +160,12 @@ public class GetOptionFile_D : BatchField_D
 
         int RC = 0;
         int SC = 0;
-        for(int i = 0; i < CurDocs.RecorderTexts.Count + CurDocs.SubjectTexts.Count; i++)
+        for (int i = 0; i < CurDocs.RecorderTexts.Count + CurDocs.SubjectTexts.Count; i++)
         {
-            if (RC < CurDocs.RecorderTexts.Count) 
+            if (RC < CurDocs.RecorderTexts.Count)
             {
                 if (CurDocs.RecorderTextInd[RC] == i) Docs_Record.AddText(CurDocs.RecorderTexts[RC++], new Color(0, 0.5f, 0, 1), IsTouchAble: false);
-                else Docs_Record.AddText(CurDocs.SubjectTexts[SC++], new Color(0.5f, 0, 0),TextAlignmentOptions.Right);
+                else Docs_Record.AddText(CurDocs.SubjectTexts[SC++], new Color(0.5f, 0, 0), TextAlignmentOptions.Right);
             }
             else Docs_Record.AddText(CurDocs.SubjectTexts[SC++], new Color(0.5f, 0, 0), TextAlignmentOptions.Right);
         }
@@ -192,12 +200,6 @@ public class GetOptionFile_D : BatchField_D
 
     public void CommonBatch()
     {
-        if(CurOpen!=0) Tabs[0].OpenTab();
-        if (Tabs[2].gameObject.activeSelf)
-        {
-            IC.CloseFolder();
-            Tabs[2].gameObject.SetActive(false);
-        }
         foreach (GameObject s in Processes) s.SetActive(false);
         Text.text = Normal;
         image.SetActive(true);

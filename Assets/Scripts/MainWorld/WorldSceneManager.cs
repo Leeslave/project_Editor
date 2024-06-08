@@ -18,7 +18,7 @@ public enum World {
     Office2,
     Interrogate,
     
-    MAX
+    NullMax
 }
 
 

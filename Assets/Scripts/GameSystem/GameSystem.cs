@@ -43,7 +43,6 @@ public class GameSystem : SingletonObject<GameSystem>
     {
         base.Awake();
 
-        Debug.Log("AWAKEN");
         saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
         dailyList = DataLoader.LoadGameData();     // 게임 데이터 로드  
 
@@ -75,11 +74,12 @@ public class GameSystem : SingletonObject<GameSystem>
         gameData.time = 0;
         gameData.SetLocation(today.startLocation);
         gameData.SetPosition(today.startPosition);
+        isScreenOn = false;
 
         // 게임 저장 (튜토리얼 날짜 제외)
         if (date > 1)
         {
-            DataLoader.SavePlayerData(saveList);
+            // DataLoader.SavePlayerData(saveList);
         }
 
         ObjectDatabase.Instance.Read();
@@ -91,10 +91,14 @@ public class GameSystem : SingletonObject<GameSystem>
     ///<param name="time">전환할 시간(마지막 시간대면 다음 날짜로)</param>
     public void SetTime(int _time)
     {
+        // 시간대 오류
         if (_time < 0 || _time >= 4)
             return;
+        
+        // 시간대 적용
         gameData.time = _time;
 
+        // 월드 리로드
         if (SceneManager.GetActiveScene().name == "MainWorld")
         {
             WorldSceneManager.Instance.ReloadWorld();
@@ -131,6 +135,8 @@ public class GameSystem : SingletonObject<GameSystem>
         Work currentWork = null;
         foreach (var work in today.workList)
         {
+            if (work.Value == true)
+                continue;
             if (work.Key.code == workCode)
             {
                 currentWork = work.Key;

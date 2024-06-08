@@ -44,7 +44,8 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
                         size = float.Parse(obj[(int)DataColumn.size]),
 
                         awakeParam = obj[(int)DataColumn.OnAwake],
-                        clickParam = obj[(int)DataColumn.OnClick]
+                        clickParam = obj[(int)DataColumn.OnClick],
+                        count = obj[(int)DataColumn.count] != "" ? int.Parse(obj[(int)DataColumn.count]) : 0,
                     };
 
                     ObjectList[(int)newNPC.location].Add(newNPC);
@@ -56,7 +57,8 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
                         time = int.Parse(obj[(int)DataColumn.time]),
                         name = obj[(int)DataColumn.name],
                         objType = Enum.Parse<ObjectType>(obj[(int)DataColumn.objType]),
-                        location = Enum.Parse<World>(obj[(int)DataColumn.location])
+                        location = Enum.Parse<World>(obj[(int)DataColumn.location]),
+                        count = obj[(int)DataColumn.count] != "" ? int.Parse(obj[(int)DataColumn.count]) : 0,
                     };
 
                     ObjectList[(int)newEffect.location].Add(newEffect);
@@ -68,7 +70,8 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
                         time = int.Parse(obj[(int)DataColumn.time]),
                         name = obj[(int)DataColumn.name],
                         objType = Enum.Parse<ObjectType>(obj[(int)DataColumn.objType]),
-                        awakeParam = obj[(int)DataColumn.OnAwake]
+                        awakeParam = obj[(int)DataColumn.OnAwake],
+                        count = obj[(int)DataColumn.count] != "" ? int.Parse(obj[(int)DataColumn.count]) : 0,
                     };
 
                     MessageList.Add(newMessage);
@@ -82,7 +85,7 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
     {
         // 리스트 초기화
         ObjectList = new();
-        for(int i = 0; i < (int)World.MAX; i++)
+        for(int i = 0; i < (int)World.NullMax; i++)
         {
             ObjectList.Add(new());
         }
@@ -131,4 +134,5 @@ internal enum DataColumn {
     posX,
     posY,
     size,
+    count,
 }

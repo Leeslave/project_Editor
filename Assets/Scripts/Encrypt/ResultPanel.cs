@@ -32,7 +32,7 @@ public class ResultPanel : MonoBehaviour
     public bool PrintDecryptionResult()
     {
         CloseButton.SetAvailability(false);
-
+        
         if (GameManager.LoadEncrypted.EncryptedTextBody.TextTMP.text == "")
         {
             StartCoroutine(PrintDecryptionFailed_IE("복호화하고 싶은 파일을 로드하지 않았습니다!"));
@@ -88,10 +88,10 @@ public class ResultPanel : MonoBehaviour
             decryptedText += table[row + line * 6].TextTMP.text;
             transposedText = transposedText.Substring(2);
         }
+        
+        Debug.Log($"플레이어가 복호화한 결과물: {decryptedText}");
 
-        Debug.Log(decryptedText);
-
-        if(decryptedText != GameManager.DisplayDecrypted.DecryptedTextBody.StringBuffer)
+        if(GameManager.DisplayDecrypted.DecryptedTextBody.StringBuffer != GameManager.decryptResultText)
         {
             StartCoroutine(PrintDecryptionFailed_IE("복호화 데이터 무결성 검사를 통과하지 못했습니다!"));
             return false;
@@ -146,13 +146,22 @@ public class ResultPanel : MonoBehaviour
        yield return new WaitForSeconds(0.75f);
         Result.text += "\n";
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, "복호화 파일을 저장했습니다!", false, Result);
-
-        //성공했으므로 씬에서 나갈 준비
-        CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
-        CloseButton.OnMouseUpEvent.AddListener(() => {            
-            GameSystem.Instance.ClearTask("ADFGVX");
-            GameSystem.LoadScene("Screen"); });
-        CloseButton.SetAvailability(true);
+        
+        //복호화 태스크 클리어 마킹
+        GameManager.decryptClear = true;
+        
+        //만약 암호화 태스크가 존재했고, 이미 클리어한 상태라면
+        if (GameManager.encryptClear && GameManager.decryptClear)
+        {
+            //모든 태스크을 완료했으므로 씬에서 나갈 준비
+            CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
+            CloseButton.OnMouseUpEvent.AddListener(() => {            
+                GameSystem.Instance.ClearTask("ADFGVX");
+                GameSystem.LoadScene("Screen"); });
+        }
+        
+        //결과 창 닫기 버튼 활성화
+        CloseButton.SetAvailability(true);   
     }
 
     private IEnumerator PrintDecryptionFailed_IE(string error)
@@ -207,6 +216,12 @@ public class ResultPanel : MonoBehaviour
     public bool PrintEncryptionResult()
     {
         CloseButton.SetAvailability(false);
+
+        if (GameManager.WritePlain.PlainTextBody.StringBuffer != GameManager.encryptTargetText)
+        {
+            StartCoroutine(PrintDecryptionFailed_IE("잘못된 평문을 작성했습니다!"));
+            return false;
+        }
         
         if (GameManager.WritePlain.PlainTextBody.StringBuffer == "")
         {
@@ -275,7 +290,9 @@ public class ResultPanel : MonoBehaviour
         for (var i = 0; i < orderedText.Length; i++)
             encryptionResult += orderedText[i];
 
-        if (encryptionResult != GameManager.DisplayEncrypted.EncryptedTextBody.StringBuffer.Replace(" ", ""))
+        Debug.Log($"플레이어가 암호화한 결과물: {encryptionResult}");
+        
+        if (GameManager.DisplayEncrypted.EncryptedTextBody.StringBuffer.Replace(" ", "") != GameManager.encryptResultText)
         {
             StartCoroutine(PrintEncryptionFailed_IE("암호화 데이터 무결성 검사를 통과하지 못했습니다!"));
             return false;
@@ -332,12 +349,21 @@ public class ResultPanel : MonoBehaviour
         Result.text += "\n";
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, "암호화 파일을 저장했습니다!", false, Result);
 
-        //성공했으므로 씬에서 나갈 준비
-        CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
-        CloseButton.OnMouseUpEvent.AddListener(() => {            
-            GameSystem.Instance.ClearTask("ADFGVX");
-            GameSystem.LoadScene("Screen"); });
-        CloseButton.SetAvailability(true);
+        //암호화 태스크 클리어 마킹
+        GameManager.encryptClear = true;
+        
+        //만약 복호화 태스크가 존재했고, 이미 클리어한 상태라면
+        if (GameManager.decryptClear && GameManager.encryptClear)
+        {
+            //모든 태스크을 완료했으므로 씬에서 나갈 준비
+            CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
+            CloseButton.OnMouseUpEvent.AddListener(() => {            
+                GameSystem.Instance.ClearTask("ADFGVX");
+                GameSystem.LoadScene("Screen"); });
+        }
+        
+        //결과 창 닫기 버튼 활성화
+        CloseButton.SetAvailability(true);   
     }
 
     private IEnumerator PrintEncryptionFailed_IE(string error)

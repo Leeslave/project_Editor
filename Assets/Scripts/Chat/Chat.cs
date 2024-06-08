@@ -244,17 +244,6 @@ public class Chat : Singleton<Chat>
         if (para is TalkParagraph)        /// 일반 대사
         {
             TalkParagraph talk = para as TalkParagraph;
-
-            // 배경 활성화
-            if (talk.chatType == "CutScene")
-            {
-                if (talk.background != null)
-                {
-                    background.sprite = GetSprite(BACKGROUNDFILEPATH + talk.background);    // 배경 이미지 설정 
-                }
-                if (background.sprite != null)
-                    background.gameObject.SetActive(true);      // 배경 이미지 활성화
-            }
             
             // 캐릭터 CG 활성화
             if (talk.characterL != null)
@@ -343,6 +332,18 @@ public class Chat : Singleton<Chat>
             throw new Exception($"Unknown Chat Data : {para.chatType}");
         }
 
+        // 배경이미지 설정 (컷씬)
+        // 배경 활성화
+        if (para.chatType == "CutScene")
+        {
+            if (para.background != null)
+            {
+                background.sprite = GetSprite(BACKGROUNDFILEPATH + para.background);    // 배경 이미지 설정 
+            }
+            if (background.sprite != null)
+                background.gameObject.SetActive(true);      // 배경 이미지 활성화
+        }
+        
         // 배경음악 설정
         if (para.bgm != null)
         {
@@ -368,6 +369,7 @@ public class Chat : Singleton<Chat>
             {
                 if (int.TryParse(para.bgm, out int result))
                 {
+                    WorldSceneManager.Instance.worldBGM.Pause();
                     bgm.SetClip(result);
                     bgm.Play();
                 }
@@ -483,13 +485,16 @@ public class Chat : Singleton<Chat>
             result = new ChatJumpAction();
             break;
         case "DayChange":
-            result = new DayChangeAction();
+            result = new HardDayChangeAction();
             break;
         case "TimeChange":
             result = new TimeChangeAction();
             break;
         case "Remove":
             result = new RemoveAction();
+            break;
+        case "ExitGame":
+            result = new ExitGameAction();
             break;
         default:
             return null;

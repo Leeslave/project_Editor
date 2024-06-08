@@ -11,7 +11,7 @@ public class EventDoor : Door
 
     public override void OnClick()
     {
-        // 지역 이동
+        // 반응 무시 아니면 지역 이동
         base.OnClick();
         
         // 반응 획득
@@ -23,6 +23,10 @@ public class EventDoor : Door
     {
         switch(actionType)
         {
+            case "HardDayChange" :
+                action = new HardDayChangeAction();
+                action.param = actionParam;
+                break;
             case "DayChange" :
                 action = new DayChangeAction();
                 action.param = actionParam;

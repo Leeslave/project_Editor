@@ -22,9 +22,9 @@ public enum Belonging
 
 public enum Part
 {
-    A팀,
-    B팀,
-    C팀,
+    정보1반,
+    정보2반,
+    정보3반,
     None
 }
 
@@ -35,6 +35,13 @@ public enum Job
     과장,
     총책,
     사령관
+}
+/*----------------- Answer Data --------------------*/
+[Serializable]
+public class AnswerIndex
+{
+    
+    
 }
 
 /*------------------ Info Data ---------------------*/
@@ -52,6 +59,29 @@ public class PeopleIndex
     public bool isMan;
     public List<Sprite> Faces;
     public int curFace;
+
+    public PeopleIndex() { }
+
+    public PeopleIndex(PeopleIndex Target)
+    {
+        name_e = Target.name_e;
+        country = Target.country;
+        belong = Target.belong;
+        part = Target.part;
+        job = Target.job;
+        curFace = Target.curFace;
+    }
+
+    public int Evaluate(PeopleIndex Target)
+    {
+        int cnt = 0;
+        if (country != Target.country) cnt--;
+        if (belong != Target.belong) cnt--;
+        if (part != Target.part) cnt--;
+        if (job != Target.job) cnt--;
+        if (curFace != Target.curFace) cnt--;
+        return cnt;
+    }
 }
 
 public class Peoples
@@ -69,11 +99,7 @@ public class News
     public string Date;
     public string Reporter;
     [Multiline(10)]
-    public string[] Main; /*= new string[50];*/
-    public News()
-    {
-        Main = new string[50];
-    }
+    public List<string> Main; /*= new string[50];*/
 }
 
 /*----------------- Docs Data --------------------------*/
@@ -106,6 +132,11 @@ public class Instruction
     public news[] NewsInst;
     [JsonProperty("Docs")]
     public docs[] DocsInst;
+
+
+    // 정답 저장
+    public List<PeopleIndex> Peoples;
+    public List<string> NewsMain;
 }
 
 [Serializable]
@@ -113,8 +144,10 @@ public class info
 {
     /*
      * 0 : 국적
-     * 1 : 나라
-     * 2 : 얼굴
+     * 1 : 직업
+     * 2 : 부서
+     * 3 : 소속
+     * 4 : 얼굴
      */
     public int ToDo;
     public string Target;

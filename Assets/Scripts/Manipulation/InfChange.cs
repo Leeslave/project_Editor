@@ -12,8 +12,10 @@ public class InfChange : MonoBehaviour
     [SerializeField] TMP_Text Name;
     [SerializeField] TMP_Text Age;
     [SerializeField] TMP_Text Sex;
-    [SerializeField] TMP_Text Country;
-    [SerializeField] TMP_Text Job;
+    [SerializeField] TMP_Text country;
+    [SerializeField] TMP_Text belong;
+    [SerializeField] TMP_Text part;
+    [SerializeField] TMP_Text job;
     [SerializeField] Image Face;
     [SerializeField] GameObject Files;
     [SerializeField] GameObject Faces;
@@ -59,6 +61,7 @@ public class InfChange : MonoBehaviour
         }
     }
 
+
     public void TouchManager(GameObject cnt, int Type)
     {
         switch (Type)
@@ -78,7 +81,7 @@ public class InfChange : MonoBehaviour
                 else
                 {
                     CurHighLight.HighLightOff();
-                    if (s != 2)
+                    if (s != 4)
                     {
                         Drager.name = CurFile.name;
                         Drager.SetActive(true);
@@ -89,7 +92,7 @@ public class InfChange : MonoBehaviour
                         Drager_Image.transform.GetChild(1).GetComponent<Image>().sprite
                             = CurPeople.Faces[CurFile.transform.GetSiblingIndex()];
                         Drager_Image.SetActive(true);
-                        ValidData(2, "");
+                        ValidData(4, "");
                     }
                     CurFile = null;
                     TouchAble = false;
@@ -118,6 +121,7 @@ public class InfChange : MonoBehaviour
 
     [SerializeField] GetOptionFile_D GD;
 
+    // Get Folder's Contents & Make Files
     public void OpenFolder(HighLighter_M ss)
     {
         Reviser.SetActive(false);
@@ -133,7 +137,7 @@ public class InfChange : MonoBehaviour
         Terminal.text = $"> {ss.gameObject.name}";
         Terminal_Folder.SetActive(true);
         GameObject cnt;
-        if (s != 2)
+        if (s != 4)
         {
             for (int i = 0; i < ss.Files.Count; i++)
             {
@@ -145,7 +149,7 @@ public class InfChange : MonoBehaviour
             GD.Tabs[2].Subs[0] = Files;
             Files.SetActive(true);
         }
-        else
+        else if(CurPeople != null)
         {
             for (int i = 0; i < CurPeople.Faces.Count; i++)
             {
@@ -181,41 +185,62 @@ public class InfChange : MonoBehaviour
     public void ChangeInf(PeopleIndex FindPeople)
     {
         CurPeople = FindPeople;
-        Name.text = "name : " + FindPeople.name_k;
-        Age.text = "Age : " + FindPeople.age;
-        Sex.text = "Sex : " + (FindPeople.isMan ? "Male" : "Female");
-        Country.text = "Country : " + FindPeople.country;
-        if (FindPeople.belong != Belonging.Unknown) Job.text = "Job : " + FindPeople.belong + " " + (FindPeople.part == Part.None ? "": FindPeople.part + " ") + FindPeople.job;
-        else Job.text = "Job : Unknown";
+        Name.text = "이름 : " + FindPeople.name_k;
+        Age.text = "나이 : " + FindPeople.age;
+        Sex.text = "성별 : " + (FindPeople.isMan ? "남성" : "여성");
+        country.text = "국가 : " + FindPeople.country;
+        job.text = "직급 : " + FindPeople.job;
+        belong.text = "부서 : " + FindPeople.belong;
+        part.text = "소속 : " + FindPeople.part;
         Face.sprite = FindPeople.Faces[FindPeople.curFace];
     }
 
-    public void SaveChange()
+    public void ApplyChange()
     {
-        var s = Country.text.Split(' ');
-        var s2 = Job.text.Split(' ');
+        CurPeople.country = (Country)Enum.Parse(typeof(Country),country.text.Split(" ")[2]);
+        CurPeople.job = (Job)Enum.Parse(typeof(Job), job.text.Split(" ")[2]);
+        CurPeople.belong = (Belonging)Enum.Parse(typeof(Belonging), belong.text.Split(" ")[2]);
+        CurPeople.part = (Part)Enum.Parse(typeof(Part), part.text.Split(" ")[2]);
+        CurPeople.curFace = FaceNum;
     }
+
+    private void OnDisable()
+    {
+        if (PeopleName != "") ApplyChange();
+    }
+
 
     public void ValidData(int ind, string text)
     {
         foreach(var k in PeopleCorrect)
         {
+            
             if(k.Item1.Equals(CurPeople.name_e) && k.Item2 == ind)
             {
                 switch (ind)
                 {
-                    case 0:
+                    case 4: // Image
+                        if (FaceNum == k.Item3) TDN.CheckList(2, -1, true, k.Item4);
+                        else TDN.CheckList(2, -1, false, k.Item4);
+                        break;
+                    default:    // ETC
+                        var j = text.Split(" ")[2];
+                        if (DB.InfSub[ind][k.Item3].TrimEnd() == j) TDN.CheckList(2, 01, true, k.Item4);
+                        else TDN.CheckList(2, -1, false, k.Item4);
+                        break;
+                    /*case 0:
                         if (DB.InfSub[0][k.Item3].TrimEnd() == text[10..]) TDN.CheckList(2, -1, true, k.Item4);
                         else TDN.CheckList(2, -1, false, k.Item4);
                         break;
                     case 1:
-                        if (DB.InfSub[1][k.Item3].TrimEnd() == Country.text[6..]) TDN.CheckList(2, -1, true, k.Item4);
+                        if (DB.InfSub[1][k.Item3].TrimEnd() == country.text[6..]) TDN.CheckList(2, -1, true, k.Item4);
                         else TDN.CheckList(2, -1, false, k.Item4);
                         break;
-                    default:
-                        if (FaceNum == k.Item3) TDN.CheckList(2, -1, true, k.Item4);
-                        else TDN.CheckList(2, -1, false, k.Item4);
+                    case 2:
                         break;
+                    case 3:
+                        break;*/
+                        
                 }
             }
         }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,13 +17,12 @@ public class HighLighter_M : MonoBehaviour
 
     [HideInInspector]
     public List<string> Files;
+
+    [SerializeField] int FolderType;
+
     private void Awake()
     {
-        if (IsFolder == 1)
-        {
-            Files = new List<string>();
-            MyUi.textReader("GameData/Manipulation/" + name, ref Files);
-        }
+        if (IsFolder == 1 && FolderType != -1) Files = DB_M.DB_Docs.InfSub[FolderType].ToList();
         ColorOff = Clicker.color;
         ColorHigh = Clicker.color + new Color(0, 0, 0, 0.5f);
         ColorOn = Clicker.color + new Color(0, 0, 0, 1);

@@ -52,15 +52,19 @@ public class WritePlain : MonoBehaviour
     {
         var length = PlainTextBody.StringBuffer.Length;
 
-        PlainTextBody.InputFieldTMP.color = PlainTextBody.StringBuffer != GameManager.encryptTargetData 
+        if (length <= 0)
+        {
+            PlainTextBody.InputFieldTMP.color = Color.white;
+            PrimeNumDisplay.TextTMP.text = "사용 가능한 암호키 길이: NULL";
+            return;
+        }
+        
+        PlainTextBody.InputFieldTMP.color = PlainTextBody.StringBuffer != GameManager.encryptTargetText 
             ? new Color(1f, 0.17f, 0.17f, 1f) 
             : new Color(0.17f, 1f, 1f, 1f);
         
-        
         if (length <= 1)
-        {
             PrimeNumDisplay.TextTMP.text = "사용 가능한 암호키 길이: NULL";
-        }
         else
         {
             var result = "사용 가능한 암호키 길이: ";

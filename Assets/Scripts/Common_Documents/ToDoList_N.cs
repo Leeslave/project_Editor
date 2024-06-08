@@ -2,7 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.UIElements;
+//using Unity.PlasticSCM.Editor.WebApi;
+//using UnityEditor.UIElements;
 using UnityEngine;
 
 public class ToDoList_N : MonoBehaviour
@@ -42,7 +43,7 @@ public class ToDoList_N : MonoBehaviour
 
     // 2: Info, 1 : Docs, 0 : News
     List<List<ToDoIndex>> ToDoIndexes;
-    string[] sub = { "국적", "직업", "얼굴" };
+    string[] sub = { "국적", "직업","부서", "소속","얼굴"};
     string[] sub2 = { "추가", "삭제", "변경" };
     private void Start()
     {
@@ -53,7 +54,7 @@ public class ToDoList_N : MonoBehaviour
             foreach(var i in DB.Instructions.InfoInst)
             {
                 Texts[ToDoCount].text = $"<color={NRed}>Info</color> {i.Target} {sub[i.ToDo]} 변경";
-                if(i.ToDo != 2) cnt = $"{DB.InfSub[i.ToDo][i.Before].Trim('\r')} > {DB.InfSub[i.ToDo][i.After].Trim('\r')}";
+                if(i.ToDo != 4) cnt = $"{DB.InfSub[i.ToDo][i.Before].Trim('\r')} > {DB.InfSub[i.ToDo][i.After].Trim('\r')}";
                 else cnt = $"Face{i.Before} > Face{i.After}";
 
                 Texts[ToDoCount].text += $"<size=20>\n\n{cnt}</size>";
@@ -97,7 +98,7 @@ public class ToDoList_N : MonoBehaviour
             ToDoCount++;
         }
 
-        //gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 
     string[] sub3 = { "News", "Docs", "Info" };

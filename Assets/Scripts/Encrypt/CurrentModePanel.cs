@@ -18,7 +18,7 @@ public class CurrentModePanel : MonoBehaviour
     public void SwitchSystem()
     {
         Title.TextTMP.text = GameManager.CurrentSystemMode == ADFGVXGameManager.SystemMode.Decryption
-            ? "복호화 모드" : "암호화 모드";
+            ? "암호화 모드" : "복호화 모드";
     }
     
     /// <summary>

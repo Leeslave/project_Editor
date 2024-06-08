@@ -235,7 +235,7 @@ public class BilateralSubstitute : MonoBehaviour
     /// </summary>
     private void UpdateTable()
     {
-        var filePath = "Assets/Resources/GameData/Encrypt/Tables/Table_" + CurrentTableNum.ToString() + ".txt";
+        var filePath = Application.dataPath + "/Resources/GameData/Encrypt/Tables/Table_" + CurrentTableNum.ToString() + ".txt";
         FileInfo txtFile = new FileInfo(filePath);
 
         if (!txtFile.Exists)

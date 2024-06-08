@@ -22,19 +22,17 @@ public class NPC : WorldObject<NPCData>
             data.clickTalk = DataLoader.GetChatData(data.clickParam);
         }
 
-        if (data.awakeTalk is not null)
+        if (!playAwake)
         {
-            Chat.Instance.StartChat(data.awakeTalk);
+            playAwake = true;
+            InitChat(data.awakeTalk);
         }
     }
 
 
     public void OnClicked()
     {
-        if (data.clickTalk is not null)
-        {
-            Chat.Instance.StartChat(data.clickTalk);
-        }
+        InitChat(data.clickTalk);
     }
 
 
@@ -49,5 +47,19 @@ public class NPC : WorldObject<NPCData>
         Debug.Log(data.size);
         rect.sizeDelta *= data.size;
         rect.localScale = new Vector3(1f,1f,1f);
+    }
+
+    private void InitChat(List<Paragraph> para)
+    {
+        if (para == null)
+        {
+            return;
+        }
+        
+        if (data.count == 0 || data.count > count)
+        {
+            count++;
+            Chat.Instance.StartChat(para);
+        }
     }
 }

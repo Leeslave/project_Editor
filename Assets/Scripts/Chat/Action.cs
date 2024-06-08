@@ -12,8 +12,19 @@ public abstract class Action
 }
 
 
-// 날짜 변경 액션
-public class DayChangeAction : Action
+// 게임 종료 액션
+public class ExitGameAction : Action
+{
+    public override int Invoke()
+    {
+        GameSystem.LoadScene("Start");
+        return 0;
+    }
+}
+
+
+// 날짜 강제 변경 액션
+public class HardDayChangeAction : Action
 {
     public override int Invoke()
     {
@@ -22,6 +33,29 @@ public class DayChangeAction : Action
             GameSystem.Instance.SetDate(dayIndex);
             SceneManager.LoadScene("DayLoading");
             return 0;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+}
+
+// 날짜 변경 액션
+public class DayChangeAction : Action
+{
+    public override int Invoke()
+    {
+        if(int.TryParse(param, out int dayIndex))
+        {
+            if(GameSystem.Instance.gameData.time == 3)
+            {
+                GameSystem.Instance.SetDate(dayIndex);
+                SceneManager.LoadScene("DayLoading");
+                return 0;
+            }
+
+            return -1;
         }
         else
         {

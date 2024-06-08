@@ -1,5 +1,5 @@
+using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class ADFGVXGameManager : MonoBehaviour
 {
@@ -11,12 +11,18 @@ public class ADFGVXGameManager : MonoBehaviour
     public DisplayEncrypted DisplayEncrypted { get; private set; }
     public ResultPanel ResultPanel { get; private set; }
     public CurrentModePanel CurrentModePanel { get; set; }
+    public BasicButton ExitButton { get; set; }
     
     public enum SystemMode { Encryption, Decryption }
     public SystemMode CurrentSystemMode { get; set; } = SystemMode.Decryption;
-
-    [SerializeField] public string encryptTargetData;
-
+    
+    [SerializeField] public string encryptTargetText;
+    [SerializeField] public string encryptResultText;
+    [SerializeField] public string decryptTargetText;
+    [SerializeField] public string decryptResultText;
+    [SerializeField] public bool encryptClear;
+    [SerializeField] public bool decryptClear;
+    
     private void Awake()
     {
         LoadEncrypted = transform.GetChild(0).GetComponent<LoadEncrypted>();
@@ -27,6 +33,41 @@ public class ADFGVXGameManager : MonoBehaviour
         DisplayEncrypted = transform.GetChild(5).GetComponent<DisplayEncrypted>();
         ResultPanel = transform.GetChild(6).GetComponent<ResultPanel>();
         CurrentModePanel = transform.GetChild(7).GetComponent<CurrentModePanel>();
+        ExitButton = transform.GetChild(8).GetComponent<BasicButton>();
+        
+        //종료 버튼에 이벤트 추가
+        ExitButton.OnMouseUpEvent.AddListener(() => GameSystem.LoadScene("Screen"));
+
+        //스테이지 정보 로드
+        TextAsset stageText = Resources.Load<TextAsset>("GameData/Encrypt/ADFGVXStageData"); 
+        ADFGVXStageData stageData = JsonConvert.DeserializeObject<ADFGVXStageData>(stageText.text);
+        int stageNum = GameSystem.Instance.GetTask("ADFGVX");
+        Debug.Log(stageNum);
+        if (stageData.Decrypt.TryGetValue(stageNum.ToString(), out var decryptData))
+        {
+            Debug.Log($"이번 날짜의 Decrypt Task[targetText:{decryptData["targetText"]}, decryptKey:{decryptData["decryptKey"]}, resultText:{decryptData["resultText"]}");
+            decryptTargetText = decryptData["targetText"];
+            decryptResultText = decryptData["resultText"];
+        }
+        else
+        {
+            Debug.Log("이번 날짜의 Decrypt Task는 없음!");
+            decryptClear = true;
+        }
+            
+        
+        if (stageData.Encrypt.TryGetValue(stageNum.ToString(), out var encryptData))
+        {
+            Debug.Log($"이번 날짜의 Encrypt Task[targetText:{encryptData["targetText"]}, encryptKey:{encryptData["encryptKey"]}, resultText:{encryptData["resultText"]}");
+            encryptTargetText = encryptData["targetText"];
+            encryptResultText = encryptData["resultText"];
+        }
+        else
+        {
+            Debug.Log("이번 날짜의 Encrypt Task는 없음!"); 
+            encryptClear = true;
+        }
+            
     }
 
     public void SwitchSystemMode()
@@ -67,6 +108,7 @@ public class ADFGVXGameManager : MonoBehaviour
         WritePlain.CutAvailabilityInputForWhile(wait, duration);
         DisplayEncrypted.CutAvailabilityInputForWhile(wait, duration);
         CurrentModePanel.CutAvailabilityInputForWhile(wait, duration);
+        ExitButton.CutAvailabilityForWhile(wait, duration);
     }
 
     public void SetAvailable(bool value)
@@ -78,5 +120,6 @@ public class ADFGVXGameManager : MonoBehaviour
         WritePlain.SetAvailable(value);
         DisplayEncrypted.SetAvailable(value);
         CurrentModePanel.SetAvailable(value);
+        ExitButton.SetAvailability(value);
     }
 }
