@@ -39,7 +39,7 @@ public class Windows_M : MonoBehaviour
     [SerializeField] bool j = false;
     private void Awake()
     {
-        Windows_M WM = GetComponent<Windows_M>();
+        Windows_M Window = GetComponent<Windows_M>();
         SizeChanger();
         Icons = new GameObject[PoolingNum];
         IconsScript = new UIICons[PoolingNum];
@@ -50,7 +50,7 @@ public class Windows_M : MonoBehaviour
         {
             IconsScript[i] = Icons[i].GetComponent<UIICons>();
             IconsScript[i].PoolNum = i;
-            IconsScript[i].WM = WM;
+            IconsScript[i].Window = Window;
         }
         for (int i = 0; i < PoolingNum; i++) IconUseAble[i] = true;
         for (int i = 0; i < EarlyIcon.Count; i++) IconUseAble[i] = false;

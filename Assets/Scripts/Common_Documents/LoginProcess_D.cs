@@ -21,8 +21,6 @@ public class LoginProcess_D : MonoBehaviour
 
     int LoginTry = 3;
 
-    bool S = false;
-
 
     private void OnEnable()
     {

@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class MainText_Back : Buttons_M
 {
-
-    [SerializeField] TextMannager_N TMN;
     GameObject Field;
     [SerializeField] GameObject Text;
     [SerializeField] Color AfColor;
@@ -23,12 +21,13 @@ public class MainText_Back : Buttons_M
         MyInd = transform.GetSiblingIndex() - 4;
     }
 
+    // InputField(MainText_N) 활성화 및 Text 비활성화
     protected override void Click(PointerEventData Data)
     {
         Field.SetActive(true);
         image.color = BfColor;
         Text.SetActive(false);
-        if (TMN != null) TMN.OpenText(MyInd);
+        if (DB_M.DB_Docs.NewsManager != null) DB_M.DB_Docs.NewsManager.OpenText(MyInd);
         //else
     }
     protected override void OnPointer(PointerEventData data)

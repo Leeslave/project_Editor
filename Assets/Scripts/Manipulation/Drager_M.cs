@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class Drager_M : MonoBehaviour
 {
-    public InfChange In;
-
     [SerializeField]
     private Image FaceImage;
     private Image cnt;
@@ -27,18 +25,18 @@ public class Drager_M : MonoBehaviour
         {
             if (IsTouch)
             {
-                if (In.s != 4) cnt.GetComponent<TextChanger_M>().Changer(d[In.s] + name);
-                else { FaceImage.sprite = MyImage.sprite; In.FaceNum = name[0] - '0'; }
+                if (DB_M.DB_Docs.PersonDataManager.CurDraggedType != 4) cnt.GetComponent<TextChanger_M>().Changer(d[DB_M.DB_Docs.PersonDataManager.CurDraggedType] + name);
+                else { FaceImage.sprite = MyImage.sprite; DB_M.DB_Docs.PersonDataManager.FaceNum = name[0] - '0'; }
             }
             gameObject.SetActive(false);
-            In.TouchAbleChange();
+            DB_M.DB_Docs.PersonDataManager.TouchAbleChange();
         }
     }
     
     private void OnTriggerEnter2D(Collider2D collision) 
     {
         IsTouch = true;
-        cnt = collision.transform.GetChild(In.s).GetComponent<Image>();
+        cnt = collision.transform.GetChild(DB_M.DB_Docs.PersonDataManager.CurDraggedType).GetComponent<Image>();
         cnt.color = cnt.color + C1;
     }
 
