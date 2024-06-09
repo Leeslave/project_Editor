@@ -9,44 +9,42 @@ using UnityEngine.UI;
 public class UIICons : UIDragger
 {
     /*
-     * IconÀÇ °æ¿ì Icon Object ¹Ø¿¡ Image ºÎºĞ, Text ºÎºĞÀ¸·Î ±¸¼ºµÇ¾î ÀÖ´Ù.
+     * Iconì˜ ê²½ìš° Icon Object ë°‘ì— Image ë¶€ë¶„, Text ë¶€ë¶„ìœ¼ë¡œ êµ¬ì„±ë˜ì–´ ìˆë‹¤.
      */
 
-    // IconÀÇ image ºÎºĞ
+    // Iconì˜ image ë¶€ë¶„
     protected Image MyImage;
-    // IconÀÇ Image ºÎºĞÀÇ Transform
+    // Iconì˜ Image ë¶€ë¶„ì˜ Transform
     protected RectTransform ImageRect;
-    // IconÀÇ Text
+    // Iconì˜ Text
     protected TMP_Text MyText;
-    // Icon.ÀÇ Text ºÎºĞÀÇ Transform
+    // Icon.ì˜ Text ë¶€ë¶„ì˜ Transform
     protected RectTransform TextRect;
-    // µå·¡±× ½Ã »ç¿ëµÉ Image
+    // ë“œë˜ê·¸ ì‹œ ì‚¬ìš©ë  Image
     protected Image CntImage;
-    // µå·¡±× ½Ã ÀÌµ¿µÇ´Â ÀÓ½Ã ObjectÀÇ Transform
+    // ë“œë˜ê·¸ ì‹œ ì´ë™ë˜ëŠ” ì„ì‹œ Objectì˜ Transform
     protected RectTransform CntRect;
-    // Icon ÀÚÃ¼ ObjectÀÇ Transform
+    // Icon ìì²´ Objectì˜ Transform
     protected RectTransform MyRect;
-    // Drag½Ã DoubleCheck¿¡ Ä«¿îÅÍ µÇ´Â °ÍÀ» ¹æÁöÇÏ±â À§ÇØ »ç¿ë
+    // Dragì‹œ DoubleCheckì— ì¹´ìš´í„° ë˜ëŠ” ê²ƒì„ ë°©ì§€í•˜ê¸° ìœ„í•´ ì‚¬ìš©
     protected bool DragDoubleCheck = false;
-    // LayOut¿¡ ¸ÂÃç¼­ ¹èÄ¡µÇ´ÂÁö ¿©ºÎ
+    // LayOutì— ë§ì¶°ì„œ ë°°ì¹˜ë˜ëŠ”ì§€ ì—¬ë¶€
     [SerializeField] protected bool IsLayer = true;
-    // IconÀ» ÅëÇØ ½ÇÇàµÇ´Â ÇÁ·Î¼¼½º
+    // Iconì„ í†µí•´ ì‹¤í–‰ë˜ëŠ” í”„ë¡œì„¸ìŠ¤
     [SerializeField] protected GameObject OpenedProcess;
-    // 0 : Folder, 1 : DB, 2 : Text, 3 : ¸ô¶ó
+    // 0 : Folder, 1 : DB_M.DB_Docs, 2 : Text, 3 : ëª°ë¼
     public int type;
     // WindowsManager.cs
-    [NonSerialized] public Windows_M WM;
-    protected AttatchFile_N AN;
-    // Window»ó¿¡¼­ ¹èÄ¡µÇ¾î ÀÖ´Â LayOutÀÇ À§Ä¡ Á¤º¸ ÀúÀå¿¡ »ç¿ë.
+    [NonSerialized] public Windows_M Window;
+    // Windowìƒì—ì„œ ë°°ì¹˜ë˜ì–´ ìˆëŠ” LayOutì˜ ìœ„ì¹˜ ì •ë³´ ì €ì¥ì— ì‚¬ìš©.
     protected Tuple<int, int> CurLay = null;
-    // Pooling¿ë.
+    // Poolingìš©.
     public int PoolNum;
 
     protected bool IsAwakened = true;
 
     protected override void Awake()
     {
-        AN = Dragged.GetComponent<AttatchFile_N>();
         base.Awake();
         ImageRect = transform.GetChild(0).GetComponent<RectTransform>();
         MyImage = transform.GetChild(0).GetComponent<Image>();
@@ -59,7 +57,7 @@ public class UIICons : UIDragger
     }
     protected virtual void Start()
     {
-        CurLay = WM.BatchByCreate(gameObject);
+        CurLay = Window.BatchByCreate(gameObject);
         ImageRect.sizeDelta = MyRect.sizeDelta * 0.8f;
         float cnt = ImageRect.sizeDelta.x - ImageRect.sizeDelta.y;
         ImageRect.anchoredPosition = new Vector2(0,(ImageRect.sizeDelta.x - ImageRect.sizeDelta.y)*0.5f);
@@ -69,26 +67,26 @@ public class UIICons : UIDragger
     }
     protected virtual void OnEnable()
     {
-        if(!IsAwakened)CurLay = WM.BatchByCreate(gameObject);
+        if(!IsAwakened)CurLay = Window.BatchByCreate(gameObject);
     }
     protected virtual void OnDisable()
     {
-        if(CurLay!=null)WM.RemoveIcon(CurLay);
+        if(CurLay!=null)Window.RemoveIcon(CurLay);
     }
     public virtual void ClearIcon()
     {
-        WM.ClearIcon(PoolNum);
+        Window.ClearIcon(PoolNum);
         OpenedProcess = null;
         CurLay = null;
     }
 
     /// <summary>
-    /// IconÀ» ÃÊ±âÈ­
+    /// Iconì„ ì´ˆê¸°í™”
     /// </summary>
-    /// <param name="AttatchAble">Ã·ºÎ °¡´É ¿©ºÎ</param>
-    /// <param name="OpenProcess">Å¬¸¯À» ÅëÇØ ½ÇÇà µÉ Process</param>
-    /// <param name="name">IconÀÇ ÀÌ¸§(Text¿¡ »ç¿ë)</param>
-    /// <param name="Image">IconÀÇ ÀÌ¹ÌÁö(Image¿¡ »ç¿ë)</param>
+    /// <param name="AttatchAble">ì²¨ë¶€ ê°€ëŠ¥ ì—¬ë¶€</param>
+    /// <param name="OpenProcess">í´ë¦­ì„ í†µí•´ ì‹¤í–‰ ë  Process</param>
+    /// <param name="name">Iconì˜ ì´ë¦„(Textì— ì‚¬ìš©)</param>
+    /// <param name="Image">Iconì˜ ì´ë¯¸ì§€(Imageì— ì‚¬ìš©)</param>
     /// <param name="num">PoolingNumber</param>
     public virtual void Init(bool AttatchAble, GameObject OpenProcess, string name, Sprite Image, int num,int type)
     {
@@ -100,8 +98,8 @@ public class UIICons : UIDragger
         this.type = type;
     }
     /// <summary>
-    /// Icon ´õºí Å¬¸¯ Å½Áö.
-    /// Å½Áö ½Ã ÇØ´ç IconÀÇ ÇÁ·Î±×·¥ ½ÇÇà.
+    /// Icon ë”ë¸” í´ë¦­ íƒì§€.
+    /// íƒì§€ ì‹œ í•´ë‹¹ Iconì˜ í”„ë¡œê·¸ë¨ ì‹¤í–‰.
     /// </summary>
     /// <param name="Data"></param>
     protected virtual void OpenIcon(PointerEventData Data)
@@ -126,7 +124,7 @@ public class UIICons : UIDragger
         }
     }
     /// <summary>
-    /// Icon ´õºí Å¬¸¯½Ã ¹ß»ıÇÏ´Â ÀÌº¥Æ®.
+    /// Icon ë”ë¸” í´ë¦­ì‹œ ë°œìƒí•˜ëŠ” ì´ë²¤íŠ¸.
     /// </summary>
     protected virtual void ClickEvent()
     {
@@ -140,7 +138,7 @@ public class UIICons : UIDragger
     }
 
     /// <summary>
-    /// Drag½Ã ÀÓ½Ã Object¸¦ È°¼ºÈ­ÇÏ¸ç, ÀÓ½Ã ObjectÀÇ Image¸¦ IconÀÇ Image·Î º¯È¯
+    /// Dragì‹œ ì„ì‹œ Objectë¥¼ í™œì„±í™”í•˜ë©°, ì„ì‹œ Objectì˜ Imageë¥¼ Iconì˜ Imageë¡œ ë³€í™˜
     /// </summary>
     /// <param name="Data"></param>
     protected override void DragOn(PointerEventData Data)
@@ -148,22 +146,22 @@ public class UIICons : UIDragger
         base.DragOn(Data);
         if (Data.clickCount == 2) DragDoubleCheck = true;
         Dragged.gameObject.SetActive(true);
-        AN.IsDragged = true;
-        AN.AttatchType = type;
-        AN.IconName = name;
+        DB_M.DB_Docs.CntFileForAttach.IsDragged = true;
+        DB_M.DB_Docs.CntFileForAttach.AttatchType = type;
+        DB_M.DB_Docs.CntFileForAttach.IconName = name;
         CntImage.sprite = MyImage.sprite;
-        AN.CurDragged = gameObject;
+        DB_M.DB_Docs.CntFileForAttach.CurDragged = gameObject;
         CntRect.sizeDelta = ImageRect.sizeDelta;
     }
 
     /// <summary>
-    /// µå·¡±× Á¾·á ½Ã IconÀÇ Ã·ºÎ, ÀÌµ¿, »èÁ¦¸¦ ±¸ºĞ.
+    /// ë“œë˜ê·¸ ì¢…ë£Œ ì‹œ Iconì˜ ì²¨ë¶€, ì´ë™, ì‚­ì œë¥¼ êµ¬ë¶„.
     /// </summary>
     /// <param name="Data"></param>
     protected override void DragEnd(PointerEventData Data)
     {
-        if (AN.Attatch!=null) AN.Attatch();
-        else if (IsLayer) WM.BatchByMove(gameObject, Dragged, ref CurLay);
+        if (DB_M.DB_Docs.CntFileForAttach.Attatch!=null) DB_M.DB_Docs.CntFileForAttach.Attatch();
+        else if (IsLayer) Window.BatchByMove(gameObject, Dragged, ref CurLay);
         else MyRect.position = CntRect.position;
         Dragged.gameObject.SetActive(false);
     }
