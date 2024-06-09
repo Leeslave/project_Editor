@@ -52,6 +52,7 @@ public class TextMannager_D : MonoBehaviour
         foreach (var k in TextsObj) k.SetActive(false); ActivateText = 0;
     }
 
+
     public void AddText(string text, Color color, TextAlignmentOptions align = TextAlignmentOptions.Left, bool IsTouchAble = true)
     {
         TextsObj[ActivateText].SetActive(true);
@@ -99,6 +100,7 @@ public class TextMannager_D : MonoBehaviour
             Message.transform.position = Dots[i-1].transform.position; Message.gameObject.SetActive(true);
             if (IsCor() && OtherMannager.IsCor())
             {
+                CorrectedAnswer(); OtherMannager.CorrectedAnswer();
                 Message.text = $"Abnormal Detection!";
                 DB_M.DB_Docs.ToDoList.CheckList(1, 0, true);
             }
@@ -112,9 +114,13 @@ public class TextMannager_D : MonoBehaviour
         }
     }
 
+    public void CorrectedAnswer()
+    {
+        Texts[CurOpen].GetCorrected();
+    }
+
     public bool IsCor() 
     {
-        if (MyAns == CurOpen) Texts[CurOpen].GetCorrected();
         return MyAns == CurOpen; 
     }
 

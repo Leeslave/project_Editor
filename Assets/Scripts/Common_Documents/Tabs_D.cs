@@ -4,7 +4,6 @@ using UnityEngine.EventSystems;
 
 public class Tabs_D : Buttons_M
 {
-    [SerializeField] GetOptionFile_D GOF;
     public List<GameObject> Subs;
     [SerializeField] int MyIndex;
     public bool IsOpened;
@@ -37,7 +36,7 @@ public class Tabs_D : Buttons_M
     {
         foreach (GameObject s in Subs) s.SetActive(true);
         image.color = OpenColor;
-        GOF.ChangeTab(MyIndex);
+        DB_M.DB_Docs.GetOption.ChangeTab(MyIndex);
         IsOpened = true;
     }
 
