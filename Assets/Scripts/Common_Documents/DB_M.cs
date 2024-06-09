@@ -1,9 +1,7 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 // 해당 게임의 모든 I/O 입출력은 해당 코드를 통해 이루어짐
@@ -14,6 +12,8 @@ public class DB_M : MonoBehaviour
     public ToDoList_N ToDoList;
     public InfChange PersonDataManager;
     public TextMannager_N NewsManager;
+    public TextMannager_D Docs_Record;
+    public GetOptionFile_D GetOption;
 
 
     [SerializeField] Windows_M DBFolder;
@@ -172,7 +172,7 @@ public class DB_M : MonoBehaviour
     /// <summary>
     /// 찾는 인물의 문서 정보를 반환
     /// </summary>
-    /// <param name="Name"> 찾을 인물의 이름(영어) </param>
+    /// <param name="Name"> 찾을 인물의 이름(한국어) </param>
     /// <returns>문서 정보(찾는 인물이 없는 경우 null)</returns>
     public Docs FindDocs(string Name)
     {
