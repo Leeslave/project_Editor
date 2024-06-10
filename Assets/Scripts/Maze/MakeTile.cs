@@ -31,7 +31,6 @@ public class MakeTile : MonoBehaviour
     [NonSerialized] public int KeyWeight;
 
     [SerializeField] string[] Paths;
-    [SerializeField] bool IsTuTo = false;
 
     void Awake()
     {
