@@ -20,8 +20,6 @@ public class TextMannager_D : MonoBehaviour
 
     public TextMannager_D OtherMannager;
 
-    bool IsClear = false;
-
     int ActivateText = 0;
 
     public Transform CurSelection;
