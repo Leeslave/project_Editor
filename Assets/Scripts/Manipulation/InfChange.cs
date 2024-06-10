@@ -122,6 +122,8 @@ public class InfChange : MonoBehaviour
         }
     }
 
+    [SerializeField] GetOptionFile_D GetOptionFile;
+
     // Get Folder's Contents & Make Files
     public void OpenFolder(HighLighter_M CurHighLighted)
     {
@@ -148,7 +150,7 @@ public class InfChange : MonoBehaviour
                 cnt.name = CurHighLighted.Files[i];
                 cnt.transform.GetChild(2).GetComponent<TMP_Text>().text = CurHighLighted.Files[i];
             }
-            DB_M.DB_Docs.GetOption.Tabs[2].Subs[0] = Files;
+            GetOptionFile.Tabs[2].Subs[0] = Files;
             Files.SetActive(true);
         }
         else if(CurPeople != null)
@@ -161,7 +163,7 @@ public class InfChange : MonoBehaviour
                 cnt.transform.GetChild(2).GetComponent<TMP_Text>().text = $"Face{i + 1}";
                 cnt.transform.GetChild(1).GetComponent<Image>().sprite = CurPeople.Faces[i];
             }
-            DB_M.DB_Docs.GetOption.Tabs[2].Subs[0] = Faces;
+            GetOptionFile.Tabs[2].Subs[0] = Faces;
             Faces.SetActive(true);
         }
         Folders.SetActive(false);
@@ -180,7 +182,7 @@ public class InfChange : MonoBehaviour
         CurFolder = null;
         Files.SetActive(false);
         Faces.SetActive(false);
-        DB_M.DB_Docs.GetOption.Tabs[2].Subs[0] = Folders;
+        GetOptionFile.Tabs[2].Subs[0] = Folders;
         Folders.SetActive(true);
     }
 

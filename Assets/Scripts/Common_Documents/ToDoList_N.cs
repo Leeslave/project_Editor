@@ -15,7 +15,7 @@ public class ToDoList_N : MonoBehaviour
     // 현재 지시사항의 수
     int ToDoCount = 0;
 
-    public class ToDoIndex
+    class ToDoIndex
     {
         public int line;        // 현재 ToDoList에서 몇번째 줄인지
         public int type;        //
@@ -37,7 +37,7 @@ public class ToDoList_N : MonoBehaviour
     }
 
     // 2: Info, 1 : Docs, 0 : News
-    [HideInInspector] public List<List<ToDoIndex>> ToDoIndexes;
+    List<List<ToDoIndex>> ToDoIndexes;
     // ToDoList 문장 구성용 임시 배열
     string[] sub = { "국적", "직업", "부서", "소속", "얼굴" };
     string[] sub2 = { "추가", "삭제", "변경" };

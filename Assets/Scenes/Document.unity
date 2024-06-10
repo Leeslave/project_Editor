@@ -9624,7 +9624,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.75, g: 0.75, b: 0.75, a: 0.5019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.101960786}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -19077,6 +19077,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BfColor: {r: 0, g: 0, b: 0, a: 0}
+  GOF: {fileID: 1958821873}
   Subs:
   - {fileID: 1975292933055462406}
   - {fileID: 1468743782}
@@ -21644,6 +21645,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BfColor: {r: 0, g: 0, b: 0, a: 0}
+  GOF: {fileID: 1958821873}
   Subs:
   - {fileID: 1958821869}
   MyIndex: 0
@@ -21739,6 +21741,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BfColor: {r: 0, g: 0, b: 0, a: 0}
+  GOF: {fileID: 1958821873}
   Subs:
   - {fileID: 1993790239}
   MyIndex: 1
@@ -31387,8 +31390,6 @@ MonoBehaviour:
   ToDoList: {fileID: 1993790245}
   PersonDataManager: {fileID: 8892131225055290859}
   NewsManager: {fileID: 5781525358941932208}
-  Docs_Record: {fileID: 1346748517}
-  GetOption: {fileID: 1958821873}
   DBFolder: {fileID: 791795909}
   NewsFolder: {fileID: 764075288}
   DocsFolder: {fileID: 1983374232}
@@ -31533,9 +31534,7 @@ MonoBehaviour:
       Revise: 
       Goal: "\uAD6D\uBBFC\uB4E4\uC758 \uBC88\uC601\uC744 \uC704\uD558\uC5EC, \uC601\uAD11\uC2A4\uB7EC\uC6B4
         \uD1B5\uCE58\uC790 \"\uB354\uD0B9\""
-    DocsInst:
-    - Name: "\uB9C8\uD2F4"
-      Count: 0
+    DocsInst: []
     Peoples: []
     NewsMain: []
   - test: 12/09
@@ -31641,11 +31640,11 @@ MonoBehaviour:
     - "\uB538\uAE30 \uD55C \uD329\uACFC \uC624\uB80C\uC9C0 6\uAC1C\uB97C \uAD6C\uC785\uD588\uC2B5\uB2C8\uB2E4."
     - "\uD655\uC2E4\uD569\uB2C8\uB2E4."
     Time_Action:
-    - "\uC624\uD6C4 1\uC2DC. \uCE74\uD398 Balance \uC5D0\uC11C \uCE74\uD478\uCE58\uB178
+    - "\uC624\uD6C4 1\uC2DC. Caf\xE9 Balance \uC5D0\uC11C \uCE74\uD478\uCE58\uB178
       1\uC794 \uAD6C\uB9E4."
     - "\uC624\uD6C4 1\uC2DC 20\uBD84. \uD68C\uC0AC \uBCF5\uADC0 "
     - "\uC624\uD6C4 5\uC2DC 40\uBD84. \uD1F4\uADFC "
-    - "\uC624\uD6C4 6\uC2DC 20\uBD84. \uC220\uC9D1 Peach \uBC29\uBB38  "
+    - "\uC624\uD6C4 6\uC2DC 20\uBD84. Karaoke Peach \uBC29\uBB38  "
     SubjectAns: 07000000
     ActionAns: 03000000
 --- !u!224 &5781525359300854144
@@ -33731,6 +33730,7 @@ MonoBehaviour:
   ImageDrager: {fileID: 1975292934399493682}
   Terminal: {fileID: 1975292933595037977}
   Reviser: {fileID: 5850464110562467838}
+  GetOptionFile: {fileID: 1958821873}
 --- !u!114 &8948394935245516337
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -145,81 +145,70 @@ public class GetOptionFile_D : BatchField_D
 
     protected override IEnumerator BatchType3()
     {
-        bool Go = false;
-        foreach (var k in DB_M.DB_Docs.ToDoList.ToDoIndexes[1]) if (k.line1 == DB_M.DB_Docs.CntFileForAttach.IconName) { Go = true; break; }
+        CommonBatch();
+        CurType = 2;
+        image.SetActive(false);
+        Docs CurDocs = DB_M.DB_Docs.FindDocs(DB_M.DB_Docs.CntFileForAttach.IconName);
+        string cnt = "";
 
-        if (Go)
+        // Loading 연출 시작
+        WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
+        foreach (string s in Waittexts)
         {
-            CommonBatch();
-            CurType = 2;
-            image.SetActive(false);
-            Docs CurDocs = DB_M.DB_Docs.FindDocs(DB_M.DB_Docs.CntFileForAttach.IconName);
-            string cnt = "";
+            cnt += s;
 
-            // Loading 연출 시작
-            WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
-            foreach (string s in Waittexts)
+            for (int i = 0; i <= 10; i++)
             {
-                cnt += s;
-
-                for (int i = 0; i <= 10; i++)
-                {
-                    Text.text = cnt + $"<size=20>{i * 10}% </size>";
-                    yield return wfs;
-                }
-                cnt += " <size=20>Complete!\n</size>";
+                Text.text = cnt + $"<size=20>{i * 10}% </size>";
+                yield return wfs;
             }
-            Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
-            yield return new WaitForSeconds(LoadingTime2);
+            cnt += " <size=20>Complete!\n</size>";
+        }
+        Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
+        yield return new WaitForSeconds(LoadingTime2);
 
-            // Loading 연출 끝
-            Text.text = Normal;
-            image.SetActive(true);
-            AttatchAble = true;
+        // Loading 연출 끝
+        Text.text = Normal;
+        image.SetActive(true);
+        AttatchAble = true;
 
-            // 문서 대조에 사용될 문서 생성
-            Recorder.text = $"Recorder : {CurDocs.Recorder}";
-            Subject.text = $"Subject : {CurDocs.Subject}";
-            int RC = 0;         // 현재까지 Docs_Record에 기록된 녹취자의 Text수를 새기 위해 사용
-            int SC = 0;         // 현재까지 Docs_Record에 기록된 대상자의 Text수를 새기 위해 사용
+        // 문서 대조에 사용될 문서 생성
+        Recorder.text = $"Recorder : {CurDocs.Recorder}";
+        Subject.text = $"Subject : {CurDocs.Subject}";
+        int RC = 0;         // 현재까지 Docs_Record에 기록된 녹취자의 Text수를 새기 위해 사용
+        int SC = 0;         // 현재까지 Docs_Record에 기록된 대상자의 Text수를 새기 위해 사용
 
-            /*
-             * 현재 줄이 CurDocs의 RecorderTextInd[RC]와 동일하면 녹취자의 Text로 기록(왼쪽, 초록색, 상호작용 불가)
-             * 위의 조건에 해당하지 않으면 대상자의 Text로 기록(오른쪽, 빨간색, 상호작용 가능)
-             */
-            for (int i = 0; i < CurDocs.RecorderTexts.Count + CurDocs.SubjectTexts.Count; i++)
+        /*
+         * 현재 줄이 CurDocs의 RecorderTextInd[RC]와 동일하면 녹취자의 Text로 기록(왼쪽, 초록색, 상호작용 불가)
+         * 위의 조건에 해당하지 않으면 대상자의 Text로 기록(오른쪽, 빨간색, 상호작용 가능)
+         */
+        for (int i = 0; i < CurDocs.RecorderTexts.Count + CurDocs.SubjectTexts.Count; i++)
+        {
+            if (RC < CurDocs.RecorderTexts.Count)
             {
-                if (RC < CurDocs.RecorderTexts.Count)
-                {
-                    if (CurDocs.RecorderTextInd[RC] == i) Docs_Record.AddText(CurDocs.RecorderTexts[RC++], new Color(0, 0.5f, 0, 1), IsTouchAble: false);
-                    else Docs_Record.AddText(CurDocs.SubjectTexts[SC++], new Color(0.5f, 0, 0), TextAlignmentOptions.Right);
-                }
+                if (CurDocs.RecorderTextInd[RC] == i) Docs_Record.AddText(CurDocs.RecorderTexts[RC++], new Color(0, 0.5f, 0, 1), IsTouchAble: false);
                 else Docs_Record.AddText(CurDocs.SubjectTexts[SC++], new Color(0.5f, 0, 0), TextAlignmentOptions.Right);
             }
-            foreach (var k in CurDocs.Time_Action) Docs_Act.AddText(k, Color.black);
-
-            // 정답 Index 저장
-            Docs_Record.MyAns = CurDocs.SubjectAns[0];
-            Docs_Act.MyAns = CurDocs.ActionAns[0];
-
-            // 문서 수정용 Process 활성화
-            Processes[2].SetActive(true);
-            Processes[2].transform.SetAsLastSibling();
-            Processes[2].transform.position = Vector3.zero;
-
-            Processes[3].SetActive(true);
-            Processes[3].transform.SetAsLastSibling();
-            Processes[3].transform.position = Vector3.zero;
-
-            Processes[4].SetActive(true);
-            Processes[4].transform.SetAsLastSibling();
-            Processes[4].transform.position = Vector3.zero;
+            else Docs_Record.AddText(CurDocs.SubjectTexts[SC++], new Color(0.5f, 0, 0), TextAlignmentOptions.Right);
         }
-        else
-        {
-            Text.text = "<size=40><color=#FF0000>401 Not Unauthorized</color></size>\n<color=#C8AF10>(x_x)</color>\n\nOops! Something's Wrong.\nDrag Correct Option File Here!";
-            AttatchAble = true;
-        }
+        foreach (var k in CurDocs.Time_Action) Docs_Act.AddText(k, Color.black);
+
+        // 정답 Index 저장
+        Docs_Record.MyAns = CurDocs.SubjectAns[0];
+        Docs_Act.MyAns = CurDocs.ActionAns[0];
+
+        // 문서 수정용 Process 활성화
+        Processes[2].SetActive(true);
+        Processes[2].transform.SetAsLastSibling();
+        Processes[2].transform.position = Vector3.zero;
+
+        Processes[3].SetActive(true);
+        Processes[3].transform.SetAsLastSibling();
+        Processes[3].transform.position = Vector3.zero;
+
+        Processes[4].SetActive(true);
+        Processes[4].transform.SetAsLastSibling();
+        Processes[4].transform.position = Vector3.zero;
     }
     protected override IEnumerator BatchType4()
     {
