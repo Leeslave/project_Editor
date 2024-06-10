@@ -8,7 +8,6 @@ using Unity.VisualScripting;
 
 public class InfChange : MonoBehaviour
 {
-    [SerializeField] DB_M DB;
     [SerializeField] TMP_Text Name;
     [SerializeField] TMP_Text Age;
     [SerializeField] TMP_Text Sex;
@@ -26,9 +25,8 @@ public class InfChange : MonoBehaviour
     [SerializeField] Image ImageDrager;
     [SerializeField] TMP_Text Terminal;
     [SerializeField] GameObject Reviser;
-    [SerializeField] ToDoList_N TDN;
 
-    [NonSerialized] public int s = 0;
+    [NonSerialized] public int CurDraggedType = 0;
     [NonSerialized] public int FaceNum = 0;
     [NonSerialized]public string PeopleName = "";
 
@@ -56,32 +54,37 @@ public class InfChange : MonoBehaviour
         transform.position = Vector3.zero;
         if (PeopleName != "")
         {
-            CurPeople = DB.FindPeople(PeopleName);
+            CurPeople = DB_M.DB_Docs.FindPeople(PeopleName);
             ChangeInf(CurPeople);
         }
     }
 
 
+    /// <summary>
+    /// ToolKit의 Main부분 담당 Code
+    /// </summary>
+    /// <param name="cnt">현재 선택된 GameObject</param>
+    /// <param name="Type">0 : 파일, 1 : 폴더</param>
     public void TouchManager(GameObject cnt, int Type)
     {
         switch (Type)
         {
             case 0:             // File
-                if (CurFile == null)
+                if (CurFile == null)            // 선택된 파일이 없으면 Hightlight를 생성
                 {
                     CurFile = cnt;
                     CurHighLight = CurFile.GetComponent<HighLighter_M>( );
                 }
-                else if (CurFile != cnt)
+                else if (CurFile != cnt)        // 선택된 파일과 다른 파일 선택시 Highlight를 옮김
                 {
                     CurHighLight.HighLightOff();
                     CurFile = cnt;
                     CurHighLight = CurFile.GetComponent<HighLighter_M>();
                 }
-                else
+                else                          // 선택된 파일과 같으면 드래그 활성화
                 {
                     CurHighLight.HighLightOff();
-                    if (s != 4)
+                    if (CurDraggedType != 4)
                     {
                         Drager.name = CurFile.name;
                         Drager.SetActive(true);
@@ -98,7 +101,7 @@ public class InfChange : MonoBehaviour
                     TouchAble = false;
                 }
                 break;
-            case 1:             // Folder
+            case 1:             // Folder, 위의 파일과 동일
                 if (CurFolder == null)
                 {
                     CurFolder = cnt;
@@ -119,34 +122,33 @@ public class InfChange : MonoBehaviour
         }
     }
 
-    [SerializeField] GetOptionFile_D GD;
-
     // Get Folder's Contents & Make Files
-    public void OpenFolder(HighLighter_M ss)
+    public void OpenFolder(HighLighter_M CurHighLighted)
     {
+        // RayOutRebuild용
         Reviser.SetActive(false);
         Reviser.SetActive(true);
-        if (ss == null)
+        if (CurHighLighted == null)
         {
             Folders.SetActive(true);
             Files.SetActive(false);
             CloseFolder();
             return;
         }
-        s = ss.transform.GetSiblingIndex();
-        Terminal.text = $"> {ss.gameObject.name}";
+        CurDraggedType = CurHighLighted.transform.GetSiblingIndex();
+        Terminal.text = $"> {CurHighLighted.gameObject.name}";
         Terminal_Folder.SetActive(true);
         GameObject cnt;
-        if (s != 4)
+        if (CurDraggedType != 4)
         {
-            for (int i = 0; i < ss.Files.Count; i++)
+            for (int i = 0; i < CurHighLighted.Files.Count; i++)
             {
                 cnt = Files.transform.GetChild(i).gameObject;
                 cnt.SetActive(true);
-                cnt.name = ss.Files[i];
-                cnt.transform.GetChild(2).GetComponent<TMP_Text>().text = ss.Files[i];
+                cnt.name = CurHighLighted.Files[i];
+                cnt.transform.GetChild(2).GetComponent<TMP_Text>().text = CurHighLighted.Files[i];
             }
-            GD.Tabs[2].Subs[0] = Files;
+            DB_M.DB_Docs.GetOption.Tabs[2].Subs[0] = Files;
             Files.SetActive(true);
         }
         else if(CurPeople != null)
@@ -159,7 +161,7 @@ public class InfChange : MonoBehaviour
                 cnt.transform.GetChild(2).GetComponent<TMP_Text>().text = $"Face{i + 1}";
                 cnt.transform.GetChild(1).GetComponent<Image>().sprite = CurPeople.Faces[i];
             }
-            GD.Tabs[2].Subs[0] = Faces;
+            DB_M.DB_Docs.GetOption.Tabs[2].Subs[0] = Faces;
             Faces.SetActive(true);
         }
         Folders.SetActive(false);
@@ -178,7 +180,7 @@ public class InfChange : MonoBehaviour
         CurFolder = null;
         Files.SetActive(false);
         Faces.SetActive(false);
-        GD.Tabs[2].Subs[0] = Folders;
+        DB_M.DB_Docs.GetOption.Tabs[2].Subs[0] = Folders;
         Folders.SetActive(true);
     }
 
@@ -220,21 +222,21 @@ public class InfChange : MonoBehaviour
                 switch (ind)
                 {
                     case 4: // Image
-                        if (FaceNum == k.Item3) TDN.CheckList(2, -1, true, k.Item4);
-                        else TDN.CheckList(2, -1, false, k.Item4);
+                        if (FaceNum == k.Item3) DB_M.DB_Docs.ToDoList.CheckList(2, -1, true, k.Item4);
+                        else DB_M.DB_Docs.ToDoList.CheckList(2, -1, false, k.Item4);
                         break;
                     default:    // ETC
                         var j = text.Split(" ")[2];
-                        if (DB.InfSub[ind][k.Item3].TrimEnd() == j) TDN.CheckList(2, 01, true, k.Item4);
-                        else TDN.CheckList(2, -1, false, k.Item4);
+                        if (DB_M.DB_Docs.InfSub[ind][k.Item3].TrimEnd() == j) DB_M.DB_Docs.ToDoList.CheckList(2, 01, true, k.Item4);
+                        else DB_M.DB_Docs.ToDoList.CheckList(2, -1, false, k.Item4);
                         break;
                     /*case 0:
-                        if (DB.InfSub[0][k.Item3].TrimEnd() == text[10..]) TDN.CheckList(2, -1, true, k.Item4);
-                        else TDN.CheckList(2, -1, false, k.Item4);
+                        if (DB_M.DB_Docs.InfSub[0][k.Item3].TrimEnd() == text[10..]) DB_M.DB_Docs.ToDoList.CheckList(2, -1, true, k.Item4);
+                        else DB_M.DB_Docs.ToDoList.CheckList(2, -1, false, k.Item4);
                         break;
                     case 1:
-                        if (DB.InfSub[1][k.Item3].TrimEnd() == country.text[6..]) TDN.CheckList(2, -1, true, k.Item4);
-                        else TDN.CheckList(2, -1, false, k.Item4);
+                        if (DB_M.DB_Docs.InfSub[1][k.Item3].TrimEnd() == country.text[6..]) DB_M.DB_Docs.ToDoList.CheckList(2, -1, true, k.Item4);
+                        else DB_M.DB_Docs.ToDoList.CheckList(2, -1, false, k.Item4);
                         break;
                     case 2:
                         break;

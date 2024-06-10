@@ -168,13 +168,13 @@ public class PatternManager : MonoBehaviour
             for (int i = 0; i < 25; i++)
             {
                 List<int> L = new List<int>();
-                    for (int x = 0; x < 2; x++)
+                    for (int x = 0; x < 1; x++)
                     {
                         int cnt = Random.Range(1, 9);
                         while (L.Contains(cnt)) cnt = Random.Range(1, 9);
                         L.Add(cnt);
                     }
-                for (int x = 0; x < 10; x++) CurPT[x][i] = i % 4 == 0 ? (L.Contains(x) ? 1 : 0) : 0;
+                for (int x = 0; x < 10; x++) CurPT[x][i] = i % 5 == 0 ? (L.Contains(x) ? 1 : 0) : 0;
             }
         }
         for (int CurRepeat = 0; CurRepeat < 2; CurRepeat++)             // ???? 2? ??? ????
