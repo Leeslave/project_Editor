@@ -1,10 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 public class MakeTile : MonoBehaviour
 {
@@ -16,50 +16,94 @@ public class MakeTile : MonoBehaviour
     public MazeMap Maze_Inf;
     public GameObject Clear;
     public GameObject Fog;
-    public List<List<GameObject>> Fogs = new List<List<GameObject>>();
-    public List<List<bool>> IsFog = new List<List<bool>>();
+    public MazeTimer Timer;
+    [NonSerialized] public List<List<GameObject>> Fogs = new List<List<GameObject>>();
+    [NonSerialized] public List<List<bool>> IsFog = new List<List<bool>>();
+
+    [NonSerialized] public bool IsCalcFog = false;
 
     public float Move_X;
     public float Move_Y;
-    [System.NonSerialized]
-    public int Col;
-    public int Row;
-    public int KeyNum;
-    public int KeyWeight;
+    public int Difficulty;
+    [NonSerialized] public int Col;
+    [NonSerialized] public int Row;
+    [NonSerialized] public int KeyNum;
+    [NonSerialized] public int KeyWeight;
+
+    [SerializeField] string[] Paths;
+    [SerializeField] bool IsTuTo = false;
 
     void Awake()
     {
-        GetDifficulty();
-        Maze_Inf = new MazeMap();
-        Maze_Inf.MazeMaking(Col, Row);
+        try
+        {
+            Difficulty = GameSystem.Instance.GetTask("Maze");
+        }
+        catch
+        {
+            Difficulty = 0;
+        }
+
+        if (Difficulty != 0) GetDifficulty();
+        else MakeTutorial();
+
+        
+
         Player.transform.position = new Vector3(Maze_Inf.Player_X * Move_X + 5, Maze_Inf.Player_Y * Move_Y + 5f, 0);
-        CreateLevel();
-        MakeKey();
+        
     }
 
+    void MakeTutorial()
+    {
+        Player.GetComponent<PlayerMove>().Sight = 5;
+        IsCalcFog = false;
+        Timer.NowTime = 999;
+        Timer.gameObject.SetActive(true);
+        
+        Maze_Inf = new MazeMap();
+        Col = Row = 15;
+        KeyNum = 1;
+        Maze_Inf.MazeMaking(Col, Row,true);
+        MakeItems(true);
+
+        CreateLevel();
+        
+    }
+
+    // ï¿½Ó½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½Ì±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½î¶² ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
     void GetDifficulty()
     {
-        if (PlayerPrefs.HasKey("Difficulty"))
+        Difficulty--;
+        int[] cs = new int[] { 3, 1, 2 };
+        Col = Row = 10 + 5 * (int)(Difficulty / 3);
+        KeyNum = cs[Difficulty % 3];
+        if (Difficulty <= 3)
         {
-            switch (PlayerPrefs.GetString("Difficulty"))
-            {
-                case "1":
-                    Col = 10; Row = 10; KeyNum = 1; KeyWeight = 1;
-                    break;
-                case "2":
-                    Col = 15; Row = 15; KeyNum = 2; KeyWeight = 3;
-                    break;
-                case "3":
-                    Col = 20; Row = 20; KeyNum = 3; KeyWeight = 5;
-                    break;
-            }
+            IsCalcFog = false;
+            Timer.gameObject.SetActive(false);
         }
+        else if (Difficulty <= 6)
+        {
+            IsCalcFog = true;
+            Timer.gameObject.SetActive(false);
+        }
+        else
+        {
+            IsCalcFog = true;
+            Timer.NowTime = 150;
+            Timer.gameObject.SetActive(true);
+        }
+
+        Maze_Inf = new MazeMap();
+        Maze_Inf.MazeMaking(Col, Row);
+        CreateLevel();
+        MakeItems();
     }
 
 
     void CreateLevel()
     {
-        // ¹Ì·ÎÀÇ ¹Ù±ù ºÎºÐÀ» µÑ·¯½Î´Â  ¾È°³¸¦ »ý¼º.
+        // ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ù±ï¿½ ï¿½Îºï¿½ï¿½ï¿½ ï¿½Ñ·ï¿½ï¿½Î´ï¿½  ï¿½È°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         GameObject outsT = Instantiate(Fog, new Vector3((-3) * Move_X + 5, (Col + 5) * Move_Y + 10), new Quaternion(0, 0, 0, 0));
         outsT.transform.localScale = new Vector2(2 * Row * Move_X + 120 ,12 * Move_Y);
         GameObject outsL = Instantiate(Fog, new Vector3(-60, -60), new Quaternion(0, 0, 0, 0));
@@ -68,7 +112,6 @@ public class MakeTile : MonoBehaviour
         outsB.transform.localScale = new Vector2(2 * Row * Move_X + 120, 12 * Move_Y);
         GameObject outsR = Instantiate(Fog, new Vector3((Row + 5) * Move_X + 10, (-3) * Move_Y + 5), new Quaternion(0, 0, 0, 0));
         outsR.transform.localScale = new Vector2(12 * Move_X, 2 * Col * Move_Y + 120);
-
         for(int y = 0; y < Col * 2; y++)
         {
             Fogs.Add(new List<GameObject>());
@@ -80,61 +123,82 @@ public class MakeTile : MonoBehaviour
             int y = Col - 1 - Y;
             for (int x = 0; x < Row; x++)
             {
-                // ¾È°³ °ü·Ã Á¤º¸¸¦ ÀúÀåÇÏ´Â ¹è¿­¿¡ ÀúÀå
-                // ¹Ì·ÎÀÇ ÇÑ Ä­¿¡ ÃÑ 4°³ÀÇ ¾È°³°¡ Á¸Àç
+                // ï¿½È°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½è¿­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                // ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½ï¿½ Ä­ï¿½ï¿½ ï¿½ï¿½ 4ï¿½ï¿½ï¿½ï¿½ ï¿½È°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                if(IsCalcFog)
                 for(int a = 0; a < 2; a++)for(int b = 0; b<2;b++)
                     {
                         Fogs[Y * 2 + a].Add(Instantiate(Fog, new Vector3(x * Move_X + 2.5f + 5 * b, Y * Move_Y + 2.5f + 5 * a), new Quaternion(0, 0, 0, 0)));
                         IsFog[Y * 2 + a].Add(false);
                     }
-                if (!Maze_Inf.Maze[x, Y].Left)     // ¿ÞÂÊ º® »ý¼º ¿©ºÎ
+                if (!Maze_Inf.Maze[x, Y].Left)     // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 {
                     GameObject cnt = Instantiate(CWall,new Vector3(x * 10,y * 10 + 5,0),transform.rotation);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.left) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f); cnt.tag = "ExitWall"; }
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.left) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
                 }
-                if (!Maze_Inf.Maze[x, Y].Right)     // ¿À¸¥ÂÊ º® »ý¼º ¿©ºÎ
+                if (!Maze_Inf.Maze[x, Y].Right)     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 {
                     GameObject cnt = Instantiate(CWall, new Vector3(x * 10 +10, y* 10 + 5, 0), new Quaternion(0,0,90,0));
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.right) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f); cnt.tag = "ExitWall"; }
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.right) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
                 }
-                if (!Maze_Inf.Maze[x, Y].Down)     // ¾Æ·¡ÂÊ º® »ý¼º ¿©ºÎ
+                if (!Maze_Inf.Maze[x, Y].Down)     // ï¿½Æ·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 {
                     GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10, 0), transform.rotation);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.down) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f); cnt.tag = "ExitWall"; }
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.down) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
                 }
-                if (!Maze_Inf.Maze[x, Y].Up)     // À§ÂÊ º® »ý¼º ¿©ºÎ
+                if (!Maze_Inf.Maze[x, Y].Up)     // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 {
                     GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10+10, 0), transform.rotation);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.up) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.5f); cnt.tag = "ExitWall"; }
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.up) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, 0.2f); cnt.tag = "ExitWall"; }
                 }
+                if (Maze_Inf.Maze[x,y].Test)
+                    Instantiate(Key).transform.position = new Vector3(x * Move_X + 5, y * Move_Y + 5, 0);
             }
         }
     }
 
-    // Key »ý¼º
-    // ¸ðµç KeyÀÇ À§Ä¡°¡ °ãÄ¡Áö ¾ÊÀ¸¸ç, ÇÃ·¹ÀÌ¾î¿Í Æ¯Á¤ °Å¸® ÀÌ»óÀÇ À§Ä¡¿¡¼­ »ý¼ºµÇµµ·Ï ÇÔ.
+    // Key ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ Keyï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ Æ¯ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½.
 
-    void MakeKey()
+    void MakeItems(bool IsTu = false)
     {
-        List<Tuple<int, int>> Cnt = new List<Tuple<int, int>>() { };
-        Vector3 CCnt = new Vector3(Maze_Inf.Player_X, Maze_Inf.Player_Y);
-        Tuple<int,int> a;
-        double z = 0;
-        for (int i = 0; i < KeyNum; i++)
+        if (IsTu)
         {
-            do
-            {
-                int x = Random.Range(0, Row);
-                int y = Random.Range(0, Col);
-                a = new Tuple<int, int>(Random.Range(0, Row), Random.Range(0, Col));
-                z = Vector3.Magnitude(CCnt - new Vector3(x, y, 0));
-            }
-            while (Cnt.Contains(a) && z >= (KeyWeight * 10));
-            Cnt.Add(a);
+            float x = Maze_Inf.Player_X-1, y = Maze_Inf.Player_Y;
+            var cnt = Instantiate(Key);
+            cnt.transform.position = new Vector3(x-- * Move_X + 5,y * Move_Y + 5 , 0);
+            SpriteRenderer s = cnt.GetComponent<SpriteRenderer>(); s.color = Color.green;
+            Player.GetComponent<PlayerMove>().KeysTrans.Add(cnt.transform);
         }
-        for(int i = 0; i < KeyNum; i++)
+        else
         {
-            Instantiate(Key).transform.position = new Vector3(Cnt[i].Item1 * Move_X + 5, Cnt[i].Item2 * Move_Y + 5, 0);
+            List<Tuple<int, int>> Cnt = new List<Tuple<int, int>>() { };
+            Vector3 CCnt = new Vector3(Maze_Inf.Player_X, Maze_Inf.Player_Y);
+            Tuple<int, int> a;
+            double z = 0;
+            for (int i = 0; i < KeyNum + 2; i++)
+            {
+                do
+                {
+                    int x = Random.Range(0, Row);
+                    int y = Random.Range(0, Col);
+                    a = new Tuple<int, int>(Random.Range(0, Row), Random.Range(0, Col));
+                    z = Vector3.Magnitude(CCnt - new Vector3(x, y, 0));
+                }
+                while (Cnt.Contains(a) && z >= (KeyWeight * 10));
+                Cnt.Add(a);
+            }
+            for (int i = 0; i < KeyNum; i++)
+            {
+                GameObject cnt = Instantiate(Key);
+                Player.GetComponent<PlayerMove>().KeysTrans.Add(cnt.transform);
+                cnt.transform.position = new Vector3(Cnt[i].Item1 * Move_X + 5, Cnt[i].Item2 * Move_Y + 5, 0);
+                SpriteRenderer s = cnt.GetComponent<SpriteRenderer>();
+                if (i == 0) s.color = Color.green;
+                else if (i == 1) s.color = Color.blue;
+                else s.color = Color.red;
+            }
+
         }
     }
 }

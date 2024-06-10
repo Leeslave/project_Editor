@@ -4,6 +4,7 @@ using System.Numerics;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 using Random = UnityEngine.Random;
+using Unity.VisualScripting.FullSerializer;
 
 
 // 참고한 알고리즘 : 엘러의 알고리즘
@@ -19,6 +20,7 @@ public class MazeMap
         public bool Up;
         public bool Down;
         public Vector3 Exit = Vector3.zero;
+        public bool Test = false;
     };
     public class Group
     {
@@ -27,12 +29,20 @@ public class MazeMap
         public List<int> Last_Rows = new List<int>();   // Group 내 연산에 사용 될 Cell들.
     };
 
-    public void MazeMaking(int C, int R)
+    public void MazeMaking(int C, int R, bool IsTu = false)
     {
         Col = C;
         Row = R;
-        Player_X = Random.Range(0, Row);
-        Player_Y = Random.Range(0, Col);
+        if (IsTu)
+        {
+            Player_X = Random.Range(3, Row-3);
+            Player_Y = Random.Range(3, Col-3);
+        }
+        else
+        {
+            Player_X = Random.Range(0, Row);
+            Player_Y = Random.Range(0, Col);
+        }
         Init_Maze();
         for (; Cur_Col < Col; Cur_Col++)
         {
@@ -41,10 +51,10 @@ public class MazeMap
             if (Cur_Col != Col - 1) Cell_Down();     // 마지막 Col에선 내릴 필요가 없다.
         }
         TrimMaze();
-        if(Random.Range(0,2) == 0)      // 왼쪽 or 오른쪽 뚫음(출구 뚫기)
+        if (Random.Range(0, 2) == 0)      // 왼쪽 or 오른쪽 뚫음(출구 뚫기)
         {
-            int cnt = Player_Y <= Col / 2 ? Random.Range(0, Col / 2) : Random.Range(Col / 2, Col); 
-            if(Player_X > Row / 2)
+            int cnt = Player_Y <= Col / 2 ? Random.Range(0, Col / 2) : Random.Range(Col / 2, Col);
+            if (Player_X > Row / 2)
             {
                 Maze[0, cnt].Exit = Vector3.left;
             }
@@ -63,6 +73,14 @@ public class MazeMap
             else
             {
                 Maze[cnt, 0].Exit = Vector3.up;
+            }
+        }
+        if (IsTu)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                Maze[Player_X - i, Col - Player_Y - 1].Left = true;
+                Maze[Player_X - i - 1, Col - Player_Y - 1].Right = true;
             }
         }
     }
@@ -103,11 +121,13 @@ public class MazeMap
         }
     }
 
+    int UnionVal = 2;
+
     void Union()     // 각 Cell들을 합치는 과정
     {
         for (int i = 0; i < Row - 1; i++)
         {
-            int cnt = Random.Range(0, 2);
+            int cnt = Random.Range(0, UnionVal);
             int Group_Left = Maze[i, Cur_Col].Group;
             int Group_Right = Maze[i + 1, Cur_Col].Group;
             switch (cnt)
@@ -125,8 +145,6 @@ public class MazeMap
                     }
                     Groups[Group_Right].Last_Rows.Clear();
                     Groups[Group_Right].Cells.Clear();
-                    break;
-                case 1: // 아무것도 안함
                     break;
             }
         }
@@ -154,7 +172,7 @@ public class MazeMap
             Groups[i].Last_Rows.RemoveRange(0, del_count);   // Group 내에서 이전 Col에 있던 Cell들의 정보 삭제.
         }
     }
-    void TrimMaze() // 마지막 모든 Cell을 하나의 Group으로 합침
+    void TrimMaze() // 마지막 모든 Cell을 하나의 Group으로 합(Union과 동일 과정)
     {
         for(int Y = 0; Y < Col; Y++)
         {

@@ -3,67 +3,75 @@ using System.Collections.Generic;
 using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
     Rigidbody2D rigid;
     public PatternManager PM;
-    // À§, ¾Æ·¡ ÇÃ·§Æû( »ö º¯È­¸¦ À§ÇØ »ç¿ë )
+    // ìœ„, ì•„ë˜ í”Œë«í¼( ìƒ‰ ë³€í™”ë¥¼ ìœ„í•´ ì‚¬ìš© )
     public GameObject Up;
     public GameObject Down;
-    // »ç¸Á ½Ã ³ª¿À´Â ¿¬Ãâ¿¡ »ç¿ë µÇ´Â Object
+    // ì‚¬ë§ ì‹œ ë‚˜ì˜¤ëŠ” ì—°ì¶œì— ì‚¬ìš© ë˜ëŠ” Object
     public GameObject Particle;
-    // R¹öÆ°À¸·Î Àç½ÃÀÛÀÌ °¡´ÉÇÑ GameOver È­¸é
+    // Rë²„íŠ¼ìœ¼ë¡œ ì¬ì‹œì‘ì´ ê°€ëŠ¥í•œ GameOver í™”ë©´
     public GameObject GameOver;
-    // ¿£µù Object
+    // ì—”ë”© Object
     public GameObject EndG;
-    // ÇöÀç HP »óÅÂ¸¦ Ç¥½ÃÇØÁÖ´Â Image
-    public Image[] HPS;
-    // HP »óÅÂ Ç¥½Ã¿¡ »ç¿ëµÇ´Â Sprite
-    public Sprite HPOn;     // HP°¡ Á¸ÀçÇÔÀ» ³ªÅ¸³¿
-    public Sprite HPOff;    // HP°¡ ¾øÀ½À» ³ªÅ¸³¿
 
-    public int speed;               // ÇÃ·¹ÀÌ¾îÀÇ ÁÂ ¿ì ÀÌµ¿ ¼Óµµ
-    public int CurHp;               // ÇöÀç HP
-    public bool MovePing;           // ÇöÀç ¾î¶°ÇÑ ¹æ½ÄÀ¸·Î ÇÃ·¹ÀÌ¾î°¡ ÀÌµ¿ÇÏ´ÂÁö¿¡ ´ëÇØ ³ªÅ¸³¿
-    public bool MoveAble = true;    // ÇÃ·¹ÀÌ¾î Á¶ÀÛ °¡´É »óÅÂ¸¦ ³ªÅ¸³¿
-    bool RayAble = true;            // trueÀÏ °æ¿ì¿¡¸¸ »ó, ÇÏ·Î ·¹ÀÌÄÉ½ºÆ®¸¦ ³¯¸²
-    List<GameObject> PtL = new List<GameObject>();  // »ç¸Á½Ã ³ª¿À´Â Particle ObjectÀÇ List
+    public Image[] Unzips;
+
+    public Sprite Unzip;
+    public Sprite Zip;
+
+    public int InitHP = 2;
+
+    int HPForPattern = 2;    // ì¼ë°˜ íŒ¨í„´ìš© HP
+
+    public int speed;               // í”Œë ˆì´ì–´ì˜ ì¢Œ ìš° ì´ë™ ì†ë„
+    public bool MoveAble = true;    // í”Œë ˆì´ì–´ ì¡°ì‘ ê°€ëŠ¥ ìƒíƒœë¥¼ ë‚˜íƒ€ëƒ„
+    bool RayAble = true;            // trueì¼ ê²½ìš°ì—ë§Œ ìƒ, í•˜ë¡œ ë ˆì´ì¼€ìŠ¤íŠ¸ë¥¼ ë‚ ë¦¼
+    List<GameObject> PtL = new List<GameObject>();  // ì‚¬ë§ì‹œ ë‚˜ì˜¤ëŠ” Particle Objectì˜ List
+
+    bool OnStart = true;
 
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
         rigid.velocity = new Vector2(0, -speed);
+        AS.Stop();
+        HPForPattern = InitHP;
         // Particle Object Pooling
         for (int i = 0; i < 9; i++) { PtL.Add(Instantiate(Particle)); PtL[i].SetActive(false); }
+        for (int i = 0; i < 3 - HPForPattern; i++) Unzips[i].gameObject.SetActive(false);
     }
     private void Update()
     {
         if (!MoveAble) return;
-        if (MovePing) PingPong();
-        else NormalMove();
+        PingPong();
     }
 
-    // À§ ¾Æ·¡·Î Æ¨±â¸é¼­ ÀÌµ¿ÇÏ´Â »óÅÂ
+    // ìœ„ ì•„ë˜ë¡œ íŠ•ê¸°ë©´ì„œ ì´ë™í•˜ëŠ” ìƒíƒœ
     void PingPong()
     {
-        // ÁÂ, ¿ì ÀÌµ¿À» ÀÔ·Â¹ŞÀ» °æ¿ì, Speed°ª¿¡ ±â¹İÇØ ÇÃ·¹ÀÌ¾îÀÇ À§Ä¡¸¦ ÀÌµ¿½ÃÅ´.
+        // ì¢Œ, ìš° ì´ë™ì„ ì…ë ¥ë°›ì„ ê²½ìš°, Speedê°’ì— ê¸°ë°˜í•´ í”Œë ˆì´ì–´ì˜ ìœ„ì¹˜ë¥¼ ì´ë™ì‹œí‚´.
         float x = Input.GetAxisRaw("Horizontal"); transform.position += new Vector3(x, 0, 0) * speed * Time.deltaTime;
         Vector2 RayCnt = Vector2.zero;
-        // ¾Æ·¡·Î ÀÌµ¿Áß¿¡´Â ¾Æ·¡·Î ·¹ÀÌÄ³½ºÆ®¸¦, À§·Î ÀÌµ¿Áß¿¡´Â À§·Î ·¹ÀÌÄ³½ºÆ®¸¦ ³¯¸²
+        // ì•„ë˜ë¡œ ì´ë™ì¤‘ì—ëŠ” ì•„ë˜ë¡œ ë ˆì´ìºìŠ¤íŠ¸ë¥¼, ìœ„ë¡œ ì´ë™ì¤‘ì—ëŠ” ìœ„ë¡œ ë ˆì´ìºìŠ¤íŠ¸ë¥¼ ë‚ ë¦¼
         if (rigid.velocity.y < 0) RayCnt = Vector2.down;
         else RayCnt = Vector2.up;
         RaycastHit2D RayHit = Physics2D.Raycast(rigid.position, RayCnt, 0.4f, LayerMask.GetMask("Plat"));
-        // ·¹ÀÌÄ³½ºÆ®¿¡ PlatÀÌ ´ê¾ÒÀ» ¶§ ÇÃ·¹ÀÌ¾îÀÇ ¼Óµµ ¹éÅÍÀÇ yÃàÀÇ ¹æÇâÀ» ¹İ´ë·Î ¹Ù²ã Æ¨±â´Â È¿°ú¸¦ ÁÖ¸ç Ãæµ¹ÇÑ PlatÀÇ »öÀ» º¯°æ
+        // ë ˆì´ìºìŠ¤íŠ¸ì— Platì´ ë‹¿ì•˜ì„ ë•Œ í”Œë ˆì´ì–´ì˜ ì†ë„ ë°±í„°ì˜ yì¶•ì˜ ë°©í–¥ì„ ë°˜ëŒ€ë¡œ ë°”ê¿” íŠ•ê¸°ëŠ” íš¨ê³¼ë¥¼ ì£¼ë©° ì¶©ëŒí•œ Platì˜ ìƒ‰ì„ ë³€ê²½
         if (RayHit.collider != null && RayAble)
         {
             rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y * (-1));
             RayHit.collider.gameObject.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.4f);
-            // PlatÀÇ »öÀ» ´Ù½Ã ¿ø·¡´ë·Î µ¹¸².
+            // Platì˜ ìƒ‰ì„ ë‹¤ì‹œ ì›ë˜ëŒ€ë¡œ ëŒë¦¼.
             StartCoroutine(ChangeColor(RayHit.collider.gameObject));
-            // Áßº¹À¸·Î Ãæµ¹À» Å½ÁöÇÏ´Â °ÍÀ» ¸·±â À§ÇØ ÇÑ¹ø Ãæµ¹ µÈ ÀÌÈÄ 0.2ÃÊ ÀÌÈÄ¿¡ Ãæµ¹ ÆÇÁ¤ÀÌ °¡´ÉÇÏ°Ô ÇÔ.
+            // ì¤‘ë³µìœ¼ë¡œ ì¶©ëŒì„ íƒì§€í•˜ëŠ” ê²ƒì„ ë§‰ê¸° ìœ„í•´ í•œë²ˆ ì¶©ëŒ ëœ ì´í›„ 0.2ì´ˆ ì´í›„ì— ì¶©ëŒ íŒì •ì´ ê°€ëŠ¥í•˜ê²Œ í•¨.
             RayAble = false;
+            AS.Play();
             Invoke("CanRay", 0.2f);
         }
     }
@@ -76,83 +84,54 @@ public class Player : MonoBehaviour
 
     void CanRay()
     {
+        AS.Stop();
         RayAble = true;
     }
 
-    // ÇÃ·¹ÀÌ¾îÀÇ ÀÌµ¿ ¹æ½ÄÀ» Á¤ÇÔ.
-    // Input : "Ping"ÀÏ °æ¿ì Æ¨±â´Â ¹æ½ÄÀ¸·Î, "Normal"ÀÏ °æ¿ì »óÇÏÁÂ¿ì·Î Á÷Á¢ ¿òÁ÷ÀÏ ¼ö ÀÖÀ½.
-    // 3ÆäÀÌÁî »èÁ¦¿¡ µû¶ó Ç×»ó "Ping"»óÅÂ·Î °íÁ¤µÊ
-    public void ChangeType(string type)
+    // ì—”ë”©ì„ ì¶œë ¥
+    void RealEnd()
     {
-        if(type == "Ping")
-        {
-            rigid.velocity = new Vector2(0, -10);
-            MovePing = true;
-        }
-        else if(type == "Normal")
-        {
-            rigid.velocity = new Vector2(0, 0);
-            MovePing = false;
-        }
+        
+        EndG.GetComponent<RealEnd>().Ending(PM.CurPattern>=1);
     }
 
-    // ¿£µùÀ» Ãâ·Â
-    IEnumerator RealEnd()
-    {
-        // RealEnd.Cs ÂüÁ¶.
-        EndG.SetActive(true);
-        EndG.GetComponent<RealEnd>().Ending("Game Over", "¸¶À½ÀÌ ²ª¿´´Ù...");
-
-        yield return new WaitForSeconds(1);
-        // ÇÃ·¹ÀÌ¾î°¡ ÅÍÁö´Â µíÇÑ ¿¬ÃâÀ» À§ÇØ »ç¿ë
-        foreach(var a in PtL)
-        {
-            a.SetActive(true);
-            a.transform.position = transform.position;
-            a.GetComponent<Rigidbody2D>().gravityScale = 1;
-            a.GetComponent<Rigidbody2D>().AddForce((Vector2.up * Random.Range(5,15) + Vector2.left * Random.Range(-4,5)),ForceMode2D.Impulse);
-        }
-        gameObject.SetActive(false);
-        yield break;
-    }
-
-    // ºÎÈ° ÇßÀ» ¶§ ÃÊ±â »óÅÂ·Î µ¹¸²
+    // ë¶€í™œ í–ˆì„ ë•Œ ì´ˆê¸° ìƒíƒœë¡œ ëŒë¦¼
     private void OnEnable()
     {
-        // Á¶°ÇÀº ¾ÀÀÌ »ı¼ºµÇ¾úÀ» ¶§ ÀÛµ¿µÇÁö ¾Êµµ·Ï ÇÏ±â À§ÇÔ(ÇØ´ç ½ÃÁ¡¿¡ ±»ÀÌ ÇÊ¿ä ¾ø´Â ¿¬»ê)
-        if (CurHp != 3)
+        // ì¡°ê±´ì€ ì”¬ì´ ìƒì„±ë˜ì—ˆì„ ë•Œ ì‘ë™ë˜ì§€ ì•Šë„ë¡ í•˜ê¸° ìœ„í•¨(í•´ë‹¹ ì‹œì ì— êµ³ì´ í•„ìš” ì—†ëŠ” ì—°ì‚°)
+        if (!OnStart)
         {
-            // PatternManager ¹× Timer ÂüÁ¶
+            // PatternManager ë° Timer ì°¸ì¡°
             PM.EndPT(false);
-            PM.StartPT(0);
-            PM.TM.IsTimeFlow = true;
-            PM.TM.time = 0;
-            PM.TM.MaxTime = PM.TM.TimeToSurvive;
+            PM.NextPattern(ref HPForPattern,0);
+            PM.ErrorObject.SetActive(false);
         }
-        // ÇÃ·¹ÀÌ¾î »ç¸Á ¿¬Ãâ¿¡ »ç¿ëµÈ ¿ÀºêÁ§Æ®µé ºñÈ°¼ºÈ­
+        
+        OnStart = false;
+        // í”Œë ˆì´ì–´ ì‚¬ë§ ì—°ì¶œì— ì‚¬ìš©ëœ ì˜¤ë¸Œì íŠ¸ë“¤ ë¹„í™œì„±í™”
         foreach (var a in PtL) a.SetActive(false);
         gameObject.transform.position = new Vector2(0, 0);
-        // »ö º¯°æ µµÁß »ç¸Á ½Ã, »öÀÌ º¯°æµÈ Ã¤·Î À¯ÁöµÇ±â ¶§¹®¿¡ ÀÌ¸® À¯Áö
+        // ìƒ‰ ë³€ê²½ ë„ì¤‘ ì‚¬ë§ ì‹œ, ìƒ‰ì´ ë³€ê²½ëœ ì±„ë¡œ ìœ ì§€ë˜ê¸° ë•Œë¬¸ì— ì´ë¦¬ ìœ ì§€
         Up.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         Down.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         MoveAble = true;
-        ChangeType("Ping");
         speed = 10;
+        rigid.velocity = new Vector2(0, -speed);
     }
 
-    // Åº¸·°ú Ãæµ¹ÇßÀ» ¶§
-    // PM°ú TM°ü·ÃÀº PatternManager ¹× Timer ÂüÁ¶
-    private void OnCollisionEnter2D(Collision2D collision)
+    [SerializeField] AudioSource AS;
+    // íƒ„ë§‰ê³¼ ì¶©ëŒí–ˆì„ ë•Œ
+    // PMê³¼ TMê´€ë ¨ì€ PatternManager ë° Timer ì°¸ì¡°
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Bullet")
+        if (collision.CompareTag("Bullet"))
         {
-            rigid.velocity = new Vector2(0, 0);
+            PM.AD.MusicOff(true);
             MoveAble = false;
-            PM.EndPT(true);
-            PM.TM.IsTimeFlow = false;
-            if (CurHp > 1)
+            if (PM.IsEnd) PM.Clear();
+            else
             {
-                // ÇÃ·¹ÀÌ¾î°¡ ÅÍÁö´Â ¿¬Ãâ
+                // í”Œë ˆì´ì–´ê°€ í„°ì§€ëŠ” ì—°ì¶œ
                 for (int i = 0; i < 9; i++)
                 {
                     if (i == 4) continue;
@@ -160,16 +139,33 @@ public class Player : MonoBehaviour
                     PtL[i].SetActive(true);
                     PtL[i].GetComponent<Rigidbody2D>().AddForce((PM.DE[i][0] + PM.DE[i][1]) * Random.Range(1, 4), ForceMode2D.Impulse);
                 }
-                // Ã¼·ÂÀ» ÇÑÄ­ ±ï°í, 1ÃÊ µÚ Game Over Object »ı¼º
-                HPS[--CurHp].sprite = HPOff;
+                GameOver.SetActive(true);
                 gameObject.SetActive(false);
-                Invoke("OnGameOver", 1);
             }
+            foreach (Image s in Unzips) s.sprite = Zip;
+            if(HPForPattern > 0) HPForPattern = InitHP;
+        }
+        else if (collision.CompareTag("Trace"))
+        {
+            if (PM.CurPattern == 2) GameClear();
             else
             {
-                PM.EndPT(false);
-                StartCoroutine(RealEnd());
+                collision.gameObject.SetActive(false);
+                if (HPForPattern == 1) { foreach (Image s in Unzips) s.gameObject.SetActive(false); }
+                else if (HPForPattern > 1) Unzips[3 - HPForPattern].sprite = Unzip;
+                PM.NextPattern(ref HPForPattern);
             }
+        }
+    }
+
+    public void GameClear()
+    {
+        if (GameSystem.Instance != null)
+        {
+            GameSystem.Instance.ClearTask("Dodge");
+            //LoadTestTrash.Instance.LoadScene = "Screen";
+            //SceneManager.LoadScene("LoadT");
+            GameSystem.LoadScene("Screen");
         }
     }
 
@@ -178,7 +174,7 @@ public class Player : MonoBehaviour
         GameOver.SetActive(true);
     }
 
-    // 3ÆäÀÌÁî¿¡ »ç¿ëµÇ´Â ÀÌµ¿ ¹æ½ÄÀÓÀ¸·Î ÁÖ¼®À» ÀûÁö ¾ÊÀ½
+    // 3í˜ì´ì¦ˆì— ì‚¬ìš©ë˜ëŠ” ì´ë™ ë°©ì‹ì„ìœ¼ë¡œ ì£¼ì„ì„ ì ì§€ ì•ŠìŒ
     void NormalMove()
     {
         MoveSpeed();

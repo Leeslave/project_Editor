@@ -1,155 +1,166 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class GameSystem : MonoBehaviour
+
+public class GameSystem : SingletonObject<GameSystem>
 {
     /**
     * 게임 내 데이터 관리 시스템
         플레이어 데이터를 저장, 로드
         게임 데이터를 로드, 관리
         날짜, 시간대, 진행상황 적용
-    */
+    */ 
 
-    [SerializeField]
-    private string playerSavePath = "/Resources/Save/";    // 세이브 파일 경로
-    [SerializeField]
-    private string dailySavePath = "/Resources/GameData/Main/dailyData.json";   // 게임 데이터 파일 경로
+    /// 플레이 데이터 
+    private List<SaveData> saveList = new();    // 저장 데이터
+    private List<DailyData> dailyList = new();     // 날짜별 데이터
 
-    [SerializeField] 
-    public SaveData player;      // 세이브 데이터 필드
-    public List<DailyData> daily;     // 날짜별 데이터 필드
-    [SerializeField] 
-    public DailyData todayData { get { return daily[player.dateIndex]; } }    // 오늘 날짜 데이터 필드
+    public SaveData player { get { return saveList[gameData.date]; } }      // 오늘 세이브 데이터
+    public DailyData today { get { return dailyList[gameData.date]; } }    // 오늘 날짜 데이터
 
-    [System.Serializable]
-    class Wrapper { public List<DailyWrapper> dailyDataList = new List<DailyWrapper>(); }     // JsonUtility용 Wrapper
+    /// 오늘 날짜 데이터
+    public GameData gameData = new();
 
-    // 싱글턴
-    private static GameSystem _instance;
-    public static GameSystem Instance
+    // 스크린 활성화 여부
+    public bool isScreenOn = false; 
+    
+    // 업무 클리어 여부
+    public bool isTaskClear   // 모든 업무 완료 플래그
     {
-        get { return _instance; }
-    }
-
-    private void Awake()
-    {
-        if (!_instance)
-        {
-            _instance = this;
-            player = new SaveData();    // 플레이어 데이터 초기화
-            LoadGameData();     // 게임 데이터 로드
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
+        get { 
+            bool workResult = true;
+            foreach(var workStatus in Instance.today.workList.Values)
+            {
+                workResult = workResult & workStatus;
+            }
+            return workResult;
         }
     }
+
+
+    new void Awake()
+    {
+        base.Awake();
+
+        saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
+        dailyList = DataLoader.LoadGameData();     // 게임 데이터 로드  
+
+        SetDate(0);
+    }
+
 
     ///<summary>
-    /// 게임 내 날짜 전환
+    /// 날짜 전환 (게임 저장)
     ///</summary>
     ///<param name="dateIndex">전환할 날짜 인덱스(없으면 다음 날짜로), 시간은 무조건 아침</param>
-    public void ChangeDate(int date = -1)
+    public void SetDate(int date = -1)
     {
-        if (date < 0)
+        // 다음 날짜로 이동시
+        if (date == -1)
         {
-            // 다음 날짜로 이동
-            player.dateIndex++;   
+            date = gameData.date + 1;
         }
-        else 
+
+        // 날짜 오류
+        if (date > dailyList.Count || date < 0)
         {
-            // 특정 날짜로 이동
-            player.dateIndex = date;
+            Debug.Log($"Day Out Of Range: {date}");
+            return;
         }
-        ChangeTime(0);
+
+        // 해당 날짜 불러오기
+        gameData.date = date;
+        gameData.time = 0;
+        gameData.SetLocation(today.startLocation);
+        gameData.SetPosition(today.startPosition);
+        isScreenOn = false;
+
+        // 게임 저장 (튜토리얼 날짜 제외)
+        if (date > 1)
+        {
+            // DataLoader.SavePlayerData(saveList);
+        }
+
+        ObjectDatabase.Instance.Read();
     }
 
     ///<summary>
-    /// 게임 내 시간 전환
+    /// 다음 시간대로 전환
     ///</summary>
-    ///<param name="time">전환할 시간(없으면 다음 시간대로, 마지막 시간대면 다음 날짜로)</param>
-    public void ChangeTime(int time = -1)
+    ///<param name="time">전환할 시간(마지막 시간대면 다음 날짜로)</param>
+    public void SetTime(int _time)
     {
-        if (time >= 0 && time <= 4)
+        // 시간대 오류
+        if (_time < 0 || _time >= 4)
+            return;
+        
+        // 시간대 적용
+        gameData.time = _time;
+
+        // 월드 리로드
+        if (SceneManager.GetActiveScene().name == "MainWorld")
         {
-            // 특정 시간대로 이동
-            player.time = time;
-        }
-        else
-        {
-            player.time++;
-            if (player.time > 4)
-            {
-                player.time = 0;
-                ChangeDate();
-            }
+            WorldSceneManager.Instance.ReloadWorld();
         }
     }
     
-    /// JSON으로부터 게임 데이터를 로드
-    private void LoadGameData()
+
+    /// <summary>
+    /// 특정 업무의 오늘 스테이지 번호 반환
+    /// </summary>
+    /// <param name="workCode"></param>
+    /// <returns></returns>
+    public int GetTask(string workCode)
     {
-        FileStream fileStream = new FileStream(Application.dataPath + dailySavePath, FileMode.Open);
-        byte[] data = new byte[fileStream.Length];
-        fileStream.Read(data, 0, data.Length);
-        fileStream.Close();
-
-        // jsonString 읽어오기
-        string jsonObjectData = Encoding.UTF8.GetString(data);
-
-        // daily 초기화
-        daily = new List<DailyData>();
-
-        //Wrapper로 파싱
-        Wrapper wrapper = JsonUtility.FromJson<Wrapper>(jsonObjectData);
-
-        // Wrapper를 DailyData로 전환
-        foreach(DailyWrapper element in wrapper.dailyDataList)
-        { 
-            daily.Add(new DailyData(element));
+        foreach(var work in today.workList)
+        {
+            if (work.Key.code == workCode)
+            {
+                return work.Key.stage;
+            }
         }
+        return -1;
     }
 
-    // 세이브 데이터 초기 설정
-    public void InitNewPlayerData()
-    {   
-        LoadPlayerData(playerSavePath + "default.json");
-    }
 
     /// <summary>
-    /// 플레이어 데이터 JSON 저장
+    /// 업무 완료 여부 설정
     /// </summary>
-    /// <param name="SaveFileName">저장 경로 내 파일명</param>
-    public void SavePlayerData(string saveFileName)
+    /// <param name="workCode">설정할 업무의 코드명</param>
+    /// <param name="isClear">업무 완료 여부</param>
+    public void ClearTask(string workCode)
     {
-        // json String으로 파싱
-        string jsonObjectData = JsonUtility.ToJson(player);
-        
-        FileStream fileStream = new FileStream(Application.dataPath + playerSavePath + saveFileName + ".json", FileMode.Create);
-        byte[] data = Encoding.UTF8.GetBytes(jsonObjectData);
-        fileStream.Write(data, 0, data.Length);
-        fileStream.Close();
+        // 코드에 해당하는 업무 불러오기
+        Work currentWork = null;
+        foreach (var work in today.workList)
+        {
+            if (work.Value == true)
+                continue;
+            if (work.Key.code == workCode)
+            {
+                currentWork = work.Key;
+                break;
+            }
+        }
+
+        // 업무 불일치 오류
+        if (currentWork == null)
+        {
+            Debug.Log("Work doesn't Match");
+            return;
+        }
+
+        // 업무 완료로 전환
+        today.workList[currentWork] = true;
     }
 
     /// <summary>
-    /// 플레이어 데이터 JSON에서 로드
+    /// 해당 씬 로드
     /// </summary>
-    /// <param name=SaveFileName>저장 경로 내 파일명</param>
-    public void LoadPlayerData(string saveFileName)
-    { 
-        FileStream fileStream = new FileStream(Application.dataPath + playerSavePath + saveFileName + ".json", FileMode.Open);
-        byte[] data = new byte[fileStream.Length];
-        fileStream.Read(data, 0, data.Length);
-        fileStream.Close();
-
-        // SaveData로 파싱
-        string jsonObjectData = Encoding.UTF8.GetString(data);
-        player = JsonUtility.FromJson<SaveData>(jsonObjectData);
+    /// <param name="sceneName"></param>
+    public static void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 }

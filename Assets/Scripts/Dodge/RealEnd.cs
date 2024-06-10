@@ -1,59 +1,70 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class RealEnd : MonoBehaviour
 {
-    string ch;
+    bool ch;
 
-    // ¿£µù
+    [SerializeField] RectTransform Rotation;
+    [SerializeField] Image image;
+    [SerializeField] Sprite sprite;
+    [SerializeField] Sprite sprite2;
+    [SerializeField] TMP_Text text;
+
+    // ì—”ë”©
     // Input
-    // a1 : GameOverÀÎÁö, GameClearÀÎÁö
-    // a2 : ¿£µù ½Ã ¹Ø¿¡ »ý¼ºµÇ´Â ¹®±¸
-    public void Ending(string a1, string a2)
+    public void Ending(bool Clear)
     {
-        transform.GetChild(1).GetComponent<TMP_Text>().text = a1;
-        ch = a2;
+        ch = Clear;
         StartCoroutine(EEE());
     }
 
-    // ¿£µù ½Ã ¿¬Ãâ
+    // ì—”ë”© ì‹œ ì—°ì¶œ
     IEnumerator EEE()
     {
-        yield return new WaitForSeconds(2.5f);
-
-        // GameOver or GameClear
-        TMP_Text a1 = transform.GetChild(1).GetComponent<TMP_Text>();
-        // ¿£µù ½Ã ¹Ø¿¡ »ý¼ºµÇ´Â ¹®±¸
-        TMP_Text a2 = transform.GetChild(2).GetComponent<TMP_Text>();
-
-        // FadeIn ¿¬Ãâ¿¡ »ç¿ë
-        for (; a1.color.a < 1;)
+        string cnt;
+        WaitForSeconds w1 = new WaitForSeconds(0.05f);
+        for(int i = 0; i < 2; i++)
         {
-            a1.color = new Color(1, 1, 1,a1.color.a + 0.01f);
-            yield return new WaitForSeconds(0.02f);
+            Rotation.Rotate(new Vector3(0, 0, -10));
+            yield return w1;
+            Rotation.Rotate(new Vector3(0, 0, -10));
+            yield return w1;
+            Rotation.Rotate(new Vector3(0, 0, 10));
+            yield return w1;
+            Rotation.Rotate(new Vector3(0, 0, 10));
+            yield return w1;
         }
-
-        // Å¸ÀÚ È¿°ú ¿¬Ãâ¿¡ »ç¿ë
-        foreach(var a in ch)
+        yield return new WaitForSeconds(2);
+        if (ch)
         {
-            yield return new WaitForSeconds(0.5f);
-            a2.text += a;
+            image.sprite = sprite;
+            cnt = "Access Success";
         }
-
-        // Á¾·á ¹öÆ° »ý¼º
+        else
+        {
+            image.sprite = sprite2;
+            cnt = "Access Denied";
+        }
+        text.gameObject.SetActive(true);
+        foreach(var a in cnt)
+        {
+            text.text += a;
+            yield return w1;
+        }
+        // ì¢…ë£Œ ë²„íŠ¼ ìƒì„±
         transform.GetChild(3).gameObject.SetActive(true);
 
-        // Á¾·á ¹öÆ°¿¡ Á¾·á ±â´É ÇÒ´ç
+        // ì¢…ë£Œ ë²„íŠ¼ì— ì¢…ë£Œ ê¸°ëŠ¥ í• ë‹¹
         MyUi.AddEvent(transform.GetChild(3).gameObject.GetComponent<EventTrigger>(), EventTriggerType.PointerClick,Exit);
 
         yield break;
     }
 
-    // Á¾·á ¹öÆ°
+    // ì¢…ë£Œ ë²„íŠ¼
     void Exit(PointerEventData a)
     {
         Debug.Log("!");
