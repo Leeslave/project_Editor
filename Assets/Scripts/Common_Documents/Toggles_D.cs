@@ -1,9 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-// ToggleObject용, 현재는 안쓰지만 나중에 쓸수도 있으니까 일단 내버려둠
 public class Toggles_D : MonoBehaviour
 {
     public int Ind;
