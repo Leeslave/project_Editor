@@ -30,10 +30,7 @@ public class ValidTask_D : MonoBehaviour
     bool IsInit = true;
     private void OnEnable()
     {
-        // 최초 생성시 OnEnable 활성화 방지
         if (IsInit) { IsInit = false; return; }
-
-        // GameClear
         if (IsEnd)
         {
             GameSystem.Instance.ClearTask("Document");
@@ -48,8 +45,8 @@ public class ValidTask_D : MonoBehaviour
         StartCoroutine(ValidStart());
     }
 
-    bool Fill = true;       // true인 경우에만 ProgressBar를 채움
-    bool IsEnd = false;     // Object가 활성화 됬을 때 false면 업무 평가를, true인 경우 업무를 종료한다.
+    bool Fill = true;
+    bool IsEnd = false;
 
     private void FixedUpdate()
     {
@@ -63,11 +60,11 @@ public class ValidTask_D : MonoBehaviour
         int[] Scores = new int[3];
         DB_M.DB_Docs.EvaluateWork(ref Scores);
 
+
         InfText.text = Test[0];
         yield return WFS;
         InfText.text += Test[1];
         yield return WFS;
-        // Manipulation 평가
         if (Scores[0] != 0)
         {
             InfText.text += "\n<color=red>Unperformed tasks Detected! :(</color>\nAutomatically shut down after a while...";
@@ -78,7 +75,6 @@ public class ValidTask_D : MonoBehaviour
         InfText.text += "           Complete!\n";
         InfText.text += Test[2];
         yield return WFS;
-        // News 평가
         if (Scores[1] != 0)
         {
             InfText.text += "\n<color=red>Unperformed tasks Detected! :(</color>\nAutomatically shut down after a while...";
@@ -90,7 +86,6 @@ public class ValidTask_D : MonoBehaviour
         InfText.text += "           Complete!\n";
         yield return WFS;
         InfText.text += Test[3];
-        // Docs 평가
         if (Scores[2] != 0)
         {
             InfText.text += "\n<color=red>Unperformed tasks Detected! :(</color>\nAutomatically shut down after a while...";
@@ -101,7 +96,6 @@ public class ValidTask_D : MonoBehaviour
         InfText.text += "           Complete!\nAll tasks performed :D\nAutomatically shut down after a while...";
         Fill = false;
         yield return WFS2;
-        // 모든 업무가 수행되었으면 ValidWalk Icon을 비활성화 하고 EndTask Icon을 활성화함.
         ValdBT.SetActive(false); OffBT.SetActive(true);
         IsEnd = true;
         gameObject.SetActive(false);

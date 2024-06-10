@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 
 public class TextMannager_D : MonoBehaviour
 {
+    [SerializeField] public ToDoList_N TDN;
+
     [SerializeField] bool IsRecord;
 
     [SerializeField] GameObject TextsPref;
@@ -100,7 +102,7 @@ public class TextMannager_D : MonoBehaviour
             if (IsCor() && OtherMannager.IsCor())
             {
                 Message.text = $"Abnormal Detection!";
-                DB_M.DB_Docs.ToDoList.CheckList(1, 0, true);
+                TDN.CheckList(1, 0, true);
             }
             else Message.text = $"No Abnormal";
             MyUi.AddEvent(NotTouch, EventTriggerType.PointerClick,
