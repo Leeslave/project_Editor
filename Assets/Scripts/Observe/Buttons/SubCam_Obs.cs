@@ -7,7 +7,6 @@ public class SubCam_Obs : Buttons_Obs
     Color BfColor;
     Color AfColor;
     Image image;
-    [SerializeField] StageChanger_Obs SCO;
     [SerializeField] int Area;
     [SerializeField] int Sub;
     [SerializeField] GameObject GG;
@@ -21,7 +20,7 @@ public class SubCam_Obs : Buttons_Obs
 
     protected override void Click(PointerEventData Data)
     {
-        SCO.StageChanger(Area, Sub);
+        StageDB_Obs.DB.StageChanger.StageChanger(Area, Sub);
         GG.SetActive(false);
         image.color = BfColor;
         transform.parent.gameObject.SetActive(false);

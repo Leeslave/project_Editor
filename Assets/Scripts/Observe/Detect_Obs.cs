@@ -24,7 +24,6 @@ public class Detect_Obs : MonoBehaviour
     [NonSerialized] public string Name;
     [NonSerialized] public Transform CurTarget;
     // 현재 속한 Stage
-    [NonSerialized] public RectTransform CurStage;
     [NonSerialized] public float MaxX;
     float Hor;
     float Ver;
@@ -49,8 +48,8 @@ public class Detect_Obs : MonoBehaviour
         
         if (Hor * transform.position.x > 475)
         {
-            if(575 - CurStage.position.x * Hor < MaxX)
-                CurStage.transform.Translate(new Vector3(-Hor * Time.deltaTime * 800, 0, 0));
+            if(575 - StageDB_Obs.DB.Stage.transform.position.x * Hor < MaxX)
+                StageDB_Obs.DB.Stage.transform.Translate(new Vector3(-Hor * Time.deltaTime * 800, 0, 0));
             Hor = 0;
         }
         if (Ver * transform.position.y > 355) Ver = 0;

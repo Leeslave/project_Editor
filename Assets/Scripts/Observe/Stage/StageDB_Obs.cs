@@ -1,42 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StageDB_Obs : MonoBehaviour
 {
-    public List<List<StageObject_Obs>> Stages;
-    public List<List<RectTransform>> Rects;
-    [SerializeField] List<Transform> Areas;
+    public static StageDB_Obs DB;
+    public StageChanger_Obs StageChanger;
+
+    [System.Serializable]
+    public class StageInfo
+    {
+        public string StageName;
+        public int StageInt;
+        public List<Sprite> Sprites;
+    }
+    public List<StageInfo> Stages;
+
+
+    public Image Stage;
+
+
     [SerializeField] List<string> AreaConnected;
     [SerializeField] List<int> AreaDistance;
     string[,] Route;
     int[,] RouteCost;
-    int RouteLen;
+    [SerializeField] int RouteLen;
 
 
     private void Awake()
     {
-        InitCalc();
-        CalcRoute();
-        int z;
-        Stages = new List<List<StageObject_Obs>>(RouteLen);
-        Rects = new List<List<RectTransform>>(RouteLen);
-        for(int i = 0; i < RouteLen; i++)
-        {
-            z = Areas[i].childCount;
-            Stages.Add(new List<StageObject_Obs>(z));
-            Rects.Add(new List<RectTransform>(z));
-            for (int x = 0; x < z; x++)
-            {
-                Stages[i].Add(Areas[i].GetChild(x).GetComponent<StageObject_Obs>());
-                Rects[i].Add(Areas[i].GetChild(x).GetComponent<RectTransform>());
-            }
-        }
+        if (DB == null) DB = this;
+        else Destroy(gameObject);
+        Stage = GetComponent<Image>();
+        StageChanger = GetComponent<StageChanger_Obs>();
+/*        InitCalc();
+        CalcRoute();*/
     }
 
     void InitCalc()
     {
-        RouteLen = Areas.Count;
         Route = new string[RouteLen,RouteLen];
         RouteCost = new int[RouteLen, RouteLen];
         for (int i = 0; i < RouteLen; i++) for (int x = 0; x < RouteLen; x++) 

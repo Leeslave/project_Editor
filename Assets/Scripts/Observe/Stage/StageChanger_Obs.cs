@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,25 +20,31 @@ public class StageChanger_Obs : MonoBehaviour
 
     private void Awake()
     {
-        WFS = new WaitForSeconds(ChangeTime*0.05f);
-        
+        WFS = new WaitForSeconds(ChangeTime*0.05f);   
     }
+
     private void Start()
     {
-        Detecter.CurStage = DB.Rects[0][0];
-        Detecter.MaxX = DB.Rects[0][0].sizeDelta.x * 0.5f;
+        StageChanger(0, 0);
     }
 
     public void StageChanger(int Area, int Sub)
     {
-        Detecter.CurStage = DB.Rects[Area][Sub];
-        Detecter.MaxX = DB.Rects[Area][Sub].sizeDelta.x * 0.5f;
         StartCoroutine(StageChange(Area,Sub));
     }
 
     IEnumerator StageChange(int Area, int Sub)
     {
         Border.SetActive(true);
+
+        var ChangeSprite = StageDB_Obs.DB.Stages[Area].Sprites[Sub];
+        StageDB_Obs.DB.Stage.sprite = ChangeSprite;
+        StageDB_Obs.DB.Stage.transform.position = Vector3.zero;
+        
+        float XRatio = ChangeSprite.bounds.size.x / ChangeSprite.bounds.size.y;
+        Detecter.transform.position = Vector3.zero;
+        Detecter.MaxX = 450 * XRatio;
+        // Start Glitch
         Glitcher1.scanlineIntensity = 200;
         for(int i = 0; i < 20; i++)
         {
@@ -47,10 +54,8 @@ public class StageChanger_Obs : MonoBehaviour
         Glitcher1.scanlineIntensity = 0;
         Glitcher2.speed = 0.01f;
         Border.SetActive(false);
-        DB.Rects[CurArea][CurStage].anchoredPosition = Vector3.zero;
-        Detecter.transform.position = Vector3.zero;
-        DB.Stages[CurArea][CurStage].StageOff();
-        DB.Stages[Area][Sub].StageOn();
+        //
+        
         CurArea = Area;
         CurStage = Sub;
     }
