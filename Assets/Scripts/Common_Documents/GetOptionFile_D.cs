@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class GetOptionFile_D : BatchField_D
 {
+    [SerializeField] DB_M DB;
 
     [SerializeField] GameObject ToDoList;
 
@@ -17,6 +18,7 @@ public class GetOptionFile_D : BatchField_D
     [SerializeField] GameObject Folders;
     [SerializeField] GameObject image;
 
+    [SerializeField] public InfChange IC;
 
     [NonSerialized] int CurOpen = 0;
     [NonSerialized] public int CurType = 0;
@@ -42,18 +44,15 @@ public class GetOptionFile_D : BatchField_D
     protected override IEnumerator BatchType1()
     {
         bool Go = false;
-        foreach (var k in DB_M.DB_Docs.PersonDataManager.PeopleCorrect) if (k.Item1 == DB_M.DB_Docs.CntFileForAttach.IconName) Go = true;
+        foreach (var k in IC.PeopleCorrect) if (k.Item1 == AN.IconName) Go = true;
 
-        // 금일 ToDoList에 있는 인물에만 접근 가능
         if (Go)
         {
-            DB_M.DB_Docs.PersonDataManager.PeopleName = DB_M.DB_Docs.CntFileForAttach.IconName;
+            IC.PeopleName = AN.IconName;
             CurType = 1;
             CommonBatch();
             image.SetActive(false);
             string cnt = "";
-
-            // Loading 연출 시작
             WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
             foreach (string s in Waittexts)
             {
@@ -68,16 +67,12 @@ public class GetOptionFile_D : BatchField_D
             }
             Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
             yield return new WaitForSeconds(LoadingTime2);
-
-            // Loading 연출 끝
             Text.text = Normal;
             image.SetActive(true);
             AttatchAble = true;
 
-            // 인물 정보 수정용 Process 활성화
             Processes[0].SetActive(true);
             Processes[0].transform.SetAsLastSibling();
-            Processes[0].transform.position = Vector3.zero;
         }
         else
         {
@@ -90,6 +85,7 @@ public class GetOptionFile_D : BatchField_D
     [SerializeField] TMP_Text Title;
     [SerializeField] TMP_Text Date;
     [SerializeField] TMP_Text Reporter;
+    [SerializeField] TextMannager_N TMN;
 
     // News
     protected override IEnumerator BatchType2()
@@ -97,11 +93,9 @@ public class GetOptionFile_D : BatchField_D
         CommonBatch();
         CurType = 2;
         image.SetActive(false);
-        News CurNews = DB_M.DB_Docs.FindNews(DB_M.DB_Docs.CntFileForAttach.IconName);
-        DB_M.DB_Docs.NewsManager.CurNews = CurNews;
+        News CurNews = DB.FindNews(AN.IconName);
+        TMN.CurNews = CurNews;
         string cnt = "";
-
-        // Loading 연출 시작
         WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
         foreach (string s in Waittexts)
         {
@@ -116,30 +110,24 @@ public class GetOptionFile_D : BatchField_D
         }
         Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
         yield return new WaitForSeconds(LoadingTime2);
-
-        // Loading 연출 끝
         Text.text = Normal;
         image.SetActive(true);
         AttatchAble = true;
-
-        // News에 Text 추가
         Title.text = CurNews.Title;
         Date.text = CurNews.Date;
         Reporter.text = CurNews.Reporter;
         for (int i = 0; i < CurNews.Main.Count; i++)
         {
-            DB_M.DB_Docs.NewsManager.ActiveText(CurNews.Main[i]);
+            TMN.ActiveText(CurNews.Main[i]);
         }
-
-        // News 수정용 Process 활성화
         Processes[1].SetActive(true);
         Processes[1].transform.SetAsLastSibling();
         Processes[1].transform.position = Vector3.zero;
     }
 
     // Docs
-    [SerializeField] TextMannager_D Docs_Record;            // 문서_녹취록
-    [SerializeField] TextMannager_D Docs_Act;               // 문서_행동 목록
+    [SerializeField] TextMannager_D Docs_Record;
+    [SerializeField] TextMannager_D Docs_Act;
     [SerializeField] TMP_Text Recorder;
     [SerializeField] TMP_Text Subject;
 
@@ -148,10 +136,8 @@ public class GetOptionFile_D : BatchField_D
         CommonBatch();
         CurType = 2;
         image.SetActive(false);
-        Docs CurDocs = DB_M.DB_Docs.FindDocs(DB_M.DB_Docs.CntFileForAttach.IconName);
+        Docs CurDocs = DB.FindDocs(AN.IconName);
         string cnt = "";
-
-        // Loading 연출 시작
         WaitForSeconds wfs = new WaitForSeconds(LoadingTime1);
         foreach (string s in Waittexts)
         {
@@ -166,22 +152,14 @@ public class GetOptionFile_D : BatchField_D
         }
         Text.text = cnt + "\n\nEnd!\n\n Wait a little...";
         yield return new WaitForSeconds(LoadingTime2);
-
-        // Loading 연출 끝
         Text.text = Normal;
         image.SetActive(true);
         AttatchAble = true;
-
-        // 문서 대조에 사용될 문서 생성
         Recorder.text = $"Recorder : {CurDocs.Recorder}";
         Subject.text = $"Subject : {CurDocs.Subject}";
-        int RC = 0;         // 현재까지 Docs_Record에 기록된 녹취자의 Text수를 새기 위해 사용
-        int SC = 0;         // 현재까지 Docs_Record에 기록된 대상자의 Text수를 새기 위해 사용
 
-        /*
-         * 현재 줄이 CurDocs의 RecorderTextInd[RC]와 동일하면 녹취자의 Text로 기록(왼쪽, 초록색, 상호작용 불가)
-         * 위의 조건에 해당하지 않으면 대상자의 Text로 기록(오른쪽, 빨간색, 상호작용 가능)
-         */
+        int RC = 0;
+        int SC = 0;
         for (int i = 0; i < CurDocs.RecorderTexts.Count + CurDocs.SubjectTexts.Count; i++)
         {
             if (RC < CurDocs.RecorderTexts.Count)
@@ -193,11 +171,10 @@ public class GetOptionFile_D : BatchField_D
         }
         foreach (var k in CurDocs.Time_Action) Docs_Act.AddText(k, Color.black);
 
-        // 정답 Index 저장
+
         Docs_Record.MyAns = CurDocs.SubjectAns[0];
         Docs_Act.MyAns = CurDocs.ActionAns[0];
 
-        // 문서 수정용 Process 활성화
         Processes[2].SetActive(true);
         Processes[2].transform.SetAsLastSibling();
         Processes[2].transform.position = Vector3.zero;
@@ -215,6 +192,7 @@ public class GetOptionFile_D : BatchField_D
         return base.BatchType4();
     }
 
+    // 아마 이걸 
     protected override IEnumerator BatchETC()
     {
         return base.BatchETC();

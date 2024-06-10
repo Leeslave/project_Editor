@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 
 public class BatchField_D : MonoBehaviour
 {
+    [SerializeField] protected AttatchFile_N AN;
     [SerializeField] protected bool IsWindow = false;
 
     protected bool AttatchAble = true;
@@ -14,22 +15,22 @@ public class BatchField_D : MonoBehaviour
     {
         if (GetComponent<EventTrigger>() == null) gameObject.AddComponent<EventTrigger>();
         EventTrigger ET = GetComponent<EventTrigger>();
-        MyUi.AddEvent(ET,EventTriggerType.PointerEnter,(PointerEventData Data) => DB_M.DB_Docs.CntFileForAttach.Attatch = BatchAccess);
+        MyUi.AddEvent(ET,EventTriggerType.PointerEnter,(PointerEventData Data) => AN.Attatch = BatchAccess);
         MyUi.AddEvent(ET, EventTriggerType.PointerExit, OutPointer);
     }
 
     void OutPointer(PointerEventData Data)
     {
-        if (DB_M.DB_Docs.CntFileForAttach.Attatch == this.BatchAccess) DB_M.DB_Docs.CntFileForAttach.Attatch = null;
+        if (AN.Attatch == this.BatchAccess) AN.Attatch = null;
     }
 
     void BatchAccess()
     {
-        if (DB_M.DB_Docs.CntFileForAttach.AttatchType >=0)
+        if (AN.AttatchType >=0)
         {
             if (!AttatchAble) return;
             AttatchAble = false;
-            switch (DB_M.DB_Docs.CntFileForAttach.AttatchType)
+            switch (AN.AttatchType)
             {
                 case 1: StartCoroutine(BatchType1()); break;
                 case 2: StartCoroutine(BatchType2()); break;
