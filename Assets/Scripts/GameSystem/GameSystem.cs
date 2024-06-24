@@ -104,6 +104,17 @@ public class GameSystem : SingletonObject<GameSystem>
             WorldSceneManager.Instance.ReloadWorld();
         }
     }
+
+
+    /// <summary>
+    /// 명성치 적용
+    /// </summary>
+    /// <param name="num">변경할 만큼의 명성치</param>
+    /// <returns></returns>
+    public void SetRenown(int num)
+    {
+        player.renown += num;
+    }
     
 
     /// <summary>
