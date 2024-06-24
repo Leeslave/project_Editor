@@ -96,6 +96,10 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
 
         // 새 지역 활성화
         CurrentLocation.ActiveLocation(true);
+        
+        // 이동 버튼 비활성화
+        IsMoving = false;
+        CurrentLocation.SetButtonActive(IsMoving);
     }
 
 
