@@ -34,7 +34,10 @@ public class TextMannager_N : MonoBehaviour
             if (MainTexts[CurOpen].gameObject.activeSelf) return;
             if (Input.GetKeyDown(KeyCode.I) && Commands_Back.Count != 0)
             {
-                var command = Commands_Back[0]; Commands_Back.RemoveAt(0);
+                /*foreach (var k in Commands_Back) print(k);
+                print("\n");*/
+                int ls = Commands_Back.Count - 1;
+                var command = Commands_Back[ls] ; Commands_Back.RemoveAt(ls);
                 switch (command.Item3)
                 {
                     case 0:     // 변경 취소
@@ -88,7 +91,7 @@ public class TextMannager_N : MonoBehaviour
                 if (ind != -2)
                 {
                     Texts[i].transform.SetSiblingIndex(ind + 5);
-                    if (!IsRollBack) Commands_Back.Insert(0,new Tuple<string, int, int>("", ind+1, 1));
+                    if (!IsRollBack) Commands_Back.Add(new Tuple<string, int, int>("", ind+1, 1));
                 }
                 Texts[i].SetActive(true);
                 MainTexts[i].AddLine(Text, ActivateText++);
@@ -100,7 +103,6 @@ public class TextMannager_N : MonoBehaviour
 
     public void RemoveText(int Ind,string LastText,bool IsRollBack = false)
     {
-        if(!IsRollBack) Commands_Back.Insert(0,new Tuple<string, int, int>(LastText, Ind, 2));
         Texts[Ind].SetActive(false);
         MainTexts[Ind].DelLine();
         Texts[Ind].transform.SetAsLastSibling();

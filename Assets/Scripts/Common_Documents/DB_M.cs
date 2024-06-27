@@ -40,6 +40,7 @@ public class DB_M : MonoBehaviour
     private int stageInt = 0;
     void Awake()
     {
+
         try{
             stageInt = GameSystem.Instance.GetTask("Document");
             Debug.Log(stageInt);
@@ -47,9 +48,8 @@ public class DB_M : MonoBehaviour
         }
         catch
         {
-            
+            stageInt = 0;
         }
-
         if (DB_Docs != null) { Destroy(gameObject); return; }
         DB_Docs = this;
 
