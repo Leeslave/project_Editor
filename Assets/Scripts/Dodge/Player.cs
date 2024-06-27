@@ -162,10 +162,15 @@ public class Player : MonoBehaviour
     {
         if (GameSystem.Instance != null)
         {
-            GameSystem.Instance.ClearTask("Dodge");
-            //LoadTestTrash.Instance.LoadScene = "Screen";
-            //SceneManager.LoadScene("LoadT");
-            GameSystem.LoadScene("Screen");
+            if (PlayerPrefs.GetInt("DocumentTest") != 1)
+            {
+                GameSystem.Instance.ClearTask("Dodge");
+                GameSystem.LoadScene("Screen");
+            }
+            else
+            {
+                GameSystem.LoadScene("Document");
+            }
         }
     }
 

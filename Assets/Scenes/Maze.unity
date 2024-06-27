@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 269314744}
   - component: {fileID: 269314743}
   - component: {fileID: 269314742}
-  - component: {fileID: 269314746}
+  - component: {fileID: 269314745}
   m_Layer: 5
   m_Name: EXIT
   m_TagString: Untagged
@@ -274,7 +274,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 269314740}
   m_CullTransparentMesh: 1
---- !u!114 &269314746
+--- !u!114 &269314745
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -283,10 +283,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 269314740}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Script: {fileID: 11500000, guid: 151714eaaf3144841a873eb47633978b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Delegates: []
+  BfColor: {r: 0, g: 0, b: 0, a: 0}
+  OnType: 0
 --- !u!1 &466145014
 GameObject:
   m_ObjectHideFlags: 0
@@ -718,7 +719,88 @@ MonoBehaviour:
   Move_Y: 10
   Difficulty: 0
   Paths: []
-  IsTuTo: 1
+  IsGoNextStage: 0
+  Stages:
+  - Col: 10
+    Row: 10
+    KeyNum: 1
+    KeyWeight: 3
+    Sight: 5
+    IsCalcFog: 0
+    IsCalcTime: 0
+    Time: 0
+  - Col: 15
+    Row: 15
+    KeyNum: 2
+    KeyWeight: 3
+    Sight: 5
+    IsCalcFog: 0
+    IsCalcTime: 0
+    Time: 0
+  - Col: 20
+    Row: 20
+    KeyNum: 3
+    KeyWeight: 3
+    Sight: 5
+    IsCalcFog: 0
+    IsCalcTime: 0
+    Time: 0
+  - Col: 10
+    Row: 10
+    KeyNum: 1
+    KeyWeight: 4
+    Sight: 5
+    IsCalcFog: 1
+    IsCalcTime: 0
+    Time: 0
+  - Col: 15
+    Row: 15
+    KeyNum: 2
+    KeyWeight: 4
+    Sight: 5
+    IsCalcFog: 1
+    IsCalcTime: 0
+    Time: 0
+  - Col: 20
+    Row: 20
+    KeyNum: 3
+    KeyWeight: 4
+    Sight: 5
+    IsCalcFog: 1
+    IsCalcTime: 0
+    Time: 0
+  - Col: 10
+    Row: 10
+    KeyNum: 1
+    KeyWeight: 5
+    Sight: 4
+    IsCalcFog: 1
+    IsCalcTime: 1
+    Time: 100
+  - Col: 15
+    Row: 15
+    KeyNum: 2
+    KeyWeight: 5
+    Sight: 4
+    IsCalcFog: 1
+    IsCalcTime: 1
+    Time: 125
+  - Col: 20
+    Row: 20
+    KeyNum: 3
+    KeyWeight: 5
+    Sight: 3
+    IsCalcFog: 1
+    IsCalcTime: 1
+    Time: 150
+  - Col: 10
+    Row: 10
+    KeyNum: 1
+    KeyWeight: 0
+    Sight: 7
+    IsCalcFog: 0
+    IsCalcTime: 0
+    Time: 150
 --- !u!4 &766390974
 Transform:
   m_ObjectHideFlags: 0
@@ -1895,6 +1977,7 @@ MonoBehaviour:
   - {fileID: 1937629778}
   CV: {fileID: 0}
   speed: 50
+  IsGoNextStage: 0
 --- !u!4 &2379532259100361379
 Transform:
   m_ObjectHideFlags: 0

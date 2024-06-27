@@ -110,6 +110,11 @@ public class Docs
     public int Month;
     public int Date;
     public string Recorder;
+    public bool IsWrongDocs;
+    [Header("--Don\'t Touch--")]
+    public bool IsAbnormalFinded;
+    public bool IsDone;
+    [Header("")]
     public List<string> RecorderTexts;
     public List<int> RecorderTextInd;
     public List<string> SubjectTexts;

@@ -40,8 +40,8 @@ public class DB_M : MonoBehaviour
     private int stageInt = 0;
     void Awake()
     {
-        try
-        {
+
+        try{
             stageInt = GameSystem.Instance.GetTask("Document");
             Debug.Log(stageInt);
             Day += stageInt;
@@ -50,7 +50,6 @@ public class DB_M : MonoBehaviour
         {
             stageInt = 0;
         }
-        
         if (DB_Docs != null) { Destroy(gameObject); return; }
         DB_Docs = this;
 
@@ -127,7 +126,8 @@ public class DB_M : MonoBehaviour
                 break; 
             }
         }
-        Secret.gameObject.SetActive(false);
+
+        Secret.gameObject.SetActive(PlayerPrefs.GetInt("DocumentTest")==1);
     }
 
     /// <summary>
@@ -209,11 +209,15 @@ public class DB_M : MonoBehaviour
                 if (EvalNews.Main[i].TrimEnd('\n','\r') != Instructions.NewsMain[i].TrimEnd('\n', '\r')) Score_News--;
             }
         }
-        
+
 
         // Evaluate Docs
         int Score_Docs = 0;
-        // 추후 추가
+        foreach(var k in Instructions.DocsInst)
+        {
+            var Docs_Sub = FindDocs(k.Name);
+            if (Docs_Sub.IsAbnormalFinded != Docs_Sub.IsWrongDocs) Score_Docs--;
+        }
 
         Score[0] = Score_Info; Score[1] = Score_News; Score[2] = Score_Docs;
     }
