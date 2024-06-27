@@ -27,6 +27,8 @@ public class LoadTestTrash : MonoBehaviour
     public Image ProgressBar;
     IEnumerator SceneLoadT()
     {
+        if (Test) PlayerPrefs.SetInt("DocumentTest", 1);
+        else PlayerPrefs.SetInt("DocumentTest", 0);
         var j = SceneManager.LoadSceneAsync(LoadScene); j.allowSceneActivation = false;
         while (!j.isDone)
         {

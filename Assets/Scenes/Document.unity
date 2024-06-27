@@ -4046,7 +4046,55 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 536856066}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1346748517}
+        m_TargetAssemblyTypeName: TextMannager_D, Assembly-CSharp
+        m_MethodName: EndDocsTask
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 454806943}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1074112517}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1346748515}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &536856066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9159,6 +9207,22 @@ MonoBehaviour:
   Errors: 0
   MyAns: -1
   Message: {fileID: 1449417577}
+  AbnormalBT: {fileID: 0}
+  NormalBT: {fileID: 0}
+  CurDocs:
+    Subject: 
+    Month: 0
+    Date: 0
+    Recorder: 
+    IsWrongDocs: 0
+    IsAbnormalFinded: 0
+    IsDone: 0
+    RecorderTexts: []
+    RecorderTextInd: 
+    SubjectTexts: []
+    Time_Action: []
+    SubjectAns: 
+    ActionAns: 
 --- !u!114 &1074112520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11803,6 +11867,22 @@ MonoBehaviour:
   Errors: 0
   MyAns: -1
   Message: {fileID: 1449417577}
+  AbnormalBT: {fileID: 1485562303}
+  NormalBT: {fileID: 536856065}
+  CurDocs:
+    Subject: 
+    Month: 0
+    Date: 0
+    Recorder: 
+    IsWrongDocs: 0
+    IsAbnormalFinded: 0
+    IsDone: 0
+    RecorderTexts: []
+    RecorderTextInd: 
+    SubjectTexts: []
+    Time_Action: []
+    SubjectAns: 
+    ActionAns: 
 --- !u!114 &1346748518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12760,7 +12840,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1346748517}
         m_TargetAssemblyTypeName: TextMannager_D, Assembly-CSharp
-        m_MethodName: JudgeStart
+        m_MethodName: EndDocsTask
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12770,10 +12850,34 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1074112519}
-        m_TargetAssemblyTypeName: TextMannager_D, Assembly-CSharp
-        m_MethodName: JudgeStart
-        m_Mode: 1
+      - m_Target: {fileID: 454806943}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1074112517}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1346748515}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -31660,6 +31764,9 @@ MonoBehaviour:
     Month: 12
     Date: 28
     Recorder: "\uC774\uC0C1\uD604"
+    IsWrongDocs: 1
+    IsAbnormalFinded: 0
+    IsDone: 0
     RecorderTexts:
     - "\uC9C0\uB09C \uC8FC \uD654\uC694\uC77C \uC810\uC2EC\uC2DC\uAC04 \uC774\uD6C4\uC5D0
       \uC790\uB124\uAC00 \uC5B4\uB514\uC11C \uBB58 \uD588\uB294\uC9C0 \uC790\uC138\uD558\uAC8C

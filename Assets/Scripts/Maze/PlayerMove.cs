@@ -336,7 +336,7 @@ public class PlayerMove : MonoBehaviour
             if (!IsEnd)     // 모든 Key를 모았으면 출구를 개방하며, 그렇지 않으면 이동 불가.
             {
                 if (GetKeyCount == MT.KeyNum) { StartCoroutine(ClearGame()); }
-                MoveAble = false;
+                //MoveAble = false;
             }
             else           // 클리어
             {
@@ -344,6 +344,11 @@ public class PlayerMove : MonoBehaviour
                 {
                     PlayerPrefs.SetInt("MazeStage", PlayerPrefs.GetInt("MazeStage") + 1);
                     SceneManager.LoadScene("Maze");
+                }
+                else if(PlayerPrefs.GetInt("DocumentTest")==1)
+                {
+                    GameSystem.LoadScene("Document");
+                    
                 }
                 else
                 {

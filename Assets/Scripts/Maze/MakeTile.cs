@@ -58,8 +58,12 @@ public class MakeTile : MonoBehaviour
             Difficulty = 0;
         }
 
+        // 클리어시 다음으로 넘어가게 임시로 해둔 거
         if (IsGoNextStage) Difficulty = PlayerPrefs.GetInt("MazeStage");
         else PlayerPrefs.DeleteKey("MazeStage");
+
+        // Document Secret 폴더 오픈되게 임시로 해둔거
+        if (PlayerPrefs.GetInt("DocumentTest") == 1) Difficulty = 10;
 
         if (Difficulty != 0) GetDifficulty();
         else MakeTutorial();
