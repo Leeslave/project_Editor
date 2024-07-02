@@ -27,43 +27,43 @@ public class LJWConverter : MonoBehaviour
     
     
     /// <summary> Image 색 </summary>
-    private Dictionary<Image, Coroutine> ImageColorCoroutines { get; set; } = new Dictionary<Image, Coroutine>();
+    private Dictionary<Image, Coroutine> ImageColorCoroutines { get; set; } = new();
     
     
 
     ///<summary> TextMeshPro 색 </summary>
-    private Dictionary<TextMeshPro, Coroutine> TMPColorCoroutines { get; set; } = new Dictionary<TextMeshPro, Coroutine>();
+    private Dictionary<TextMeshPro, Coroutine> TMPColorCoroutines { get; set; } = new();
     ///<summary> TextMeshPro 폰트 크기 </summary>
-    private Dictionary<TextMeshPro, Coroutine> TMPFontSizeCoroutines { get; set; } = new Dictionary<TextMeshPro, Coroutine>();
+    private Dictionary<TextMeshPro, Coroutine> TMPFontSizeCoroutines { get; set; } = new();
     ///<summary> TextMeshPro 텍스트 출력 </summary>
-    private Dictionary<TextMeshPro, Coroutine> TMPPrintCoroutines { get; set; } = new Dictionary<TextMeshPro, Coroutine>();
+    private Dictionary<TextMeshPro, Coroutine> TMPPrintCoroutines { get; set; } = new();
 
 
 
     ///<summary> TextMeshProUGUI 색 </summary>
-    private Dictionary<TextMeshProUGUI, Coroutine> UGUIColorCoroutine { get; set; } = new Dictionary<TextMeshProUGUI, Coroutine>();
+    private Dictionary<TextMeshProUGUI, Coroutine> UGUIColorCoroutine { get; set; } = new();
     ///<summary> TextMeshProUGUI 폰트 크기 </summary>
-    private Dictionary<TextMeshProUGUI, Coroutine> UGUIFontSizeCoroutines { get; set; } = new Dictionary<TextMeshProUGUI, Coroutine>();
+    private Dictionary<TextMeshProUGUI, Coroutine> UGUIFontSizeCoroutines { get; set; } = new();
     ///<summary> TextMeshProUGUI 텍스트 출력 </summary>
-    private Dictionary<TextMeshProUGUI, Coroutine> UGUIPrintCoroutines { get; set; } = new Dictionary<TextMeshProUGUI, Coroutine>();
+    private Dictionary<TextMeshProUGUI, Coroutine> UGUIPrintCoroutines { get; set; } = new();
 
     
     
     ///<summary> RectTransform 크기 </summary>
-    private Dictionary<RectTransform, Coroutine> RectTransformSizeDeltaCoroutines { get; set; } = new Dictionary<RectTransform, Coroutine>();
+    private Dictionary<RectTransform, Coroutine> RectTransformSizeDeltaCoroutines { get; set; } = new();
 
     
-    private Dictionary<Transform, Coroutine> PeriodicXTransformPosCoroutines { get; set; } = new Dictionary<Transform, Coroutine>();
-    private Dictionary<Transform, Coroutine> PeriodicYTransformPosCoroutines { get; set; } = new Dictionary<Transform, Coroutine>();
-    private Dictionary<Transform, Coroutine> PeriodicZTransformPosCoroutines { get; set; } = new Dictionary<Transform, Coroutine>();
+    private Dictionary<Transform, Coroutine> PeriodicXTransformPosCoroutines { get; set; } = new();
+    private Dictionary<Transform, Coroutine> PeriodicYTransformPosCoroutines { get; set; } = new();
+    private Dictionary<Transform, Coroutine> PeriodicZTransformPosCoroutines { get; set; } = new();
     
 
     ///<summary> Transform 위치 </summary>
-    private Dictionary<Transform, Coroutine> TransformPosCoroutines { get; set; } = new Dictionary<Transform, Coroutine>();
+    private Dictionary<Transform, Coroutine> TransformPosCoroutines { get; set; } = new();
     ///<summary> Transform 회전 </summary>
-    private Dictionary<Transform, Coroutine> TransformRotationCoroutines { get; set; } = new Dictionary<Transform, Coroutine>();
+    private Dictionary<Transform, Coroutine> TransformRotationCoroutines { get; set; } = new();
     ///<summary> Transform 크기 </summary>
-    private Dictionary<Transform, Coroutine> TransformScaleCoroutines { get; set; } = new Dictionary<Transform, Coroutine>();
+    private Dictionary<Transform, Coroutine> TransformScaleCoroutines { get; set; } = new();
 
 
 

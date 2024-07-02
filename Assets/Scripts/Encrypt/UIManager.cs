@@ -1,20 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class UIManager : MonoBehaviour
 {
-    public GameObject Canvas;
-    public GameObject hintCanvas;
-    // Start is called before the first frame update
+    [SerializeField] private GameObject canvas;
+    [SerializeField] private GameObject hintCanvas;
+    
     void Start() 
     { 
-        Canvas.SetActive(false);
+        canvas.SetActive(false);
         hintCanvas.SetActive(false);
     }
 
-    public void ActivateUI() { Canvas.SetActive(true); }
-    public void UnactivateUI() { Canvas.SetActive(false); }
-    public void ActivateHintUI() { hintCanvas.SetActive(true); }
-    public void UnactivateHintUI() { hintCanvas.SetActive(false); }
+    public void ActivateUI() => canvas.SetActive(true);
+    public void InactivateUI() => canvas.SetActive(false);
+    public void ActivateHintUI() => hintCanvas.SetActive(true);
+    public void InactivateHintUI() => hintCanvas.SetActive(false);
 }
