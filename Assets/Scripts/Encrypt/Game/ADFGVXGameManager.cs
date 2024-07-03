@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ADFGVXGameManager : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class ADFGVXGameManager : MonoBehaviour
     [SerializeField] public string decryptResultText;
     [SerializeField] public bool encryptClear;
     [SerializeField] public bool decryptClear;
+    [SerializeField] private bool startDecryptTutorial;
     
     private void Awake()
     {
@@ -38,9 +40,39 @@ public class ADFGVXGameManager : MonoBehaviour
         CurrentModePanel = FindObjectOfType<CurrentModePanel>();
         TutorialManager = FindObjectOfType<TutorialManager>();
 
-        TryGetStageData();
+        if (startDecryptTutorial)
+        {
+            TutorialManager.StartDecryptTutorial();
+            return;
+        }
+        else
+        {
+            TryGetStageData();
+        }
     }
 
+    // private void InitSystemMode()
+    // {
+    //     CurrentSystemMode = startSystemMode;
+    //     switch(CurrentSystemMode)
+    //     {
+    //         case SystemMode.Decryption:
+    //             DisplayDecrypted.transform.localPosition = new Vector3(-15f, 50f, 5f);
+    //             WritePlain.transform.localPosition = new Vector3(-15f, 100f, 5f);
+    //             LoadEncrypted.transform.localPosition = new Vector3(-15f, 0f, 5f);
+    //             DisplayEncrypted.transform.localPosition = new Vector3(-15f, -62f, 5f);
+    //             break;
+    //         case SystemMode.Encryption:
+    //             DisplayDecrypted.transform.localPosition = new Vector3(70f, 50f, 5f);
+    //             WritePlain.transform.localPosition = new Vector3(-15f, 50f, 5f);
+    //             LoadEncrypted.transform.localPosition = new Vector3(70f, 0f, 5f);
+    //             DisplayEncrypted.transform.localPosition = new Vector3(-15f, 0f, 5f);
+    //             break;
+    //         default:
+    //             throw new ArgumentOutOfRangeException();
+    //     }
+    // }
+    
     private void TryGetStageData()
     {
         //스테이지 정보 로드
@@ -80,9 +112,9 @@ public class ADFGVXGameManager : MonoBehaviour
         {
             case SystemMode.Decryption:
                 CurrentSystemMode = SystemMode.Encryption;
-                LJWConverter.Instance.PositionTransform(false, 0.0f, 0.5f, new Vector3(120f, 50f, 5f), DisplayDecrypted.transform);
+                LJWConverter.Instance.PositionTransform(false, 0.0f, 0.5f, new Vector3(70f, 50f, 5f), DisplayDecrypted.transform);
                 LJWConverter.Instance.PositionTransform(false, 0.5f, 0.5f, new Vector3(-15f, 50f, 5f), WritePlain.transform);
-                LJWConverter.Instance.PositionTransform(false, 0.5f, 0.5f, new Vector3(120f, 0f, 5f), LoadEncrypted.transform);
+                LJWConverter.Instance.PositionTransform(false, 0.5f, 0.5f, new Vector3(70f, 0f, 5f), LoadEncrypted.transform);
                 LJWConverter.Instance.PositionTransform(false, 1.0f, 0.5f, new Vector3(-15f, 0f, 5f), DisplayEncrypted.transform);
                 CutAvailabilityInputForWhile(0f, 1.5f);
                 break;

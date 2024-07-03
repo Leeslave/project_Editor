@@ -18,7 +18,7 @@ public class BasicInputField : MonoBehaviour
     public Color Exit = new Color(0.5f, 0.5f, 0.5f, 0.0f);
     public Color Down = new Color(0.5f, 0.5f, 0.5f, 0.5f);
     public Color Up = new Color(1f, 1f, 1f, 0.5f);
-    public Color Writing = new Color(0.1764f, 1f, 0.1764f, 0.5f);
+    public Color Writing = new(0.2f, 1f, 0.2f, 0.2f);
 
     public UnityEvent OnMouseDownEvent;
     public UnityEvent OnMouseUpEvent;

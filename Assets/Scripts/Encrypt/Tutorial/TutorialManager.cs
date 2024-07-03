@@ -4,9 +4,9 @@ using UnityEngine;
 public class TutorialManager : MonoBehaviour
 {
     [SerializeField] private GameObject blocker;
-    [SerializeField] private TutorialPopUp decryptLoad;
-    [SerializeField] private TutorialPopUp decryptTranspose;
-    [SerializeField] private TutorialPopUp decryptSubstitution;
+    [SerializeField] private TutorialTargetAreaPopUp decryptLoad;
+    [SerializeField] private TutorialTargetAreaPopUp decryptTranspose;
+    [SerializeField] private TutorialTargetAreaPopUp decryptSubstitution;
 
     private bool _playingDecrypt;
     private bool _playingEncrypt;
@@ -66,6 +66,18 @@ public class TutorialManager : MonoBehaviour
         _playingDecrypt = false;
     }
 
+    // public void StartEncryptTutorial() => StartCoroutine(StartEncryptTutorial_IE());
+    // private IEnumerator StartEncryptTutorial_IE()
+    // {
+    //     //튜토리얼 시작
+    //     _playingEncrypt = true;
+    //     blocker.gameObject.SetActive(true);
+    //     
+    //     //튜토리얼 종료
+    //     blocker.gameObject.SetActive(false);
+    //     _playingEncrypt = false;
+    // }
+    
     public bool IsDecryptPlaying() => _playingDecrypt;
     public bool IsEncryptPlaying() => _playingEncrypt;
 

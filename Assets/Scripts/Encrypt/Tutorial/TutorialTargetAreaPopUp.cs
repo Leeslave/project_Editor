@@ -4,30 +4,26 @@ using TMPro;
 using UnityEngine;
 using Image = UnityEngine.UI.Image;
 
-public class TutorialPopUp : MonoBehaviour
+public class TutorialTargetAreaPopUp : MonoBehaviour
 {
     private Image TargetArea { get; set; }
     private Image[] Background { get; set; } = new Image[8];
     private TextMeshProUGUI TargetName { get; set; }
-    private TextMeshProUGUI Instruction { get; set; }
-    private TextMeshProUGUI Speaker { get; set; }
+    private TextMeshProUGUI[] InstructionText { get; set; }
 
     private void Awake()
     {
         TargetArea = transform.GetChild(0).GetComponent<Image>();
         Background = TargetArea.transform.GetComponentsInChildren<Image>().Skip(1).ToArray();
         TargetName = TargetArea.transform.GetComponentInChildren<TextMeshProUGUI>();
-        Instruction = transform.GetChild(1).GetComponent<TextMeshProUGUI>();
-        Speaker = Instruction.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+        InstructionText = transform.GetChild(1).GetComponentsInChildren<TextMeshProUGUI>();
         
         TargetArea.color = Color.clear;
         for (var i = 0; i < 8; i++)
             Background[i].rectTransform.sizeDelta = Vector2.zero;
         TargetName.color = Color.clear;
-        Instruction.color = Color.clear;
-        Speaker.color = Color.clear;
-        
-        gameObject.SetActive(false);
+        foreach (var i in InstructionText)
+            i.color = Color.clear;
     }
 
     private void OnEnable()
@@ -44,8 +40,8 @@ public class TutorialPopUp : MonoBehaviour
         LJWConverter.Instance.SizeRectTransform(false, 0f, 0.5f, Vector2.one * 1000f, Background[7].rectTransform);
         
         LJWConverter.Instance.GradientUGUIColor(false, 0.5f, 0.5f, new Color(1f, 0.2f, 0.2f), TargetName);
-        LJWConverter.Instance.GradientUGUIColor(false, 0.5f, 0.5f, Color.white, Instruction);
-        LJWConverter.Instance.GradientUGUIColor(false, 0.5f, 0.5f, Color.white, Speaker);
+        foreach(var i in InstructionText)
+            LJWConverter.Instance.GradientUGUIColor(false, 0.5f, 0.5f, Color.white, i);
     }
 
     private void OnDisable()
@@ -54,7 +50,7 @@ public class TutorialPopUp : MonoBehaviour
         for (var i = 0; i < 8; i++)
             Background[i].rectTransform.sizeDelta = Vector2.zero;
         TargetName.color = Color.clear;
-        Instruction.color = Color.clear;
-        Speaker.color = Color.clear;
+        foreach (var i in InstructionText)
+            i.color = Color.clear;
     }
 }

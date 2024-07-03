@@ -81,13 +81,14 @@ public class LoadEncrypted : MonoBehaviour
             
             //로드
             StreamReader reader = new(filePath, System.Text.Encoding.UTF8);
-            LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, reader.ReadLine(), true, EncryptedTextBody.TextTMP);
+            var encryptedText = reader.ReadLine();
+            LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, encryptedText, true, EncryptedTextBody.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, reader.ReadLine(), true, EncryptedTextWriter.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, reader.ReadLine(), true, EncryptedTextDate.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, "Decrypted-" + EncryptedTextTitle.StringBuffer, true, ADFGVXGameManager.DisplayDecrypted.DecryptedTextTitle.TextTMP);
 
             //암호 키 추천
-            CalculateKeyLength();
+            CalculateKeyLength(encryptedText);
             
             //새로운 암호문을 로드하였으므로 전에 작업 내용은 파기
             ADFGVXGameManager.KeyPriorityTranspose.Initialize();
@@ -99,15 +100,15 @@ public class LoadEncrypted : MonoBehaviour
         }
     }
 
-    private void CalculateKeyLength()
+    private void CalculateKeyLength(string value)
     {
-        var length = EncryptedTextBody.TextTMP.text.Replace(" ", "").Length;
+        var length = value.Replace(" ", "").Length;
         
         if (length <= 1)
-            PrimeNumDisplay.TextTMP.text = "사용 가능한 암호키 길이: NULL";
+            PrimeNumDisplay.TextTMP.text = "사용 가능한 복호키 길이: NULL";
         else
         {
-            var result = "사용 가능한 암호키 길이: ";
+            var result = "사용 가능한 복호키 길이: ";
             for (var i = 2; i <= 9; i++)
                 if (length % i == 0)
                     result += i + ", ";
