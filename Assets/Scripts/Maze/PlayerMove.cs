@@ -347,7 +347,7 @@ public class PlayerMove : MonoBehaviour
                 }
                 else if(PlayerPrefs.GetInt("DocumentTest")==1)
                 {
-                    GameSystem.LoadScene("Document");
+                    GameSystem.LoadScene("Dodge");
                     
                 }
                 else
