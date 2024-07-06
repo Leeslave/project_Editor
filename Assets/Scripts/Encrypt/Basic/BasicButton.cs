@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
@@ -26,10 +25,10 @@ public class BasicButton : MonoBehaviour
 
     protected virtual void Awake()
     {
-        ButtonTMP = this.transform.GetChild(0).GetComponent<TextMeshPro>();
-        ButtonFrame = this.transform.GetChild(1).GetComponent<SpriteRenderer>();
-        ButtonFill = this.transform.GetChild(2).GetComponent<SpriteRenderer>();
-        ButtonCollider = this.transform.GetComponent<BoxCollider2D>();
+        ButtonTMP = transform.GetChild(0).GetComponent<TextMeshPro>();
+        ButtonFrame = transform.GetChild(1).GetComponent<SpriteRenderer>();
+        ButtonFill = transform.GetChild(2).GetComponent<SpriteRenderer>();
+        ButtonCollider = transform.GetComponent<BoxCollider2D>();
 
         ButtonFill.color = Exit;
     }

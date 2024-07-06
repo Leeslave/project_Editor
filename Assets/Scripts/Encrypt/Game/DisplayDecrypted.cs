@@ -65,10 +65,10 @@ public class DisplayDecrypted : MonoBehaviour
     public void SaveDecryptedTextFile()
     {
         //튜토리얼 전용
-        if (ADFGVXGameManager.TutorialManager.IsDecryptPlaying())
+        if (ADFGVXGameManager.AdfgvxTutorialManager.IsDecryptPlaying())
         {
             if (DecryptedTextBody.StringBuffer == "HELLO-MR-MY-YESTERDAY")
-                ADFGVXGameManager.TutorialManager.MoveToNextPhase(6.62f + 2f);
+                ADFGVXGameManager.AdfgvxTutorialManager.MoveToNextTutorialPhase(6.62f + 2f);
             else
                 return;
         }

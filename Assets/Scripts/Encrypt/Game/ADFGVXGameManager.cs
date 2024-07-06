@@ -1,7 +1,9 @@
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ADFGVXGameManager : MonoBehaviour
 {
@@ -14,7 +16,8 @@ public class ADFGVXGameManager : MonoBehaviour
     public static DisplayEncrypted DisplayEncrypted;
     public static ResultPanel ResultPanel;
     public static CurrentModePanel CurrentModePanel;
-    public static TutorialManager TutorialManager;
+    public static ADFGVXTutorialManager AdfgvxTutorialManager;
+    public static Image Blocker;
     
     public enum SystemMode { Encryption, Decryption }
     public static SystemMode CurrentSystemMode { get; private set; } = SystemMode.Decryption;
@@ -38,41 +41,29 @@ public class ADFGVXGameManager : MonoBehaviour
         DisplayEncrypted = FindObjectOfType<DisplayEncrypted>();
         ResultPanel = FindObjectOfType<ResultPanel>();
         CurrentModePanel = FindObjectOfType<CurrentModePanel>();
-        TutorialManager = FindObjectOfType<TutorialManager>();
+        AdfgvxTutorialManager = FindObjectOfType<ADFGVXTutorialManager>();
+        Blocker = GameObject.Find("Blocker").GetComponent<Image>();
+        
+        Init();
+    }
+
+    private void Init() => StartCoroutine(Init_IE());    
+    private IEnumerator Init_IE()
+    {
+        //검은색에서 투명으로 전환하면서 터치 가능하게 바뀐다
+        Blocker.color = Color.black;
+        LJWConverter.Instance.GradientImageColor(false, 0f, 1f, Color.clear, Blocker);
+        yield return new WaitForSeconds(1.5f);
 
         if (startDecryptTutorial)
-        {
-            TutorialManager.StartDecryptTutorial();
-            return;
-        }
+            AdfgvxTutorialManager.StartDecryptTutorial();
         else
-        {
+        {            
             TryGetStageData();
+            Blocker.gameObject.SetActive(false);
         }
     }
 
-    // private void InitSystemMode()
-    // {
-    //     CurrentSystemMode = startSystemMode;
-    //     switch(CurrentSystemMode)
-    //     {
-    //         case SystemMode.Decryption:
-    //             DisplayDecrypted.transform.localPosition = new Vector3(-15f, 50f, 5f);
-    //             WritePlain.transform.localPosition = new Vector3(-15f, 100f, 5f);
-    //             LoadEncrypted.transform.localPosition = new Vector3(-15f, 0f, 5f);
-    //             DisplayEncrypted.transform.localPosition = new Vector3(-15f, -62f, 5f);
-    //             break;
-    //         case SystemMode.Encryption:
-    //             DisplayDecrypted.transform.localPosition = new Vector3(70f, 50f, 5f);
-    //             WritePlain.transform.localPosition = new Vector3(-15f, 50f, 5f);
-    //             LoadEncrypted.transform.localPosition = new Vector3(70f, 0f, 5f);
-    //             DisplayEncrypted.transform.localPosition = new Vector3(-15f, 0f, 5f);
-    //             break;
-    //         default:
-    //             throw new ArgumentOutOfRangeException();
-    //     }
-    // }
-    
     private void TryGetStageData()
     {
         //스테이지 정보 로드

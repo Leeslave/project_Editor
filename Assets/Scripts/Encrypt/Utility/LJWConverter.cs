@@ -31,48 +31,40 @@ public class LJWConverter : MonoBehaviour
     
     
 
-    ///<summary> TextMeshPro 색 </summary>
-    private Dictionary<TextMeshPro, Coroutine> TMPColorCoroutines { get; set; } = new();
-    ///<summary> TextMeshPro 폰트 크기 </summary>
-    private Dictionary<TextMeshPro, Coroutine> TMPFontSizeCoroutines { get; set; } = new();
-    ///<summary> TextMeshPro 텍스트 출력 </summary>
-    private Dictionary<TextMeshPro, Coroutine> TMPPrintCoroutines { get; set; } = new();
-
-
-
-    ///<summary> TextMeshProUGUI 색 </summary>
-    private Dictionary<TextMeshProUGUI, Coroutine> UGUIColorCoroutine { get; set; } = new();
-    ///<summary> TextMeshProUGUI 폰트 크기 </summary>
-    private Dictionary<TextMeshProUGUI, Coroutine> UGUIFontSizeCoroutines { get; set; } = new();
-    ///<summary> TextMeshProUGUI 텍스트 출력 </summary>
-    private Dictionary<TextMeshProUGUI, Coroutine> UGUIPrintCoroutines { get; set; } = new();
-
+    // ///<summary> TextMeshPro 색 </summary>
+    // private Dictionary<TextMeshPro, Coroutine> TMPColorCoroutines { get; set; } = new();
+    // ///<summary> TextMeshPro 폰트 크기 </summary>
+    // private Dictionary<TextMeshPro, Coroutine> TMPFontSizeCoroutines { get; set; } = new();
+    // ///<summary> TextMeshPro 텍스트 출력 </summary>
+    // private Dictionary<TextMeshPro, Coroutine> TMPPrintCoroutines { get; set; } = new();
+    //
+    //
+    //
+    // ///<summary> TextMeshProUGUI 색 </summary>
+    // private Dictionary<TextMeshProUGUI, Coroutine> UGUIColorCoroutine { get; set; } = new();
+    // ///<summary> TextMeshProUGUI 폰트 크기 </summary>
+    // private Dictionary<TextMeshProUGUI, Coroutine> UGUIFontSizeCoroutines { get; set; } = new();
+    // ///<summary> TextMeshProUGUI 텍스트 출력 </summary>
+    // private Dictionary<TextMeshProUGUI, Coroutine> UGUIPrintCoroutines { get; set; } = new();
     
+    private Dictionary<TMP_Text, Coroutine> TMPColorCoroutines { get; set; } = new();
+    private Dictionary<TMP_Text, Coroutine> TMPFontSizeCoroutines { get; set; } = new();
+    private Dictionary<TMP_Text, Coroutine> TMPPrintCoroutines { get; set; } = new();
     
-    ///<summary> RectTransform 크기 </summary>
     private Dictionary<RectTransform, Coroutine> RectTransformSizeDeltaCoroutines { get; set; } = new();
-
     
     private Dictionary<Transform, Coroutine> PeriodicXTransformPosCoroutines { get; set; } = new();
     private Dictionary<Transform, Coroutine> PeriodicYTransformPosCoroutines { get; set; } = new();
     private Dictionary<Transform, Coroutine> PeriodicZTransformPosCoroutines { get; set; } = new();
     
-
-    ///<summary> Transform 위치 </summary>
     private Dictionary<Transform, Coroutine> TransformPosCoroutines { get; set; } = new();
-    ///<summary> Transform 회전 </summary>
     private Dictionary<Transform, Coroutine> TransformRotationCoroutines { get; set; } = new();
-    ///<summary> Transform 크기 </summary>
     private Dictionary<Transform, Coroutine> TransformScaleCoroutines { get; set; } = new();
-
-
-
+    
     private void Awake()
     {
         Instance = this;
     }
-    
-    
     
     /// <summary>
     /// 제네릭 키에 대응하는 코루틴 밸류가 딕셔너리에 있는지 확인하고, 없으면 새로운 코루틴을 추가하고, 있다면 기존 코루틴을 종료시키고 갱신
@@ -327,11 +319,11 @@ public class LJWConverter : MonoBehaviour
     }
 
     #endregion
-    
-    #region 3) TextMeshPro 관련 함수
+
+    #region 3) TMP_Text 관련 함수
 
     /// <summary>
-    /// TextMeshPro의 color를 wait동안 대기한 후에 duration동안 endColor로 선형 전환
+    /// TMP_Text의 color를 wait동안 대기한 후에 duration동안 endColor로 선형 전환
     /// </summary>
     /// <remarks>
     /// 애니메이션 커브를 인자로 받아서 비선형 전환이 가능
@@ -340,70 +332,70 @@ public class LJWConverter : MonoBehaviour
     /// <param name="wait"> 대기 시간 </param>
     /// <param name="duration"> 실행 시간 </param>
     /// <param name="endColor"> 목표로 하는 종료 색상 </param>
-    /// <param name="targetTMP"> 목표 TMP 컴포넌트 </param>
+    /// <param name="targetTMP"> 변환을 가할 TMP_Text </param>
     /// <param name="curve"> 적용할 애니메이션 커브 </param>
-    public void GradientTMPColor(bool unscaledTime, float wait, float duration, Color endColor, TextMeshPro targetTMP, AnimationCurve curve = null)
+    public void GradientTMPColor(bool unscaledTime, float wait, float duration, Color endColor, TMP_Text targetTMP, AnimationCurve curve = null)
     {
         CheckAndStartCoroutine(TMPColorCoroutines, targetTMP,
             unscaledTime
                 ? StartCoroutine(GradientTMPColor_UnscaledTime(wait, duration, Time.unscaledTime, endColor, targetTMP.color, targetTMP, curve))
                 : StartCoroutine(GradientTMPColor_ScaledTime(wait, duration, Time.time, endColor, targetTMP.color, targetTMP, curve)));
     }
-    private IEnumerator GradientTMPColor_UnscaledTime(float wait, float duration, float startTime, Color endColor, Color startColor, TextMeshPro targetTMP, AnimationCurve curve)
+    private IEnumerator GradientTMPColor_UnscaledTime(float wait, float duration, float startTime, Color endColor, Color startColor, TMP_Text targetTMP, AnimationCurve curve)
     {
         //작업 개시로부터 지난 시간
         var pastDeltaTime = Time.unscaledTime - startTime;
-        
-        if(pastDeltaTime > duration + wait)//타임 아웃
+
+        if (pastDeltaTime > wait + duration)//타임 아웃
         {
             targetTMP.color = endColor;
             yield return new WaitForSecondsRealtime(0.02f);
             TMPColorCoroutines.Remove(targetTMP);
         }
-        else if(pastDeltaTime < wait)//대기
+        else if (pastDeltaTime < wait)//대기
         {
             yield return new WaitForSecondsRealtime(0.02f);
             TMPColorCoroutines[targetTMP] = StartCoroutine(GradientTMPColor_UnscaledTime(wait, duration, startTime, endColor, startColor, targetTMP, curve));
         }
-        else if(pastDeltaTime >= wait)//액티브
+        else if (pastDeltaTime >= wait)//액티브
         {
             var per = Mathf.Max(0.001f, pastDeltaTime - wait) / duration;
             var evaluation = curve?.Evaluate(per) ?? per;
             targetTMP.color = Color.Lerp(startColor, endColor, evaluation);
-
+            
             yield return new WaitForSecondsRealtime(0.02f);
             TMPColorCoroutines[targetTMP] = StartCoroutine(GradientTMPColor_UnscaledTime(wait, duration, startTime, endColor, startColor, targetTMP, curve));
         }
     }
-    private IEnumerator GradientTMPColor_ScaledTime(float wait, float duration, float startTime, Color endColor, Color startColor, TextMeshPro targetTMP, AnimationCurve curve)
+    private IEnumerator GradientTMPColor_ScaledTime(float wait, float duration, float startTime, Color endColor, Color startColor, TMP_Text targetTMP, AnimationCurve curve)
     {
         //작업 개시로부터 지난 시간
         var pastDeltaTime = Time.time - startTime;
-        
-        if(pastDeltaTime > duration + wait)//타임 아웃
+
+        if (pastDeltaTime > wait + duration)//타임 아웃
         {
             targetTMP.color = endColor;
             yield return new WaitForSeconds(0.02f);
             TMPColorCoroutines.Remove(targetTMP);
         }
-        else if(pastDeltaTime < wait)//대기
+        else if (pastDeltaTime < wait)//대기
         {
             yield return new WaitForSeconds(0.02f);
             TMPColorCoroutines[targetTMP] = StartCoroutine(GradientTMPColor_ScaledTime(wait, duration, startTime, endColor, startColor, targetTMP, curve));
         }
-        else if(pastDeltaTime >= wait)//액티브
+        else if (pastDeltaTime >= wait)//액티브
         {
             var per = Mathf.Max(0.001f, pastDeltaTime - wait) / duration;
             var evaluation = curve?.Evaluate(per) ?? per;
             targetTMP.color = Color.Lerp(startColor, endColor, evaluation);
-
+            
             yield return new WaitForSeconds(0.02f);
             TMPColorCoroutines[targetTMP] = StartCoroutine(GradientTMPColor_ScaledTime(wait, duration, startTime, endColor, startColor, targetTMP, curve));
         }
     }
 
     /// <summary>
-    /// TextMeshPro의 fontSize를 wait동안 대기한 후에 duration동안 endSize로 선형 전환
+    /// TMP_Text의 fontSize wait동안 대기한 후에 duration동안 endSize로 선형 전환
     /// </summary>
     /// <remarks>
     /// 애니메이션 커브를 인자로 받아서 비선형 전환이 가능
@@ -412,70 +404,70 @@ public class LJWConverter : MonoBehaviour
     /// <param name="wait"> 대기 시간 </param>
     /// <param name="duration"> 실행 시간 </param>
     /// <param name="endSize"> 목표로 하는 종료 색상 </param>
-    /// <param name="targetTMP"> 변환을 가할 TMP </param>
+    /// <param name="targetTMP"> 변환을 가할 TMP_Text </param>
     /// <param name="curve"> 적용할 애니메이션 커브 </param>
-    public void ConvertTMPFontSize(bool unscaledTime, float wait, float duration, float endSize, TextMeshPro targetTMP, AnimationCurve curve = null)
+    public void ConvertTMPFontSize(bool unscaledTime, float wait, float duration, float endSize, TMP_Text targetTMP, AnimationCurve curve = null)
     {
-        CheckAndStartCoroutine(TMPFontSizeCoroutines, targetTMP,
+        CheckAndStartCoroutine(TMPColorCoroutines, targetTMP,
             unscaledTime
                 ? StartCoroutine(ConvertTMPFontSize_UnscaledTime(wait, duration, Time.unscaledTime, endSize, targetTMP.fontSize, targetTMP, curve))
                 : StartCoroutine(ConvertTMPFontSize_ScaledTime(wait, duration, Time.time, endSize, targetTMP.fontSize, targetTMP, curve)));
     }
-    private IEnumerator ConvertTMPFontSize_UnscaledTime(float wait, float duration, float startTime, float endSize, float startSize, TextMeshPro targetTMP, AnimationCurve curve)
+    private IEnumerator ConvertTMPFontSize_UnscaledTime(float wait, float duration, float startTime, float endSize, float startSize, TMP_Text targetTMP, AnimationCurve curve)
     {
         //작업 개시로부터 지난 시간
         var pastDeltaTime = Time.unscaledTime - startTime;
-        
-        if(pastDeltaTime > duration + wait)//타임 아웃
+
+        if (pastDeltaTime > wait + duration)//타임 아웃
         {
             targetTMP.fontSize = endSize;
             yield return new WaitForSecondsRealtime(0.02f);
-            TMPFontSizeCoroutines.Remove(targetTMP);
+            TMPColorCoroutines.Remove(targetTMP);
         }
-        else if(pastDeltaTime < wait)//대기
+        else if (pastDeltaTime < wait)//대기
         {
             yield return new WaitForSecondsRealtime(0.02f);
-            TMPFontSizeCoroutines[targetTMP] = StartCoroutine(ConvertTMPFontSize_UnscaledTime(wait, duration, startTime, endSize, startSize, targetTMP, curve));
+            TMPColorCoroutines[targetTMP] = StartCoroutine(ConvertTMPFontSize_UnscaledTime(wait, duration, startTime, endSize, startSize, targetTMP, curve));
         }
-        else if(pastDeltaTime >= wait)//액티브
+        else if (pastDeltaTime >= wait)//액티브
         {
             var per = Mathf.Max(0.001f, pastDeltaTime - wait) / duration;
             var evaluation = curve?.Evaluate(per) ?? per;
-            targetTMP.fontSize = Mathf.Lerp(startSize, endSize, Mathf.Max(0.01f, pastDeltaTime - wait) / duration);
+            targetTMP.fontSize = Mathf.Lerp(startSize, endSize, evaluation);
             
             yield return new WaitForSecondsRealtime(0.02f);
-            TMPFontSizeCoroutines[targetTMP] = StartCoroutine(ConvertTMPFontSize_UnscaledTime(wait, duration, startTime, endSize, startSize, targetTMP, curve));
+            TMPColorCoroutines[targetTMP] = StartCoroutine(ConvertTMPFontSize_UnscaledTime(wait, duration, startTime, endSize, startSize, targetTMP, curve));
         }
     }
-    private IEnumerator ConvertTMPFontSize_ScaledTime(float wait, float duration, float startTime, float endSize, float startSize, TextMeshPro targetTMP, AnimationCurve curve)
+    private IEnumerator ConvertTMPFontSize_ScaledTime(float wait, float duration, float startTime, float endSize, float startSize, TMP_Text targetTMP, AnimationCurve curve)
     {
         //작업 개시로부터 지난 시간
         var pastDeltaTime = Time.time - startTime;
-        
-        if(pastDeltaTime > duration + wait)//타임 아웃
+
+        if (pastDeltaTime > wait + duration)//타임 아웃
         {
             targetTMP.fontSize = endSize;
             yield return new WaitForSeconds(0.02f);
-            TMPFontSizeCoroutines.Remove(targetTMP);
+            TMPColorCoroutines.Remove(targetTMP);
         }
-        else if(pastDeltaTime < wait)//대기
+        else if (pastDeltaTime < wait)//대기
         {
             yield return new WaitForSeconds(0.02f);
-            TMPFontSizeCoroutines[targetTMP] = StartCoroutine(ConvertTMPFontSize_ScaledTime(wait, duration, startTime, endSize, startSize, targetTMP, curve));
+            TMPColorCoroutines[targetTMP] = StartCoroutine(ConvertTMPFontSize_ScaledTime(wait, duration, startTime, endSize, startSize, targetTMP, curve));
         }
-        else if(pastDeltaTime >= wait)//액티브
+        else if (pastDeltaTime >= wait)//액티브
         {
             var per = Mathf.Max(0.001f, pastDeltaTime - wait) / duration;
             var evaluation = curve?.Evaluate(per) ?? per;
-            targetTMP.fontSize = Mathf.Lerp(startSize, endSize, Mathf.Max(0.01f, pastDeltaTime - wait) / duration);
+            targetTMP.fontSize = Mathf.Lerp(startSize, endSize, evaluation);
             
             yield return new WaitForSeconds(0.02f);
-            TMPFontSizeCoroutines[targetTMP] = StartCoroutine(ConvertTMPFontSize_ScaledTime(wait, duration, startTime, endSize, startSize, targetTMP, curve));
+            TMPColorCoroutines[targetTMP] = StartCoroutine(ConvertTMPFontSize_ScaledTime(wait, duration, startTime, endSize, startSize, targetTMP, curve));
         }
     }
     
     /// <summary>
-    /// TextMeshPro의 text에 wait동안 대기한 후에 duration동안 value를 순차적으로 입력
+    /// TMP_Text의 text에 wait동안 대기한 후에 duration동안 value를 순차적으로 입력
     /// </summary>
     /// <param name="unscaledTime"></param>
     /// <param name="wait"></param>
@@ -483,17 +475,17 @@ public class LJWConverter : MonoBehaviour
     /// <param name="value"></param>
     /// <param name="clear"></param>
     /// <param name="targetTMP"></param>
-    public void PrintTMPByDuration(bool unscaledTime, float wait, float duration, string value, bool clear, TextMeshPro targetTMP)
+    public void PrintTMPByDuration(bool unscaledTime, float wait, float duration, string value, bool clear, TMP_Text targetTMP)
     {
-        if (clear)
-            targetTMP.text = "";
+        if(clear)
+           targetTMP.text = "";
         
-        CheckAndStartCoroutine(TMPPrintCoroutines, targetTMP,
+        CheckAndStartCoroutine(TMPColorCoroutines, targetTMP,
             unscaledTime
                 ? StartCoroutine(PrintTMPByDuration_UnscaledTime(wait, duration, Time.unscaledTime, 0, value, targetTMP))
                 : StartCoroutine(PrintTMPByDuration_ScaledTime(wait, duration, Time.time, 0, value, targetTMP)));
     }
-    private IEnumerator PrintTMPByDuration_UnscaledTime(float wait, float duration, float startTime, int idx, string value, TextMeshPro targetTMP)
+    private IEnumerator PrintTMPByDuration_UnscaledTime(float wait, float duration, float startTime, int idx, string value, TMP_Text targetTMP)
     {
         //작업 개시로부터 지난 시간
         var pastDeltaTime = Time.unscaledTime - startTime;
@@ -501,21 +493,21 @@ public class LJWConverter : MonoBehaviour
         if (idx == value.Length)//출력 종료
         {
             yield return new WaitForSecondsRealtime(0.02f);
-            TMPPrintCoroutines.Remove(targetTMP);
+            TMPColorCoroutines.Remove(targetTMP);
         }
         else if (pastDeltaTime < wait)//대기
         {
             yield return new WaitForSecondsRealtime(0.02f);
-            TMPPrintCoroutines[targetTMP] = StartCoroutine(PrintTMPByDuration_UnscaledTime(wait, duration, startTime, idx, value, targetTMP));
+            TMPColorCoroutines[targetTMP] = StartCoroutine(PrintTMPByDuration_UnscaledTime(wait, duration, startTime, idx, value, targetTMP));
         }
         else if (pastDeltaTime >= wait) //액티브
         {
             targetTMP.text += value[idx];
             yield return new WaitForSecondsRealtime(duration/value.Length);
-            TMPPrintCoroutines[targetTMP] = StartCoroutine(PrintTMPByDuration_UnscaledTime(wait, duration, startTime, idx + 1, value, targetTMP));   
+            TMPColorCoroutines[targetTMP] = StartCoroutine(PrintTMPByDuration_UnscaledTime(wait, duration, startTime, idx + 1, value, targetTMP));   
         }
     }
-    private IEnumerator PrintTMPByDuration_ScaledTime(float wait, float duration, float startTime, int idx, string value, TextMeshPro targetTMP)
+    private IEnumerator PrintTMPByDuration_ScaledTime(float wait, float duration, float startTime, int idx, string value, TMP_Text targetTMP)
     {
         //작업 개시로부터 지난 시간
         var pastDeltaTime = Time.time - startTime;
@@ -523,23 +515,23 @@ public class LJWConverter : MonoBehaviour
         if (idx == value.Length)//출력 종료
         {
             yield return new WaitForSeconds(0.02f);
-            TMPPrintCoroutines.Remove(targetTMP);
+            TMPColorCoroutines.Remove(targetTMP);
         }
         else if (pastDeltaTime < wait)//대기
         {
             yield return new WaitForSeconds(0.02f);
-            TMPPrintCoroutines[targetTMP] = StartCoroutine(PrintTMPByDuration_ScaledTime(wait, duration, startTime, idx, value, targetTMP));
+            TMPColorCoroutines[targetTMP] = StartCoroutine(PrintTMPByDuration_ScaledTime(wait, duration, startTime, idx, value, targetTMP));
         }
         else if (pastDeltaTime >= wait) //액티브
         {
             targetTMP.text += value[idx];
             yield return new WaitForSeconds(duration/value.Length);
-            TMPPrintCoroutines[targetTMP] = StartCoroutine(PrintTMPByDuration_ScaledTime(wait, duration, startTime, idx + 1, value, targetTMP));   
+            TMPColorCoroutines[targetTMP] = StartCoroutine(PrintTMPByDuration_ScaledTime(wait, duration, startTime, idx + 1, value, targetTMP));   
         }
     }
     
     /// <summary>
-    /// TextMeshPro의 text에 wait동안 대기한 후에 delay간격으로 value를 순차적으로 입력
+    /// TMP_Text의 text에 wait동안 대기한 후에 delay간격으로 value를 순차적으로 입력
     /// </summary>
     /// <param name="unscaledTime"></param>
     /// <param name="wait"></param>
@@ -547,17 +539,17 @@ public class LJWConverter : MonoBehaviour
     /// <param name="value"></param>
     /// <param name="clear"></param>
     /// <param name="targetTMP"></param>
-    public void PrintTMPByDelay(bool unscaledTime, float wait, float delay, string value, bool clear, TextMeshPro targetTMP)
+    public void PrintTMPByDelay(bool unscaledTime, float wait, float delay, string value, bool clear, TMP_Text targetTMP)
     {
         if(clear)
             targetTMP.text = "";
         
-        CheckAndStartCoroutine(TMPPrintCoroutines, targetTMP,
+        CheckAndStartCoroutine(TMPColorCoroutines, targetTMP,
             unscaledTime
                 ? StartCoroutine(PrintTMPByDelay_UnscaledTime(wait, delay, Time.unscaledTime, 0, value, targetTMP))
-                : StartCoroutine(PrintTMPByDelay_UnscaledTime(wait, delay, Time.time, 0, value, targetTMP)));
+                : StartCoroutine(PrintTMPByDelay_ScaledTime(wait, delay, Time.time, 0, value, targetTMP)));
     }
-    private IEnumerator PrintTMPByDelay_UnscaledTime(float wait, float delay, float startTime, int idx, string value, TextMeshPro targetTMP)
+    private IEnumerator PrintTMPByDelay_UnscaledTime(float wait, float delay, float startTime, int idx, string value, TMP_Text targetTMP)
     {
         //작업 개시로부터 지난 시간
         var pastDeltaTime = Time.unscaledTime - startTime;
@@ -565,21 +557,21 @@ public class LJWConverter : MonoBehaviour
         if (idx == value.Length)//출력 종료
         {
             yield return new WaitForSecondsRealtime(0.02f);
-            TMPPrintCoroutines.Remove(targetTMP);
+            TMPColorCoroutines.Remove(targetTMP);
         }
         else if (pastDeltaTime < wait)//대기
         {
             yield return new WaitForSecondsRealtime(0.02f);
-            TMPPrintCoroutines[targetTMP] = StartCoroutine(PrintTMPByDelay_UnscaledTime(wait, delay, Time.unscaledTime, idx, value, targetTMP));
+            TMPColorCoroutines[targetTMP] = StartCoroutine(PrintTMPByDelay_UnscaledTime(wait, delay, Time.unscaledTime, idx, value, targetTMP));
         }
         else if (pastDeltaTime >= wait) //액티브
         {
             targetTMP.text += value[idx];
             yield return new WaitForSecondsRealtime(delay);
-            TMPPrintCoroutines[targetTMP] = StartCoroutine(PrintTMPByDelay_ScaledTime(wait, delay, Time.unscaledTime, idx + 1, value, targetTMP));
+            TMPColorCoroutines[targetTMP] = StartCoroutine(PrintTMPByDelay_UnscaledTime(wait, delay, Time.unscaledTime, idx + 1, value, targetTMP));
         }
     }
-    private IEnumerator PrintTMPByDelay_ScaledTime(float wait, float delay, float startTime, int idx, string value, TextMeshPro targetTMP)
+    private IEnumerator PrintTMPByDelay_ScaledTime(float wait, float delay, float startTime, int idx, string value, TMP_Text targetTMP)
     {
         //작업 개시로부터 지난 시간
         var pastDeltaTime = Time.time - startTime;
@@ -587,343 +579,44 @@ public class LJWConverter : MonoBehaviour
         if (idx == value.Length)//출력 종료
         {
             yield return new WaitForSeconds(0.02f);
-            TMPPrintCoroutines.Remove(targetTMP);
+            TMPColorCoroutines.Remove(targetTMP);
         }
         else if (pastDeltaTime < wait)//대기
         {
             yield return new WaitForSeconds(0.02f);
-            TMPPrintCoroutines[targetTMP] = StartCoroutine(PrintTMPByDelay_ScaledTime(wait, delay, Time.time, idx, value, targetTMP));
+            TMPColorCoroutines[targetTMP] = StartCoroutine(PrintTMPByDelay_ScaledTime(wait, delay, Time.time, idx, value, targetTMP));
         }
         else if (pastDeltaTime >= wait) //액티브
         {
             targetTMP.text += value[idx];
             yield return new WaitForSeconds(delay);
-            TMPPrintCoroutines[targetTMP] = StartCoroutine(PrintTMPByDelay_ScaledTime(wait, delay, Time.time, idx + 1, value, targetTMP));
+            TMPColorCoroutines[targetTMP] = StartCoroutine(PrintTMPByDelay_ScaledTime(wait, delay, Time.time, idx + 1, value, targetTMP));
         }
     }
     
     /// <summary>
-    /// TextMeshPro에 진행 중인 출력 작업 정지 
+    /// TMP_Text에 진행 중인 출력 작업 정지 
     /// </summary>
     /// <param name="targetTMP"></param>
-    public void StopPrintingTMP(TextMeshPro targetTMP)
+    public void StopPrintingTMP(TMP_Text targetTMP)
     {
-        if(!TMPPrintCoroutines.ContainsKey(targetTMP))
+        if(!TMPColorCoroutines.ContainsKey(targetTMP))
             return;
     
-        StopCoroutine(TMPPrintCoroutines[targetTMP]);
-        TMPPrintCoroutines.Remove(targetTMP);
+        StopCoroutine(TMPColorCoroutines[targetTMP]);
+        TMPColorCoroutines.Remove(targetTMP);
     }
     
     /// <summary>
-    /// TextMeshPro에 진행 중인 출력 작업 유무
+    /// TMP_Text에 진행 중인 출력 작업 유무
     /// </summary>
     /// <param name="targetTMP"></param>
     /// <returns></returns>
-    public bool GetIsPrintingTMP(TextMeshPro targetTMP)
+    public bool GetIsPrintingTMP(TMP_Text targetTMP)
     {
-        return TMPPrintCoroutines.ContainsKey(targetTMP);
-    }    
-
-    #endregion
-
-    #region 4) TextMeshProUGUI 관련 함수
-
-    /// <summary>
-    /// TextMeshProUGUI의 color를 wait동안 대기한 후에 duration동안 endColor로 선형 전환
-    /// </summary>
-    /// <remarks>
-    /// 애니메이션 커브를 인자로 받아서 비선형 전환이 가능
-    /// </remarks>
-    /// <param name="unscaledTime"> 스케일 여부 </param>
-    /// <param name="wait"> 대기 시간 </param>
-    /// <param name="duration"> 실행 시간 </param>
-    /// <param name="endColor"> 목표로 하는 종료 색상 </param>
-    /// <param name="targetUGUI"> 변환을 가할 TextMeshProUGUI </param>
-    /// <param name="curve"> 적용할 애니메이션 커브 </param>
-    public void GradientUGUIColor(bool unscaledTime, float wait, float duration, Color endColor, TextMeshProUGUI targetUGUI, AnimationCurve curve = null)
-    {
-        CheckAndStartCoroutine(UGUIColorCoroutine, targetUGUI,
-            unscaledTime
-                ? StartCoroutine(GradientUGUIColor_UnscaledTime(wait, duration, Time.unscaledTime, endColor, targetUGUI.color, targetUGUI, curve))
-                : StartCoroutine(GradientUGUIColor_ScaledTime(wait, duration, Time.time, endColor, targetUGUI.color, targetUGUI, curve)));
-    }
-    private IEnumerator GradientUGUIColor_UnscaledTime(float wait, float duration, float startTime, Color endColor, Color startColor, TextMeshProUGUI targetUGUI, AnimationCurve curve)
-    {
-        //작업 개시로부터 지난 시간
-        var pastDeltaTime = Time.unscaledTime - startTime;
-
-        if (pastDeltaTime > wait + duration)//타임 아웃
-        {
-            targetUGUI.color = endColor;
-            yield return new WaitForSecondsRealtime(0.02f);
-            UGUIColorCoroutine.Remove(targetUGUI);
-        }
-        else if (pastDeltaTime < wait)//대기
-        {
-            yield return new WaitForSecondsRealtime(0.02f);
-            UGUIColorCoroutine[targetUGUI] = StartCoroutine(GradientUGUIColor_UnscaledTime(wait, duration, startTime, endColor, startColor, targetUGUI, curve));
-        }
-        else if (pastDeltaTime >= wait)//액티브
-        {
-            var per = Mathf.Max(0.001f, pastDeltaTime - wait) / duration;
-            var evaluation = curve?.Evaluate(per) ?? per;
-            targetUGUI.color = Color.Lerp(startColor, endColor, evaluation);
-            
-            yield return new WaitForSecondsRealtime(0.02f);
-            UGUIColorCoroutine[targetUGUI] = StartCoroutine(GradientUGUIColor_UnscaledTime(wait, duration, startTime, endColor, startColor, targetUGUI, curve));
-        }
-    }
-    private IEnumerator GradientUGUIColor_ScaledTime(float wait, float duration, float startTime, Color endColor, Color startColor, TextMeshProUGUI targetUGUI, AnimationCurve curve)
-    {
-        //작업 개시로부터 지난 시간
-        var pastDeltaTime = Time.time - startTime;
-
-        if (pastDeltaTime > wait + duration)//타임 아웃
-        {
-            targetUGUI.color = endColor;
-            yield return new WaitForSeconds(0.02f);
-            UGUIColorCoroutine.Remove(targetUGUI);
-        }
-        else if (pastDeltaTime < wait)//대기
-        {
-            yield return new WaitForSeconds(0.02f);
-            UGUIColorCoroutine[targetUGUI] = StartCoroutine(GradientUGUIColor_ScaledTime(wait, duration, startTime, endColor, startColor, targetUGUI, curve));
-        }
-        else if (pastDeltaTime >= wait)//액티브
-        {
-            var per = Mathf.Max(0.001f, pastDeltaTime - wait) / duration;
-            var evaluation = curve?.Evaluate(per) ?? per;
-            targetUGUI.color = Color.Lerp(startColor, endColor, evaluation);
-            
-            yield return new WaitForSeconds(0.02f);
-            UGUIColorCoroutine[targetUGUI] = StartCoroutine(GradientUGUIColor_ScaledTime(wait, duration, startTime, endColor, startColor, targetUGUI, curve));
-        }
+        return TMPColorCoroutines.ContainsKey(targetTMP);
     }
 
-    /// <summary>
-    /// TextMeshProUGUI의 fontSize wait동안 대기한 후에 duration동안 endSize로 선형 전환
-    /// </summary>
-    /// <remarks>
-    /// 애니메이션 커브를 인자로 받아서 비선형 전환이 가능
-    /// </remarks>
-    /// <param name="unscaledTime"> 스케일 여부 </param>
-    /// <param name="wait"> 대기 시간 </param>
-    /// <param name="duration"> 실행 시간 </param>
-    /// <param name="endSize"> 목표로 하는 종료 색상 </param>
-    /// <param name="targetUGUI"> 변환을 가할 TextMeshProUGUI </param>
-    /// <param name="curve"> 적용할 애니메이션 커브 </param>
-    public void ConvertUGUIFontSize(bool unscaledTime, float wait, float duration, float endSize, TextMeshProUGUI targetUGUI, AnimationCurve curve = null)
-    {
-        CheckAndStartCoroutine(UGUIFontSizeCoroutines, targetUGUI,
-            unscaledTime
-                ? StartCoroutine(ConvertUGUIFontSize_UnscaledTime(wait, duration, Time.unscaledTime, endSize, targetUGUI.fontSize, targetUGUI, curve))
-                : StartCoroutine(ConvertUGUIFontSize_ScaledTime(wait, duration, Time.time, endSize, targetUGUI.fontSize, targetUGUI, curve)));
-    }
-    private IEnumerator ConvertUGUIFontSize_UnscaledTime(float wait, float duration, float startTime, float endSize, float startSize, TextMeshProUGUI targetUGUI, AnimationCurve curve)
-    {
-        //작업 개시로부터 지난 시간
-        var pastDeltaTime = Time.unscaledTime - startTime;
-
-        if (pastDeltaTime > wait + duration)//타임 아웃
-        {
-            targetUGUI.fontSize = endSize;
-            yield return new WaitForSecondsRealtime(0.02f);
-            UGUIFontSizeCoroutines.Remove(targetUGUI);
-        }
-        else if (pastDeltaTime < wait)//대기
-        {
-            yield return new WaitForSecondsRealtime(0.02f);
-            UGUIFontSizeCoroutines[targetUGUI] = StartCoroutine(ConvertUGUIFontSize_UnscaledTime(wait, duration, startTime, endSize, startSize, targetUGUI, curve));
-        }
-        else if (pastDeltaTime >= wait)//액티브
-        {
-            var per = Mathf.Max(0.001f, pastDeltaTime - wait) / duration;
-            var evaluation = curve?.Evaluate(per) ?? per;
-            targetUGUI.fontSize = Mathf.Lerp(startSize, endSize, evaluation);
-            
-            yield return new WaitForSecondsRealtime(0.02f);
-            UGUIFontSizeCoroutines[targetUGUI] = StartCoroutine(ConvertUGUIFontSize_UnscaledTime(wait, duration, startTime, endSize, startSize, targetUGUI, curve));
-        }
-    }
-    private IEnumerator ConvertUGUIFontSize_ScaledTime(float wait, float duration, float startTime, float endSize, float startSize, TextMeshProUGUI targetUGUI, AnimationCurve curve)
-    {
-        //작업 개시로부터 지난 시간
-        var pastDeltaTime = Time.time - startTime;
-
-        if (pastDeltaTime > wait + duration)//타임 아웃
-        {
-            targetUGUI.fontSize = endSize;
-            yield return new WaitForSeconds(0.02f);
-            UGUIFontSizeCoroutines.Remove(targetUGUI);
-        }
-        else if (pastDeltaTime < wait)//대기
-        {
-            yield return new WaitForSeconds(0.02f);
-            UGUIFontSizeCoroutines[targetUGUI] = StartCoroutine(ConvertUGUIFontSize_ScaledTime(wait, duration, startTime, endSize, startSize, targetUGUI, curve));
-        }
-        else if (pastDeltaTime >= wait)//액티브
-        {
-            var per = Mathf.Max(0.001f, pastDeltaTime - wait) / duration;
-            var evaluation = curve?.Evaluate(per) ?? per;
-            targetUGUI.fontSize = Mathf.Lerp(startSize, endSize, evaluation);
-            
-            yield return new WaitForSeconds(0.02f);
-            UGUIFontSizeCoroutines[targetUGUI] = StartCoroutine(ConvertUGUIFontSize_ScaledTime(wait, duration, startTime, endSize, startSize, targetUGUI, curve));
-        }
-    }
-    
-    /// <summary>
-    /// TextMeshProUGUI의 text에 wait동안 대기한 후에 duration동안 value를 순차적으로 입력
-    /// </summary>
-    /// <param name="unscaledTime"></param>
-    /// <param name="wait"></param>
-    /// <param name="duration"></param>
-    /// <param name="value"></param>
-    /// <param name="clear"></param>
-    /// <param name="targetUGUI"></param>
-    public void PrintUGUIByDuration(bool unscaledTime, float wait, float duration, string value, bool clear, TextMeshProUGUI targetUGUI)
-    {
-        if(clear)
-           targetUGUI.text = "";
-        
-        CheckAndStartCoroutine(UGUIPrintCoroutines, targetUGUI,
-            unscaledTime
-                ? StartCoroutine(PrintUGUIByDuration_UnscaledTime(wait, duration, Time.unscaledTime, 0, value, targetUGUI))
-                : StartCoroutine(PrintUGUIByDuration_ScaledTime(wait, duration, Time.time, 0, value, targetUGUI)));
-    }
-    private IEnumerator PrintUGUIByDuration_UnscaledTime(float wait, float duration, float startTime, int idx, string value, TextMeshProUGUI targetUGUI)
-    {
-        //작업 개시로부터 지난 시간
-        var pastDeltaTime = Time.unscaledTime - startTime;
-
-        if (idx == value.Length)//출력 종료
-        {
-            yield return new WaitForSecondsRealtime(0.02f);
-            UGUIPrintCoroutines.Remove(targetUGUI);
-        }
-        else if (pastDeltaTime < wait)//대기
-        {
-            yield return new WaitForSecondsRealtime(0.02f);
-            UGUIPrintCoroutines[targetUGUI] = StartCoroutine(PrintUGUIByDuration_UnscaledTime(wait, duration, startTime, idx, value, targetUGUI));
-        }
-        else if (pastDeltaTime >= wait) //액티브
-        {
-            targetUGUI.text += value[idx];
-            yield return new WaitForSecondsRealtime(duration/value.Length);
-            UGUIPrintCoroutines[targetUGUI] = StartCoroutine(PrintUGUIByDuration_UnscaledTime(wait, duration, startTime, idx + 1, value, targetUGUI));   
-        }
-    }
-    private IEnumerator PrintUGUIByDuration_ScaledTime(float wait, float duration, float startTime, int idx, string value, TextMeshProUGUI targetUGUI)
-    {
-        //작업 개시로부터 지난 시간
-        var pastDeltaTime = Time.time - startTime;
-
-        if (idx == value.Length)//출력 종료
-        {
-            yield return new WaitForSeconds(0.02f);
-            UGUIPrintCoroutines.Remove(targetUGUI);
-        }
-        else if (pastDeltaTime < wait)//대기
-        {
-            yield return new WaitForSeconds(0.02f);
-            UGUIPrintCoroutines[targetUGUI] = StartCoroutine(PrintUGUIByDuration_ScaledTime(wait, duration, startTime, idx, value, targetUGUI));
-        }
-        else if (pastDeltaTime >= wait) //액티브
-        {
-            targetUGUI.text += value[idx];
-            yield return new WaitForSeconds(duration/value.Length);
-            UGUIPrintCoroutines[targetUGUI] = StartCoroutine(PrintUGUIByDuration_ScaledTime(wait, duration, startTime, idx + 1, value, targetUGUI));   
-        }
-    }
-    
-    /// <summary>
-    /// TextMeshProUGUI의 text에 wait동안 대기한 후에 delay간격으로 value를 순차적으로 입력
-    /// </summary>
-    /// <param name="unscaledTime"></param>
-    /// <param name="wait"></param>
-    /// <param name="delay"></param>
-    /// <param name="value"></param>
-    /// <param name="clear"></param>
-    /// <param name="targetUGUI"></param>
-    public void PrintUGUIByDelay(bool unscaledTime, float wait, float delay, string value, bool clear, TextMeshProUGUI targetUGUI)
-    {
-        if(clear)
-            targetUGUI.text = "";
-        
-        CheckAndStartCoroutine(UGUIPrintCoroutines, targetUGUI,
-            unscaledTime
-                ? StartCoroutine(PrintUGUIByDelay_UnscaledTime(wait, delay, Time.unscaledTime, 0, value, targetUGUI))
-                : StartCoroutine(PrintUGUIByDelay_ScaledTime(wait, delay, Time.time, 0, value, targetUGUI)));
-    }
-    private IEnumerator PrintUGUIByDelay_UnscaledTime(float wait, float delay, float startTime, int idx, string value, TextMeshProUGUI targetUGUI)
-    {
-        //작업 개시로부터 지난 시간
-        var pastDeltaTime = Time.unscaledTime - startTime;
-
-        if (idx == value.Length)//출력 종료
-        {
-            yield return new WaitForSecondsRealtime(0.02f);
-            UGUIPrintCoroutines.Remove(targetUGUI);
-        }
-        else if (pastDeltaTime < wait)//대기
-        {
-            yield return new WaitForSecondsRealtime(0.02f);
-            UGUIPrintCoroutines[targetUGUI] = StartCoroutine(PrintUGUIByDelay_UnscaledTime(wait, delay, Time.unscaledTime, idx, value, targetUGUI));
-        }
-        else if (pastDeltaTime >= wait) //액티브
-        {
-            targetUGUI.text += value[idx];
-            yield return new WaitForSecondsRealtime(delay);
-            UGUIPrintCoroutines[targetUGUI] = StartCoroutine(PrintUGUIByDelay_UnscaledTime(wait, delay, Time.unscaledTime, idx + 1, value, targetUGUI));
-        }
-    }
-    private IEnumerator PrintUGUIByDelay_ScaledTime(float wait, float delay, float startTime, int idx, string value, TextMeshProUGUI targetUGUI)
-    {
-        //작업 개시로부터 지난 시간
-        var pastDeltaTime = Time.time - startTime;
-
-        if (idx == value.Length)//출력 종료
-        {
-            yield return new WaitForSeconds(0.02f);
-            UGUIPrintCoroutines.Remove(targetUGUI);
-        }
-        else if (pastDeltaTime < wait)//대기
-        {
-            yield return new WaitForSeconds(0.02f);
-            UGUIPrintCoroutines[targetUGUI] = StartCoroutine(PrintUGUIByDelay_ScaledTime(wait, delay, Time.time, idx, value, targetUGUI));
-        }
-        else if (pastDeltaTime >= wait) //액티브
-        {
-            targetUGUI.text += value[idx];
-            yield return new WaitForSeconds(delay);
-            UGUIPrintCoroutines[targetUGUI] = StartCoroutine(PrintUGUIByDelay_ScaledTime(wait, delay, Time.time, idx + 1, value, targetUGUI));
-        }
-    }
-    
-    /// <summary>
-    /// TextMeshProUGUI에 진행 중인 출력 작업 정지 
-    /// </summary>
-    /// <param name="targetUGUI"></param>
-    public void StopPrintingUGUI(TextMeshProUGUI targetUGUI)
-    {
-        if(!UGUIPrintCoroutines.ContainsKey(targetUGUI))
-            return;
-    
-        StopCoroutine(UGUIPrintCoroutines[targetUGUI]);
-        UGUIPrintCoroutines.Remove(targetUGUI);
-    }
-    
-    /// <summary>
-    /// TextMeshProUGUI에 진행 중인 출력 작업 유무
-    /// </summary>
-    /// <param name="targetUGUI"></param>
-    /// <returns></returns>
-    public bool GetIsPrintingUGUI(TextMeshProUGUI targetUGUI)
-    {
-        return UGUIPrintCoroutines.ContainsKey(targetUGUI);
-    }
-    
     #endregion
 
     #region 5) RectTransform 관련 함수
