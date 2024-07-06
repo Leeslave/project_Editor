@@ -22,24 +22,14 @@ public class ADFGVXTutorialManager : TutorialManager
         ADFGVXGameManager.Instance.decryptResultText = "HELLO-MR-MY-YESTERDAY";
         _playingDecrypt = true;
         
-        //페이즈 0
-        decryptStart.gameObject.SetActive(true);
-        yield return WaitUntilActiveSelf(decryptStart.gameObject);
-        
-        //페이즈 1
-        decryptLoad.gameObject.SetActive(true);
-        yield return WaitUntilActiveSelf(decryptLoad.gameObject);
-        
-        //페이즈 2
-        decryptTranspose.gameObject.SetActive(true);
-        yield return WaitUntilActiveSelf(decryptTranspose.gameObject);
-        
-        //페이즈 3
-        decryptSubstitution.gameObject.SetActive(true);
-        yield return WaitUntilActiveSelf(decryptSubstitution.gameObject);
+        //페이즈
+        yield return ShowPopUp(decryptStart.gameObject);
+        yield return ShowPopUp(decryptLoad.gameObject);
+        yield return ShowPopUp(decryptTranspose.gameObject);
+        yield return ShowPopUp(decryptSubstitution.gameObject);
         
         //튜토리얼 종료
-        ADFGVXGameManager.Blocker.gameObject.SetActive(false);
+        blocker.gameObject.SetActive(false);
         _playingDecrypt = false;
     }
 

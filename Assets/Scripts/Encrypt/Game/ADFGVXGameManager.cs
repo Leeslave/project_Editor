@@ -16,8 +16,7 @@ public class ADFGVXGameManager : MonoBehaviour
     public static DisplayEncrypted DisplayEncrypted;
     public static ResultPanel ResultPanel;
     public static CurrentModePanel CurrentModePanel;
-    public static ADFGVXTutorialManager AdfgvxTutorialManager;
-    public static Image Blocker;
+    public static ADFGVXTutorialManager ADFGVXTutorialManager;
     
     public enum SystemMode { Encryption, Decryption }
     public static SystemMode CurrentSystemMode { get; private set; } = SystemMode.Decryption;
@@ -41,26 +40,14 @@ public class ADFGVXGameManager : MonoBehaviour
         DisplayEncrypted = FindObjectOfType<DisplayEncrypted>();
         ResultPanel = FindObjectOfType<ResultPanel>();
         CurrentModePanel = FindObjectOfType<CurrentModePanel>();
-        AdfgvxTutorialManager = FindObjectOfType<ADFGVXTutorialManager>();
-        Blocker = GameObject.Find("Blocker").GetComponent<Image>();
+        ADFGVXTutorialManager = FindObjectOfType<ADFGVXTutorialManager>();
         
-        Init();
-    }
-
-    private void Init() => StartCoroutine(Init_IE());    
-    private IEnumerator Init_IE()
-    {
-        //검은색에서 투명으로 전환하면서 터치 가능하게 바뀐다
-        Blocker.color = Color.black;
-        LJWConverter.Instance.GradientImageColor(false, 0f, 1f, Color.clear, Blocker);
-        yield return new WaitForSeconds(1.5f);
-
         if (startDecryptTutorial)
-            AdfgvxTutorialManager.StartDecryptTutorial();
+            ADFGVXTutorialManager.StartDecryptTutorial();
         else
-        {            
+        {
+            ADFGVXTutorialManager.blocker.gameObject.SetActive(false);
             TryGetStageData();
-            Blocker.gameObject.SetActive(false);
         }
     }
 

@@ -197,10 +197,10 @@ public class KeyPriorityTranspose : MonoBehaviour
                 for(var j = 0; j < RowLength; j++)
                     CurrentTransposedText += TempLine[j].ToCharArray()[i];
                 
-                if (ADFGVXGameManager.AdfgvxTutorialManager.IsDecryptPlaying())
+                if (ADFGVXGameManager.ADFGVXTutorialManager.IsDecryptPlaying())
                 {
                     if (key == "GOODBYE")
-                        ADFGVXGameManager.AdfgvxTutorialManager.MoveToNextTutorialPhase((RowLength + LineLength) * 0.1f + 2f);        
+                        ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase((RowLength + LineLength) * 0.1f + 2f);        
                     else
                         return;
                 }

@@ -68,10 +68,10 @@ public class LoadEncrypted : MonoBehaviour
         if (new FileInfo(filePath).Exists)
         {
             //튜토리얼 전용
-            if (ADFGVXGameManager.AdfgvxTutorialManager.IsDecryptPlaying())
+            if (ADFGVXGameManager.ADFGVXTutorialManager.IsDecryptPlaying())
             {
                 if(title == "SONG-OF-YESTERDAY")
-                    ADFGVXGameManager.AdfgvxTutorialManager.MoveToNextTutorialPhase(4f);
+                    ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(4f);
                 else
                 {
                     LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, "튜토리얼 조건에 맞는 파일 이름을 입력해야합니다.", true, EncryptedTextBody.TextTMP);
