@@ -3,12 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Serializable]
+public class ImageAttribute
+{
+    public Sprite image { get; private set; }
+    [SerializeField]
+    private Sprite baseImage;
+
+    public void SetImage(Sprite newImage)
+    {
+        image = newImage;
+    }
+
+    public void RevertImage()
+    {
+        image = baseImage;
+    }
+}
 
 public class Position : MonoBehaviour
 {
-    [SerializeField] private List<Sprite> imageList;
-    [SerializeField] private int dayImage;
-    [SerializeField] private int nightImage;
+    [SerializeField] private List<ImageAttribute> imageList;
 
     private Image image;
 
@@ -19,14 +34,8 @@ public class Position : MonoBehaviour
     }
 
 
-    public void SetDay()
+    public void SetTime(int time)
     {
-        image.sprite = imageList[nightImage];
-    }
-
-
-    public void SetNight()
-    {
-        image.sprite = imageList[dayImage];
+        image.sprite = imageList[time].image;
     }
 }

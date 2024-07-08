@@ -1612,6 +1612,7 @@ MonoBehaviour:
   locationName: 1
   bgmNumber: 1
   connectLen: 2
+  Positions: []
   buttons:
   - {fileID: 0}
   - {fileID: 0}
@@ -3000,6 +3001,7 @@ MonoBehaviour:
   locationName: 2
   bgmNumber: 2
   connectLen: 2
+  Positions: []
   buttons:
   - {fileID: 1059813960}
   - {fileID: 0}
@@ -3059,6 +3061,7 @@ MonoBehaviour:
   locationName: 3
   bgmNumber: 3
   connectLen: 2
+  Positions: []
   buttons:
   - {fileID: 1014531642}
   - {fileID: 0}
@@ -4189,6 +4192,7 @@ MonoBehaviour:
   locationName: 6
   bgmNumber: 4
   connectLen: 1
+  Positions: []
   buttons:
   - {fileID: 2060748706}
   - {fileID: 1719538816}
@@ -4408,7 +4412,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 146488411006183170, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 146488411006183170, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
       propertyPath: m_AnchorMax.x
@@ -4712,6 +4716,7 @@ GameObject:
   - component: {fileID: 1240408164}
   - component: {fileID: 1240408166}
   - component: {fileID: 1240408165}
+  - component: {fileID: 1240408167}
   m_Layer: 8
   m_Name: BarStreet
   m_TagString: World
@@ -4781,6 +4786,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1240408163}
   m_CullTransparentMesh: 1
+--- !u!114 &1240408167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1240408163}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList: []
 --- !u!1 &1241297797
 GameObject:
   m_ObjectHideFlags: 0
@@ -5158,6 +5176,7 @@ MonoBehaviour:
   locationName: 7
   bgmNumber: 5
   connectLen: 1
+  Positions: []
   buttons:
   - {fileID: 1789688942}
   sizeMultiplier: 1
@@ -5293,6 +5312,7 @@ MonoBehaviour:
   locationName: 0
   bgmNumber: 0
   connectLen: 2
+  Positions: []
   buttons:
   - {fileID: 103925067}
   - {fileID: 1361372139}
@@ -6407,7 +6427,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 146488411006183170, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 146488411006183170, guid: f10aecef18e724a48ae915ab81b2730a, type: 3}
       propertyPath: m_AnchorMax.x
@@ -7254,6 +7274,7 @@ MonoBehaviour:
   locationName: 4
   bgmNumber: 4
   connectLen: 3
+  Positions: []
   buttons:
   - {fileID: 1519300021}
   - {fileID: 744271677}
@@ -7387,6 +7408,7 @@ MonoBehaviour:
   locationName: 5
   bgmNumber: 4
   connectLen: 2
+  Positions: []
   buttons:
   - {fileID: 1960885789}
   - {fileID: 0}
