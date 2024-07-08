@@ -9,22 +9,19 @@ using UnityEngine.UI;
 
 public class Location : MonoBehaviour
 {
+    [SerializeField] private World locationName; // 지역명
 
-    [SerializeField]
-    private World locationName; // 지역명
+    private bool isActive; // 현재 활성화 여부
 
-    private bool isActive;  // 현재 활성화 여부
+    public int bgmNumber; // BGM 번호
 
-    public int bgmNumber;   // BGM 번호
+    [SerializeField] private int connectLen; // 연결 가능 최대 길이
 
-    [SerializeField]
-    private int connectLen;     // 연결 가능 최대 길이
-    [SerializeField]
-    private List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
+    [SerializeField] private List<Image> positions;
+    [SerializeField] private List<GameObject> buttons; // 지역 내 위치 이동 버튼들
 
-    [SerializeField]
-    private List<List<GameObject>> objList = new();  // WorldObject 리스트
-    public float sizeMultiplier = 1;    // NPC 크기 배율
+    [SerializeField] private List<List<GameObject>> objList = new(); // WorldObject 리스트
+    public float sizeMultiplier = 1; // NPC 크기 배율
 
 
     /// <summary>
@@ -35,7 +32,7 @@ public class Location : MonoBehaviour
         // 변화 없음 예외
         if (isActive == _active)
             return;
-        
+
         // 활성화
         if (_active)
         {
@@ -73,7 +70,6 @@ public class Location : MonoBehaviour
     }
 
 
-
     /// <summary>
     /// 지역 내 이동
     /// </summary>
@@ -89,32 +85,34 @@ public class Location : MonoBehaviour
 
         // 페이드인아웃 효과 실행
         StartCoroutine(WorldSceneManager.Instance.FadeInOut());
-        
+
         // 장소 데이터 변경
         GameSystem.Instance.gameData.SetPosition(newPos);
 
         // 이동할 장소 활성화
         transform.GetChild(newPos).gameObject.SetActive(true);
         // 이동할 장소의 오브젝트 활성화
-        foreach(var obj in objList[newPos])
+        foreach (var obj in objList[newPos])
         {
             if (obj.TryGetComponent(out NPC npc))
             {
                 npc.OnActive();
             }
-            else 
+            else
             {
                 obj.TryGetComponent(out WorldEffect effect);
                 effect.OnActive();
             }
         }
+
         // 나머지 장소 비활성화
-        for(int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
             if (i == newPos)
             {
                 continue;
             }
+
             transform.GetChild(i).gameObject.SetActive(false);
         }
     }
@@ -155,7 +153,7 @@ public class Location : MonoBehaviour
     [HideInInspector]
     public void SetButtonActive(bool isActive)
     {
-        foreach(var button in buttons)
+        foreach (var button in buttons)
         {
             button.SetActive(isActive);
         }
@@ -176,14 +174,15 @@ public class Location : MonoBehaviour
         List<WorldObjectData> dataList = ObjectDatabase.ObjectList[(int)locationName];
 
         // NPC들 생성
-        foreach(WorldObjectData _data in dataList)
+        foreach (WorldObjectData _data in dataList)
         {
             if (_data.time != GameSystem.Instance.gameData.time)
             {
                 continue;
             }
-            
-            GameObject newObj = Instantiate(ObjectDatabase.Instance.prefabs[(int)_data.objType], transform.GetChild(_data.position));     // instantiate 
+
+            GameObject newObj = Instantiate(ObjectDatabase.Instance.prefabs[(int)_data.objType],
+                transform.GetChild(_data.position)); // instantiate 
             newObj.name = _data.name;
 
             // 타입에 따라 컴포넌트 추가
@@ -191,12 +190,13 @@ public class Location : MonoBehaviour
             {
                 newObj.GetComponent<WorldEffect>().data = _data as EffectData;
             }
-            if(_data is NPCData)
+
+            if (_data is NPCData)
             {
                 newObj.GetComponent<NPC>().data = _data as NPCData;
                 newObj.GetComponent<NPC>().SetPosition();
             }
-            
+
             objList[_data.position].Add(newObj);
         }
     }
@@ -220,9 +220,9 @@ public class Location : MonoBehaviour
 
     public void ClearObjects()
     {
-        foreach(var iter in objList)
+        foreach (var iter in objList)
         {
-            foreach(var obj in iter)
+            foreach (var obj in iter)
             {
                 Destroy(obj);
             }
