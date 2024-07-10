@@ -1,9 +1,6 @@
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class ADFGVXGameManager : MonoBehaviour
 {
@@ -23,11 +20,15 @@ public class ADFGVXGameManager : MonoBehaviour
     
     [SerializeField] public string encryptTargetText;
     [SerializeField] public string encryptResultText;
+    [SerializeField] public string encryptSaveText;
     [SerializeField] public string decryptTargetText;
     [SerializeField] public string decryptResultText;
+    [SerializeField] public string decryptSaveText;
     [SerializeField] public bool encryptClear;
     [SerializeField] public bool decryptClear;
-    [SerializeField] private bool startDecryptTutorial;
+    
+    [SerializeField] private bool startTutorial;
+    [SerializeField] private SystemMode tutorialMode = SystemMode.Decryption;
     
     private void Awake()
     {
@@ -41,9 +42,23 @@ public class ADFGVXGameManager : MonoBehaviour
         ResultPanel = FindObjectOfType<ResultPanel>();
         CurrentModePanel = FindObjectOfType<CurrentModePanel>();
         ADFGVXTutorialManager = FindObjectOfType<ADFGVXTutorialManager>();
-        
-        if (startDecryptTutorial)
-            ADFGVXTutorialManager.StartDecryptTutorial();
+    }
+
+    private void Start()
+    {
+        if (startTutorial)
+        {
+            if (tutorialMode == SystemMode.Decryption)
+            {
+                SetSystemMode(SystemMode.Decryption);
+                ADFGVXTutorialManager.StartDecryptTutorial();
+            }
+            else
+            {
+                SetSystemMode(SystemMode.Encryption);
+                ADFGVXTutorialManager.StartEncryptTutorial();   
+            }
+        }
         else
         {
             ADFGVXTutorialManager.blocker.gameObject.SetActive(false);
@@ -84,7 +99,7 @@ public class ADFGVXGameManager : MonoBehaviour
         }
     }
 
-    public static void SwitchSystemMode()
+    public static void ToggleSystemMode()
     {
         switch(CurrentSystemMode)
         {
@@ -103,6 +118,29 @@ public class ADFGVXGameManager : MonoBehaviour
                 LJWConverter.Instance.PositionTransform(false, 1.0f, 0.5f, new Vector3(-15f, 0f, 5f), LoadEncrypted.transform);
                 LJWConverter.Instance.PositionTransform(false, 0.5f, 0.5f, new Vector3(-15f, -62f, 5f),DisplayEncrypted.transform);
                 CutAvailabilityInputForWhile(0f, 1.5f);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }    
+    }
+
+    private static void SetSystemMode(SystemMode target)
+    {
+        switch (target)
+        {
+            case SystemMode.Decryption:
+                DisplayDecrypted.transform.localPosition = new Vector3(-15f, 50f, 5f);
+                WritePlain.transform.localPosition = new Vector3(-15f, 100f, 5f);
+                LoadEncrypted.transform.localPosition = new Vector3(-15f, 0f, 5f);
+                DisplayEncrypted.transform.localPosition = new Vector3(-15f, -62f, 5f);
+                CurrentSystemMode = SystemMode.Decryption;
+                break;
+            case SystemMode.Encryption:
+                DisplayDecrypted.transform.localPosition = new Vector3(70f, 50f, 5f);
+                WritePlain.transform.localPosition = new Vector3(-15f, 50f, 5f);
+                LoadEncrypted.transform.localPosition = new Vector3(70f, 0f, 5f);
+                DisplayEncrypted.transform.localPosition = new Vector3(-15f, 0f, 5f);
+                CurrentSystemMode = SystemMode.Encryption;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

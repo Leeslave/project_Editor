@@ -70,4 +70,13 @@ public class WritePlain : MonoBehaviour
             PrimeNumDisplay.TextTMP.text = result.Substring(0, result.Length - 2);
         }
     }
+
+    public void CheckTutorialPhaseCompleted()
+    {
+        if (ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
+        {
+            if(PlainTextBody.StringBuffer == "MEET-ON-STREET-6")
+                ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
+        }
+    }
 }

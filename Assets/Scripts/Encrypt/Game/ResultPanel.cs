@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -106,7 +105,7 @@ public class ResultPanel : MonoBehaviour
         Result.text = "";
         
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, "DECRYPT ADFGVX TEDP VER 2.0", false, Result);
-       yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.75f);
         Result.text += "\n";
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, "USER: BLACK-007 CHECK... ", false, Result);
         yield return new WaitForSeconds(0.75f);
@@ -142,18 +141,29 @@ public class ResultPanel : MonoBehaviour
        yield return new WaitForSeconds(0.75f);
         Result.text += "\n";
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, "복호화 파일을 저장했습니다!", false, Result);
-        
-        //복호화 태스크 클리어 마킹
-        ADFGVXGameManager.Instance.decryptClear = true;
-        
-        //만약 암호화 태스크가 존재했고, 이미 클리어한 상태라면
-        if (ADFGVXGameManager.Instance.encryptClear && ADFGVXGameManager.Instance.decryptClear)
+
+        if (ADFGVXGameManager.ADFGVXTutorialManager.IsDecryptPlaying())
         {
-            //모든 태스크을 완료했으므로 씬에서 나갈 준비
+            //튜토리얼 상황이었을 경우
             CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
-            CloseButton.OnMouseUpEvent.AddListener(() => {            
-                GameSystem.Instance.ClearTask("ADFGVX");
+            CloseButton.OnMouseUpEvent.AddListener(() => {
+                Debug.Log("복호화 튜토리얼 종료!");
                 GameSystem.LoadScene("Screen"); });
+        }
+        else
+        {
+            //복호화 태스크 클리어 마킹
+            ADFGVXGameManager.Instance.decryptClear = true;
+        
+            //만약 암호화 태스크가 존재했고, 이미 클리어한 상태라면
+            if (ADFGVXGameManager.Instance.encryptClear && ADFGVXGameManager.Instance.decryptClear)
+            {
+                //모든 태스크을 완료했으므로 씬에서 나갈 준비
+                CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
+                CloseButton.OnMouseUpEvent.AddListener(() => {            
+                    GameSystem.Instance.ClearTask("ADFGVX");
+                    GameSystem.LoadScene("Screen"); });
+            }   
         }
         
         //결과 창 닫기 버튼 활성화
@@ -243,7 +253,7 @@ public class ResultPanel : MonoBehaviour
             return false;
         }
 
-        if (ADFGVXGameManager.DisplayEncrypted.EncryptedTextTitle.StringBuffer == "")
+        if (ADFGVXGameManager.DisplayEncrypted.EncryptedTextTitle.TextTMP.text == "")
         {
             StartCoroutine(PrintEncryptionFailed_IE("복호화 데이터를 저장할 파일 이름을 입력하지 않았습니다!"));
             return false;
@@ -341,25 +351,38 @@ public class ResultPanel : MonoBehaviour
         
         Result.text += "\n";
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, "TASK " + task + " SUCCESS!", false, Result);
-       yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSeconds(0.75f);
         Result.text += "\n";
         LJWConverter.Instance.PrintTMPByDuration(false, 0f, 0.3f, "암호화 파일을 저장했습니다!", false, Result);
-
-        //암호화 태스크 클리어 마킹
-        ADFGVXGameManager.Instance.encryptClear = true;
         
-        //만약 복호화 태스크가 존재했고, 이미 클리어한 상태라면
-        if (ADFGVXGameManager.Instance.decryptClear && ADFGVXGameManager.Instance.encryptClear)
+        if (ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
         {
-            //모든 태스크을 완료했으므로 씬에서 나갈 준비
+            //튜토리얼 상황이었을 경우
             CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
-            CloseButton.OnMouseUpEvent.AddListener(() => {            
-                GameSystem.Instance.ClearTask("ADFGVX");
-                GameSystem.LoadScene("Screen"); });
+            CloseButton.OnMouseUpEvent.AddListener(() =>
+            {
+                Debug.Log("암호화 튜토리얼 종료!");
+                GameSystem.LoadScene("Screen");
+            });
+        }
+        else
+        {
+            //암호화 태스크 클리어 마킹
+            ADFGVXGameManager.Instance.encryptClear = true;
+        
+            //만약 복호화 태스크가 존재했고, 이미 클리어한 상태라면
+            if (ADFGVXGameManager.Instance.decryptClear && ADFGVXGameManager.Instance.encryptClear)
+            {
+                //모든 태스크을 완료했으므로 씬에서 나갈 준비
+                CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
+                CloseButton.OnMouseUpEvent.AddListener(() => {            
+                    GameSystem.Instance.ClearTask("ADFGVX");
+                    GameSystem.LoadScene("Screen"); });
+            }
         }
         
         //결과 창 닫기 버튼 활성화
-        CloseButton.SetAvailability(true);   
+        CloseButton.SetAvailability(true);      
     }
 
     private IEnumerator PrintEncryptionFailed_IE(string error)
@@ -410,5 +433,4 @@ public class ResultPanel : MonoBehaviour
 
         CloseButton.SetAvailability(true);
     }
-    
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 public class DisplayEncrypted : MonoBehaviour
 {
     public BasicText Title { get; set; }
-    public BasicInputField EncryptedTextTitle { get; set; }
+    public BasicText EncryptedTextTitle { get; set; }
     public BasicInputField EncryptedTextBody { get; set; }
     public BasicText EncryptedTextWriter { get; set; }
     public BasicText EncryptedTextDate { get; set; }
@@ -14,7 +14,7 @@ public class DisplayEncrypted : MonoBehaviour
     private void Awake()
     {
         Title = transform.GetChild(0).GetComponent<BasicText>();
-        EncryptedTextTitle = transform.GetChild(1).GetComponent<BasicInputField>();
+        EncryptedTextTitle = transform.GetChild(1).GetComponent<BasicText>();
         EncryptedTextBody = transform.GetChild(2).GetComponent<BasicInputField>();
         EncryptedTextWriter = transform.GetChild(3).GetComponent<BasicText>();
         EncryptedTextDate = transform.GetChild(4).GetComponent<BasicText>();
@@ -28,7 +28,6 @@ public class DisplayEncrypted : MonoBehaviour
     /// </summary>
     public void Initialize()
     {
-        EncryptedTextTitle.Initialize();
         EncryptedTextBody.Initialize();
     }
 
@@ -39,7 +38,6 @@ public class DisplayEncrypted : MonoBehaviour
     /// <param name="duration"> 차단 시간 </param>
     public void CutAvailabilityInputForWhile(float wait, float duration)
     {
-        EncryptedTextTitle.CutAvailabilityForWhile(wait, duration);
         EncryptedTextBody.CutAvailabilityForWhile(wait, duration);
         SaveButton.CutAvailabilityForWhile(wait, duration);
     }
@@ -50,7 +48,6 @@ public class DisplayEncrypted : MonoBehaviour
     /// <param name="value"> 가능 여부 </param>
     public void SetAvailable(bool value)
     {
-        EncryptedTextTitle.SetAvailability(value);
         EncryptedTextBody.SetAvailability(value);
         SaveButton.SetAvailability(value);
     }
@@ -60,11 +57,20 @@ public class DisplayEncrypted : MonoBehaviour
     /// </summary>
     public void SaveEncryptedTextFile()
     {
+        //튜토리얼 전용
+        if (ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
+        {
+            if (EncryptedTextBody.StringBuffer.Replace(" ", "") == ADFGVXGameManager.Instance.encryptResultText)
+                ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(6.62f + 2f);
+            else
+                return;
+        }
+        
         //암호화 연출을 띄우고 성공 실패 여부에 따라서 리턴
         if (!ADFGVXGameManager.ResultPanel.PrintEncryptionResult())
             return;
         
-        var filePath = Application.dataPath + "/Resources/GameData/Encrypt/Encrypted/" + EncryptedTextTitle.StringBuffer + ".txt";
+        var filePath = Application.dataPath + "/Resources/GameData/Encrypt/Encrypted/" + EncryptedTextTitle.TextTMP + ".txt";
         if(!new FileInfo(filePath).Exists)
         {
             StreamWriter writer = File.CreateText(filePath);
@@ -78,4 +84,6 @@ public class DisplayEncrypted : MonoBehaviour
             Debug.Log("이미 같은 이름의 파일이 존재합니다!");
         }
     }
+    
+    
 }

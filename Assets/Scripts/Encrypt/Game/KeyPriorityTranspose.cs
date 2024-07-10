@@ -199,7 +199,7 @@ public class KeyPriorityTranspose : MonoBehaviour
                 
                 if (ADFGVXGameManager.ADFGVXTutorialManager.IsDecryptPlaying())
                 {
-                    if (key == "GOODBYE")
+                    if (key == "WAIT")
                         ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase((RowLength + LineLength) * 0.1f + 2f);        
                     else
                         return;
@@ -227,9 +227,6 @@ public class KeyPriorityTranspose : MonoBehaviour
         }
     }
     
-    /// <summary>
-    /// 현재 전치되어 있는 행렬을 깨끗하게 비운다
-    /// </summary>
     private void ClearTransposedMatrix()
     {
         KeyInputField.CheckInputField();
@@ -263,5 +260,19 @@ public class KeyPriorityTranspose : MonoBehaviour
         TransposeLines[rowIdx].text += TempLine[rowIdx][lineIdx].ToString();
         yield return new WaitForSeconds(0.1f);
         StartCoroutine(PrintLine(rowIdx, lineIdx + 1));
+    }
+
+    //튜토리얼 전용
+    public void EncryptTutorialPhase_4()
+    {
+        if (ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
+            if(KeyInputField.StringBuffer == "WAIT")
+                ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
+    }
+    public void EncryptTutorialPhase_5()
+    {
+        if (ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
+            if(ReverseTransposeLines.StringBuffer == "XXAFAFAVFGVGXVFGDDAVAGAFAFAVFGGG")
+                ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
     }
 }

@@ -14,10 +14,10 @@ public class BilateralSubstitute : MonoBehaviour
     public BasicButton NextTableButton { get; set; }
     public BasicButton BeforeTableButton { get; set; }
 
-    public int[] LastLineRowElements { get; set; } = new int[2] {
+    private int[] LastLineRowElements { get; } = new int[2] {
         0, 0
     };
-    public Dictionary<char, int> LineRowDecode { get; set; } = new Dictionary<char, int>() {
+    public Dictionary<char, int> LineRowDecode { get; } = new() {
         {'A', 0},
         {'D', 1},
         {'F', 2},
@@ -26,7 +26,7 @@ public class BilateralSubstitute : MonoBehaviour
         {'X', 5},
     };
 
-    public int CurrentTableNum { get; set; } = 0;
+    private int CurrentTableNum { get; set; } = 0;
     
     private const int TableNumMax = 4;
     
@@ -231,43 +231,41 @@ public class BilateralSubstitute : MonoBehaviour
     /// </summary>
     private void UpdateTable()
     {
-        var filePath = Application.dataPath + "/Resources/GameData/Encrypt/Tables/Table_" + CurrentTableNum.ToString() + ".txt";
-        FileInfo txtFile = new FileInfo(filePath);
+        string filePath = Application.dataPath + "/Resources/GameData/Encrypt/Tables/Table_" + CurrentTableNum.ToString() + ".txt";
+        FileInfo txtFile = new(filePath);
 
         if (!txtFile.Exists)
-            Debug.Log("Unexist Filename!");
+            Debug.Log("테이블 로드에 문제 발생!");
             
         StreamReader reader = new(filePath);
-        var value = reader.ReadToEnd();
+        string value = reader.ReadToEnd();
         reader.Close();
 
         for(var i = 0; i < 36; i++)
-        {
             TableElements[i].TextTMP.text = value[i].ToString();
-        }
-        
+
+        //튜토리얼 전용
+        if (ADFGVXGameManager.ADFGVXTutorialManager.IsDecryptPlaying() || ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
+            if(CurrentTableNum == 0)
+                ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
     }
 
-    /// <summary>
-    /// 현재 테이블 번호를 하나 늘린다
-    /// </summary>
     public void TablePlus()
     {
-        CurrentTableNum++;
-        CurrentTableNum %= TableNumMax;
-        CurrentTableNumDisplay.TextTMP.text = "치환 테이블 " + CurrentTableNum.ToString() + "번";
-        UpdateTable();
+        int next = CurrentTableNum + 1 >= TableNumMax ? 0 : CurrentTableNum + 1;
+        SetTable(next);
     }
 
-    /// <summary>
-    /// 현재 테이블 번호를 하나 줄인다
-    /// </summary>
     public void TableMinus()
     {
-        CurrentTableNum--;
-        if (CurrentTableNum < 0)
-            CurrentTableNum = TableNumMax - 1;
-        CurrentTableNumDisplay.TextTMP.text = "치환 테이블 " + CurrentTableNum.ToString() + "번";
+        int next = CurrentTableNum - 1 < 0 ? TableNumMax - 1 : CurrentTableNum - 1;
+        SetTable(next);
+    }
+
+    public void SetTable(int num)
+    {
+        CurrentTableNum = num;
+        CurrentTableNumDisplay.TextTMP.text = "치환 테이블 " + CurrentTableNum + "번";
         UpdateTable();
     }
 }

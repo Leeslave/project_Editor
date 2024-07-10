@@ -70,7 +70,7 @@ public class LoadEncrypted : MonoBehaviour
             //튜토리얼 전용
             if (ADFGVXGameManager.ADFGVXTutorialManager.IsDecryptPlaying())
             {
-                if(title == "SONG-OF-YESTERDAY")
+                if(title == "RENDEZVOUS-POINT")
                     ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(4f);
                 else
                 {
@@ -85,7 +85,6 @@ public class LoadEncrypted : MonoBehaviour
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, encryptedText, true, EncryptedTextBody.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, reader.ReadLine(), true, EncryptedTextWriter.TextTMP);
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, reader.ReadLine(), true, EncryptedTextDate.TextTMP);
-            LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, "Decrypted-" + EncryptedTextTitle.StringBuffer, true, ADFGVXGameManager.DisplayDecrypted.DecryptedTextTitle.TextTMP);
 
             //암호 키 추천
             CalculateKeyLength(encryptedText);
