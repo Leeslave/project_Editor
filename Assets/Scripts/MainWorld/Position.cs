@@ -26,16 +26,35 @@ public class Position : MonoBehaviour
     [SerializeField] private List<ImageAttribute> imageList;
 
     private Image image;
+    private int nightShiftTime = 2;
 
     
     private void Awake()
     {
         image = GetComponent<Image>();
+        foreach (var iter in imageList)
+        {
+            iter.RevertImage();
+        }
+        SetTime(0);
+    }
+
+    private void OnEnable()
+    {
+        if (GameSystem.Instance.gameData.time < nightShiftTime)
+        {
+            SetTime(0);
+        }
+        else
+        {
+            SetTime(1);
+        }
     }
 
 
     public void SetTime(int time)
     {
+        if (time >= imageList.Count) time = 0;
         image.sprite = imageList[time].image;
     }
 }

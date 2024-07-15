@@ -134,13 +134,14 @@ GameObject:
   - component: {fileID: 34851271}
   - component: {fileID: 34851273}
   - component: {fileID: 34851272}
+  - component: {fileID: 34851274}
   m_Layer: 8
   m_Name: BarTable
   m_TagString: World
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &34851271
 RectTransform:
   m_ObjectHideFlags: 0
@@ -201,6 +202,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 34851270}
   m_CullTransparentMesh: 1
+--- !u!114 &34851274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 34851270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: 0dfba0f756561d442a8678d7bd18d6de, type: 3}
 --- !u!1 &43356089
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,6 +474,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5811001139679440964, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
   m_PrefabInstance: {fileID: 44138474}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &44138476 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5811001139679440963, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
+  m_PrefabInstance: {fileID: 44138474}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &44206905
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -569,6 +589,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6054446811969637859, guid: 60425572df8257444808f955c9efeadf, type: 3}
   m_PrefabInstance: {fileID: 44206905}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &44206907 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6054446811969637858, guid: 60425572df8257444808f955c9efeadf, type: 3}
+  m_PrefabInstance: {fileID: 44206905}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &59602346
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -677,6 +702,11 @@ PrefabInstance:
 --- !u!224 &59602347 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6054446811969637859, guid: 60425572df8257444808f955c9efeadf, type: 3}
+  m_PrefabInstance: {fileID: 59602346}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &59602348 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6054446811969637858, guid: 60425572df8257444808f955c9efeadf, type: 3}
   m_PrefabInstance: {fileID: 59602346}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &89724996
@@ -1132,6 +1162,7 @@ GameObject:
   - component: {fileID: 212229195}
   - component: {fileID: 212229197}
   - component: {fileID: 212229196}
+  - component: {fileID: 212229198}
   m_Layer: 8
   m_Name: BarSeat
   m_TagString: World
@@ -1198,6 +1229,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 212229194}
   m_CullTransparentMesh: 1
+--- !u!114 &212229198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 212229194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: 6f2c734bb2233cf498ed4e6512ed6db5, type: 3}
 --- !u!1 &241226397
 GameObject:
   m_ObjectHideFlags: 0
@@ -1492,6 +1537,7 @@ GameObject:
   - component: {fileID: 361924733}
   - component: {fileID: 361924735}
   - component: {fileID: 361924734}
+  - component: {fileID: 361924736}
   m_Layer: 8
   m_Name: Seat
   m_TagString: World
@@ -1558,6 +1604,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 361924732}
   m_CullTransparentMesh: 1
+--- !u!114 &361924736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 361924732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: e277b2f9e5f988a498f9ed773606efc5, type: 3}
 --- !u!1 &485906444
 GameObject:
   m_ObjectHideFlags: 0
@@ -1574,7 +1634,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &485906445
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1612,10 +1672,12 @@ MonoBehaviour:
   locationName: 1
   bgmNumber: 1
   connectLen: 2
-  Positions: []
+  Positions:
+  - {fileID: 212229198}
+  - {fileID: 34851274}
   buttons:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1512109923}
+  - {fileID: 574547786}
   - {fileID: 1730859568}
   sizeMultiplier: 1
 --- !u!1 &490362231
@@ -1629,6 +1691,7 @@ GameObject:
   - component: {fileID: 490362232}
   - component: {fileID: 490362234}
   - component: {fileID: 490362233}
+  - component: {fileID: 490362235}
   m_Layer: 8
   m_Name: Cafe
   m_TagString: World
@@ -1695,6 +1758,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 490362231}
   m_CullTransparentMesh: 1
+--- !u!114 &490362235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 490362231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: adc88d8c41f74414985ca3cc62a3a7f4, type: 3}
+  - baseImage: {fileID: 194770193, guid: fac9c3481f239f04faf32d3afedcab0b, type: 3}
 --- !u!1 &518306353
 GameObject:
   m_ObjectHideFlags: 0
@@ -1940,6 +2018,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5811001139679440964, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
   m_PrefabInstance: {fileID: 574547784}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &574547786 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5811001139679440963, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
+  m_PrefabInstance: {fileID: 574547784}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &626208131
 GameObject:
   m_ObjectHideFlags: 0
@@ -2027,6 +2110,7 @@ GameObject:
   - component: {fileID: 658642325}
   - component: {fileID: 658642327}
   - component: {fileID: 658642326}
+  - component: {fileID: 658642328}
   m_Layer: 8
   m_Name: OfficeMeeting
   m_TagString: World
@@ -2093,6 +2177,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 658642324}
   m_CullTransparentMesh: 1
+--- !u!114 &658642328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 658642324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: ddd477115855476439794f948c39ae8e, type: 3}
 --- !u!1 &678005054
 GameObject:
   m_ObjectHideFlags: 0
@@ -2238,6 +2336,7 @@ GameObject:
   - component: {fileID: 733594949}
   - component: {fileID: 733594951}
   - component: {fileID: 733594950}
+  - component: {fileID: 733594952}
   m_Layer: 8
   m_Name: Office_Door
   m_TagString: World
@@ -2305,6 +2404,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 733594948}
   m_CullTransparentMesh: 1
+--- !u!114 &733594952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733594948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: eb07161855e0829429e09380d5d33377, type: 3}
 --- !u!1001 &734459403
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2413,6 +2526,11 @@ PrefabInstance:
 --- !u!224 &734459404 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5811001139679440964, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
+  m_PrefabInstance: {fileID: 734459403}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &734459405 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5811001139679440963, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
   m_PrefabInstance: {fileID: 734459403}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &744271674
@@ -2673,6 +2791,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5811001139679440964, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
   m_PrefabInstance: {fileID: 749671524}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &749671526 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5811001139679440963, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
+  m_PrefabInstance: {fileID: 749671524}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &756446685
 GameObject:
   m_ObjectHideFlags: 0
@@ -2879,6 +3002,7 @@ GameObject:
   - component: {fileID: 820184484}
   - component: {fileID: 820184486}
   - component: {fileID: 820184485}
+  - component: {fileID: 820184487}
   m_Layer: 8
   m_Name: Office_Door
   m_TagString: World
@@ -2947,6 +3071,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 820184483}
   m_CullTransparentMesh: 1
+--- !u!114 &820184487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820184483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: d7c4f5dc5378a5a4a838cf1ba1707de8, type: 3}
 --- !u!1 &844649768
 GameObject:
   m_ObjectHideFlags: 0
@@ -3001,11 +3139,13 @@ MonoBehaviour:
   locationName: 2
   bgmNumber: 2
   connectLen: 2
-  Positions: []
+  Positions:
+  - {fileID: 931525713}
+  - {fileID: 490362235}
   buttons:
   - {fileID: 1059813960}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 901884521}
+  - {fileID: 982216525}
   sizeMultiplier: 1
 --- !u!1 &847676104
 GameObject:
@@ -3061,11 +3201,13 @@ MonoBehaviour:
   locationName: 3
   bgmNumber: 3
   connectLen: 2
-  Positions: []
+  Positions:
+  - {fileID: 861285818}
+  - {fileID: 361924736}
   buttons:
   - {fileID: 1014531642}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 59602348}
+  - {fileID: 44138476}
   sizeMultiplier: 1
 --- !u!1 &861285814
 GameObject:
@@ -3078,6 +3220,7 @@ GameObject:
   - component: {fileID: 861285815}
   - component: {fileID: 861285817}
   - component: {fileID: 861285816}
+  - component: {fileID: 861285818}
   m_Layer: 8
   m_Name: Rest_Door
   m_TagString: World
@@ -3145,6 +3288,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 861285814}
   m_CullTransparentMesh: 1
+--- !u!114 &861285818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 861285814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: c26ae336a71b91c44a20f697ca19d3b9, type: 3}
 --- !u!1001 &901884519
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3253,6 +3410,11 @@ PrefabInstance:
 --- !u!224 &901884520 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6054446811969637859, guid: 60425572df8257444808f955c9efeadf, type: 3}
+  m_PrefabInstance: {fileID: 901884519}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &901884521 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6054446811969637858, guid: 60425572df8257444808f955c9efeadf, type: 3}
   m_PrefabInstance: {fileID: 901884519}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &928242881
@@ -3399,6 +3561,7 @@ GameObject:
   - component: {fileID: 931525710}
   - component: {fileID: 931525712}
   - component: {fileID: 931525711}
+  - component: {fileID: 931525713}
   m_Layer: 8
   m_Name: Cafe_Door
   m_TagString: World
@@ -3466,6 +3629,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 931525709}
   m_CullTransparentMesh: 1
+--- !u!114 &931525713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 931525709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: 133667a2111eccd4b93cc17019847479, type: 3}
+  - baseImage: {fileID: -193158938, guid: fac9c3481f239f04faf32d3afedcab0b, type: 3}
 --- !u!1001 &982216523
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3574,6 +3752,11 @@ PrefabInstance:
 --- !u!224 &982216524 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5811001139679440964, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
+  m_PrefabInstance: {fileID: 982216523}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &982216525 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5811001139679440963, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
   m_PrefabInstance: {fileID: 982216523}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1014531640
@@ -4192,7 +4375,8 @@ MonoBehaviour:
   locationName: 6
   bgmNumber: 4
   connectLen: 1
-  Positions: []
+  Positions:
+  - {fileID: 1757182143}
   buttons:
   - {fileID: 2060748706}
   - {fileID: 1719538816}
@@ -4391,6 +4575,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5811001139679440964, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
   m_PrefabInstance: {fileID: 1145888325}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1145888327 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5811001139679440963, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
+  m_PrefabInstance: {fileID: 1145888325}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1159230852
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4521,6 +4710,7 @@ GameObject:
   - component: {fileID: 1191931263}
   - component: {fileID: 1191931265}
   - component: {fileID: 1191931264}
+  - component: {fileID: 1191931266}
   m_Layer: 8
   m_Name: Room
   m_TagString: World
@@ -4589,6 +4779,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1191931262}
   m_CullTransparentMesh: 1
+--- !u!114 &1191931266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1191931262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: 5ae336a592281d74e940b3833660e9a0, type: 3}
 --- !u!1 &1191991994
 GameObject:
   m_ObjectHideFlags: 0
@@ -4798,7 +5002,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imageList: []
+  imageList:
+  - baseImage: {fileID: 21300000, guid: 0c250fcc33d80ef46958f68d14ebc95d, type: 3}
+  - baseImage: {fileID: 21300000, guid: 0b8cdf04455b8df438432bd15ffcc67e, type: 3}
 --- !u!1 &1241297797
 GameObject:
   m_ObjectHideFlags: 0
@@ -4810,6 +5016,7 @@ GameObject:
   - component: {fileID: 1241297798}
   - component: {fileID: 1241297800}
   - component: {fileID: 1241297799}
+  - component: {fileID: 1241297801}
   m_Layer: 8
   m_Name: Office
   m_TagString: World
@@ -4878,6 +5085,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1241297797}
   m_CullTransparentMesh: 1
+--- !u!114 &1241297801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1241297797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: 326bf73a2e4a9284487bf18fa4ab678e, type: 3}
 --- !u!1001 &1251054695
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4986,6 +5207,11 @@ PrefabInstance:
 --- !u!224 &1251054696 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6054446811969637859, guid: 60425572df8257444808f955c9efeadf, type: 3}
+  m_PrefabInstance: {fileID: 1251054695}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1251054697 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6054446811969637858, guid: 60425572df8257444808f955c9efeadf, type: 3}
   m_PrefabInstance: {fileID: 1251054695}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1260480145
@@ -5176,7 +5402,8 @@ MonoBehaviour:
   locationName: 7
   bgmNumber: 5
   connectLen: 1
-  Positions: []
+  Positions:
+  - {fileID: 1191931266}
   buttons:
   - {fileID: 1789688942}
   sizeMultiplier: 1
@@ -5191,6 +5418,7 @@ GameObject:
   - component: {fileID: 1341910685}
   - component: {fileID: 1341910687}
   - component: {fileID: 1341910686}
+  - component: {fileID: 1341910688}
   m_Layer: 8
   m_Name: NextOffice
   m_TagString: World
@@ -5258,6 +5486,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1341910684}
   m_CullTransparentMesh: 1
+--- !u!114 &1341910688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1341910684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: e3282c1ea1e16604bb037b52277c7444, type: 3}
 --- !u!1 &1354808980
 GameObject:
   m_ObjectHideFlags: 0
@@ -5312,7 +5554,9 @@ MonoBehaviour:
   locationName: 0
   bgmNumber: 0
   connectLen: 2
-  Positions: []
+  Positions:
+  - {fileID: 1240408167}
+  - {fileID: 1416746268}
   buttons:
   - {fileID: 103925067}
   - {fileID: 1361372139}
@@ -5342,6 +5586,7 @@ GameObject:
   - component: {fileID: 1416746265}
   - component: {fileID: 1416746267}
   - component: {fileID: 1416746266}
+  - component: {fileID: 1416746268}
   m_Layer: 8
   m_Name: OfficeStreet
   m_TagString: World
@@ -5409,6 +5654,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1416746264}
   m_CullTransparentMesh: 1
+--- !u!114 &1416746268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1416746264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: d344417426fc98c498fe86d3b8bd90e0, type: 3}
+  - baseImage: {fileID: 21300000, guid: d0a35e4cf4908204f9e4ac7863c6bc5a, type: 3}
 --- !u!1 &1462642114
 GameObject:
   m_ObjectHideFlags: 0
@@ -5630,6 +5890,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6054446811969637859, guid: 60425572df8257444808f955c9efeadf, type: 3}
   m_PrefabInstance: {fileID: 1474008064}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1474008066 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6054446811969637858, guid: 60425572df8257444808f955c9efeadf, type: 3}
+  m_PrefabInstance: {fileID: 1474008064}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1512109921
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5742,6 +6007,11 @@ PrefabInstance:
 --- !u!224 &1512109922 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6054446811969637859, guid: 60425572df8257444808f955c9efeadf, type: 3}
+  m_PrefabInstance: {fileID: 1512109921}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1512109923 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6054446811969637858, guid: 60425572df8257444808f955c9efeadf, type: 3}
   m_PrefabInstance: {fileID: 1512109921}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1519300018
@@ -5998,6 +6268,11 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6054446811969637859, guid: 60425572df8257444808f955c9efeadf, type: 3}
   m_PrefabInstance: {fileID: 1629062287}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1629062289 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6054446811969637858, guid: 60425572df8257444808f955c9efeadf, type: 3}
+  m_PrefabInstance: {fileID: 1629062287}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1630178848
 GameObject:
   m_ObjectHideFlags: 0
@@ -6009,6 +6284,7 @@ GameObject:
   - component: {fileID: 1630178849}
   - component: {fileID: 1630178851}
   - component: {fileID: 1630178850}
+  - component: {fileID: 1630178852}
   m_Layer: 8
   m_Name: Desk_Door
   m_TagString: World
@@ -6076,6 +6352,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1630178848}
   m_CullTransparentMesh: 1
+--- !u!114 &1630178852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1630178848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: c160502094da58645b193aa584deb0b6, type: 3}
 --- !u!1 &1640677496
 GameObject:
   m_ObjectHideFlags: 0
@@ -6532,6 +6822,7 @@ GameObject:
   - component: {fileID: 1757182140}
   - component: {fileID: 1757182142}
   - component: {fileID: 1757182141}
+  - component: {fileID: 1757182143}
   m_Layer: 8
   m_Name: Desk_Room
   m_TagString: World
@@ -6599,6 +6890,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1757182139}
   m_CullTransparentMesh: 1
+--- !u!114 &1757182143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1757182139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: 518e6e6be65b6da48abc57afb8bc3504, type: 3}
 --- !u!1 &1783827947
 GameObject:
   m_ObjectHideFlags: 0
@@ -6610,6 +6915,7 @@ GameObject:
   - component: {fileID: 1783827948}
   - component: {fileID: 1783827950}
   - component: {fileID: 1783827949}
+  - component: {fileID: 1783827951}
   m_Layer: 8
   m_Name: Desk
   m_TagString: World
@@ -6677,6 +6983,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1783827947}
   m_CullTransparentMesh: 1
+--- !u!114 &1783827951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1783827947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6ba9aa97f2d4bec815ddc1bfa97cd09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  imageList:
+  - baseImage: {fileID: 21300000, guid: 6c51d63cf09cad24e8775bc1421fc2f4, type: 3}
 --- !u!1001 &1789688940
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6904,6 +7224,11 @@ PrefabInstance:
 --- !u!224 &1793681209 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5811001139679440964, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
+  m_PrefabInstance: {fileID: 1793681208}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1793681210 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5811001139679440963, guid: 15c4fee8bfd92064ba999e0e4a6155f0, type: 3}
   m_PrefabInstance: {fileID: 1793681208}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1840055820
@@ -7274,14 +7599,17 @@ MonoBehaviour:
   locationName: 4
   bgmNumber: 4
   connectLen: 3
-  Positions: []
+  Positions:
+  - {fileID: 820184487}
+  - {fileID: 1341910688}
+  - {fileID: 1630178852}
   buttons:
   - {fileID: 1519300021}
   - {fileID: 744271677}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1474008066}
+  - {fileID: 1793681210}
+  - {fileID: 1629062289}
+  - {fileID: 749671526}
   - {fileID: 1159230854}
   sizeMultiplier: 1
 --- !u!1 &1863535829
@@ -7408,13 +7736,17 @@ MonoBehaviour:
   locationName: 5
   bgmNumber: 4
   connectLen: 2
-  Positions: []
+  Positions:
+  - {fileID: 733594952}
+  - {fileID: 1241297801}
+  - {fileID: 658642328}
+  - {fileID: 1783827951}
   buttons:
   - {fileID: 1960885789}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 44206907}
+  - {fileID: 734459405}
+  - {fileID: 1251054697}
+  - {fileID: 1145888327}
   - {fileID: 349718602}
   sizeMultiplier: 1
 --- !u!1 &1946445606
