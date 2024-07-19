@@ -16,40 +16,16 @@ public class LJWConverter : MonoBehaviour
     /// 싱글톤 패턴
     /// </summary>
     public static LJWConverter Instance { get; private set; }
-
-
-
-    ///<summary> SpriteRenderer 색 </summary>
+    
     private Dictionary<SpriteRenderer, Coroutine> SpriteRendererColorCoroutines { get; set; } = new Dictionary<SpriteRenderer, Coroutine>();
-    ///<summary> SpriteRenderer 크기 </summary>
     private Dictionary<SpriteRenderer, Coroutine> SpriteRendererSizeCoroutines { get; set; } = new Dictionary<SpriteRenderer, Coroutine>();
-
     
-    
-    /// <summary> Image 색 </summary>
     private Dictionary<Image, Coroutine> ImageColorCoroutines { get; set; } = new();
-    
-    
-
-    // ///<summary> TextMeshPro 색 </summary>
-    // private Dictionary<TextMeshPro, Coroutine> TMPColorCoroutines { get; set; } = new();
-    // ///<summary> TextMeshPro 폰트 크기 </summary>
-    // private Dictionary<TextMeshPro, Coroutine> TMPFontSizeCoroutines { get; set; } = new();
-    // ///<summary> TextMeshPro 텍스트 출력 </summary>
-    // private Dictionary<TextMeshPro, Coroutine> TMPPrintCoroutines { get; set; } = new();
-    //
-    //
-    //
-    // ///<summary> TextMeshProUGUI 색 </summary>
-    // private Dictionary<TextMeshProUGUI, Coroutine> UGUIColorCoroutine { get; set; } = new();
-    // ///<summary> TextMeshProUGUI 폰트 크기 </summary>
-    // private Dictionary<TextMeshProUGUI, Coroutine> UGUIFontSizeCoroutines { get; set; } = new();
-    // ///<summary> TextMeshProUGUI 텍스트 출력 </summary>
-    // private Dictionary<TextMeshProUGUI, Coroutine> UGUIPrintCoroutines { get; set; } = new();
     
     private Dictionary<TMP_Text, Coroutine> TMPColorCoroutines { get; set; } = new();
     private Dictionary<TMP_Text, Coroutine> TMPFontSizeCoroutines { get; set; } = new();
     private Dictionary<TMP_Text, Coroutine> TMPPrintCoroutines { get; set; } = new();
+    private Dictionary<TMP_Text, Coroutine> TMPTimerCoroutine { get; set; } = new();
     
     private Dictionary<RectTransform, Coroutine> RectTransformSizeDeltaCoroutines { get; set; } = new();
     
@@ -1131,5 +1107,122 @@ public class LJWConverter : MonoBehaviour
     }
     
     #endregion
+    
+    
+    public void SetIntTimerTMP(bool unscaledTime, float wait, float duration, TMP_Text targetTMP)
+    {
+        CheckAndStartCoroutine(TMPTimerCoroutine, targetTMP,
+            unscaledTime
+                ? StartCoroutine(SetIntTimerTMP_UnscaledTime(wait, duration, Time.unscaledTime, targetTMP))
+                : StartCoroutine(SetIntTimerTMP_ScaledTime(wait, duration, Time.time, targetTMP)));
+    }
+    private IEnumerator SetIntTimerTMP_UnscaledTime(float wait, float duration, float startTime, TMP_Text targetTMP)
+    {
+        while (true)
+        {
+            var pastDeltaTime = Time.unscaledTime - startTime;
+            var per = Mathf.Max(0.001f, pastDeltaTime) / wait;
+
+            if (per > 1f)
+                break;
+            
+            var temp = Mathf.Lerp(0f, duration, per);
+            targetTMP.text = Mathf.CeilToInt(temp).ToString();
+            yield return new WaitForSecondsRealtime(0.02f);
+        }
+        
+        while (true)
+        {
+            var pastDeltaTime = Time.unscaledTime - startTime - wait;
+            var per = Mathf.Max(0.001f, pastDeltaTime) / duration;
+            
+            if (per > 1f)
+                break;
+
+            targetTMP.text = Mathf.CeilToInt(duration - pastDeltaTime).ToString();
+            yield return new WaitForSecondsRealtime(0.02f);
+        }
+        
+        targetTMP.text = "0";
+        TMPTimerCoroutine.Remove(targetTMP);
+    }
+    private IEnumerator SetIntTimerTMP_ScaledTime(float wait, float duration, float startTime, TMP_Text targetTMP)
+    {
+        while (true)
+        {
+            var pastDeltaTime = Time.time - startTime;
+            var per = Mathf.Max(0.001f, pastDeltaTime) / wait;
+
+            if (per > 1f)
+                break;
+            
+            var temp = Mathf.Lerp(0f, duration, per);
+            targetTMP.text = Mathf.CeilToInt(temp).ToString();
+            yield return new WaitForSeconds(0.02f);
+        }
+        
+        while (true)
+        {
+            var pastDeltaTime = Time.time - startTime - wait;
+            var per = Mathf.Max(0.001f, pastDeltaTime) / duration;
+            
+            if (per > 1f)
+                break;
+
+            targetTMP.text = Mathf.CeilToInt(duration - pastDeltaTime).ToString();
+            yield return new WaitForSeconds(0.02f);
+        }
+        
+        targetTMP.text = "0";
+        TMPTimerCoroutine.Remove(targetTMP);
+    }
+
+    public void EndIntTimerTMP(bool unscaledTime, float wait, float duration, TMP_Text targetTMP)
+    {
+        CheckAndStartCoroutine(TMPTimerCoroutine, targetTMP,
+            unscaledTime
+                ? StartCoroutine(EndIntTimerTMP_UnscaledTime(wait, duration, Time.unscaledTime, int.Parse(targetTMP.text), targetTMP))
+                : StartCoroutine(EndIntTimerTMP_ScaledTime(wait, duration, Time.time, int.Parse(targetTMP.text), targetTMP)));
+    }
+    private IEnumerator EndIntTimerTMP_UnscaledTime(float wait, float duration, float startTime, int current, TMP_Text targetTMP)
+    {
+        yield return new WaitForSecondsRealtime(wait);
+
+        while (true)
+        {
+            var pastDeltaTime = Time.unscaledTime - startTime - wait;
+            var per = Mathf.Max(0.001f, pastDeltaTime) / duration;
+
+            if (per > 1f)
+                break;
+
+            var temp = Mathf.Lerp(current, 0f, per);
+            targetTMP.text = Mathf.CeilToInt(temp).ToString();
+            yield return new WaitForSecondsRealtime(0.02f);
+        }
+        
+        targetTMP.text = "0";
+        TMPTimerCoroutine.Remove(targetTMP);
+    }
+    private IEnumerator EndIntTimerTMP_ScaledTime(float wait, float duration, float startTime, int current, TMP_Text targetTMP)
+    {
+        yield return new WaitForSeconds(wait);
+        
+        while (true)
+        {
+            var pastDeltaTime = Time.time - startTime - wait;
+            var per = Mathf.Max(0.001f, pastDeltaTime) / duration;
+
+            if (per > 1f)
+                break;
+
+            var temp = Mathf.Lerp(current, 0f, per);
+            targetTMP.text = Mathf.CeilToInt(temp).ToString();
+            yield return new WaitForSeconds(0.02f);
+        }
+        
+        targetTMP.text = "0";
+        TMPTimerCoroutine.Remove(targetTMP);
+    }
     
 }

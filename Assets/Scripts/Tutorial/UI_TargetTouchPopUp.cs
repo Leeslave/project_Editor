@@ -11,6 +11,7 @@ public class UI_TargetTouchPopUp : MonoBehaviour, IPointerClickHandler
     private Image Outline { get; set; }
     private TMP_Text TargetName { get; set; }
     private TMP_Text[] InstructionText { get; set; }
+    private TMP_Text NextText { get; set; }
 
     [SerializeField] private float waitingTime;
     private bool _readyToGo;
@@ -22,12 +23,14 @@ public class UI_TargetTouchPopUp : MonoBehaviour, IPointerClickHandler
         Outline = transform.GetChild(1).GetComponent<Image>();
         TargetName = Outline.transform.GetChild(0).GetComponent<TMP_Text>();
         InstructionText = transform.GetChild(2).GetComponentsInChildren<TMP_Text>();
+        NextText = transform.GetChild(3).GetComponent<TMP_Text>();
         
         Background.color = Color.clear;
         Outline.color = Color.clear;
         TargetName.color = Color.clear;
         foreach(var i in InstructionText)
             i.color = Color.clear;
+        NextText.color = Color.clear;
     }
     
     private void OnEnable()
@@ -52,6 +55,7 @@ public class UI_TargetTouchPopUp : MonoBehaviour, IPointerClickHandler
 
     private IEnumerator Delay()
     {
+        LJWConverter.Instance.GradientTMPColor(false, waitingTime - 0.5f, 0.5f, Color.gray, NextText);
         yield return new WaitForSeconds(waitingTime);
         _readyToGo = true;
     }

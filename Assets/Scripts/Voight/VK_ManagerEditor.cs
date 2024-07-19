@@ -10,11 +10,10 @@ public class VK_ManagerEditor : Editor
     public override void OnInspectorGUI()
     {
         DrawDefaultInspector();
-
         VK_ManagerScript myScript = (VK_ManagerScript)target;
         if (GUILayout.Button("Start Turn"))
-        {
             myScript.StartTurn(3f, 15f, 8, 7);
-        }
+        if (GUILayout.Button("Start Tutorial"))
+            myScript.TutorialManager.StartVoightTutorial();
     }
 }

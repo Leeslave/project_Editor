@@ -1,49 +1,54 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class VK_ManagerScript : MonoBehaviour
 {
-    private GameObject EyeViewer { get; set; }
+    public VoightTutorialManager TutorialManager { get; set; }
+    
+    public GameObject EyeDisplay { get; set; }
+    private TMP_Text EyeDisplayTimer { get; set; }
     private GameObject PupilBone { get; set; }
-    private Vector2 PupilOriginPos { get; set; } = new Vector2(1.7f, 0f);
+    private Vector2 PupilOriginPos { get; set; } = new(1.7f, 0f);
     private Coroutine PupilSequenceCoroutine { get; set; }
-
+    
+    private GameObject ArrowSpawnPos { get; set; }
+    private GameObject Arrow { get; set; }
+    private Queue<GameObject> ArrowQueue { get; set; } = new();
+    
+    public GameObject AnswerScreen { get; set; }
+    public TMP_Text AnswerScreenTimer { get; set; }
+    
     private enum TurnStatus
     {
         비활성, 활성
     }
     private TurnStatus CurrentTurnStatus { get; set; } = TurnStatus.비활성;
     
-    private GameObject ArrowSpawnPos { get; set; }
-    private GameObject Arrow { get; set; }
-    private Queue<GameObject> ArrowQueue { get; set; } = new();
-    
-    private TextMeshPro TurnTimer { get; set; }
-
-
-    [SerializeField] private AnimationCurve curve;
-    
-    
-    
-    private GameObject AnswerScreen { get; set; }
-    
+    [SerializeField] public AnimationCurve curve;
+    [SerializeField] private bool startTutorial;
     
     private void Awake()
     {
-
+        TutorialManager = FindObjectOfType<VoightTutorialManager>();
+        
         PupilBone = GameObject.Find("bone_5");
         ArrowSpawnPos = GameObject.Find("ArrowSpawnPos");
-        Arrow = Resources.Load<GameObject>("VoightKampffDev/Arrow");
-        TurnTimer = GameObject.Find("TurnTimer").GetComponent<TextMeshPro>();
+        Arrow = Resources.Load<GameObject>("Voight/Arrow");
         
-        EyeViewer = GameObject.Find("EyeViewer");        
+        EyeDisplay = GameObject.Find("EyeDisplay");        
+        EyeDisplayTimer = GameObject.Find("EyeDisplayTimer").GetComponent<TMP_Text>();
+        
         AnswerScreen = GameObject.Find("AnswerScreen");
+        AnswerScreenTimer = GameObject.Find("AnswerScreenTimer").GetComponent<TMP_Text>();
+    }
+
+    private void Start()
+    {
+        if(startTutorial)
+            TutorialManager.StartVoightTutorial();
     }
 
     private void Update()
@@ -60,7 +65,7 @@ public class VK_ManagerScript : MonoBehaviour
     
     private IEnumerator StartSequence(float wait, float duration, int num, int arrowNum)
     {
-        //랜덤한 개수의 화살표를 생성한다
+        //화살표 생성
         SpawnArrows(arrowNum);
         
         //활성 상태가 아니면 화살표를 입력할 수 없다
@@ -68,12 +73,13 @@ public class VK_ManagerScript : MonoBehaviour
         
         //답지가 출력되는 스크린을 상승시킨다
         LJWConverter.Instance.PositionTransform(false, wait / 2, wait / 2, new Vector3(3.4f, -7f, 0f), AnswerScreen.transform, curve);
+        //타이머 시작
+        LJWConverter.Instance.SetIntTimerTMP(false, wait, duration, AnswerScreenTimer);
         
         //눈동자가 출력되는 뷰어를 상승시킨다
-        LJWConverter.Instance.PositionTransform(false, 0f, wait / 2, new Vector3(0.2f, -5.4f, 0f), EyeViewer.transform, curve);
-        
-        //타이머를 시작시킨다
-        LJWConverter.Instance.SetIntTimerTMP(false, wait, duration, TurnTimer);
+        LJWConverter.Instance.PositionTransform(false, 0f, wait / 2, new Vector3(0.2f, -5.4f, 0f), EyeDisplay.transform, curve);
+        //타이머를 시작
+        LJWConverter.Instance.SetIntTimerTMP(false, wait, duration, EyeDisplayTimer);
 
         yield return new WaitForSeconds(wait);
         
@@ -82,8 +88,8 @@ public class VK_ManagerScript : MonoBehaviour
         //시퀀스마다 난수를 생성하여 눈동자가 다른 방향으로 움직이게 한다
         for (var i = 0; i < num; i++)
         {
-            var x = Random.Range(0, 2) == 0 ? Random.Range(-3f, -1f) : Random.Range(1f, 3f);
-            var y = Random.Range(0, 2) == 0 ? Random.Range(-3f, -1f) : Random.Range(1f, 3f);
+            var x = Random.Range(0, 2) == 0 ? Random.Range(-2f, -1f) : Random.Range(1f, 2f);
+            var y = Random.Range(0, 2) == 0 ? Random.Range(-2f, -1f) : Random.Range(1f, 2f);
             var random = new Vector2(x, y);
             yield return PupilSequenceCoroutine = StartCoroutine(MovePupil2Random(duration / num, Time.time, random));
         }
@@ -100,12 +106,15 @@ public class VK_ManagerScript : MonoBehaviour
         
         //답지가 출력되는 스크린을 하강시킨다
         LJWConverter.Instance.PositionTransform(false, 0f, duration / 2, new Vector3(3.4f, -11f, 0f), AnswerScreen.transform, curve);
+        //타이머 종료
+        LJWConverter.Instance.EndIntTimerTMP(false, 0f, duration, AnswerScreenTimer);
         
         //눈동자가 출력되는 뷰어를 하강시킨다
-        LJWConverter.Instance.PositionTransform(false, duration / 2, duration / 2, new Vector3(0.2f, -14.5f, 0f), EyeViewer.transform, curve);
+        LJWConverter.Instance.PositionTransform(false, duration / 2, duration / 2, new Vector3(0.2f, -14.5f, 0f), EyeDisplay.transform, curve);
+        //타이머 종료
+        LJWConverter.Instance.EndIntTimerTMP(false, 0f, duration, EyeDisplayTimer);
         
-        //타이머를 종료시킨다
-        LJWConverter.Instance.EndIntTimerTMP(false, 0f, duration, TurnTimer);
+        
         
         //활성 상태가 아니면 화살표를 입력할 수 없다
         CurrentTurnStatus = TurnStatus.비활성;
@@ -113,13 +122,9 @@ public class VK_ManagerScript : MonoBehaviour
         //활성화되어있던 시퀀스를 종료한다
         if(ReferenceEquals(PupilSequenceCoroutine, null) == false)
             StopCoroutine(PupilSequenceCoroutine);
-        
-        //남아있는 화살표를 전부 파괴
-        var count = ArrowQueue.Count;
-        for (var i = 0; i < count; i++)
-        {
-            Destroy(ArrowQueue.Dequeue());
-        }
+
+        //화살표 삭제
+        DespawnArrows();
         
         //눈동자 원위치
         LJWConverter.Instance.PositionTransform(false, 0f, duration, PupilOriginPos, PupilBone.transform, curve);
@@ -192,7 +197,7 @@ public class VK_ManagerScript : MonoBehaviour
             StartCoroutine(EndTurn());
         }
     }
-    private void SpawnArrows(int num)
+    public void SpawnArrows(int num)
     {
         Debug.Log($"총 {num}개의 화살표를 생성했습니다!");
         var startPos = num % 2 == 0 ? new Vector3(-1f * num / 2 + 0.5f, 0f, 0f) :  new Vector3(-1f * (num - 1) / 2, 0f, 0f);
@@ -214,7 +219,13 @@ public class VK_ManagerScript : MonoBehaviour
             ArrowQueue.Enqueue(arrow);
         }
     }
+    public void DespawnArrows()
+    {
+        var count = ArrowQueue.Count;
+        for (var i = 0; i < count; i++)
+            Destroy(ArrowQueue.Dequeue());
+        Debug.Log($"총 {count}개의 화살표를 삭제했습니다!");
+    }
 
     #endregion
-    
 }
