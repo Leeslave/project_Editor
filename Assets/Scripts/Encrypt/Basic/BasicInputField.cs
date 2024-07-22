@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class BasicInputField : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class BasicInputField : MonoBehaviour
     public Color Exit = new Color(0.5f, 0.5f, 0.5f, 0.0f);
     public Color Down = new Color(0.5f, 0.5f, 0.5f, 0.5f);
     public Color Up = new Color(1f, 1f, 1f, 0.5f);
-    public Color Writing = new Color(0.1764f, 1f, 0.1764f, 0.5f);
+    public Color Writing = new(0.2f, 1f, 0.2f, 0.2f);
 
     public UnityEvent OnMouseDownEvent;
     public UnityEvent OnMouseUpEvent;
@@ -116,6 +117,9 @@ public class BasicInputField : MonoBehaviour
             return;
         if (!IsMouseOver)
             return;
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+        
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0f, Down, InputFieldFill);
         OnMouseDownEvent.Invoke();
     }
@@ -125,6 +129,8 @@ public class BasicInputField : MonoBehaviour
         if (!IsActive)
             return;
         if (!IsMouseOver)
+            return;
+        if (EventSystem.current.IsPointerOverGameObject())
             return;
 
         InputFieldTMP.text = StringBuffer;
@@ -140,6 +146,8 @@ public class BasicInputField : MonoBehaviour
         if (!IsActive)
             return;
         if (IsMouseOver)
+            return;
+        if (EventSystem.current.IsPointerOverGameObject())
             return;
         
         IsMouseOver = true;

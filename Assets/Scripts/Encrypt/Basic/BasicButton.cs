@@ -1,8 +1,8 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class BasicButton : MonoBehaviour
 {
@@ -25,10 +25,10 @@ public class BasicButton : MonoBehaviour
 
     protected virtual void Awake()
     {
-        ButtonTMP = this.transform.GetChild(0).GetComponent<TextMeshPro>();
-        ButtonFrame = this.transform.GetChild(1).GetComponent<SpriteRenderer>();
-        ButtonFill = this.transform.GetChild(2).GetComponent<SpriteRenderer>();
-        ButtonCollider = this.transform.GetComponent<BoxCollider2D>();
+        ButtonTMP = transform.GetChild(0).GetComponent<TextMeshPro>();
+        ButtonFrame = transform.GetChild(1).GetComponent<SpriteRenderer>();
+        ButtonFill = transform.GetChild(2).GetComponent<SpriteRenderer>();
+        ButtonCollider = transform.GetComponent<BoxCollider2D>();
 
         ButtonFill.color = Exit;
     }
@@ -61,52 +61,46 @@ public class BasicButton : MonoBehaviour
         SetAvailability(true);
     }
     
-    /// <summary>
-    /// 마우스 Down
-    /// </summary>
     protected virtual void OnMouseDown()
     {
         if (!IsActive)
             return;
         if (!IsMouseOver)
             return;
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
         
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0f, Down, ButtonFill);
         OnMouseDownEvent.Invoke();
     }
 
-    /// <summary>
-    /// 마우스 Up
-    /// </summary>
     protected virtual void OnMouseUp()
     {
         if (!IsActive)
             return;
         if (!IsMouseOver)
             return;
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
         
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, Up, ButtonFill);
         OnMouseUpEvent.Invoke();
     }
-
-    /// <summary>
-    /// 마우스 Over
-    /// </summary>
+    
     protected virtual void OnMouseOver()
     {
         if (!IsActive)
             return;
         if (IsMouseOver)
             return;
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
         
         IsMouseOver = true;
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0f, Enter, ButtonFill);
         OnMouseEnterEvent.Invoke();
     }
-
-    /// <summary>
-    /// 마우스 Exit
-    /// </summary>
+    
     protected virtual void OnMouseExit()
     {
         if (!IsActive)
