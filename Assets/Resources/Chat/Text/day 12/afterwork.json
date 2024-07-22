@@ -1,0 +1,61 @@
+{
+    "name": "afterwork",
+    "image": "Rex",
+    "position": 0,
+    "anchor": { "x": 0.5, "y": 0.33 },
+    "triggerType": "Auto",
+    "chatList": [
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"고생하셨습니다...",
+            "characterL": {
+                "fileName": "Klayton",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Rex",
+                "index": 1
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"그래. 난 퇴근해보겠네.",
+            "characterL": {
+                "fileName": "Klayton",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Clover",
+                "index": 1
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"자네도 많이 힘들겠지만, 기운 내라고.",
+            "characterL": {
+                "fileName": "Klayton",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Clover",
+                "index": 1
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"넵...",
+            "characterL": {
+                "fileName": "Klayton",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Rex",
+                "index": 1
+            } 
+        }
+    ]
+}
