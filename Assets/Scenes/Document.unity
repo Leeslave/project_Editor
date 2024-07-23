@@ -405,6 +405,114 @@ RectTransform:
   m_AnchoredPosition: {x: -32, y: 354}
   m_SizeDelta: {x: 80, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &65989928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 65989929}
+  - component: {fileID: 65989931}
+  - component: {fileID: 65989930}
+  - component: {fileID: 65989932}
+  - component: {fileID: 65989933}
+  m_Layer: 5
+  m_Name: Box
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &65989929
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65989928}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 503087642}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1200, y: 1200}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &65989930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65989928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 2100000, guid: 593b7ccc59699ef43827346455b8f14a, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &65989931
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65989928}
+  m_CullTransparentMesh: 1
+--- !u!114 &65989932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65989928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates: []
+--- !u!114 &65989933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65989928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 620624407ca7c2f47a83c9b809388dc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsRect: 1
+  Mat: {fileID: 2100000, guid: 593b7ccc59699ef43827346455b8f14a, type: 2}
+  TextBox: {fileID: 1510112351}
+  CanvasRect: {fileID: 503087642}
+  Target: {fileID: 0}
 --- !u!1 &77337550
 GameObject:
   m_ObjectHideFlags: 0
@@ -3558,6 +3666,822 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 492561112}
   m_CullTransparentMesh: 1
+--- !u!1 &503087638
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 503087642}
+  - component: {fileID: 503087641}
+  - component: {fileID: 503087640}
+  - component: {fileID: 503087639}
+  - component: {fileID: 503087643}
+  m_Layer: 5
+  m_Name: TutorialSet
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &503087639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503087638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &503087640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503087638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 1
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 1200, y: 900}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
+--- !u!223 &503087641
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503087638}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_SortingLayerID: 0
+  m_SortingOrder: 50
+  m_TargetDisplay: 0
+--- !u!224 &503087642
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503087638}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1105550699}
+  - {fileID: 65989929}
+  - {fileID: 1510112351}
+  - {fileID: 1030737603}
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
+--- !u!114 &503087643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503087638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b92bb7722b512e43a04d8cc1c6a773f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CircleTuto: {fileID: 1105550698}
+  BoxTuto: {fileID: 65989928}
+  TextBox: {fileID: 1014765293}
+  CurActive: {fileID: 0}
+  TutorialList:
+  - TargetObj: {fileID: 1544328788}
+    Text: "\uC544\uC774\uCF58\uC744 \uB354\uBE14 \uD074\uB9AD \uD574\uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 3
+      ReactAnywhere: 0
+      ClickCount: 2
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects:
+    - {fileID: 1135156206}
+    - {fileID: 1398383036}
+    - {fileID: 1283576813}
+    - {fileID: 375762797}
+    - {fileID: 57108935}
+    - {fileID: 710221699}
+    - {fileID: 653923613}
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 1308265252}
+    Text: "\uB85C\uADF8\uC778\uD574 \uBD05\uC2DC\uB2E4.\n\uAE08\uC77C <color=red>ID</color>\uB294
+      1\n\uAE08\uC77C <color=blue>PW</color>\uB294 2\n\uC785\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 3
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 7161975753340195427}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 0
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 0}
+    Text: 
+    Events: []
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 7161975753340195427}
+    Text: "<size=150%><color=red><\uD234\uD0B7></color></size>\n\uC8FC\uC694 \uC5C5\uBB34\uC5D0
+      \uC0AC\uC6A9\uB420\n\uB3C4\uAD6C \uBAA8\uC74C\uC785\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933608148624}
+    Text: "<size=150%><color=red><\uC635\uC158 \uC801\uC6A9></color></size>\n\uC5C5\uBB34\uC5D0
+      \uC0AC\uC6A9\uB420 \uC635\uC158 \uD30C\uC77C\uC744\n\uB4DC\uB798\uADF8\uD558\uC5EC
+      \uC5C5\uBB34\uB97C \uD65C\uC131\uD654 \uD569\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933614701960}
+    Text: "<size=150%><color=red><\uAE08\uC77C \uC5C5\uBB34></color></size>\n\uAE08\uC77C
+      \uC218\uD589\uD574\uC57C \uD560 \n\uC5C5\uBB34 \uBAA9\uB85D\uC785\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933042044867}
+    Text: "<size=150%><color=red><\uC815\uBCF4 \uC218\uC815 \uD0ED></color></size>\n\uC815\uBCF4
+      \uC704\uC870 \uC5C5\uBB34\uC5D0 \uC0AC\uC6A9\uB418\uB294 \uB3C4\uAD6C\uC785\uB2C8\uB2E4.\n\uC790\uC138\uD55C
+      \uC0AC\uC6A9 \uBC29\uBC95\uC740 \uCD94\uD6C4 \uC54C\uC544\uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933608148624}
+    Text: "\uAE08\uC77C \uC5C5\uBB34\uB97C \uC218\uD589\uD574 \uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1135156206}
+    Text: "\uB354\uBE14 \uD074\uB9AD\uD558\uC5EC \uD3F4\uB354\uB97C \uC5FD\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 3
+      ReactAnywhere: 0
+      ClickCount: 2
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects:
+    - {fileID: 1135156206}
+    ActiveTarget: {fileID: 0}
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 0}
+    Text: "\uD574\uB2F9 \uD30C\uC77C\uC744 <color=red><\uD234\uD0B7></color>\uC73C\uB85C\n\uB4DC\uB798\uADF8
+      & \uB4DC\uB78D\uD574 \uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 2
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 5
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 503087643}
+            m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
+            m_MethodName: OnPointer
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+          - m_Target: {fileID: 503087643}
+            m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
+            m_MethodName: ChangeTarget
+            m_Mode: 2
+            m_Arguments:
+              m_ObjectArgument: {fileID: 5781525358652860205}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 13
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 14
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 503087643}
+            m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
+            m_MethodName: OutPointer
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+          - m_Target: {fileID: 503087643}
+            m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
+            m_MethodName: ResetTarget
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      IsEndPoint: 0
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 4474680324780423803}
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 4474680324780423803}
+    Text: "<size=150%><color=red><\uC778\uBB3C \uC815\uBCF4 \uC218\uC815></color></size>\n\uD574\uB2F9
+      \uCC3D\uC5D0\uC11C \uD2B9\uC815 \uC778\uBB3C\uC758\n\uC815\uBCF4\uB97C \uC54C
+      \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933614701960}
+    Text: "\uAE08\uC77C \uC218\uD589\uD560 \uC5C5\uBB34 \uBAA9\uB85D\uC744\n\uD655\uC778\uD574
+      \uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 170284854}
+    Text: "\uCCAB\uBC88\uC9F8 \uC5C5\uBB34\uB294 \uD074\uB808\uC774\uD2BC\uC758\n\uAD6D\uC801
+      \uBCC0\uACBD\uC785\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933042044867}
+    Text: "<color=red><\uC815\uBCF4\uC218\uC815 \uD0ED></color>\uB97C\n\uC5F4\uC5B4
+      \uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933055462406}
+    Text: "\uD574\uB2F9 \uD0ED\uC5D0\uC120 \uC778\uBB3C\uC758 \uC5EC\uB7EC\n\uC815\uBCF4\uB97C
+      \uBCC0\uACBD\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933120656320}
+    Text: "\uB354\uBE14 \uD074\uB9AD\uD558\uC5EC\n\uAD6D\uC801 \uD3F4\uB354\uB97C
+      \uC5F4\uC5B4 \uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 0
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 1
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 1975292933527179795}
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933055462406}
+    Text: "\uC815\uBCF4 \uC218\uC815\uC758 \uC5EC\uB7EC\n\uC635\uC158\uC744 \uC81C\uACF5\uD569\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933515976138}
+    Text: "\uD574\uB2F9 \uD30C\uC77C\uC744 \uC120\uD0DD\uD569\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 0
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 1
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 1975292933439532119}
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292934531117383}
+    Text: "<color=red><\uC778\uBB3C \uC815\uBCF4 \uC218\uC815></color>\uC73C\uB85C\n\uB4DC\uB798\uADF8
+      & \uB4DC\uB78D\uD569\uB2C8\uB2E4."
+    Events: []
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 1030737602}
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 1
+  - TargetObj: {fileID: 1975292933762652637}
+    Text: "\uC815\uBCF4\uAC00 \uC131\uACF5\uC801\uC73C\uB85C\n\uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933614701960}
+    Text: "<color=red><\uD560 \uC77C \uBAA9\uB85D></color>\uC744\n\uC5F4\uC5B4 \uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects:
+    - {fileID: 1030737602}
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 170284854}
+    Text: "\uC774\uC804 \uC5C5\uBB34 \uC218\uD589 \uC5EC\uBD80\uAC00\n\uC81C\uB300\uB85C
+      \uBC18\uC601\uB418\uC5B4 \uC788\uB294\uAC78\n\uD655\uC778\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1598222375}
+    Text: "\uB2E4\uC74C \uC5C5\uBB34\uB97C \uD655\uC778\uD574\n\uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933042044867}
+    Text: "<color=red>\uB2E4\uC2DC <\uC815\uBCF4\uC218\uC815 \uD0ED></color>\uC744\n\uC5F4\uC5B4
+      \uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933312537379}
+    Text: "Main\uC744 \uB20C\uB7EC\n\uD3F4\uB354 \uC120\uD0DD\uCC3D\uC73C\uB85C\n\uB3CC\uC544\uAC11\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    - TriggerType: 0
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 1
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1822720325}
+    Text: "\uB354\uBE14 \uD074\uB9AD\uD558\uC5EC\n\uC18C\uC18D \uD3F4\uB354\uB97C
+      \uC5F4\uC5B4 \uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 1975292933527179795}
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933639079867}
+    Text: "\uD574\uB2F9 \uD30C\uC77C\uC744 \uC120\uD0DD\uD569\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 0
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 1
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    DisableObjects:
+    - {fileID: 1975292933439532119}
+    AbleObjects: []
+    ActiveTarget: {fileID: 1975292933439532119}
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292934531117383}
+    Text: "<color=red><\uC778\uBB3C \uC815\uBCF4 \uC218\uC815></color>\uC73C\uB85C\n\uB4DC\uB798\uADF8
+      & \uB4DC\uB78D\uD569\uB2C8\uB2E4."
+    Events: []
+    DisableObjects:
+    - {fileID: 1030737602}
+    AbleObjects: []
+    ActiveTarget: {fileID: 1030737602}
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 1
+  - TargetObj: {fileID: 1187740842}
+    Text: "\uC815\uBCF4\uAC00 \uC131\uACF5\uC801\uC73C\uB85C\n\uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
 --- !u!1 &517050513
 GameObject:
   m_ObjectHideFlags: 0
@@ -8203,6 +9127,187 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1014765290
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1014765293}
+  - component: {fileID: 1014765292}
+  - component: {fileID: 1014765291}
+  - component: {fileID: 1014765294}
+  m_Layer: 5
+  m_Name: TextBox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1014765291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014765290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: "\uC548\uB155"
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: f19b88ddfca17ca41ac488d45a3ae710, type: 2}
+  m_sharedMaterial: {fileID: -4802033302160525396, guid: f19b88ddfca17ca41ac488d45a3ae710, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 35
+  m_fontSizeBase: 35
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1014765292
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014765290}
+  m_CullTransparentMesh: 1
+--- !u!224 &1014765293
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014765290}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1510112351}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 45.005, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1014765294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1014765290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 2
+--- !u!1 &1030737602
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1030737603}
+  m_Layer: 0
+  m_Name: ForTutoCond
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1030737603
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1030737602}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 503087642}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1041361615
 GameObject:
   m_ObjectHideFlags: 0
@@ -9396,6 +10501,114 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1086507078}
   m_CullTransparentMesh: 1
+--- !u!1 &1105550698
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1105550699}
+  - component: {fileID: 1105550701}
+  - component: {fileID: 1105550700}
+  - component: {fileID: 1105550702}
+  - component: {fileID: 1105550703}
+  m_Layer: 5
+  m_Name: Circle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1105550699
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105550698}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 503087642}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1200, y: 1200}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1105550700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105550698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 2100000, guid: 5803b931590601b4aa380477ff8d510b, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1105550701
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105550698}
+  m_CullTransparentMesh: 1
+--- !u!114 &1105550702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105550698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates: []
+--- !u!114 &1105550703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105550698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 620624407ca7c2f47a83c9b809388dc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsRect: 0
+  Mat: {fileID: 2100000, guid: 5803b931590601b4aa380477ff8d510b, type: 2}
+  TextBox: {fileID: 1510112351}
+  CanvasRect: {fileID: 503087642}
+  Target: {fileID: 0}
 --- !u!1 &1109031963
 GameObject:
   m_ObjectHideFlags: 0
@@ -13000,6 +14213,125 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1487035670}
   m_CullTransparentMesh: 1
+--- !u!1 &1510112350
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1510112351}
+  - component: {fileID: 1510112353}
+  - component: {fileID: 1510112352}
+  - component: {fileID: 1510112355}
+  - component: {fileID: 1510112354}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1510112351
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510112350}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1014765293}
+  m_Father: {fileID: 503087642}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: -241.5, y: -301}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1510112352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510112350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 2100000, guid: 8aedc536b48c99f4e97c49c07c187e52, type: 2}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.2}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 0
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1510112353
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510112350}
+  m_CullTransparentMesh: 1
+--- !u!114 &1510112354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510112350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 10
+    m_Right: 10
+    m_Top: 10
+    m_Bottom: 10
+  m_ChildAlignment: 4
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 1
+  m_ChildScaleHeight: 1
+  m_ReverseArrangement: 0
+--- !u!114 &1510112355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1510112350}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 2
 --- !u!1 &1544328788
 GameObject:
   m_ObjectHideFlags: 0
@@ -18145,7 +19477,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 434, y: -20}
+  m_AnchoredPosition: {x: 470, y: -20}
   m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2022809697
@@ -20714,6 +22046,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FaceImage: {fileID: 0}
+  ForTutoCond: {fileID: 1030737602}
 --- !u!50 &1975292933439532111
 Rigidbody2D:
   serializedVersion: 4
@@ -26576,7 +27909,7 @@ GameObject:
   - component: {fileID: 1975292934531117434}
   - component: {fileID: 1975292934531117433}
   m_Layer: 0
-  m_Name: Image
+  m_Name: DragerImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27179,6 +28512,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FaceImage: {fileID: 1975292933989014845}
+  ForTutoCond: {fileID: 0}
 --- !u!61 &1975292934632309411
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -29865,7 +31199,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -1743, y: -17.588013}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 600, y: 930}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &3481814382546894595
 RectTransform:
@@ -31661,11 +32995,15 @@ MonoBehaviour:
     date: 7
     InfoInst:
     - ToDo: 0
-      Target: Clover
+      Target: Clayton
       Before: 2
       After: 1
+    - ToDo: 3
+      Target: Clayton
+      Before: 0
+      After: 2
     NewsInst:
-    - ToDo: 2
+    - ToDo: 1
       Line: 0
       Normal: 10%
       Revise: 25%
@@ -31673,15 +33011,7 @@ MonoBehaviour:
         \uC9C0\uC9C0\uC728\uC774 \uC9C0\uB09C \uB2EC \uB300\uBE44 25% \uC0C1\uC2B9\uD558\uC5EC
         \uAD6D\uAC00\uC758 \uC548\uC815\uACFC \uBC88\uC601\uC774 \uD55C\uCE35 \uD655\uACE0\uD574\uC84C\uC74C\uC744
         \uAE30\uC058\uAC8C \uC54C\uB824\uB4DC\uB9BD\uB2C8\uB2E4."
-    - ToDo: 0
-      Line: 8
-      Normal: 
-      Revise: 
-      Goal: "\uAD6D\uBBFC\uB4E4\uC758 \uBC88\uC601\uC744 \uC704\uD558\uC5EC, \uC601\uAD11\uC2A4\uB7EC\uC6B4
-        \uD1B5\uCE58\uC790 \"\uB354\uD0B9\""
-    DocsInst:
-    - Name: "\uB9C8\uD2F4"
-      Count: 0
+    DocsInst: []
     Peoples: []
     NewsMain: []
   - test: 12/09

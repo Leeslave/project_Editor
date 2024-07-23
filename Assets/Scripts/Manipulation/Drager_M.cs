@@ -12,6 +12,8 @@ public class Drager_M : MonoBehaviour
     private Vector3 s;
     private string[] d = {"국가 : " , "부서 : ", "소속 : ", "직업 : "};
 
+    [SerializeField] GameObject ForTutoCond;
+
     private void Awake()
     {
         MyImage = transform.GetChild(1).GetComponent<Image>();
@@ -25,6 +27,7 @@ public class Drager_M : MonoBehaviour
         {
             if (IsTouch)
             {
+                ForTutoCond.SetActive(true);
                 if (DB_M.DB_Docs.PersonDataManager.CurDraggedType != 4) cnt.GetComponent<TextChanger_M>().Changer(d[DB_M.DB_Docs.PersonDataManager.CurDraggedType] + name);
                 else { FaceImage.sprite = MyImage.sprite; DB_M.DB_Docs.PersonDataManager.FaceNum = name[0] - '0'; }
             }

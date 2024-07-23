@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -58,7 +59,13 @@ public class DB_M : MonoBehaviour
         InfSub.Add(Enum.GetNames(typeof(Job)));
         InfSub.Add(Enum.GetNames(typeof(Belonging)));
         InfSub.Add(Enum.GetNames(typeof(Part)));
-        for (int i = 0; i < PeopleList.Count - 1; i++) DBFolder.NewIcon(PeopleList[i].name_e, spr, 1);
+
+        GameObject cnt = null;
+        for (int i = 0; i < PeopleList.Count - 1; i++)
+        {
+            var tmp = DBFolder.NewIcon(PeopleList[i].name_e, spr, 1);
+            if (i == 0) cnt = tmp;
+        }
         DBFolder.gameObject.SetActive(false);
         
         //Read News Data
@@ -128,6 +135,16 @@ public class DB_M : MonoBehaviour
         }
 
         Secret.gameObject.SetActive(PlayerPrefs.GetInt("DocumentTest")==1);
+
+        StartCoroutine(TutoTest(cnt));
+    }
+
+    IEnumerator TutoTest(GameObject cnt)
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        TutorialSetting.instance.ActiveTutorial();
+        TutorialSetting.instance.TutorialList[9].TargetObj = cnt;
     }
 
     /// <summary>

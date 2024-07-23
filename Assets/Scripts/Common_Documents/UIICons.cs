@@ -152,6 +152,7 @@ public class UIICons : UIDragger
         CntImage.sprite = MyImage.sprite;
         DB_M.DB_Docs.CntFileForAttach.CurDragged = gameObject;
         CntRect.sizeDelta = ImageRect.sizeDelta;
+        
     }
 
     /// <summary>
