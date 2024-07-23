@@ -27,6 +27,9 @@ public class TutorialSetting : MonoBehaviour
     {
         [Header("---- 조명할 Object ----")]
         public GameObject TargetObj;
+        // 조명할 Object가 Instantiate등의 이유로 사전에 넣을 수 없을 경우
+        // 부모 Object를 대신 넣어 지정함
+        public List<int> ChildInd = new List<int>();   
         
         [Header("---- 설명 문구 ----")]
         [Multiline(3)]
@@ -91,8 +94,12 @@ public class TutorialSetting : MonoBehaviour
         foreach (var k in TutorialList[0].DisableObjects) k.SetActive(false);
         foreach (var k in TutorialList[0].AbleObjects) k.SetActive(true);
 
+        foreach (var k in TutorialList[0].ChildInd)
+            TutorialList[0].TargetObj = TutorialList[0].TargetObj.transform.GetChild(k).gameObject;
+
         Vector2 Pos = Camera.main.WorldToScreenPoint(TutorialList[0].TargetObj.transform.position); TargetPos = Pos;
         gameObject.SetActive(true);
+
         if (TutorialList[0].ActiveTarget) TutorialList[0].ActiveTarget.AddComponent<Tutorial_ActiveType>();
         if (TutorialList[0].IsRect)
         {

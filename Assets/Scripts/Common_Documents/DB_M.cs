@@ -144,7 +144,6 @@ public class DB_M : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
 
         TutorialSetting.instance.ActiveTutorial();
-        TutorialSetting.instance.TutorialList[9].TargetObj = cnt;
     }
 
     /// <summary>

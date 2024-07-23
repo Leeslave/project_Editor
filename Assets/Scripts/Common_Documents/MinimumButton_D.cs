@@ -35,6 +35,11 @@ public class MinimumButton_D : Buttons_M
         }
     }
 
+    public void ClickCall()
+    {
+        Click(null);
+    }
+
     WaitForSeconds wfs = new WaitForSeconds(0.01f);
     IEnumerator Mover()
     {
