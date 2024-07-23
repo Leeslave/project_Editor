@@ -4231,7 +4231,7 @@ MonoBehaviour:
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
-  - TargetObj: {fileID: 1975292933515976138}
+  - TargetObj: {fileID: 1975292933639079867}
     ChildInd: 
     Text: "\uD574\uB2F9 \uD30C\uC77C\uC744 \uC120\uD0DD\uD569\uC2DC\uB2E4."
     Events:
@@ -4305,7 +4305,7 @@ MonoBehaviour:
     Text: "<color=red><\uD560 \uC77C \uBAA9\uB85D></color>\uC744\n\uC5F4\uC5B4 \uBD05\uC2DC\uB2E4."
     Events:
     - TriggerType: 4
-      ReactAnywhere: 1
+      ReactAnywhere: 0
       ClickCount: 0
       TutoEvent:
         m_PersistentCalls:
@@ -4491,26 +4491,6 @@ MonoBehaviour:
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 1
-  - TargetObj: {fileID: 1598222375}
-    ChildInd: 
-    Text: "\uB2E4\uC74C \uC5C5\uBB34\uB97C \uD655\uC778\uD574\n\uBD05\uC2DC\uB2E4."
-    Events:
-    - TriggerType: 4
-      ReactAnywhere: 1
-      ClickCount: 0
-      TutoEvent:
-        m_PersistentCalls:
-          m_Calls: []
-      IsEndPoint: 1
-      AddTargetAction: 0
-    DisableObjects: []
-    AbleObjects: []
-    ActiveTarget: {fileID: 0}
-    IsRect: 1
-    IsStopTime: 0
-    GoNextTuto: 1
-    IsHighlight: 0
-    KeepEvent: 0
   - TargetObj: {fileID: 1187740842}
     ChildInd: 
     Text: "\uC815\uBCF4\uAC00 \uC131\uACF5\uC801\uC73C\uB85C\n\uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
@@ -4530,6 +4510,378 @@ MonoBehaviour:
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933614701960}
+    ChildInd: 
+    Text: "\uB2E4\uC74C \uC5C5\uBB34\uB97C \uD655\uC778\uD574 \uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 678851053}
+    ChildInd: 
+    Text: "\uB2E4\uC74C \uC5C5\uBB34\uB294\n<color=red><\uB274\uC2A4 \uD3B8\uC9D1></color>
+      \uC5C5\uBB34\uC785\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1058816528}
+    ChildInd: 
+    Text: "\uC885\uB8CC \uBC84\uD2BC\uC744 \uB20C\uB7EC\n<color=red><\uC778\uBB3C
+      \uC815\uBCF4 \uC218\uC815></color> \uD504\uB85C\uADF8\uB7A8\uC744 \uC885\uB8CC\uC2DC\uD0B5\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1058816528}
+    ChildInd: 
+    Text: "<size=150%><color=red>\uC8FC\uC758</size></color>\n\uD504\uB85C\uADF8\uB7A8
+      \uC885\uB8CC\uC2DC \uD604\uC7AC \uBCC0\uACBD\uC0AC\uD56D\uC774 \uC800\uC7A5\uB418\uBA70\n<color=red>\uB418\uB3CC\uB9B4
+      \uC218 \uC5C6\uC74C</color>\uC73C\uB85C\n\uC5C5\uBB34 \uC218\uD589 \uC2DC \uC8FC\uC758\uD558\uC2DC\uAE30
+      \uBC14\uB78D\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 4474680324780423803}
+            m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_MethodName: SetActive
+            m_Mode: 6
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+          - m_Target: {fileID: 791795905}
+            m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_MethodName: SetActive
+            m_Mode: 6
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+          - m_Target: {fileID: 1283576813}
+            m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_MethodName: SetActive
+            m_Mode: 6
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 1
+            m_CallState: 2
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 1283576813}
+    ChildInd: 
+    Text: "\uB354\uBE14 \uD074\uB9AD\uD558\uC5EC \uD3F4\uB354\uB97C \uC5FD\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 3
+      ReactAnywhere: 0
+      ClickCount: 2
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects:
+    - {fileID: 1135156206}
+    ActiveTarget: {fileID: 0}
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 1975292933608148624}
+    ChildInd: 
+    Text: "<color=red><\uC635\uC158 \uC801\uC6A9></color> \uD0ED\uC744 \uC5F4\uC5B4\uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 764075285}
+    ChildInd: 01000000
+    Text: "\uD574\uB2F9 \uD30C\uC77C\uC744 <color=red><\uD234\uD0B7></color>\uC73C\uB85C\n\uB4DC\uB798\uADF8
+      & \uB4DC\uB78D\uD574 \uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 2
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 5
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 503087643}
+            m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
+            m_MethodName: OnPointer
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+          - m_Target: {fileID: 503087643}
+            m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
+            m_MethodName: ChangeTarget
+            m_Mode: 2
+            m_Arguments:
+              m_ObjectArgument: {fileID: 5781525358652860205}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 13
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 14
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 503087643}
+            m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
+            m_MethodName: OutPointer
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+          - m_Target: {fileID: 503087643}
+            m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
+            m_MethodName: ResetTarget
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      IsEndPoint: 0
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 5781525358941932206}
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+  - TargetObj: {fileID: 5781525358941932206}
+    ChildInd: 
+    Text: "<size=150%><color=red><\uB274\uC2A4 \uD3B8\uC9D1></color></size>\n\uD574\uB2F9
+      \uCC3D\uC5D0\uC11C \uB274\uC2A4\uB97C \uD3B8\uC9D1\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 2022809699}
+            m_TargetAssemblyTypeName: MinimumButton_D, Assembly-CSharp
+            m_MethodName: ClickCall
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 1326134367}
+    ChildInd: 
+    Text: "\uD074\uB9AD\uD558\uC5EC \uD574\uB2F9 \uC904\uC744 \uD3B8\uC9D1\uD560
+      \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 818746827}
+    ChildInd: 
+    Text: "\uD574\uB2F9 \uC904\uC758 \uD14D\uC2A4\uD2B8\uB97C \uC218\uC815\uD560
+      \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 415221220}
+    ChildInd: 
+    Text: "\uD574\uB2F9 \uC904 \uBC14\uB85C \uBC11\uC5D0 \uC0C8\uB85C\uC6B4 \uC904\uC744
+      \uCD94\uAC00\uD569\uB2C8\uB2E4.\n\uCD94\uAC00 \uB420 \uC218 \uC788\uB294 \uC904\uC5D0\uB294
+      \uD55C\uACC4\uAC00 \uC788\uC2B5\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+  - TargetObj: {fileID: 898739351}
+    ChildInd: 
+    Text: "\uD604\uC7AC \uC904\uC744 \uC0AD\uC81C\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
     KeepEvent: 0
 --- !u!1 &517050513
 GameObject:
