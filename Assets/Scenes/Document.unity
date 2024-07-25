@@ -3783,6 +3783,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92bb7722b512e43a04d8cc1c6a773f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Test: 0
+  ForTutoCond: {fileID: 1030737602}
   CircleTuto: {fileID: 1105550698}
   BoxTuto: {fileID: 65989928}
   TextBox: {fileID: 1014765293}
@@ -3802,19 +3804,23 @@ MonoBehaviour:
       AddTargetAction: 1
     DisableObjects:
     - {fileID: 1135156206}
-    - {fileID: 1398383036}
     - {fileID: 1283576813}
     - {fileID: 375762797}
     - {fileID: 57108935}
     - {fileID: 710221699}
     - {fileID: 653923613}
+    - {fileID: 1398383036}
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 0
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1308265252}
     ChildInd: 
     Text: "\uB85C\uADF8\uC778\uD574 \uBD05\uC2DC\uB2E4.\n\uAE08\uC77C <color=red>ID</color>\uB294
@@ -3831,11 +3837,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 7161975753340195427}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 0
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 0}
     ChildInd: 
     Text: 
@@ -3843,11 +3853,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 0
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 7161975753340195427}
     ChildInd: 
     Text: "<size=150%><color=red><\uD234\uD0B7></color></size>\n\uC8FC\uC694 \uC5C5\uBB34\uC5D0
@@ -3864,11 +3878,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933608148624}
     ChildInd: 
     Text: "<size=150%><color=red><\uC635\uC158 \uC801\uC6A9></color></size>\n\uC5C5\uBB34\uC5D0
@@ -3886,11 +3904,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933614701960}
     ChildInd: 
     Text: "<size=150%><color=red><\uAE08\uC77C \uC5C5\uBB34></color></size>\n\uAE08\uC77C
@@ -3907,11 +3929,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933042044867}
     ChildInd: 
     Text: "<size=150%><color=red><\uC815\uBCF4 \uC218\uC815 \uD0ED></color></size>\n\uC815\uBCF4
@@ -3929,11 +3955,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933608148624}
     ChildInd: 
     Text: "\uAE08\uC77C \uC5C5\uBB34\uB97C \uC218\uD589\uD574 \uBD05\uC2DC\uB2E4."
@@ -3949,11 +3979,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1135156206}
     ChildInd: 
     Text: "\uB354\uBE14 \uD074\uB9AD\uD558\uC5EC \uD3F4\uB354\uB97C \uC5FD\uB2C8\uB2E4."
@@ -3970,11 +4004,15 @@ MonoBehaviour:
     AbleObjects:
     - {fileID: 1135156206}
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 0
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 791795905}
     ChildInd: 01000000
     Text: "\uD574\uB2F9 \uD30C\uC77C\uC744 <color=red><\uD234\uD0B7></color>\uC73C\uB85C\n\uB4DC\uB798\uADF8
@@ -4063,11 +4101,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 4474680324780423803}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 0
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 4474680324780423803}
     ChildInd: 
     Text: "<size=150%><color=red><\uC778\uBB3C \uC815\uBCF4 \uC218\uC815></color></size>\n\uD574\uB2F9
@@ -4085,11 +4127,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933614701960}
     ChildInd: 
     Text: "\uAE08\uC77C \uC218\uD589\uD560 \uC5C5\uBB34 \uBAA9\uB85D\uC744\n\uD655\uC778\uD574
@@ -4106,11 +4152,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 170284854}
     ChildInd: 
     Text: "\uCCAB\uBC88\uC9F8 \uC5C5\uBB34\uB294 \uD074\uB808\uC774\uD2BC\uC758\n\uAD6D\uC801
@@ -4127,11 +4177,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933042044867}
     ChildInd: 
     Text: "<color=red><\uC815\uBCF4\uC218\uC815 \uD0ED></color>\uB97C\n\uC5F4\uC5B4
@@ -4148,11 +4202,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933055462406}
     ChildInd: 
     Text: "\uD574\uB2F9 \uD0ED\uC5D0\uC120 \uC778\uBB3C\uC758 \uC5EC\uB7EC\n\uC815\uBCF4\uB97C
@@ -4169,11 +4227,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933120656320}
     ChildInd: 
     Text: "\uB354\uBE14 \uD074\uB9AD\uD558\uC5EC\n\uAD6D\uC801 \uD3F4\uB354\uB97C
@@ -4206,11 +4268,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 1975292933527179795}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 0
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933055462406}
     ChildInd: 
     Text: "\uC815\uBCF4 \uC218\uC815\uC758 \uC5EC\uB7EC\n\uC635\uC158\uC744 \uC81C\uACF5\uD569\uB2C8\uB2E4."
@@ -4226,11 +4292,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933639079867}
     ChildInd: 
     Text: "\uD574\uB2F9 \uD30C\uC77C\uC744 \uC120\uD0DD\uD569\uC2DC\uB2E4."
@@ -4262,11 +4332,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 1975292933439532119}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 0
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292934531117383}
     ChildInd: 
     Text: "<color=red><\uC778\uBB3C \uC815\uBCF4 \uC218\uC815></color>\uC73C\uB85C\n\uB4DC\uB798\uADF8
@@ -4275,11 +4349,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 1030737602}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 0
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 1
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933762652637}
     ChildInd: 
     Text: "\uC815\uBCF4\uAC00 \uC131\uACF5\uC801\uC73C\uB85C\n\uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
@@ -4295,11 +4373,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933614701960}
     ChildInd: 
     Text: "<color=red><\uD560 \uC77C \uBAA9\uB85D></color>\uC744\n\uC5F4\uC5B4 \uBD05\uC2DC\uB2E4."
@@ -4316,11 +4398,15 @@ MonoBehaviour:
     - {fileID: 1030737602}
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 170284854}
     ChildInd: 
     Text: "\uC774\uC804 \uC5C5\uBB34 \uC218\uD589 \uC5EC\uBD80\uAC00\n\uC81C\uB300\uB85C
@@ -4337,11 +4423,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1598222375}
     ChildInd: 
     Text: "\uB2E4\uC74C \uC5C5\uBB34\uB97C \uD655\uC778\uD574\n\uBD05\uC2DC\uB2E4."
@@ -4357,11 +4447,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933042044867}
     ChildInd: 
     Text: "<color=red>\uB2E4\uC2DC <\uC815\uBCF4\uC218\uC815 \uD0ED></color>\uC744\n\uC5F4\uC5B4
@@ -4378,11 +4472,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933312537379}
     ChildInd: 
     Text: "Main\uC744 \uB20C\uB7EC\n\uD3F4\uB354 \uC120\uD0DD\uCC3D\uC73C\uB85C\n\uB3CC\uC544\uAC11\uC2DC\uB2E4."
@@ -4414,11 +4512,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1822720325}
     ChildInd: 
     Text: "\uB354\uBE14 \uD074\uB9AD\uD558\uC5EC\n\uC18C\uC18D \uD3F4\uB354\uB97C
@@ -4435,11 +4537,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 1975292933527179795}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 0
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933639079867}
     ChildInd: 
     Text: "\uD574\uB2F9 \uD30C\uC77C\uC744 \uC120\uD0DD\uD569\uC2DC\uB2E4."
@@ -4472,11 +4578,15 @@ MonoBehaviour:
     - {fileID: 1975292933439532119}
     AbleObjects: []
     ActiveTarget: {fileID: 1975292933439532119}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 0
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292934531117383}
     ChildInd: 
     Text: "<color=red><\uC778\uBB3C \uC815\uBCF4 \uC218\uC815></color>\uC73C\uB85C\n\uB4DC\uB798\uADF8
@@ -4486,11 +4596,15 @@ MonoBehaviour:
     - {fileID: 1030737602}
     AbleObjects: []
     ActiveTarget: {fileID: 1030737602}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 0
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 1
+    IsRemove: 1
   - TargetObj: {fileID: 1187740842}
     ChildInd: 
     Text: "\uC815\uBCF4\uAC00 \uC131\uACF5\uC801\uC73C\uB85C\n\uC218\uC815\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
@@ -4506,11 +4620,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933614701960}
     ChildInd: 
     Text: "\uB2E4\uC74C \uC5C5\uBB34\uB97C \uD655\uC778\uD574 \uBD05\uC2DC\uB2E4."
@@ -4526,11 +4644,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 678851053}
     ChildInd: 
     Text: "\uB2E4\uC74C \uC5C5\uBB34\uB294\n<color=red><\uB274\uC2A4 \uD3B8\uC9D1></color>
@@ -4547,11 +4669,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1058816528}
     ChildInd: 
     Text: "\uC885\uB8CC \uBC84\uD2BC\uC744 \uB20C\uB7EC\n<color=red><\uC778\uBB3C
@@ -4568,11 +4694,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1058816528}
     ChildInd: 
     Text: "<size=150%><color=red>\uC8FC\uC758</size></color>\n\uD504\uB85C\uADF8\uB7A8
@@ -4627,11 +4757,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1283576813}
     ChildInd: 
     Text: "\uB354\uBE14 \uD074\uB9AD\uD558\uC5EC \uD3F4\uB354\uB97C \uC5FD\uB2C8\uB2E4."
@@ -4648,11 +4782,15 @@ MonoBehaviour:
     AbleObjects:
     - {fileID: 1135156206}
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 0
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1975292933608148624}
     ChildInd: 
     Text: "<color=red><\uC635\uC158 \uC801\uC6A9></color> \uD0ED\uC744 \uC5F4\uC5B4\uBD05\uC2DC\uB2E4."
@@ -4668,11 +4806,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 764075285}
     ChildInd: 01000000
     Text: "\uD574\uB2F9 \uD30C\uC77C\uC744 <color=red><\uD234\uD0B7></color>\uC73C\uB85C\n\uB4DC\uB798\uADF8
@@ -4761,11 +4903,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 5781525358941932206}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 0
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 0
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 5781525358941932206}
     ChildInd: 
     Text: "<size=150%><color=red><\uB274\uC2A4 \uD3B8\uC9D1></color></size>\n\uD574\uB2F9
@@ -4791,14 +4937,22 @@ MonoBehaviour:
             m_CallState: 2
       IsEndPoint: 1
       AddTargetAction: 0
-    DisableObjects: []
+    DisableObjects:
+    - {fileID: 824099586}
+    - {fileID: 764075285}
+    - {fileID: 1283576813}
+    - {fileID: 1135156206}
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 1326134367}
     ChildInd: 
     Text: "\uD074\uB9AD\uD558\uC5EC \uD574\uB2F9 \uC904\uC744 \uD3B8\uC9D1\uD560
@@ -4815,11 +4969,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 818746827}
     ChildInd: 
     Text: "\uD574\uB2F9 \uC904\uC758 \uD14D\uC2A4\uD2B8\uB97C \uC218\uC815\uD560
@@ -4836,11 +4994,15 @@ MonoBehaviour:
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
   - TargetObj: {fileID: 415221220}
     ChildInd: 
     Text: "\uD574\uB2F9 \uC904 \uBC14\uB85C \uBC11\uC5D0 \uC0C8\uB85C\uC6B4 \uC904\uC744
@@ -4854,18 +5016,271 @@ MonoBehaviour:
         m_PersistentCalls:
           m_Calls: []
       IsEndPoint: 1
-      AddTargetAction: 0
+      AddTargetAction: 1
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
-  - TargetObj: {fileID: 898739351}
-    ChildInd: 
+    IsRemove: 1
+  - TargetObj: {fileID: 5781525359379806886}
+    ChildInd: 05000000
+    Text: "\uD074\uB9AD\uD558\uC5EC \uD3B8\uC9D1\uCC3D\uC744 \uC5FD\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+    IsRemove: 1
+  - TargetObj: {fileID: 5781525359379806886}
+    ChildInd: 050000000000000000000000
     Text: "\uD604\uC7AC \uC904\uC744 \uC0AD\uC81C\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+    IsRemove: 1
+  - TargetObj: {fileID: 5781525359379806886}
+    ChildInd: 050000000000000000000000
+    Text: "\uD604\uC7AC \uC904\uC744 \uC0AD\uC81C\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 5781525359379806886}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+    IsRemove: 1
+  - TargetObj: {fileID: 0}
+    ChildInd: 
+    Text: "\uB610\uD55C <color=red><CTRL + i></color> \uD0A4\uB85C \uC791\uC5C5\uC744
+      \uB418\uB3CC\uB9B4 \uC218\uB3C4 \uC788\uC2B5\uB2C8\uB2E4."
+    Events: []
+    DisableObjects: []
+    AbleObjects:
+    - {fileID: 824099586}
+    ActiveTarget: {fileID: 5781525359379806886}
+    ActiveChild: 0f000000
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+    IsRemove: 1
+  - TargetObj: {fileID: 0}
+    ChildInd: 
+    Text: "\uD55C\uBC88 \uB354 \uC791\uC5C5\uC744 \uCDE8\uC18C\uD574 \uBD05\uC2DC\uB2E4."
+    Events: []
+    DisableObjects: []
+    AbleObjects:
+    - {fileID: 824099586}
+    ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 5781525359379806886}
+    InActiveChild: 05000000
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+    IsRemove: 1
+  - TargetObj: {fileID: 1326134367}
+    ChildInd: 
+    Text: "\uC791\uC5C5\uC744 \uC218\uD589\uD558\uAE30 \uC704\uD574\n\uD074\uB9AD\uD558\uC5EC
+      \uD3B8\uC9D1\uC744 \uD65C\uC131\uD654 \uD558\uACE0\n<color=blue>10%</color>\uB97C
+      <color=red>25%</color>\uB85C \uBCC0\uACBD\uD574 \uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects:
+    - {fileID: 824099586}
+    - {fileID: 1030737602}
+    - {fileID: 898739351}
+    - {fileID: 415221220}
+    AbleObjects: []
+    ActiveTarget: {fileID: 1030737602}
+    ActiveChild: 
+    InActiveTarget: {fileID: 818746827}
+    InActiveChild: 
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 0
+    IsHighlight: 0
+    KeepEvent: 0
+    IsRemove: 0
+  - TargetObj: {fileID: 5781525359767420632}
+    ChildInd: 
+    Text: "\uC885\uB8CC \uBC84\uD2BC\uC744 \uB20C\uB7EC\n<color=red><\uB274\uC2A4
+      \uD3B8\uC9D1></color> \uD504\uB85C\uADF8\uB7A8\uC744 \uC885\uB8CC\uC2DC\uD0B5\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 2022809699}
+            m_TargetAssemblyTypeName: MinimumButton_D, Assembly-CSharp
+            m_MethodName: ClickCall
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+    IsRemove: 1
+  - TargetObj: {fileID: 5781525359767420632}
+    ChildInd: 
+    Text: "<size=150%><color=red>\uC8FC\uC758</size></color>\n\uD504\uB85C\uADF8\uB7A8
+      \uC885\uB8CC\uC2DC \uD604\uC7AC \uBCC0\uACBD\uC0AC\uD56D\uC774 \uC800\uC7A5\uB418\uBA70\n<color=red>\uB418\uB3CC\uB9B4
+      \uC218 \uC5C6\uC74C</color>\uC73C\uB85C\n\uC5C5\uBB34 \uC218\uD589 \uC2DC \uC8FC\uC758\uD558\uC2DC\uAE30
+      \uBC14\uB78D\uB2C8\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 1
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 5781525358941932206}
+            m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_MethodName: SetActive
+            m_Mode: 6
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+          - m_Target: {fileID: 764075285}
+            m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+            m_MethodName: SetActive
+            m_Mode: 6
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      IsEndPoint: 1
+      AddTargetAction: 0
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+    IsRemove: 1
+  - TargetObj: {fileID: 1975292933614701960}
+    ChildInd: 
+    Text: "\uB2E4\uC74C \uC5C5\uBB34\uB97C \uD655\uC778\uD574 \uBD05\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 4
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
+    IsRect: 1
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+    IsRemove: 1
+  - TargetObj: {fileID: 1993790239}
+    ChildInd: 
+    Text: "\uBAA8\uB4E0 \uC5C5\uBB34\uAC00 \uC644\uB8CC\uB418\uC5C8\uC2B5\uB2C8\uB2E4."
     Events:
     - TriggerType: 4
       ReactAnywhere: 1
@@ -4876,13 +5291,84 @@ MonoBehaviour:
       IsEndPoint: 1
       AddTargetAction: 0
     DisableObjects: []
-    AbleObjects: []
+    AbleObjects:
+    - {fileID: 1398383036}
     ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
     IsRect: 1
     IsStopTime: 0
     GoNextTuto: 1
     IsHighlight: 1
     KeepEvent: 0
+    IsRemove: 1
+  - TargetObj: {fileID: 1398383036}
+    ChildInd: 
+    Text: "\uB354\uBE14 \uD074\uB9AD\uD558\uC5EC\n\uAE08\uC77C \uC5C5\uBB34 \uB0B4\uC6A9\uC744
+      \uAC80\uC99D\uD569\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 3
+      ReactAnywhere: 0
+      ClickCount: 2
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 710221699}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 0
+    IsHighlight: 1
+    KeepEvent: 0
+    IsRemove: 1
+  - TargetObj: {fileID: 0}
+    ChildInd: 
+    Text: 
+    Events: []
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 0
+    KeepEvent: 0
+    IsRemove: 1
+  - TargetObj: {fileID: 710221699}
+    ChildInd: 
+    Text: "\uB354\uBE14 \uD074\uB9AD\uD558\uC5EC\n\uAE08\uC77C \uC5C5\uBB34\uB97C
+      \uC885\uB8CC\uD569\uC2DC\uB2E4."
+    Events:
+    - TriggerType: 3
+      ReactAnywhere: 0
+      ClickCount: 2
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls: []
+      IsEndPoint: 1
+      AddTargetAction: 1
+    DisableObjects: []
+    AbleObjects: []
+    ActiveTarget: {fileID: 0}
+    ActiveChild: 
+    InActiveTarget: {fileID: 0}
+    InActiveChild: 
+    IsRect: 0
+    IsStopTime: 0
+    GoNextTuto: 1
+    IsHighlight: 1
+    KeepEvent: 0
+    IsRemove: 1
 --- !u!1 &517050513
 GameObject:
   m_ObjectHideFlags: 0
@@ -8326,6 +8812,56 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &824099586
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 824099587}
+  - component: {fileID: 824099588}
+  m_Layer: 5
+  m_Name: CancleObj
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &824099587
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824099586}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5781525358941932207}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &824099588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824099586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e3a18cb24911a443be9f3446c77d0f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Resetkey: 105
 --- !u!1 &837945879
 GameObject:
   m_ObjectHideFlags: 0
@@ -32748,6 +33284,7 @@ RectTransform:
   m_Children:
   - {fileID: 5781525360055805704}
   - {fileID: 5781525360057416372}
+  - {fileID: 824099587}
   m_Father: {fileID: 5781525359198823643}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -33404,7 +33941,7 @@ MonoBehaviour:
       Before: 0
       After: 2
     NewsInst:
-    - ToDo: 1
+    - ToDo: 2
       Line: 0
       Normal: 10%
       Revise: 25%

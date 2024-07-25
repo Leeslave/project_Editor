@@ -124,9 +124,9 @@ public class DB_M : MonoBehaviour
                 if (NewsSub != null)
                 {
                     // Calculate Cur News's Maximum Line(mx)
-                    int mx = -1; foreach (var j in k.NewsInst) if (j.Line > mx) mx = j.Line;
+                    int mx = NewsSub.Main.Count; foreach (var j in k.NewsInst) if (j.Line > mx) mx = j.Line;
                     // Add Over Line & Add News Main To Evaluate News Main
-                    k.NewsMain = new List<string>(); foreach (var i in NewsSub.Main) k.NewsMain.Add(i); for (int I = 0; I < NewsSub.Main.Count + 1 - mx; I++) k.NewsMain.Add("");
+                    k.NewsMain = new List<string>(); foreach (var i in NewsSub.Main) k.NewsMain.Add(i); for (int I = NewsSub.Main.Count; I < mx; I++) k.NewsMain.Add("");
                     // Apply Changes At Evaluate News
                     foreach (var i in k.NewsInst) k.NewsMain[i.Line] = i.Goal;
                 }
@@ -210,7 +210,10 @@ public class DB_M : MonoBehaviour
     {
         // Evaluate Info
         int Score_Info = 0;
-        for(int i = 0; i < Instructions.InfoInst.Length; i++) Score_Info += Instructions.Peoples[i].Evaluate(FindPeople(Instructions.InfoInst[i].Target));
+        for (int i = 0; i < Instructions.Peoples.Count; i++)
+        {
+            Score_Info += Instructions.Peoples[i].Evaluate(FindPeople(Instructions.InfoInst[i].Target));
+        }
 
         // Evaluate News
         int Score_News = 0;
@@ -222,7 +225,10 @@ public class DB_M : MonoBehaviour
         
             for(int i = 0; i < l; i++)
             {
+                
                 if (EvalNews.Main[i].TrimEnd('\n','\r') != Instructions.NewsMain[i].TrimEnd('\n', '\r')) Score_News--;
+
+                //print($"line {i}\n Answer : {EvalNews.Main[i].TrimEnd('\n', '\r')}\n Cur : {Instructions.NewsMain[i].TrimEnd('\n', '\r')}\n Score : {Score_News}");
             }
         }
 

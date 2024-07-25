@@ -49,8 +49,17 @@ public class TutorialBorder : MonoBehaviour
                 print($"Error At Clear!");
             }
         }
+
         TutorialSetting.instance.CurActive = this;
         this.Target = Target;
+
+        if (Target == null)
+        {
+            ObjSize = Vector2.zero;
+            StartCoroutine(Test(text, IsHighlight));
+            return 0;
+        }
+
         ObjSize = Vector2.one;
         Transform ObjTrans = Target.transform;
 
@@ -59,7 +68,11 @@ public class TutorialBorder : MonoBehaviour
             ObjSize *= ObjTrans.localScale;
             ObjTrans = ObjTrans.parent;
         }
-        if (Target.TryGetComponent(out RectTransform Rect)) ObjSize *= Rect.rect.size;
+        if (Target.TryGetComponent(out RectTransform Rect))
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(Rect);
+            ObjSize *= Rect.rect.size;
+        }
         
         if(!IsRect) ObjSize *= 1.2f;
         MaxSize = Mathf.Max(ObjSize.x / 1200, ObjSize.y / 1200);
@@ -147,20 +160,27 @@ public class TutorialBorder : MonoBehaviour
 
     void CalcPosition()
     {
-        Pos = Camera.main.WorldToScreenPoint(Target.transform.position);
-        Vector2 TextPos = new Vector2(Pos.x * 1200 / Screen.width - 600, Pos.y * 900 / Screen.height - 450 - ObjSize.y * 0.7f - TextBox.rect.height * 0.6f);
+        if (Target == null)
+        {
+            TextBox.localPosition = Vector2.zero;
+        }
+        else
+        {
+            Pos = Camera.main.WorldToScreenPoint(Target.transform.position);
+            Vector2 TextPos = new Vector2(Pos.x * 1200 / Screen.width - 600, Pos.y * 900 / Screen.height - 450 - ObjSize.y * 0.7f - TextBox.rect.height * 0.6f);
 
-        if (TextPos.x > 600 - TextBox.rect.width * 0.5f) TextPos.x = 600 - TextBox.rect.width * 0.5f;
-        else if (TextPos.x < -600 + TextBox.rect.width * 0.5f) TextPos.x = -600 + TextBox.rect.width * 0.5f;
+            if (TextPos.x > 600 - TextBox.rect.width * 0.5f) TextPos.x = 600 - TextBox.rect.width * 0.5f;
+            else if (TextPos.x < -600 + TextBox.rect.width * 0.5f) TextPos.x = -600 + TextBox.rect.width * 0.5f;
 
 
-        if (TextPos.y - TextBox.rect.height * 0.5f < -450) TextPos.y += (ObjSize.y + TextBox.rect.height) * 1.2f;
+            if (TextPos.y - TextBox.rect.height * 0.5f < -450) TextPos.y += (ObjSize.y + TextBox.rect.height) * 1.2f;
 
-        if (TextPos.y + TextBox.rect.height * 0.5f > 450 || TextPos.y - TextBox.rect.height * 0.5f < -450)
-            TextPos.y =  Pos.y * 900 / Screen.height - 450 + 100;
+            if (TextPos.y + TextBox.rect.height * 0.5f > 450 || TextPos.y - TextBox.rect.height * 0.5f < -450)
+                TextPos.y = Pos.y * 900 / Screen.height - 450 + 100;
 
 
-        TextBox.localPosition = TextPos;
+            TextBox.localPosition = TextPos;
+        }
     }
 
     public void InActiveRay()

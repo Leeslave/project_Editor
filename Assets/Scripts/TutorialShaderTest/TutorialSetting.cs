@@ -9,7 +9,10 @@ using static TutorialSetting.TutoList;
 
 public class TutorialSetting : MonoBehaviour
 {
+    public bool Test;
+
     public static TutorialSetting instance;
+    public GameObject ForTutoCond;
     [SerializeField] GameObject CircleTuto;
     [SerializeField] GameObject BoxTuto;
     TutorialBorder CircleBorder;
@@ -44,6 +47,11 @@ public class TutorialSetting : MonoBehaviour
 
         // 클리어를 해당 Object의 활성화로 판단
         public GameObject ActiveTarget;
+        public List<int> ActiveChild;
+
+        // 클리어를 해당 Object의 비활성화로 판단
+        public GameObject InActiveTarget;
+        public List<int> InActiveChild;
 
         [Header("---- 기타 설정 ----")]
         
@@ -52,6 +60,7 @@ public class TutorialSetting : MonoBehaviour
         public bool GoNextTuto;
         public bool IsHighlight;
         public bool KeepEvent = false;
+        public bool IsRemove = true;
 
         [Serializable]
         public class Event : UnityEvent<BaseEventData> { }
@@ -76,12 +85,13 @@ public class TutorialSetting : MonoBehaviour
         instance = this;
         gameObject.SetActive(false);
         BoxBorder = BoxTuto.GetComponent<TutorialBorder>(); CircleBorder = CircleTuto.GetComponent<TutorialBorder>();
+        if (Test) ActiveTutorial();
     }
 
     public bool GoNextTutorial()
     {
-        var cnt = TutorialList[0]; TutorialList.RemoveAt(0);
-        if (cnt.GoNextTuto && TutorialList.Count!=0) ActiveTutorial();
+        var cnt = TutorialList[0]; if(cnt.IsRemove) TutorialList.RemoveAt(0);
+        if ((cnt.GoNextTuto || !gameObject.activeSelf) && TutorialList.Count!=0) ActiveTutorial();
         else gameObject.SetActive(false);
 
         return true;
@@ -97,10 +107,22 @@ public class TutorialSetting : MonoBehaviour
         foreach (var k in TutorialList[0].ChildInd)
             TutorialList[0].TargetObj = TutorialList[0].TargetObj.transform.GetChild(k).gameObject;
 
-        Vector2 Pos = Camera.main.WorldToScreenPoint(TutorialList[0].TargetObj.transform.position); TargetPos = Pos;
+
+        if (TutorialList[0].TargetObj != null) { Vector2 Pos = Camera.main.WorldToScreenPoint(TutorialList[0].TargetObj.transform.position); TargetPos = Pos; }
         gameObject.SetActive(true);
 
-        if (TutorialList[0].ActiveTarget) TutorialList[0].ActiveTarget.AddComponent<Tutorial_ActiveType>();
+        if (TutorialList[0].ActiveTarget)
+        {
+            foreach (var k in TutorialList[0].ActiveChild) TutorialList[0].ActiveTarget = TutorialList[0].ActiveTarget.transform.GetChild(k).gameObject;
+            TutorialList[0].ActiveTarget.AddComponent<Tutorial_ActiveType>();
+        }
+
+        if (TutorialList[0].InActiveTarget)
+        {
+            foreach (var k in TutorialList[0].InActiveChild) TutorialList[0].InActiveTarget = TutorialList[0].InActiveTarget.transform.GetChild(k).gameObject;
+            TutorialList[0].InActiveTarget.AddComponent<Tutorial_Inactive>();
+        }
+
         if (TutorialList[0].IsRect)
         {
             MaxLength = BoxBorder.Init(TutorialList[0].TargetObj, TutorialList[0].Text, TutorialList[0].IsHighlight, TutorialList[0].KeepEvent);
@@ -174,6 +196,7 @@ public class TutorialSetting : MonoBehaviour
     
     public void SetEvent(EventTrigger trigger)
     {
+        if (TutorialList[0].TargetObj == null) return;
         EventTrigger cnt = TutorialList[0].TargetObj.GetComponent<EventTrigger>();
         foreach (var i in TutorialList[0].Events)
         {
