@@ -46,7 +46,7 @@ public class TutorialBorder : MonoBehaviour
             }
             catch(System.Exception e)
             {
-                print($"Error At Clear!");
+                print($"{e} At Clear");
             }
         }
 
@@ -119,7 +119,7 @@ public class TutorialBorder : MonoBehaviour
     {
         TextDetail.text = "";
         TextBox.gameObject.SetActive(false);
-        WaitForSeconds ts = new WaitForSeconds(0.01f);
+        WaitForSecondsRealtime ts = new WaitForSecondsRealtime(0.01f);
 
         if (IsHighlight)
         {

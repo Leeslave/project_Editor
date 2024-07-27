@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ValidTask_D : MonoBehaviour
@@ -36,10 +37,19 @@ public class ValidTask_D : MonoBehaviour
         // GameClear
         if (IsEnd)
         {
-            GameSystem.Instance.ClearTask("Document");
-            GameSystem.LoadScene("Screen");
-            gameObject.SetActive(false);
-            return;
+            try
+            {
+                GameSystem.Instance.ClearTask("Document");
+                GameSystem.LoadScene("Screen");
+            }
+            catch
+            {
+                SceneManager.LoadScene("Screen");
+            }
+            finally
+            {
+                gameObject.SetActive(false);
+            }
         }
         InfText.text = "";
         ProgBar.fillAmount = 0;

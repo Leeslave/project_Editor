@@ -56,7 +56,7 @@ public class TutorialSetting : MonoBehaviour
         [Header("---- 기타 설정 ----")]
         
         public bool IsRect;
-        public bool IsStopTime;
+        public float TimeScale = 1;
         public bool GoNextTuto;
         public bool IsHighlight;
         public bool KeepEvent = false;
@@ -99,7 +99,7 @@ public class TutorialSetting : MonoBehaviour
 
     public void ActiveTutorial()
     {
-        if (TutorialList[0].IsStopTime) Time.timeScale = 0;
+        Time.timeScale = TutorialList[0].TimeScale;
 
         foreach (var k in TutorialList[0].DisableObjects) k.SetActive(false);
         foreach (var k in TutorialList[0].AbleObjects) k.SetActive(true);
@@ -189,7 +189,7 @@ public class TutorialSetting : MonoBehaviour
             }
             catch(System.Exception e)
             {
-                print("Error At Add!");
+                print($"{e} At Add");
             }
         }
     }
