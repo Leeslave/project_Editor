@@ -96,10 +96,14 @@ public class PatternManager : MonoBehaviour
         }
         SP = new Vector2[][] { SPB, SPR, SPL, SPT };
         ReadExternalPattern();
+
+        //// Document Secret Test용
+        if (PlayerPrefs.GetInt("DocumentTest") == 1) NormalPattern = true;
     }
 
     private void Start()
     {
+        // Test용으로 바로 3페이즈로 넘어가는 기능
         if (!IsTest) StartCoroutine(MakeEasyPattern());
         else { StartPT(2); ErrorObject.SetActive(true); }
     }
@@ -159,7 +163,6 @@ public class PatternManager : MonoBehaviour
         AD.MusicOn();
         yield return OneSec;
         int NextPtNum = Random.Range(0, PatternNum + 1);
-        print(NextPtNum);
         List<int[]> CurPT = new List<int[]>();
         if (NextPtNum < PatternNum) CurPT = PTLE[Random.Range(0, PatternNum)];     // ????? ???? ?? ????? 1???? ?????? ??????
         else

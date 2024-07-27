@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using System.IO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 public class MakeTile : MonoBehaviour
 {
@@ -32,6 +30,23 @@ public class MakeTile : MonoBehaviour
 
     [SerializeField] string[] Paths;
 
+    [SerializeField] bool IsGoNextStage = false;
+
+    [SerializeField] List<StageData> Stages;
+
+    [System.Serializable]
+    public class StageData
+    {
+        public int Col;
+        public int Row;
+        public int KeyNum;
+        public int KeyWeight;
+        public int Sight;
+        public bool IsCalcFog;
+        public bool IsCalcTime;
+        public int Time;
+    }
+
     void Awake()
     {
         try
@@ -42,6 +57,13 @@ public class MakeTile : MonoBehaviour
         {
             Difficulty = 0;
         }
+
+        // 클리어시 다음으로 넘어가게 임시로 해둔 거
+        if (IsGoNextStage) Difficulty = PlayerPrefs.GetInt("MazeStage");
+        else PlayerPrefs.DeleteKey("MazeStage");
+
+        // Document Secret 폴더 오픈되게 임시로 해둔거
+        if (PlayerPrefs.GetInt("DocumentTest") == 1) Difficulty = 10;
 
         if (Difficulty != 0) GetDifficulty();
         else MakeTutorial();
@@ -72,26 +94,14 @@ public class MakeTile : MonoBehaviour
     // �ӽ�(���� �̱����� � ������ �� �� ��������)
     void GetDifficulty()
     {
+        print(Difficulty);
         Difficulty--;
-        int[] cs = new int[] { 3, 1, 2 };
-        Col = Row = 10 + 5 * (int)(Difficulty / 3);
-        KeyNum = cs[Difficulty % 3];
-        if (Difficulty <= 3)
-        {
-            IsCalcFog = false;
-            Timer.gameObject.SetActive(false);
-        }
-        else if (Difficulty <= 6)
-        {
-            IsCalcFog = true;
-            Timer.gameObject.SetActive(false);
-        }
-        else
-        {
-            IsCalcFog = true;
-            Timer.NowTime = 150;
-            Timer.gameObject.SetActive(true);
-        }
+        Col = Stages[Difficulty].Col; Row = Stages[Difficulty].Row;
+        KeyNum = Stages[Difficulty].KeyNum; KeyWeight = Stages[Difficulty].KeyWeight;
+        Player.GetComponent<PlayerMove>().Sight = Stages[Difficulty].Sight;
+        IsCalcFog = Stages[Difficulty].IsCalcFog;
+        Timer.gameObject.SetActive(Stages[Difficulty].IsCalcTime);
+        Timer.NowTime = Stages[Difficulty].Time;
 
         Maze_Inf = new MazeMap();
         Maze_Inf.MazeMaking(Col, Row);

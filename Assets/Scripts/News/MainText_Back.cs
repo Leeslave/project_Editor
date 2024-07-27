@@ -21,9 +21,15 @@ public class MainText_Back : Buttons_M
         MyInd = transform.GetSiblingIndex() - 4;
     }
 
+    public void ClickCall()
+    {
+        Click(null);
+    }
+
     // InputField(MainText_N) 활성화 및 Text 비활성화
     protected override void Click(PointerEventData Data)
     {
+        if (Field.activeSelf) return;
         Field.SetActive(true);
         image.color = BfColor;
         Text.SetActive(false);

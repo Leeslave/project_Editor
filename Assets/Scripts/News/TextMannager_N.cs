@@ -31,28 +31,36 @@ public class TextMannager_N : MonoBehaviour
         // 작업 취소 임시 기능
         if (Input.GetKey(KeyCode.LeftControl))
         {
-            if (MainTexts[CurOpen].gameObject.activeSelf) return;
             if (Input.GetKeyDown(KeyCode.I) && Commands_Back.Count != 0)
             {
-                var command = Commands_Back[0]; Commands_Back.RemoveAt(0);
-                switch (command.Item3)
-                {
-                    case 0:     // 변경 취소
-                        foreach (var k in MainTexts) if (k.MyInd == command.Item2) 
-                            {
-                                k.Text.text = command.Item1; k.ReBuildRect(); break;
-                            }
-                        break;
-                    case 1:     // 추가 취소
-                        foreach (var k in MainTexts) if (k.MyInd == command.Item2) { k.DelSelf(true); break; }
-                        break;
-                    case 2:     // 삭제 취소
-                        ActiveText(command.Item1, command.Item2-1,true);
-                        break;
-                }
+                
             }
         }
     }
+
+    public void CancleWork()
+    {
+        if (Commands_Back.Count == 0 || MainTexts[CurOpen].gameObject.activeSelf) return;
+        int ls = Commands_Back.Count - 1;
+        var command = Commands_Back[ls]; Commands_Back.RemoveAt(ls);
+        switch (command.Item3)
+        {
+            case 0:     // 변경 취소
+                foreach (var k in MainTexts) if (k.MyInd == command.Item2)
+                    {
+                        k.Text.text = command.Item1; k.ReBuildRect(); break;
+                    }
+                break;
+            case 1:     // 추가 취소
+                foreach (var k in MainTexts) if (k.MyInd == command.Item2) { k.DelSelf(true); break; }
+                break;
+            case 2:     // 삭제 취소
+                ActiveText(command.Item1, command.Item2 - 1, true);
+                break;
+        }
+        ResetIndex();
+    }
+
 
     private void Awake()
     {
@@ -88,7 +96,7 @@ public class TextMannager_N : MonoBehaviour
                 if (ind != -2)
                 {
                     Texts[i].transform.SetSiblingIndex(ind + 5);
-                    if (!IsRollBack) Commands_Back.Insert(0,new Tuple<string, int, int>("", ind+1, 1));
+                    if (!IsRollBack) Commands_Back.Add(new Tuple<string, int, int>("", ind+1, 1));
                 }
                 Texts[i].SetActive(true);
                 MainTexts[i].AddLine(Text, ActivateText++);
@@ -100,7 +108,6 @@ public class TextMannager_N : MonoBehaviour
 
     public void RemoveText(int Ind,string LastText,bool IsRollBack = false)
     {
-        if(!IsRollBack) Commands_Back.Insert(0,new Tuple<string, int, int>(LastText, Ind, 2));
         Texts[Ind].SetActive(false);
         MainTexts[Ind].DelLine();
         Texts[Ind].transform.SetAsLastSibling();
@@ -122,7 +129,11 @@ public class TextMannager_N : MonoBehaviour
         text = text.TrimEnd('\r', '\n');
         if (NewsAnsLine[line])
         {
-            if (text.Equals(NewsChange[line]) && Texts[line].gameObject.activeSelf) DB_M.DB_Docs.ToDoList.CheckList(0, line, true);
+            if (text.Equals(NewsChange[line]) && Texts[line].gameObject.activeSelf)
+            {
+                if (TutorialSetting.instance != null) if(TutorialSetting.instance.TutorialList.Count != 0) TutorialSetting.instance.TutorialList[0].IsRemove = true;
+                DB_M.DB_Docs.ToDoList.CheckList(0, line, true);
+            }
             else DB_M.DB_Docs.ToDoList.CheckList(0, line, false);
         }
         else foreach(var k in MainTexts)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class TextMannager_D : MonoBehaviour
 {
@@ -48,6 +49,7 @@ public class TextMannager_D : MonoBehaviour
     {
         CurOpen = -1;
         foreach (var k in TextsObj) k.SetActive(false); ActivateText = 0;
+        if (IsRecord) { NormalBT.interactable = true; AbnormalBT.interactable = false; }
     }
 
 
@@ -61,12 +63,17 @@ public class TextMannager_D : MonoBehaviour
     {
         if (CurOpen != -1) Texts[CurOpen].UnSelect();
         CurOpen = Ind; CurSelection = tr;
+
+        
+        if(OtherMannager.CurOpen != -1)
+        {
+            JudgeStart();
+            OtherMannager.JudgeStart();
+        }
     }
 
     public void JudgeStart()
     {
-        if(OtherMannager.CurOpen != -1)
-        {
             NotTouch.gameObject.SetActive(true);
             Vector3 Gap = (OtherMannager.CurSelection.position - CurSelection.position) * 0.5f;
             int x = Mathf.FloorToInt(Mathf.Abs(Gap.x / 30));
@@ -81,11 +88,12 @@ public class TextMannager_D : MonoBehaviour
             StartPos = StartPos + xGap * (x - 1);
             for(int i = 0; i <= y; i++) { Dots[l++].transform.position = StartPos + yGap * i;}
             StartCoroutine(DotAct(l));
-        }
-
     }
 
     [SerializeField] TMP_Text Message;
+    [SerializeField] Button AbnormalBT;
+    [SerializeField] Button NormalBT;
+
     IEnumerator DotAct(int i)
     {
         for(int x = 0; x < i-1; x++)
@@ -100,7 +108,9 @@ public class TextMannager_D : MonoBehaviour
             {
                 CorrectedAnswer(); OtherMannager.CorrectedAnswer();
                 Message.text = $"Abnormal Detection!";
-                DB_M.DB_Docs.ToDoList.CheckList(1, 0, true);
+                CurDocs.IsAbnormalFinded = true;
+                AbnormalBT.interactable = true;
+                NormalBT.interactable = false;
             }
             else Message.text = $"No Abnormal";
             MyUi.AddEvent(NotTouch, EventTriggerType.PointerClick,
@@ -123,4 +133,12 @@ public class TextMannager_D : MonoBehaviour
     }
 
     public void RemoveDot() { foreach (var k in Dots) k.SetActive(false); }
+
+    [HideInInspector] public Docs CurDocs;
+
+    public void EndDocsTask()
+    {
+        DB_M.DB_Docs.ToDoList.CheckList(1, 0, true);
+        CurDocs.IsDone = true;
+    }
 }

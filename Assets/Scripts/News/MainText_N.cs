@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -79,6 +80,7 @@ public class MainText_N : MonoBehaviour
     /// </summary>
     public void DelSelf(bool IsRollBack = false)
     {
+        if (!IsRollBack) DB_M.DB_Docs.NewsManager.Commands_Back.Add(new Tuple<string, int, int>(Text.text, MyInd, 2));
         DB_M.DB_Docs.NewsManager.RemoveText(Parent.MyInd, Text.text, IsRollBack);
     }
 

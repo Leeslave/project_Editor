@@ -719,6 +719,88 @@ MonoBehaviour:
   Move_Y: 10
   Difficulty: 0
   Paths: []
+  IsGoNextStage: 0
+  Stages:
+  - Col: 10
+    Row: 10
+    KeyNum: 1
+    KeyWeight: 3
+    Sight: 5
+    IsCalcFog: 0
+    IsCalcTime: 0
+    Time: 0
+  - Col: 15
+    Row: 15
+    KeyNum: 2
+    KeyWeight: 3
+    Sight: 5
+    IsCalcFog: 0
+    IsCalcTime: 0
+    Time: 0
+  - Col: 20
+    Row: 20
+    KeyNum: 3
+    KeyWeight: 3
+    Sight: 5
+    IsCalcFog: 0
+    IsCalcTime: 0
+    Time: 0
+  - Col: 10
+    Row: 10
+    KeyNum: 1
+    KeyWeight: 4
+    Sight: 5
+    IsCalcFog: 1
+    IsCalcTime: 0
+    Time: 0
+  - Col: 15
+    Row: 15
+    KeyNum: 2
+    KeyWeight: 4
+    Sight: 5
+    IsCalcFog: 1
+    IsCalcTime: 0
+    Time: 0
+  - Col: 20
+    Row: 20
+    KeyNum: 3
+    KeyWeight: 4
+    Sight: 5
+    IsCalcFog: 1
+    IsCalcTime: 0
+    Time: 0
+  - Col: 10
+    Row: 10
+    KeyNum: 1
+    KeyWeight: 5
+    Sight: 4
+    IsCalcFog: 1
+    IsCalcTime: 1
+    Time: 100
+  - Col: 15
+    Row: 15
+    KeyNum: 2
+    KeyWeight: 5
+    Sight: 4
+    IsCalcFog: 1
+    IsCalcTime: 1
+    Time: 125
+  - Col: 20
+    Row: 20
+    KeyNum: 3
+    KeyWeight: 5
+    Sight: 3
+    IsCalcFog: 1
+    IsCalcTime: 1
+    Time: 150
+  - Col: 10
+    Row: 10
+    KeyNum: 1
+    KeyWeight: 0
+    Sight: 7
+    IsCalcFog: 0
+    IsCalcTime: 0
+    Time: 150
 --- !u!4 &766390974
 Transform:
   m_ObjectHideFlags: 0
@@ -1895,6 +1977,7 @@ MonoBehaviour:
   - {fileID: 1937629778}
   CV: {fileID: 0}
   speed: 50
+  IsGoNextStage: 0
 --- !u!4 &2379532259100361379
 Transform:
   m_ObjectHideFlags: 0

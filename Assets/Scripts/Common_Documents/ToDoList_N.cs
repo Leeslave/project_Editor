@@ -58,7 +58,7 @@ public class ToDoList_N : MonoBehaviour
             Texts[ToDoCount].text += $"<size=20>\n\n{cnt}</size>";
 
             DB_M.DB_Docs.PersonDataManager.PeopleCorrect.Add(new Tuple<string, int, int, int>(i.Target, i.ToDo, i.After, ToDoCount));
-            ToDoIndexes[2].Add(new ToDoIndex(0, i.ToDo, $"{i.Target} {sub[i.ToDo]}", cnt, 0, $"{i.After}"));
+            ToDoIndexes[2].Add(new ToDoIndex(ToDoCount, i.ToDo, $"{i.Target} {sub[i.ToDo]} 변경", cnt, 0, $"{i.After}"));
             Texts[ToDoCount].gameObject.SetActive(true);
             ToDoCount++;
         }

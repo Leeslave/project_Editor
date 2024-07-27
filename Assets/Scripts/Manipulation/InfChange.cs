@@ -216,7 +216,6 @@ public class InfChange : MonoBehaviour
     {
         foreach(var k in PeopleCorrect)
         {
-            
             if(k.Item1.Equals(CurPeople.name_e) && k.Item2 == ind)
             {
                 switch (ind)
@@ -227,21 +226,9 @@ public class InfChange : MonoBehaviour
                         break;
                     default:    // ETC
                         var j = text.Split(" ")[2];
-                        if (DB_M.DB_Docs.InfSub[ind][k.Item3].TrimEnd() == j) DB_M.DB_Docs.ToDoList.CheckList(2, 01, true, k.Item4);
+                        if (DB_M.DB_Docs.InfSub[ind][k.Item3].TrimEnd() == j) DB_M.DB_Docs.ToDoList.CheckList(2, 0, true, k.Item4);
                         else DB_M.DB_Docs.ToDoList.CheckList(2, -1, false, k.Item4);
                         break;
-                    /*case 0:
-                        if (DB_M.DB_Docs.InfSub[0][k.Item3].TrimEnd() == text[10..]) DB_M.DB_Docs.ToDoList.CheckList(2, -1, true, k.Item4);
-                        else DB_M.DB_Docs.ToDoList.CheckList(2, -1, false, k.Item4);
-                        break;
-                    case 1:
-                        if (DB_M.DB_Docs.InfSub[1][k.Item3].TrimEnd() == country.text[6..]) DB_M.DB_Docs.ToDoList.CheckList(2, -1, true, k.Item4);
-                        else DB_M.DB_Docs.ToDoList.CheckList(2, -1, false, k.Item4);
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;*/
                         
                 }
             }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class AttatchFile_N : MonoBehaviour
 {
-    // µå·¡±× ÁßÀÎÁö
+    // ë“œë˜ê·¸ ì¤‘ì¸ì§€
     [NonSerialized] public bool IsDragged = false;
-    // ÇöÀç µå·¡±× ÁßÀÎ Icon
+    // í˜„ì¬ ë“œë˜ê·¸ ì¤‘ì¸ Icon
     [NonSerialized] public GameObject CurDragged;
 
     [NonSerialized] public int AttatchType = -1;
@@ -15,7 +15,6 @@ public class AttatchFile_N : MonoBehaviour
     public ExecuteAttatch Attatch = null;
 
     [NonSerialized] public string IconName = null;
-
     private void OnDisable()
     {
         AttatchType = -1;

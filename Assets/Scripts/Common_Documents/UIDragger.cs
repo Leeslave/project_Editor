@@ -14,12 +14,12 @@ public class UIDragger : MonoBehaviour
         eventTrigger = GetComponent<EventTrigger>();
         MyUi.AddEvent(eventTrigger, EventTriggerType.PointerDown, Click);
         MyUi.AddEvent(eventTrigger, EventTriggerType.BeginDrag,DragOn);
-        MyUi.AddEvent(GetComponent<EventTrigger>(), EventTriggerType.EndDrag, DragEnd);
+        MyUi.AddEvent(eventTrigger, EventTriggerType.EndDrag, DragEnd);
         MyUi.AddEvent(eventTrigger, EventTriggerType.Drag, DragPointer);
     }
 
     /// <summary>
-    /// µå·¡±× ÁßÀÎ Object¸¦ ÃÖ»ó´Ü¿¡ À§Ä¡½ÃÅ´.
+    /// ë“œë˜ê·¸ ì¤‘ì¸ Objectë¥¼ ìµœìƒë‹¨ì— ìœ„ì¹˜ì‹œí‚´.
     /// </summary>
     /// <param name="Data"></param>
     protected virtual void Click(PointerEventData Data)
@@ -42,7 +42,7 @@ public class UIDragger : MonoBehaviour
     }
 
     /// <summary>
-    /// ¸¶¿ì½º ÁÂÇ¥¸¦ UI¿ë ÁÂÇ¥·Î º¯È¯(¹«Á¶°Ç Canvas°¡ World¼¼ÆÃÀÌ µÇ¾î ÀÖ¾î¾ß ÇÔ)
+    /// ë§ˆìš°ìŠ¤ ì¢Œí‘œë¥¼ UIìš© ì¢Œí‘œë¡œ ë³€í™˜(ë¬´ì¡°ê±´ Canvasê°€ Worldì„¸íŒ…ì´ ë˜ì–´ ìˆì–´ì•¼ í•¨)
     /// </summary>
     protected virtual void DragSetting() 
     { 
