@@ -77,7 +77,19 @@ public class TutorialBorder : MonoBehaviour
         if(!IsRect) ObjSize *= 1.2f;
         MaxSize = Mathf.Max(ObjSize.x / 1200, ObjSize.y / 1200);
 
-        
+        CalcPosition();
+
+        if (IsRect)
+        {
+            Mat.SetVector("_MaskCenter", new Vector4(Pos.x / Screen.width, (Pos.y + Screen.width * 0.125f) / Screen.width));
+            Mat.SetFloat("_X", ObjSize.x * 0.9f / 1200);
+            Mat.SetFloat("_Y", ObjSize.y * 0.9f / 1200);
+        }
+        else
+        {
+            Mat.SetVector("_MaskCenter", new Vector4(Pos.x / Screen.width, (Pos.y + Screen.width * 0.125f) / Screen.width));
+            Mat.SetFloat("_Radius", MaxSize);
+        }
 
         gameObject.SetActive(true);
 
@@ -133,10 +145,8 @@ public class TutorialBorder : MonoBehaviour
                     MaxSize += Gap;                
                 }
             }
+            yield return new WaitForSeconds(0.2f);
         }
-
-        yield return new WaitForSeconds(0.2f);
-
         TextDetail.text = text;
         TextBox.gameObject.SetActive(true);
         LayoutRebuilder.ForceRebuildLayoutImmediate(TextBox);
