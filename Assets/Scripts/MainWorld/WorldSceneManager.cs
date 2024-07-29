@@ -13,6 +13,7 @@ public enum World {
     Bar,
     Cafe,
     Restaurant,
+    Temple,
     Hallway,
     Office,
     Office2,

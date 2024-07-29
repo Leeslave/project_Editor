@@ -124,11 +124,6 @@ public class Location : MonoBehaviour
     public void MoveLeft()
     {
         int newPos = GameSystem.Instance.gameData.position - 1;
-        if (newPos < 0)
-        {
-            Debug.Log($"WORLD MOVE ERROR : Invalid position {newPos}");
-            return;
-        }
 
         SetPosition(newPos);
     }
@@ -138,11 +133,6 @@ public class Location : MonoBehaviour
     public void MoveRight()
     {
         int newPos = GameSystem.Instance.gameData.position + 1;
-        if (newPos > connectLen)
-        {
-            Debug.Log($"WORLD MOVE ERROR : Invalid position {newPos}");
-            return;
-        }
 
         SetPosition(newPos);
     }

@@ -126,6 +126,24 @@ public class ChatJumpAction : Action
     }
 }
 
+// 대화 스킵 액션
+public class TutorialAction : Action
+{
+    public override int Invoke()
+    {
+        if(int.TryParse(param, out int count))
+        {
+            ChatTutorialManager.Get().Show(count);
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
+        
+    }
+}
+
 
 // 오브젝트 삭제 액션
 public class RemoveAction : Action
