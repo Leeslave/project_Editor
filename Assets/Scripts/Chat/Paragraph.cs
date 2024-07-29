@@ -16,6 +16,8 @@ public abstract class Paragraph
     public string chatType = "Normal";    // 대사 타입
     public CharacterCG characterL = null;  // 왼쪽 캐릭터 CG
     public CharacterCG characterR = null;   // 오른쪽 캐릭터 CG
+    public CharacterCG characterL2 = null;  // 왼쪽 캐릭터 CG
+    public CharacterCG characterR2 = null;   // 오른쪽 캐릭터 CG
     public string bgm = null;         // 배경음악
     public string background = null;  // 배경 이미지
     public string action = null;    // 대화 후 반응

@@ -16,13 +16,9 @@ public class Chat : Singleton<Chat>
     - 스킵하기를 눌러서 대사 종료 (이벤트 함수 실행, Ending 선택지 제외)
     - 대사 출력 후 로그 텍스트에 1개씩 추가 
     */
-    private GameObject chatUI
-    {
-        get
-        {
-            return transform.GetChild(0).gameObject;
-        }
-    }
+    private GameObject ChatUI => transform.GetChild(0).gameObject;
+    [SerializeField]
+    private ChatTutorialManager ChatTutorial;
 
     [Header("UI 요소")]
     [SerializeField]
@@ -35,7 +31,11 @@ public class Chat : Singleton<Chat>
     [SerializeField]
     private Image characterL;    // 왼쪽 캐릭터 CG
     [SerializeField]
+    private Image characterL2;    // 왼쪽 캐릭터 CG
+    [SerializeField]
     private Image characterR;    // 오른쪽 캐릭터 CG
+    [SerializeField]
+    private Image characterR2;    // 왼쪽 캐릭터 CG
     [SerializeField]
     private GameObject talkPanel;   // 대화 패널
     public TMP_Text talkerName;     // 발화자 이름
@@ -100,7 +100,7 @@ public class Chat : Singleton<Chat>
         chatList = new Queue<Paragraph>(_chatList);
         logList = new Queue<Paragraph>();   
 
-        chatUI.SetActive(true);
+        ChatUI.SetActive(true);
         NextChat();        
     }
 
@@ -147,7 +147,7 @@ public class Chat : Singleton<Chat>
         background.sprite = null;   // 배경 초기화
         WorldSceneManager.Instance.worldBGM.Resume();
         ClearLog();
-        chatUI.SetActive(false);    // UI 종료
+        ChatUI.SetActive(false);    // UI 종료
     }
 
     /// <summary>
@@ -233,6 +233,8 @@ public class Chat : Singleton<Chat>
         // CG 초기 설정
         characterL.gameObject.SetActive(false);
         characterR.gameObject.SetActive(false);
+        characterL2.gameObject.SetActive(false);
+        characterR2.gameObject.SetActive(false);
         background.gameObject.SetActive(false);
 
         // 패널들 초기 설정
@@ -255,6 +257,15 @@ public class Chat : Singleton<Chat>
                 }
                 characterL.gameObject.SetActive(true);
             }
+            if (talk.characterL2 != null)
+            {
+                if (characterL2.sprite == null ||
+                    (characterL2.sprite.name != talk.characterL2.fileName))
+                {
+                    characterL2.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterL2.fileName}", talk.characterL2.index);
+                }
+                characterL2.gameObject.SetActive(true);
+            }
             if (talk.characterR != null)
             {
                 if (characterR.sprite == null ||
@@ -263,6 +274,15 @@ public class Chat : Singleton<Chat>
                     characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterR.fileName}", talk.characterR.index);
                 }
                 characterR.gameObject.SetActive(true);
+            }
+            if (talk.characterR2 != null)
+            {
+                if (characterR2.sprite == null ||
+                    (characterR2.sprite.name != talk.characterR2.fileName))
+                {
+                    characterR2.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterR2.fileName}", talk.characterR2.index);
+                }
+                characterR2.gameObject.SetActive(true);
             }
             
             // 대화 존재시
@@ -300,6 +320,16 @@ public class Chat : Singleton<Chat>
             {
                 characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterR.fileName}_{choicePara.characterR.index}");
                 characterR.gameObject.SetActive(true);
+            }
+            if (choicePara.characterL2 != null)
+            {
+                characterL2.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterL2.fileName}_{choicePara.characterL2.index}");
+                characterL2.gameObject.SetActive(true);
+            }
+            if (choicePara.characterR != null)
+            {
+                characterR2.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterR2.fileName}_{choicePara.characterR2.index}");
+                characterR2.gameObject.SetActive(true);
             }
 
             choicePanel.SetActive(true);    // 선택지 패널 활성화
@@ -489,6 +519,9 @@ public class Chat : Singleton<Chat>
             break;
         case "TimeChange":
             result = new TimeChangeAction();
+            break;
+        case "Tutorial":
+            result = new TutorialAction();
             break;
         case "Remove":
             result = new RemoveAction();

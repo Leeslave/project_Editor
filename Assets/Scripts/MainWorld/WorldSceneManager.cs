@@ -13,6 +13,7 @@ public enum World {
     Bar,
     Cafe,
     Restaurant,
+    Temple,
     Hallway,
     Office,
     Office2,
@@ -38,8 +39,8 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     
 
     public SoundManager worldBGM;  // 지역 내 배경음악
-    
-    public bool IsMoving { get; private set; } = false;    // 지역 내 이동 버튼 활성화 여부
+
+    public bool IsMoving = false;    // 지역 내 이동 버튼 활성화 여부
 
     [Header("지역 이동 효과")]
     public float moveDelay;     // 지역 이동 딜레이
@@ -53,6 +54,7 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
         base.Awake();
 
         ReloadWorld();
+        CurrentLocation.SetButtonActive(IsMoving);
     }
 
 
@@ -95,6 +97,10 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
 
         // 새 지역 활성화
         CurrentLocation.ActiveLocation(true);
+        
+        // 이동 버튼 비활성화
+        IsMoving = false;
+        CurrentLocation.SetButtonActive(IsMoving);
     }
 
 

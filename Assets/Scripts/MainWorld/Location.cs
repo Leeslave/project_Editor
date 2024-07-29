@@ -19,10 +19,10 @@ public class Location : MonoBehaviour
 
     [SerializeField]
     private int connectLen;     // 연결 가능 최대 길이
-    [SerializeField]
-    private List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
 
-    [SerializeField]
+    [SerializeField] public List<Position> Positions;
+    [SerializeField] private List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
+
     private List<List<GameObject>> objList = new();  // WorldObject 리스트
     public float sizeMultiplier = 1;    // NPC 크기 배율
 
@@ -81,7 +81,7 @@ public class Location : MonoBehaviour
     public void SetPosition(int newPos)
     {
         // 위치값 오류
-        if (newPos < 0 || newPos >= transform.childCount)
+        if (newPos < 0 || newPos >= Positions.Count)
         {
             Debug.Log($"WORLD MOVE ERROR : Invalid position {locationName} - {newPos}");
             return;
@@ -89,12 +89,9 @@ public class Location : MonoBehaviour
 
         // 페이드인아웃 효과 실행
         StartCoroutine(WorldSceneManager.Instance.FadeInOut());
-        
-        // 장소 데이터 변경
-        GameSystem.Instance.gameData.SetPosition(newPos);
 
         // 이동할 장소 활성화
-        transform.GetChild(newPos).gameObject.SetActive(true);
+        Positions[newPos].gameObject.SetActive(true);
         // 이동할 장소의 오브젝트 활성화
         foreach(var obj in objList[newPos])
         {
@@ -109,14 +106,17 @@ public class Location : MonoBehaviour
             }
         }
         // 나머지 장소 비활성화
-        for(int i = 0; i < transform.childCount; i++)
+        for(int i = 0; i < Positions.Count; i++)
         {
             if (i == newPos)
             {
                 continue;
             }
-            transform.GetChild(i).gameObject.SetActive(false);
+            Positions[i].gameObject.SetActive(false);
         }
+        
+        // 장소 데이터 변경
+        GameSystem.Instance.gameData.SetPosition(newPos);
     }
 
 
@@ -124,11 +124,6 @@ public class Location : MonoBehaviour
     public void MoveLeft()
     {
         int newPos = GameSystem.Instance.gameData.position - 1;
-        if (newPos < 0)
-        {
-            Debug.Log($"WORLD MOVE ERROR : Invalid position {newPos}");
-            return;
-        }
 
         SetPosition(newPos);
     }
@@ -138,11 +133,6 @@ public class Location : MonoBehaviour
     public void MoveRight()
     {
         int newPos = GameSystem.Instance.gameData.position + 1;
-        if (newPos > connectLen)
-        {
-            Debug.Log($"WORLD MOVE ERROR : Invalid position {newPos}");
-            return;
-        }
 
         SetPosition(newPos);
     }
@@ -183,7 +173,7 @@ public class Location : MonoBehaviour
                 continue;
             }
             
-            GameObject newObj = Instantiate(ObjectDatabase.Instance.prefabs[(int)_data.objType], transform.GetChild(_data.position));     // instantiate 
+            GameObject newObj = Instantiate(ObjectDatabase.Instance.prefabs[(int)_data.objType], Positions[_data.position].transform);     // instantiate 
             newObj.name = _data.name;
 
             // 타입에 따라 컴포넌트 추가

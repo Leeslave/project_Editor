@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 146488411006183168}
   - component: {fileID: 146488411006183171}
   - component: {fileID: 6938917360461292135}
+  - component: {fileID: 1181381976247118876}
   m_Layer: 5
   m_Name: Door
   m_TagString: WorldUI
@@ -148,3 +149,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dest: 0
   destPos: 0
+--- !u!114 &1181381976247118876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146488411006183173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d89632ee2dba51429c86bc85cb6363b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Delay: 0.7
+  Loop: 1
