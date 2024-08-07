@@ -7,84 +7,6 @@
     "chatList": [
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"우왓! 사람이 굉장히 많네요.",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 0
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 0
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"회사 근처에 이런 곳이 있는 줄은 몰랐군.",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 0
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 0
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"엥? 여기 처음 오셨나요?",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 0
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 6
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"나야, 퇴근하면 항상 집에서 밥을 먹으니까.",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 0
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 6
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"가끔 렉스씨랑 같이오고 하세요.",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 0
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 0
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"노력해보도록 하지.",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 0
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 0
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "식당 직원",
             "text":"어서옵쇼! 예약하셨나요?",
             "characterL": {
@@ -98,8 +20,8 @@
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"네! 예약자명 클로버 이고, 인원은 2명입니다.",
+            "talker": "렉스",
+            "text":"네! 예약자명 렉스 입니다!, 인원은 3명입니다.",
             "characterL": {
                 "fileName": "Klayton_CG",
                 "index": 0
@@ -124,85 +46,92 @@
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"메뉴는 어떤걸로 드시겠어요?",
+            "chatType": "CutScene",
+		    "background": "Restaurant"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"어떤거 드시겠어요?",
+            "text":"닭꼬치요. 닭꼬치요. 닭꼬치요. 닭꼬치요. 닭꼬치요. 닭꼬치요. 닭꼬치요. 닭꼬치요. 닭꼬치요. 닭꼬치요. 닭꼬치요. 닭꼬치요. 닭꼬치요. 닭꼬치요. ",
+            "chatType": "CutScene",
+		    "background": "Restaurant"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"클로버님 무서워요...",
             "chatType": "CutScene",
 		    "background": "Restaurant"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"자네 먹고 싶은 걸로 시키게. 난 딱히 가리는 음식 없어.",
+            "text":"여기, 닭꼬치 세트 2개 주시오.",
             "chatType": "CutScene",
 		    "background": "Restaurant"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"넹. 혹시 맥주도 드시나요?",
-            "chatType": "CutScene",
-		    "background": "Restaurant"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"그래. 한 잔정돈 어울려주지.",
-            "chatType": "CutScene",
-		    "background": "Restaurant"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"여기요! 저희 맥주 2잔이랑 닭꼬치 세트 하나 주시겠어요?",
+            "text":"와아! 신난다! 근데, 맥주는요?",
             "chatType": "CutScene",
 		    "background": "Restaurant"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "식당 직원",
-            "text":"네~ 알겠습니다!",
+            "text":"맥주 추가 하시나요?",
             "chatType": "CutScene",
 		    "background": "Restaurant"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"여기 닭꼬치가 정말 맛있어요.",
+            "text":"금요일 저녁인데?",
             "chatType": "CutScene",
 		    "background": "Restaurant"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"확실히, 젊은 사람들이 좋아할 메뉴들이 많군.",
+            "text":"렉스 자네도 먹나?",
+            "chatType": "CutScene",
+		    "background": "Restaurant"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"아... 넵!",
+            "chatType": "CutScene",
+		    "background": "Restaurant"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"그럼 맥주도 한잔씩 해서, 3잔 주시오.",
+            "chatType": "CutScene",
+		    "background": "Restaurant"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "식당 직원",
+            "text":"네! 감사합니다!",
             "chatType": "CutScene",
 		    "background": "Restaurant"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"으... 방금 진짜 아저씨 같았어요.",
+            "text":"이 조합, 되게 신선하네요.",
             "chatType": "CutScene",
 		    "background": "Restaurant"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"난 아저씨 맞네.",
-            "chatType": "CutScene",
-		    "background": "Restaurant"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"끙... 그런 의미가 아니긴 한데... 아 몰라요.",
-            "chatType": "CutScene",
-		    "background": "Restaurant"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"종잡을 수가 없군.",
+            "text":"그러게, 내가 자네들과 술을 마실 거라고는 생각도 못했는데 말이지.",
             "chatType": "CutScene",
 		    "background": "Restaurant"
         },
@@ -229,253 +158,385 @@
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"정말이죠? 오늘 여기 기둥 뽑아버릴게요?",
+            "talker": "렉스",
+            "text":"그걸 왜 클레이튼씨가 정하죠?",
             "chatType": "CutScene",
 		    "background": "Restaurant"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"하여튼 호들갑은...",
+            "text":"뭐, 안될거 있나? 뭐 언제는 심장을 꺼내준다고...",
+            "chatType": "CutScene",
+		    "background": "Restaurant"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"그 이야기를 왜 하세요! 자자, 짠이나 합시다!",
             "chatType": "CutScene",
 		    "background": "Restaurant"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"짠이나 하시죠! 쨔안~~",
+            "text":"뭐에요? 왜 저만 왕따시켜요?",
             "chatType": "CutScene",
-		    "background": "Restaurant"
+		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"그래.",
-            "chatType": "CutScene",
-		    "background": "Restaurant"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": " ",
-            "text":"(클로버가 맥주를 벌컥벌컥 마신다.)",
-            "chatType": "CutScene",
-		    "background": "Restaurant"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"이제 소원 성취했나?",
+            "talker": "렉스",
+            "text":"신경쓰지 마세요. 건배~",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"네에~ 근데, 제가 부사수일 때도 이렇게 한번씩 사주셨으면 더 좋았을 텐데...",
+            "text":"뭔데요~~",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"그때는 자네가 나보다 일찍 퇴근했네.",
+            "text":"말해주고 싶은데, 렉스가 원치 않나 보군.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"헤헤... 그랬나요?",
+            "text":"렉스씨. 이러기에요?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"클레이튼 씨이...",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"그냥 지난 주에 자네가 도와줬을 때, 렉스가 감동받아서 헛소리 했었네.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"아 참! 저 궁금한게 있는데, 여쭤봐도 되나요?",
+            "text":"진짜에요?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"음... 질문에 따라서 대답이 다르겠지만, 뭐가 궁금하지?",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"음... 아! 일단 클레이튼씨랑 핸더슨 부장님은 옛날부터 알던 사이였나요?",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"맞아. 내가 어릴적 이웃이었지.",
+            "talker": "렉스",
+            "text":"네에...",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"헤에~ 이웃 주민이 상사면 어떤 느낌이에요?",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"핸더슨 그 양반이 나한테만 자꾸 귀찮은 일을 주는 것 빼고는 별 감흥 없네.",
+            "text":"에이 뭔가 했네요.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"신기하네요. 회사에선 그저 꽝꽝 얼어있는 사람 같았는데.",
+            "text":"제가 깔끔하게 해드리고 갔는데, 감동 안 받았으면 서운했죠~",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"그 양반, 까보면 별거 없어.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"뭔가 재밌어요. 히히.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"늙은이들 옛날 이야기가 뭐가 재밌다고.",
+            "talker": "렉스",
+            "text":"다시 한 번 감사드립니다!",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"그러면 그 귀찮은 일들이란게 뭐에요?",
+            "text":"그래요. 이젠 아프지 마요?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"굳이 자네를 우리 부서로 파견 보냈다던지.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"... 저 삐질거에요?",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"그거 말고도, 공식 업무는 아닌데 잔일이라던지 그런걸 많이 던지니까 피곤해 죽겠어.",
+            "talker": "렉스",
+            "text":"넵!",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"그렇군요.",
+            "text":"그럼 짠이나 한번 더 할까요?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"너무 빠르지 않나요...?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"궁금한건 끝났나?",
+            "text":"조금만 견디게 렉스.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"그러면... 조금 민감할 수도 있는 것 여쭤봐도 될까요?",
+            "text":"자아~ 건배에에~",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"들어보고 판단하지.",
+            "text":"...",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"벌써 대화 소재가 떨어진건가.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"저... 그게...",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"와이프분이랑은 왜 별거 중이신거에요?",
+            "text":"뭐 궁금하신 거 없어요?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"... 처음부터 이게 궁금했지?",
+            "talker": "렉스",
+            "text":"궁금한거라...",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"헤헷. 티났나요? 불편하면 굳이 말씀 안하셔도 돼요.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"별거 없어. 그냥 이념 차이야.",
+            "talker": "렉스",
+            "text":"아 맞다! 하나 있어요.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"이념 차이?",
+            "text":"엇! 뭐죠? 렉스 군?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"그 사람은 가족보다도 더킹이 우선이었지.",
+            "talker": "렉스",
+            "text":"근데, 클로버씨는 가끔 밤늦게 까지 일하시던데, 무슨 업무 하시는 거에요?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"그런데 그런 사람들은 꽤 있잖아요? 더 킹이 그만큼 훌륭하시니까요.",
+            "text":"으음... 워낙 잔업한 적이 많아서...",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"심지어 스크린이 아닌 옛 컴퓨터를 사용하시던데.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"아아. 헤엑. 렉스씨 그걸 보셨다구요?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"뭐 이상한거 하시는 건 아니죠?",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 0
+            } ,
+            "characterR": {
+                "fileName": "Henderson",
+                "index": 2
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"설마요. 최근에 핸더슨 부장께서 지시한 것 때문에 작업했던 거에요.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"설마, 렉스씨. 제가 이상한 짓을 한다고 생각하시는 건 아니죠?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"헉. 저는 그냥 분위기 띄워볼려고...",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"아닌 것 같은데에?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"애들에게도 이념을 강요하고, 주입했지. 그러고는 나보고",
+            "text":"아마, 저 바보는 정말 자네가 뭐하는 지 궁금했을 걸세.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"바보라뇨!",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"헤헤, 사이 좋으시네요.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"'항상 당신은 불온해. 얘들아. 아버지처럼 되면 안된다.' 라고 정치를 하더군.",
+            "text":"누가? 나랑 이 녀석이랑?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"네. 사이 엄청 좋아 보이시는 걸요?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"이런.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"왜 싫어하시죠?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2" 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"아닐세.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"근데, 렉스 자네는 집이 여기서 멀리 있는 걸로 아는데, 안가봐도 되나?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"헉! 지금 몇시죠?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"10시 20분이요.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"헉! 저는 이만 일어나봐야 할 것 같습니다.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"그럴 줄 알았네.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"택시 타세요!",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"제가... 돈이 많이 없어서...",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"여기 카드 두고 갈테니! 결제하시고, 월요일에 전해주세요!",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"먼저 들어가보겠습니다! 조심히 들어가세요!",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
@@ -488,190 +549,238 @@
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"사실 그때까지만 해도 집에서 나올 생각은 없었어.",
+            "talker": "클로버",
+            "text":"가버렸네요. 진짜 렉스씨에게 사게 할려고 안했는데...",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"그러다가 언제 한번 당시 우리에게 큰 일이 있었는데, 그때도 대판 싸우고는 그 길로 집을 나와서 이런 생활을 하고 있는거지.",
+            "text":"아닐세. 저 녀석, 우리가 결제하면 또 시끄러울 것 같으니 일부만 렉스 카드로 긁고 나머지는 내가 긁겠네.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"그 정도로 큰 일이었나요?",
+            "text":"엥? 또 사주시나요?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"자, 여기까지. 그 날의 일을 다시 이야기하고 싶지도 않아.",
+            "text":"그럼, 정말 자네들이 사게 할 것 같나?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"... 죄송해요.",
+            "text":"오... 변했다. 변했어.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"딱히 상관없네. 차라리 누군가한테 말해둬서 괜히 다른 소문으로 안퍼지는게 더 나아.",
+            "text":"싫은가?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"짜.. 짠이나 하시죠!",
+            "text":"앗! 설마요?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"괜찮나? 너무 빠르게 마시는거 아닌가?",
+            "text":"그러고보니, 자네도 이제 시집갈 때 안됐나?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
-        },
-        {
+        },        {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"괜찮아요~ 저 아직 젊다구요?",
+            "text":"앗! 오늘 명절인가요! 여기서까지 잔소리 듣고 싶지 않아요!",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"흠...",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"아무튼 클레이튼씨. 일주일 동안 고생많으셨어요.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2" 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"그래. 말은 이렇게 했지만, 자네도 고생했어.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"그람요. 당여하죠!",
+            "text":"그런거 아닐세. 내가 자네에게 잔소리해봐야 뭐하나.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"자네... 취했나?",
+            "text":"나도 지금 이런데.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
-        },
+        },        
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"예? 제가여? 아뇨? 완전 말쩡한데?",
+            "text":"앗.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"그만 마시게. 아무리 내일이 주말이라 해도 건강에 좋지 못하네.",
+            "text":"그냥 정말 순수하게 궁금해서였네.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
-        },
+        },        
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"클레이튼씨는 술 잘마시내여~",
+            "text":"으음... 그렇다면야...",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },     
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"글쎄요. 저는 딱히 제 또래에게는 감정이 안 가서...",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"난 맥주 한잔 마셨는데 말이지.",
+            "text":"그렇군.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
-        },
+        },        
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"그나저나! 저 클레이튼씨에게 원하는게 하나 있어요.",
+            "text":"클레이튼씨라면 모를까.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"뭐가 또 있나? 밥 사준다고 했지않나?",
+            "text":"장난 치지 말게.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
-        },
+        },        
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"진짜 어렵지 않은거에요.",
+            "text":"헤헤. 농담이에요.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },               
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"사실, 제가 일이 바쁜 것도 어느정도는 차지하는 것 같아요.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },               
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"아시잖아요. 매일매일 정신 없는거.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },        
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"그렇긴 하지.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },        
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"그리고 또...",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },        
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"또?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },        
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"에이. 아니다. 굳이 이야기 할 필요는 없는 거였어요.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },        
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"뭐지?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },        
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"그냥... 제가 좋은 부인은 못될 것 같은 느낌?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },        
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"하기 전까진 모르는 것 아닌가?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },        
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"저는 제가 잘 알아요. 아마 저와 맺어지는 사람이 만약에라도 있다면, 그 사람을 제가 많이 힘들게 할 것 같아요.",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },        
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"그런가...",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },        
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"에잇! 술 맛 떨어지게. 클레이튼씨나 아내 분이랑 화해하세요!",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },        
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"왜 이야기가 그렇게 되나?",
+            "chatType": "CutScene",
+		    "background": "Restaurant_2"
+        },        
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"클레이튼씨가 먼저 민감한 주제 던졌어요?",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"하아... 뭔가? 일단 듣고 판단하지.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"또또! 듣고 판단한다니! 그냥 한번쯤 바로 승낙해주시면 안돼요?",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"자네가 뭘 요구할지 모르니까...",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"그냥. 다음주부터, 저는 3정보반으로 돌아가잔아요.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"그렇지.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"오며가며 마주칠 때마다...",
+            "text":"알겠네. 미안하네.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
@@ -685,99 +794,21 @@
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"네, 알겠습니다. 마무리 하겠습니다.",
+            "text":"네, 알겠습니다. 마무리 하겠습니다. 결제는 이걸로 해주...",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"아~ 저 아저씨. 끼어드는 타이밍이 예술이네~",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"빨리 이야기하게. 괜히 민폐끼치고 싶지는 않으니까.",
+            "text":"아니요? 오늘은 제가 전부 사겠습니다. 렉스씨에게 잘 이야기 해주세요.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"만날 때마다 제가 인사하면, 인사 좀 받아주세요.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"인사?",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        }
-        ,
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"제가 다른 정보반으로 발령나고 나서, 클레이튼씨 절 봐도 인사하지 않더라구요.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"굳이? 였는데 말이지.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"사실 조금 섭섭했거든요. 그래도 나름 한때 부사수였는데, 이적하자마자 모르는 척이라니.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"잘 이해가 되지 않는군.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "식당 직원",
-            "text":"저희 곧 마무리 합니다! 여러분들 정리해주세요!",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"그래서! 만날때 마다 인사해주셔야 해요?",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"알았으니까. 일어나세.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"헤헤. 됐다.",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"여기요! 이걸로 여기 테이블 계산 부탁드려도 되겠습니까?",
+            "text":"여기! 이걸로 계산해주세요.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
@@ -791,21 +822,21 @@
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"고맙습니다.",
+            "text":"흠...",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"아아~ 아쉬워!",
+            "text":"자, 얼른 나가시죠!",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"이상한 소리하지 말고, 나가세.",
+            "text":"그래. 잘 먹었네.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
@@ -818,36 +849,22 @@
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"집에 잘 들어갈 수 있겠지?",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"...",
-            "chatType": "CutScene",
-		    "background": "Restaurant_2"
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"엇... 갑자기 머리가 아플지도...!",
+            "text":"헤헤. 역시 사람은 술을 먹어야 하나봐요~",
             "chatType": "CutScene",
 		    "background": "Restaurant_2" 
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"멀쩡하군. 조심히 들어가게.",
+            "text":"왜 이러나. 주정뱅이 같이.",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클로버",
-            "text":"쳇. 안통하네요. 오늘 사주셔서 감사합니다. 무례를 끼쳤는데도 잘 받아주셔서 감사합니다아.",
+            "text":"히히. 조심히 들어가세요! 다음주에 회사에서 봬요!",
             "chatType": "CutScene",
 		    "background": "Restaurant_2"
         },

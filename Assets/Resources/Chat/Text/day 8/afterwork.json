@@ -1,151 +1,123 @@
 {
     "name": "afterwork",
-    "image": "Clover_CG",
+    "image": "Rex",
     "position": 0,
     "anchor": { "x": 0.5, "y": 0.33 },
     "triggerType": "Auto",
     "chatList": [
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"꽤나 오래걸리셨네요?",
+            "talker": "렉스",
+            "text":"고생하셨습니다!",
             "characterL": {
                 "fileName": "Klayton_CG",
                 "index": 0
             },
             "characterR": {
-                "fileName": "Clover_CG",
-                "index": 0
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"핸더슨이 이상한 시를 쓰더니 나보고 평가하라더군.",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 1
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 0
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"하하하. 어쩐 일로 시를 쓰셨대요?",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 1
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
+                "fileName": "Rex",
                 "index": 4
             } 
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
             "talker": "클레이튼",
-            "text":"몰라. 저 양반도 나이가 들어서 감성적으로 변했나?",
+            "text":"그래. 오늘은 회의 없나?",
             "characterL": {
                 "fileName": "Klayton_CG",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Rex",
+                "index": 4
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"아. 내일 도입되는 보안프로그램에 대한 지침이 방금 하달되었다고 해서, 그거 들으러 갈 예정입니다.",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Rex",
+                "index": 4
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"그렇군. 잘 정리해서 내일 알려주게.",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Rex",
+                "index": 4
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "",
+            "text":"(클레이튼의 휴대폰에서 진동이 울린다.)",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Rex",
+                "index": 4
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "프라이스",
+            "text":"클레이튼. 슬슬 퇴근 시간이지? 자네가 매일가는 카페 건너편에 있는 술집으로 오라고.",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Price_CG",
+                "index": 0
+            } 
+        },{
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"왜 그러세요? 클레이튼씨?",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Rex",
                 "index": 6
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 4
             } 
         },
         {
             "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"하하. 너무 그러지 마세요.",
+            "talker": "클레이튼",
+            "text":"아무것도 아니네. 난 먼저 퇴근하지.",
             "characterL": {
                 "fileName": "Klayton_CG",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Rex",
                 "index": 6
+            } 
+        },{
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "렉스",
+            "text":"네! 내일 뵙겠습니다.",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 0
             },
             "characterR": {
-                "fileName": "Clover_CG",
+                "fileName": "Rex",
                 "index": 4
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"이상한 걸 봤더니, 배가 고프군. 어서 가지.",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 0
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 0
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"넹!",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 0
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 4
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"그래서 뭐가 먹고 싶은가?",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 0
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 0
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"헤헤. 이미 식당 예약해뒀어요~ 요즘엔 휴대폰으로 예약도 된답니다?",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 0
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 4
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클레이튼",
-            "text":"역시 젊은 사람인가...",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 0
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 0
-            } 
-        },
-        {
-            "$type": "TalkParagraph, Assembly-CSharp",
-            "talker": "클로버",
-            "text":"자! 제가 앞장설게요!",
-            "characterL": {
-                "fileName": "Klayton_CG",
-                "index": 0
-            },
-            "characterR": {
-                "fileName": "Clover_CG",
-                "index": 0
             } 
         }
     ]
