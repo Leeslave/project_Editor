@@ -19,11 +19,15 @@ public class ADFGVXGameManager : MonoBehaviour
     public static SystemMode CurrentSystemMode { get; private set; } = SystemMode.Decryption;
     
     [SerializeField] public string encryptTargetText;
+    [SerializeField] public string encryptTransposeKey;
     [SerializeField] public string encryptResultText;
     [SerializeField] public string encryptSaveText;
+    
     [SerializeField] public string decryptTargetText;
+    [SerializeField] public string decryptTransposeKey;
     [SerializeField] public string decryptResultText;
     [SerializeField] public string decryptSaveText;
+    
     [SerializeField] public bool encryptClear;
     [SerializeField] public bool decryptClear;
     

@@ -13,8 +13,6 @@ public class LoadEncrypted : MonoBehaviour
     private BasicText EncryptedTextDate { get; set; }
     private BasicText PrimeNumDisplay { get; set; }
 
-    public Action CompleteTutorialPhase = null;
-
     private void Awake()
     {
         Title = transform.GetChild(0).GetComponent<BasicText>();
