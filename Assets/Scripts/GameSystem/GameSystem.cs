@@ -46,6 +46,7 @@ public class GameSystem : SingletonObject<GameSystem>
         saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
         dailyList = DataLoader.LoadGameData();     // 게임 데이터 로드  
 
+        // 날짜 선택 기능 미구현
         SetDate(0);
     }
 
