@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -22,11 +23,6 @@ public class PatternManager : MonoBehaviour
     [SerializeField] GameObject[] Warnings;
     [SerializeField] public GameObject ErrorObject;
 
-    [SerializeField] GameObject Hand1;
-    [SerializeField] GameObject Hand1_2;
-    [SerializeField] GameObject Hand2;
-    [SerializeField] GameObject Hand3;
-    [SerializeField] GameObject Hand3_2;
 
     // ??? ??? ???(1???)
     [SerializeField] Transform[] SPRE;    // Right
@@ -36,10 +32,12 @@ public class PatternManager : MonoBehaviour
     [SerializeField] float BulletInterv;      // ?? ???? ?? ?? ???? ????
     [SerializeField] float PatternInterv;     // ????? ???? ?????? ????
 
+    [SerializeField] public TMP_Text CMD;
+    [SerializeField] List<string> CMD_Texts;
+
     public bool IsEnd = false;      // ??? ???? ????
 
     public int CurPattern = 0;      // ???? ????
-    
 
     List<GameObject> PlatL = new List<GameObject>();        // ?????? ???? ?? ????? Platform???? ???? <- EndPattern?? ?????? ????.
     int PatternNum = 0;             // Num of Pattern(?? ??)
@@ -97,12 +95,15 @@ public class PatternManager : MonoBehaviour
         SP = new Vector2[][] { SPB, SPR, SPL, SPT };
         ReadExternalPattern();
 
+        
+
         //// Document Secret Test용
         if (PlayerPrefs.GetInt("DocumentTest") == 1) NormalPattern = true;
     }
 
     private void Start()
     {
+        StartCoroutine(AddCmdText(0, 2));
         // Test용으로 바로 3페이즈로 넘어가는 기능
         if (!IsTest) StartCoroutine(MakeEasyPattern());
         else { StartPT(2); ErrorObject.SetActive(true); }
@@ -113,14 +114,19 @@ public class PatternManager : MonoBehaviour
         Pl.gameObject.SetActive(true);
         CurPattern = 0;
         StartPT(0);
+        
     }
 
     public void NextPattern(ref int HPForPattern, int change = 1)
     {
+        EndPT(false);
         CamShake(0.5f);
         if(CurPattern == 0)
         {
             HPForPattern -= change;
+            StartCoroutine(AddCmdText((Pl.InitHP - HPForPattern) * 2, (Pl.InitHP - HPForPattern + 1) * 2));
+            
+            
             if (HPForPattern == 0)
             {
                 if(NormalPattern) StartPT(1);
@@ -142,7 +148,6 @@ public class PatternManager : MonoBehaviour
             if (change == 1)
             {
                 change = 0;
-                Hand2.SetActive(false);
                 StartPT(2);
             }
             else StartPT(1);
@@ -185,27 +190,11 @@ public class PatternManager : MonoBehaviour
             if(CurRepeat % 2 == 0)
             {
                 Warnings[0].SetActive(true);
-                Hand3.SetActive(true);
-                Hand3.transform.position = Right;
-                for (int i = 0; i < 25; i++)
-                {
-                    yield return LittleLittle;
-                    Hand3.transform.Translate(-1, 0, 0);
-                }
-                Hand3.SetActive(false);
                 yield return TwoSec;
             }
             else
             {
                 Warnings[1].SetActive(true);
-                Hand3_2.SetActive(true);
-                Hand3_2.transform.position = Left;
-                for (int i = 0; i < 25; i++)
-                {
-                    yield return LittleLittle;
-                    Hand3_2.transform.Translate(1, 0, 0);
-                }
-                Hand3_2.SetActive(false);
                 yield return TwoSec;
             }
             int cnt = Random.Range(0, 4);
@@ -254,7 +243,6 @@ public class PatternManager : MonoBehaviour
     {
         MainCam.transform.position = new Vector3(0, 0, -2);
         AD.NoiszeOn();
-        Hand2.SetActive(true);
         CurPattern = 1;
         // ??? ?????? ????
         MakeGlitch(0.1f, 0.5f, 0.7f);
@@ -436,10 +424,7 @@ public class PatternManager : MonoBehaviour
     // Input : ?? ?????? ?????? ?????? ?????? ??????? int??. 0?? ??? ??? ??????, 1?? ??? 2?????? ????
     public void StartPT(int i)      
     {
-        EndPT(false);
         foreach (GameObject s in Warnings) s.SetActive(false);
-        Hand1.SetActive(false); Hand2.SetActive(false); Hand1_2.SetActive(false);
-        Hand3.SetActive(false); Hand3_2.SetActive(false);
         switch (i)
         {
             case 0: StartCoroutine(ChangePT(MakeEasyPattern())); break;
@@ -486,6 +471,19 @@ public class PatternManager : MonoBehaviour
             PTLE.Add(Data);
             PatternNum += 1;
             stringReader.Close();
+        }
+    }
+
+    public IEnumerator AddCmdText(int Start, int End)
+    {
+        for(int i = Start; i < End; i++)
+        {
+            CMD.text += "\n";
+            foreach(var k in CMD_Texts[i])
+            {
+                CMD.text += k;
+                yield return new WaitForSecondsRealtime(0.02f);
+            }
         }
     }
 }

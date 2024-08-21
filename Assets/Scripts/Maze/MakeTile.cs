@@ -34,6 +34,10 @@ public class MakeTile : MonoBehaviour
 
     [SerializeField] List<StageData> Stages;
 
+    [SerializeField] Transform Walls;
+    [SerializeField] Transform Objects;
+    [SerializeField] Transform FogP;
+
     [System.Serializable]
     public class StageData
     {
@@ -55,7 +59,7 @@ public class MakeTile : MonoBehaviour
         }
         catch
         {
-            Difficulty = 0;
+            //Difficulty = 0;
         }
 
         // 클리어시 다음으로 넘어가게 임시로 해둔 거
@@ -65,7 +69,7 @@ public class MakeTile : MonoBehaviour
         // Document Secret 폴더 오픈되게 임시로 해둔거
         if (PlayerPrefs.GetInt("DocumentTest") == 1) Difficulty = 10;
 
-        if (Difficulty != 0) GetDifficulty();
+        if (Difficulty > 0) GetDifficulty();
         else MakeTutorial();
 
         
@@ -94,7 +98,6 @@ public class MakeTile : MonoBehaviour
     // �ӽ�(���� �̱����� � ������ �� �� ��������)
     void GetDifficulty()
     {
-        print(Difficulty);
         Difficulty--;
         Col = Stages[Difficulty].Col; Row = Stages[Difficulty].Row;
         KeyNum = Stages[Difficulty].KeyNum; KeyWeight = Stages[Difficulty].KeyWeight;
@@ -113,13 +116,13 @@ public class MakeTile : MonoBehaviour
     void CreateLevel()
     {
         // �̷��� �ٱ� �κ��� �ѷ��δ�  �Ȱ��� ����.
-        GameObject outsT = Instantiate(Fog, new Vector3((-3) * Move_X + 5, (Col + 5) * Move_Y + 10), new Quaternion(0, 0, 0, 0));
+        GameObject outsT = Instantiate(Fog, new Vector3((-3) * Move_X + 5, (Col + 5) * Move_Y + 10), new Quaternion(0, 0, 0, 0),FogP);
         outsT.transform.localScale = new Vector2(2 * Row * Move_X + 120 ,12 * Move_Y);
-        GameObject outsL = Instantiate(Fog, new Vector3(-60, -60), new Quaternion(0, 0, 0, 0));
+        GameObject outsL = Instantiate(Fog, new Vector3(-60, -60), new Quaternion(0, 0, 0, 0), FogP);
         outsL.transform.localScale = new Vector2(12 * Move_X, 2 * Col * Move_Y + 120);
-        GameObject outsB = Instantiate(Fog, new Vector3(-60, -60), new Quaternion(0, 0, 0, 0));
+        GameObject outsB = Instantiate(Fog, new Vector3(-60, -60), new Quaternion(0, 0, 0, 0), FogP);
         outsB.transform.localScale = new Vector2(2 * Row * Move_X + 120, 12 * Move_Y);
-        GameObject outsR = Instantiate(Fog, new Vector3((Row + 5) * Move_X + 10, (-3) * Move_Y + 5), new Quaternion(0, 0, 0, 0));
+        GameObject outsR = Instantiate(Fog, new Vector3((Row + 5) * Move_X + 10, (-3) * Move_Y + 5), new Quaternion(0, 0, 0, 0), FogP);
         outsR.transform.localScale = new Vector2(12 * Move_X, 2 * Col * Move_Y + 120);
         for(int y = 0; y < Col * 2; y++)
         {
@@ -137,28 +140,28 @@ public class MakeTile : MonoBehaviour
                 if(IsCalcFog)
                 for(int a = 0; a < 2; a++)for(int b = 0; b<2;b++)
                     {
-                        Fogs[Y * 2 + a].Add(Instantiate(Fog, new Vector3(x * Move_X + 2.5f + 5 * b, Y * Move_Y + 2.5f + 5 * a), new Quaternion(0, 0, 0, 0)));
+                        Fogs[Y * 2 + a].Add(Instantiate(Fog, new Vector3(x * Move_X + 2.5f + 5 * b, Y * Move_Y + 2.5f + 5 * a), new Quaternion(0, 0, 0, 0),FogP));
                         IsFog[Y * 2 + a].Add(false);
                     }
                 if (!Maze_Inf.Maze[x, Y].Left)     // ���� �� ���� ����
                 {
-                    GameObject cnt = Instantiate(CWall,new Vector3(x * 10,y * 10 + 5,0),transform.rotation);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.left) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; }
+                    GameObject cnt = Instantiate(CWall,new Vector3(x * 10,y * 10 + 5,0),transform.rotation,Walls);
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.left) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; cnt.layer = 7; }
                 }
                 if (!Maze_Inf.Maze[x, Y].Right)     // ������ �� ���� ����
                 {
-                    GameObject cnt = Instantiate(CWall, new Vector3(x * 10 +10, y* 10 + 5, 0), new Quaternion(0,0,90,0));
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.right) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; }
+                    GameObject cnt = Instantiate(CWall, new Vector3(x * 10 +10, y* 10 + 5, 0), new Quaternion(0,0,90,0), Walls);
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.right) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; cnt.layer = 7; }
                 }
                 if (!Maze_Inf.Maze[x, Y].Down)     // �Ʒ��� �� ���� ����
                 {
-                    GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10, 0), transform.rotation);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.down) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; }
+                    GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10, 0), transform.rotation, Walls);
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.down) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; cnt.layer = 7; }
                 }
                 if (!Maze_Inf.Maze[x, Y].Up)     // ���� �� ���� ����
                 {
-                    GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10+10, 0), transform.rotation);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.up) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; }
+                    GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10+10, 0), transform.rotation, Walls);
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.up) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; cnt.layer = 7; }
                 }
                 if (Maze_Inf.Maze[x,y].Test)
                     Instantiate(Key).transform.position = new Vector3(x * Move_X + 5, y * Move_Y + 5, 0);
@@ -173,8 +176,8 @@ public class MakeTile : MonoBehaviour
     {
         if (IsTu)
         {
-            float x = Maze_Inf.Player_X-1, y = Maze_Inf.Player_Y;
-            var cnt = Instantiate(Key);
+            float x = Maze_Inf.Player_X-2, y = Maze_Inf.Player_Y;
+            var cnt = Instantiate(Key,Objects);
             cnt.transform.position = new Vector3(x-- * Move_X + 5,y * Move_Y + 5 , 0);
             SpriteRenderer s = cnt.GetComponent<SpriteRenderer>(); s.color = Color.green;
             Player.GetComponent<PlayerMove>().KeysTrans.Add(cnt.transform);
@@ -199,7 +202,7 @@ public class MakeTile : MonoBehaviour
             }
             for (int i = 0; i < KeyNum; i++)
             {
-                GameObject cnt = Instantiate(Key);
+                GameObject cnt = Instantiate(Key,Objects);
                 Player.GetComponent<PlayerMove>().KeysTrans.Add(cnt.transform);
                 cnt.transform.position = new Vector3(Cnt[i].Item1 * Move_X + 5, Cnt[i].Item2 * Move_Y + 5, 0);
                 SpriteRenderer s = cnt.GetComponent<SpriteRenderer>();
