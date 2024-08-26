@@ -40,7 +40,7 @@ public class Location : MonoBehaviour
         if (_active)
         {
             // 음악 활성화
-            WorldSceneManager.Instance.worldBGM.OverlapPlay(bgmNumber);
+            SetBGM(bgmNumber);
 
             // 해당하는 위치 활성화
             SetPosition(GameSystem.Instance.gameData.position);
@@ -120,6 +120,13 @@ public class Location : MonoBehaviour
     }
 
 
+    public void SetBGM(int bgm)
+    {
+        // 음악 활성화
+        WorldSceneManager.Instance.worldBGM.OverlapPlay(bgm);
+    }
+
+
     // 연결된 맵 왼쪽으로 이동
     public void MoveLeft()
     {
@@ -179,12 +186,16 @@ public class Location : MonoBehaviour
             // 타입에 따라 컴포넌트 추가
             if (_data is EffectData)
             {
-                newObj.GetComponent<WorldEffect>().data = _data as EffectData;
+                var targetObject = newObj.GetComponent<WorldEffect>();
+                targetObject.location = this;
+                targetObject.data = _data as EffectData;
             }
             if(_data is NPCData)
             {
-                newObj.GetComponent<NPC>().data = _data as NPCData;
-                newObj.GetComponent<NPC>().SetPosition();
+                var targetObject = newObj.GetComponent<NPC>();
+                targetObject.location = this;
+                targetObject.data = _data as NPCData;
+                targetObject.SetPosition();
             }
             
             objList[_data.position].Add(newObj);

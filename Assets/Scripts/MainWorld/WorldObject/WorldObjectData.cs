@@ -6,7 +6,7 @@ public class WorldObjectData
 {
     public int time;    // 시간대
     public string name;    // 오브젝트 이름
-    public ObjectType objType;  // 오브젝트 타입
+    public ObjectType objType = ObjectType.none;  // 오브젝트 타입
     [HideInInspector]
     public World location;  // 장소
     [HideInInspector]

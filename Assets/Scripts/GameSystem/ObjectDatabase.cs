@@ -58,6 +58,7 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
                         name = obj[(int)DataColumn.name],
                         objType = Enum.Parse<ObjectType>(obj[(int)DataColumn.objType]),
                         location = Enum.Parse<World>(obj[(int)DataColumn.location]),
+                        awakeParam = obj[(int)DataColumn.OnAwake],
                         count = obj[(int)DataColumn.count] != "" ? int.Parse(obj[(int)DataColumn.count]) : 0,
                     };
 
@@ -120,6 +121,7 @@ public enum ObjectType {
     Mechanic,
     Reporter,
     Nametag,
+    BGM,
 }
 
 internal enum DataColumn {
