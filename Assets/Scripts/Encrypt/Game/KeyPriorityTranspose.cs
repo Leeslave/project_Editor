@@ -10,6 +10,8 @@ public class KeyPriorityTranspose : MonoBehaviour
     public BasicText KeyPriority { get; set; }
     public TextMeshPro[] TransposeLines { get; set; }
     public BasicInputField ReverseTransposeLines { get; set; }
+    public SpriteRenderer TargetFill { get; set; }
+    public SpriteRenderer TargetFrame { get; set; }
 
     //키 순위 전치 관련 변수
     public int[] Priority { get; set; } = new int[9];
@@ -30,9 +32,10 @@ public class KeyPriorityTranspose : MonoBehaviour
             TransposeLines[i].text = "";
         }
         ReverseTransposeLines = transform.GetChild(4).GetComponent<BasicInputField>();
-        
-        Initialize();
+        TargetFill = transform.GetChild(5).GetComponent<SpriteRenderer>();
+        TargetFrame = transform.GetChild(6).GetComponent<SpriteRenderer>();
     }
+    private void Start() => Initialize();
 
     /// <summary>
     /// 모드가 전환될 때마다 버퍼에 있는 내용을 깨끗하게 비우고 초기화해야 한다
@@ -125,19 +128,19 @@ public class KeyPriorityTranspose : MonoBehaviour
             {
                 //키의 길이는 0이나 1이 될 수 없다
                 ReverseTransposeLines.InputFieldTMP.color = new Color(1f, 0.3f, 0.3f, 1f);
-                ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * 9, 82f);
+                ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3f * 9, 80);
             }
             else if((ReverseTransposeLines.StringBuffer.Length != 2 * ADFGVXGameManager.WritePlain.PlainTextBody.StringBuffer.Length) || (ReverseTransposeLines.StringBuffer.Length % value.Length != 0))
             {
                 //평문 전체를 전치하지 못했거나 키값이 유효하지 않다면
                 ReverseTransposeLines.InputFieldTMP.color = new Color(1f, 0.3f, 0.3f, 1f);
-                ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * value.Length, 82f);
+                ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3f * value.Length, 80);
             }
             else
             {
                 //색을 통해서 플레이어에게 현재 역전치 내용이 유효함을 알린다
                 ReverseTransposeLines.InputFieldTMP.color = new Color(0.3f, 1f, 0.3f, 1f);
-                ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3.03f * value.Length, 82f);
+                ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3f * value.Length, 80);
             }   
         }
         else
@@ -262,7 +265,8 @@ public class KeyPriorityTranspose : MonoBehaviour
         StartCoroutine(PrintLine(rowIdx, lineIdx + 1));
     }
 
-    //튜토리얼 전용
+    #region 튜토리얼 전용
+
     public void EncryptTutorialPhase_4()
     {
         if (ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
@@ -274,5 +278,7 @@ public class KeyPriorityTranspose : MonoBehaviour
         if (ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
             if(ReverseTransposeLines.StringBuffer == "XXAFAFAVFGVGXVFGDDAVAGAFAFAVFGGG")
                 ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
-    }
+    }    
+
+    #endregion
 }
