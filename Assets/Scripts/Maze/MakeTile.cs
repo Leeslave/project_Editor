@@ -6,6 +6,8 @@ using System.IO;
 
 public class MakeTile : MonoBehaviour
 {
+    [SerializeField] GameObject TutorialObj;
+
     [SerializeField]
     public GameObject CWall;
     public GameObject RWall;
@@ -72,10 +74,7 @@ public class MakeTile : MonoBehaviour
         if (Difficulty > 0) GetDifficulty();
         else MakeTutorial();
 
-        
-
-        Player.transform.position = new Vector3(Maze_Inf.Player_X * Move_X + 5, Maze_Inf.Player_Y * Move_Y + 5f, 0);
-        
+        Player.transform.position = new Vector3(Maze_Inf.Player_X * Move_X + 5, Maze_Inf.Player_Y * Move_Y + 5f, 0);        
     }
 
     void MakeTutorial()
@@ -92,10 +91,9 @@ public class MakeTile : MonoBehaviour
         MakeItems(true);
 
         CreateLevel();
-        
+        TutorialObj.SetActive(true);
     }
 
-    // �ӽ�(���� �̱����� � ������ �� �� ��������)
     void GetDifficulty()
     {
         Difficulty--;
