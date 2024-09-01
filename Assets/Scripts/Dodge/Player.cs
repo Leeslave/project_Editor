@@ -101,7 +101,6 @@ public class Player : MonoBehaviour
         // 조건은 씬이 생성되었을 때 작동되지 않도록 하기 위함(해당 시점에 굳이 필요 없는 연산)
         if (!OnStart)
         {
-            PM.CMD.text = "";
             // PatternManager 및 Timer 참조
             PM.NextPattern(ref HPForPattern,0);
             PM.ErrorObject.SetActive(false);
@@ -143,7 +142,7 @@ public class Player : MonoBehaviour
                 gameObject.SetActive(false);
             }
             foreach (Image s in Unzips) s.sprite = Zip;
-            if(HPForPattern > 0) HPForPattern = InitHP;
+            if (HPForPattern > 0) { HPForPattern = InitHP; PM.CurProcess = 0; PM.ExternalStopCor(); foreach (var k in PM.CMDs) k.text = ""; }
         }
         else if (collision.CompareTag("Trace"))
         {

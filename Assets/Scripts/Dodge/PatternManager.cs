@@ -32,9 +32,6 @@ public class PatternManager : MonoBehaviour
     [SerializeField] float BulletInterv;      // ?? ???? ?? ?? ???? ????
     [SerializeField] float PatternInterv;     // ????? ???? ?????? ????
 
-    [SerializeField] public TMP_Text CMD;
-    [SerializeField] List<string> CMD_Texts;
-
     public bool IsEnd = false;      // ??? ???? ????
 
     public int CurPattern = 0;      // ???? ????
@@ -103,7 +100,6 @@ public class PatternManager : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(AddCmdText(0, 2));
         // Test용으로 바로 3페이즈로 넘어가는 기능
         if (!IsTest) StartCoroutine(MakeEasyPattern());
         else { StartPT(2); ErrorObject.SetActive(true); }
@@ -124,7 +120,6 @@ public class PatternManager : MonoBehaviour
         if(CurPattern == 0)
         {
             HPForPattern -= change;
-            StartCoroutine(AddCmdText((Pl.InitHP - HPForPattern) * 2, (Pl.InitHP - HPForPattern + 1) * 2));
             
             
             if (HPForPattern == 0)
@@ -164,12 +159,13 @@ public class PatternManager : MonoBehaviour
     // EZ
     IEnumerator MakeEasyPattern(bool IsTu = false)     // 1?????? ????? ?????? ??????.
     {
-        /*PlatTop.SetActive(true); PlatTop.SetActive(true);*/
         AD.MusicOn();
+
         yield return OneSec;
         int NextPtNum = Random.Range(0, PatternNum + 1);
         List<int[]> CurPT = new List<int[]>();
-        if (NextPtNum < PatternNum) CurPT = PTLE[Random.Range(0, PatternNum)];     // ????? ???? ?? ????? 1???? ?????? ??????
+        if (NextPtNum < PatternNum) CurPT = PTLE[Random.Range(0, PatternNum)];
+
         else
         {
             for(int i = 0; i < 10; i++) CurPT.Add(new int[25]);
@@ -185,6 +181,9 @@ public class PatternManager : MonoBehaviour
                 for (int x = 0; x < 10; x++) CurPT[x][i] = i % 5 == 0 ? (L.Contains(x) ? 1 : 0) : 0;
             }
         }
+
+        if(!ErrorObject.activeSelf) StartCoroutine(AddCMD((2 + BulletInterv * CurPT[0].Length + RepeatInterv) * 2));
+
         for (int CurRepeat = 0; CurRepeat < 2; CurRepeat++)             // ???? 2? ??? ????
         {
             if(CurRepeat % 2 == 0)
@@ -236,6 +235,26 @@ public class PatternManager : MonoBehaviour
         if (!ErrorObject.activeSelf) ErrorObject.SetActive(true);
         StartPT(0);               // ???? ?????? ????
         yield break;
+    }
+
+    public TMP_Text[] CMDs;
+    [HideInInspector] public int CurProcess = 0;
+
+    string[] Suffix = { "1st", "2nd", "3rd", "4th", "5th" };
+    IEnumerator AddCMD(float time)
+    {
+        string cnt;
+        WaitForSeconds WFS = new WaitForSeconds(time * 0.1f);
+        for(int i = 0; i <= 10; i++)
+        {
+            cnt = $"<i>{Suffix[CurProcess]}</i> Process executed... [";
+            for (int x = 0; x < i; x++) cnt += '■'; for (int x = i; x < 10; x++) cnt += "    "; cnt += ']';
+            CMDs[CurProcess].text = cnt;
+            yield return WFS;
+        }
+        yield return OneSec;
+
+        CMDs[CurProcess].text = $"<i>{Suffix[CurProcess]}</i> Access Key Acquired!"; CurProcess++;
     }
 
     // Normal                   N1 -> N2 -> Hard
@@ -474,16 +493,8 @@ public class PatternManager : MonoBehaviour
         }
     }
 
-    public IEnumerator AddCmdText(int Start, int End)
+    public void ExternalStopCor()
     {
-        for(int i = Start; i < End; i++)
-        {
-            CMD.text += "\n";
-            foreach(var k in CMD_Texts[i])
-            {
-                CMD.text += k;
-                yield return new WaitForSecondsRealtime(0.02f);
-            }
-        }
+        StopAllCoroutines();
     }
 }
