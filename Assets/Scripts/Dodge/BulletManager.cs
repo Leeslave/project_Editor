@@ -18,7 +18,7 @@ public class BulletManager : MonoBehaviour
         BM = new GameObject[300];
         for(int i = 0; i<BM.Length; i++)
         {
-            BM[i] = Instantiate(BulletPref[Random.Range(0,2)]);
+            BM[i] = Instantiate(BulletPref[Random.Range(0,2)],transform);
             rigids[i] = BM[i].GetComponent<Rigidbody2D>();
             BM[i].SetActive(false);
         }

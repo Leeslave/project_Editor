@@ -145,6 +145,7 @@ public class UIICons : UIDragger
     {
         base.DragOn(Data);
         if (Data.clickCount == 2) DragDoubleCheck = true;
+        Dragged.transform.position = transform.position - AnchorGap;
         Dragged.gameObject.SetActive(true);
         DB_M.DB_Docs.CntFileForAttach.IsDragged = true;
         DB_M.DB_Docs.CntFileForAttach.AttatchType = type;
