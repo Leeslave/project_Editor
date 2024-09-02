@@ -71,8 +71,11 @@ public class PatternManager : MonoBehaviour
     WaitForSeconds LittleSec = new WaitForSeconds(0.05f);
     WaitForSeconds LittleLittle = new WaitForSeconds(0.02f);
 
+    // 바로 2페이즈로
     [SerializeField] bool IsTest;
-    [SerializeField] bool NormalPattern = false;
+
+    [SerializeField] GameObject TutorialObject;
+    int StageInt = 0;
 
     private void Awake()
     {
@@ -92,10 +95,19 @@ public class PatternManager : MonoBehaviour
         SP = new Vector2[][] { SPB, SPR, SPL, SPT };
         ReadExternalPattern();
 
-        
+
+        try
+        {
+            StageInt = GameSystem.Instance.GetTask("Maze");
+        }
+        catch{}
 
         //// Document Secret Test용
-        if (PlayerPrefs.GetInt("DocumentTest") == 1) NormalPattern = true;
+        if (PlayerPrefs.GetInt("DocumentTest") == 1) StageInt = 2;
+
+        if (StageInt == 0) { TutorialObject.SetActive(true); Pl.InitHP = 2; }
+        Pl.Init();
+
     }
 
     private void Start()
@@ -121,15 +133,12 @@ public class PatternManager : MonoBehaviour
         {
             HPForPattern -= change;
             
-            
             if (HPForPattern == 0)
             {
-                if(NormalPattern) StartPT(1);
+                if(StageInt >= 2) StartPT(1);
                 else
                 {
                     GameSystem.Instance.ClearTask("Dodge");
-                    //LoadTestTrash.Instance.LoadScene = "Screen";
-                    //SceneManager.LoadScene("LoadT");
                     GameSystem.LoadScene("Screen");
                 }
             }
@@ -140,14 +149,14 @@ public class PatternManager : MonoBehaviour
         }
         else if (CurPattern == 1)
         {
-            if (change == 1)
+            if (change == 1 && StageInt == 3)
             {
                 change = 0;
                 StartPT(2);
             }
             else StartPT(1);
         }
-        else
+        else if (StageInt == 3)
         {
             StartPT(2);
         }
@@ -182,7 +191,7 @@ public class PatternManager : MonoBehaviour
             }
         }
 
-        if(!ErrorObject.activeSelf) StartCoroutine(AddCMD((2 + BulletInterv * CurPT[0].Length + RepeatInterv) * 2));
+        if(!ErrorObject.activeSelf) StartCoroutine(AddCMD((1 + BulletInterv * CurPT[0].Length + RepeatInterv) * 2));
 
         for (int CurRepeat = 0; CurRepeat < 2; CurRepeat++)             // ???? 2? ??? ????
         {
@@ -252,7 +261,6 @@ public class PatternManager : MonoBehaviour
             CMDs[CurProcess].text = cnt;
             yield return WFS;
         }
-        yield return OneSec;
 
         CMDs[CurProcess].text = $"<i>{Suffix[CurProcess]}</i> Access Key Acquired!"; CurProcess++;
     }

@@ -113,7 +113,7 @@ public class TutorialBorder : MonoBehaviour
 
         StartCoroutine(Test(text,IsHighlight));
 
-        return Mathf.Max(ObjSize.x, ObjSize.y);
+        return Mathf.Min(ObjSize.x, ObjSize.y);
     }
 
     private void Update()

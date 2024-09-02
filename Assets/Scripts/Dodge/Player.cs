@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
 
     bool OnStart = true;
 
-    private void Awake()
+    public void Init()
     {
         rigid = GetComponent<Rigidbody2D>();
         rigid.velocity = new Vector2(0, -speed);
@@ -45,6 +45,8 @@ public class Player : MonoBehaviour
         // Particle Object Pooling
         for (int i = 0; i < 9; i++) { PtL.Add(Instantiate(Particle)); PtL[i].SetActive(false); }
         for (int i = 0; i < 3 - HPForPattern; i++) Unzips[i].gameObject.SetActive(false);
+
+        OnStart = false;
     }
     private void Update()
     {
@@ -99,15 +101,9 @@ public class Player : MonoBehaviour
     private void OnEnable()
     {
         // 조건은 씬이 생성되었을 때 작동되지 않도록 하기 위함(해당 시점에 굳이 필요 없는 연산)
-        if (!OnStart)
-        {
-            // PatternManager 및 Timer 참조
-            PM.NextPattern(ref HPForPattern,0);
-            PM.ErrorObject.SetActive(false);
-        }
-        
-        OnStart = false;
-        // 플레이어 사망 연출에 사용된 오브젝트들 비활성화
+        if (OnStart) return;
+
+        // 플레이어 사망 연출에 사용된 오브젝트들 비활성화   
         foreach (var a in PtL) a.SetActive(false);
         gameObject.transform.position = new Vector2(0, 0);
         // 색 변경 도중 사망 시, 색이 변경된 채로 유지되기 때문에 이리 유지
@@ -116,6 +112,11 @@ public class Player : MonoBehaviour
         MoveAble = true;
         speed = 10;
         rigid.velocity = new Vector2(0, -speed);
+
+        PM.NextPattern(ref HPForPattern, 0);
+        PM.ErrorObject.SetActive(false);
+
+        
     }
 
     [SerializeField] AudioSource AS;
