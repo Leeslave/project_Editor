@@ -36,9 +36,13 @@ public class Player : MonoBehaviour
 
     bool OnStart = true;
 
-    public void Init()
+    private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
+    }
+
+    public void Init()
+    {
         rigid.velocity = new Vector2(0, -speed);
         AS.Stop();
         HPForPattern = InitHP;
