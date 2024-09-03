@@ -122,6 +122,7 @@ public enum ObjectType {
     Reporter,
     Nametag,
     BGM,
+    Block,
 }
 
 internal enum DataColumn {

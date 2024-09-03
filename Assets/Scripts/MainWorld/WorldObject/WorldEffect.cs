@@ -18,6 +18,10 @@ public class WorldEffect : WorldObject<EffectData>
                 Debug.Log(data.awakeParam);
                 SetBGM(int.Parse(data.awakeParam));
                 break;
+            case ObjectType.Block:
+                Debug.Log($"Block : {data.awakeParam}");
+                BlockButton(int.Parse(data.awakeParam));
+                break;
             default:
                 return;
         }
@@ -27,5 +31,11 @@ public class WorldEffect : WorldObject<EffectData>
     private void SetBGM(int bgm)
     {
         location.SetBGM(bgm);
+    }
+
+
+    private void BlockButton(int idx)
+    {
+        Destroy(location.buttons[idx]);
     }
 }

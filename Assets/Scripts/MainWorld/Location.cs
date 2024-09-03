@@ -21,7 +21,7 @@ public class Location : MonoBehaviour
     private int connectLen;     // 연결 가능 최대 길이
 
     [SerializeField] public List<Position> Positions;
-    [SerializeField] private List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
+    [SerializeField] public List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
 
     private List<List<GameObject>> objList = new();  // WorldObject 리스트
     public float sizeMultiplier = 1;    // NPC 크기 배율
@@ -154,7 +154,8 @@ public class Location : MonoBehaviour
     {
         foreach(var button in buttons)
         {
-            button.SetActive(isActive);
+            if (button != null)
+                button.SetActive(isActive);
         }
     }
 
