@@ -15,7 +15,8 @@ public class ChatTutorialManager : TutorialManager
     }
     
     public RectTransform TargetArea;
-    public GameObject UI;
+    public GameObject[] UI;
+    public static int idx = 0;
 
     private void SetArea(Vector2 position, Vector2 size)
     {
@@ -28,11 +29,20 @@ public class ChatTutorialManager : TutorialManager
         StartCoroutine(ShowTutorial(duration));
     }
 
-    public IEnumerator ShowTutorial(float duration)
+    public IEnumerator ShowTutorial(float duration) 
     {
-        StartCoroutine(ShowPopUp(UI));
+        StartCoroutine(ShowPopUp(UI[idx]));
         yield return new WaitForSeconds(duration);
-        blocker.SetActive(false);
+        if (idx >= UI.Length)
+        {
+            idx = 0;
+            blocker.SetActive(false);
+        }
+        else
+        {
+            idx++;
+            StartCoroutine(ShowTutorial(duration));
+        }    
     }
 
     public void Awake()
