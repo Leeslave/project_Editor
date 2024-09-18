@@ -15,11 +15,9 @@ public class WorldEffect : WorldObject<EffectData>
         switch (data.objType)
         {
             case ObjectType.BGM:
-                Debug.Log(data.awakeParam);
                 SetBGM(int.Parse(data.awakeParam));
                 break;
             case ObjectType.Block:
-                Debug.Log($"Block : {data.awakeParam}");
                 BlockButton(int.Parse(data.awakeParam));
                 break;
             default:

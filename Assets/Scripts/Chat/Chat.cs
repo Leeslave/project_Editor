@@ -415,7 +415,9 @@ public class Chat : Singleton<Chat>
     /// 대화 스킵 버튼
     public void OnSkipPressed()
     {
+    #if DEBUG
         Debug.Log("Skip Pressed");
+    #endif
         while(true)
         {
             // 대사 종료까지 반복
@@ -563,13 +565,15 @@ public class Chat : Singleton<Chat>
     /// <returns></returns>
     public static Sprite GetSprite(string filePath)
     {
-        Debug.Log($"Get Image : {filePath}");
         Sprite result = Resources.Load<Sprite>(filePath);
-
+        
+    #if UNITY_EDITOR
         if (result == null)
         {
             Debug.Log($"Image Load Failed : {filePath}");
         }
+    #endif
+        
         return result;
     }
 
@@ -582,11 +586,16 @@ public class Chat : Singleton<Chat>
     public static Sprite GetSprite(string filePath, int i)
     {
         Sprite[] result = Resources.LoadAll<Sprite>(filePath);
-
+        
         if (result == null)
         {
+        #if UNITY_EDITOR
             Debug.Log($"Image Load Failed : {filePath}");
+        #endif
+
+            return null;
         }
+        
         return result[i];
     }
 }

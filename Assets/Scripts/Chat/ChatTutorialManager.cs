@@ -29,14 +29,15 @@ public class ChatTutorialManager : TutorialManager
         StartCoroutine(ShowTutorial(duration));
     }
 
-    public IEnumerator ShowTutorial(float duration) 
+    public IEnumerator ShowTutorial(float duration)
     {
+        blocker = UI[idx];
         StartCoroutine(ShowPopUp(UI[idx]));
         yield return new WaitForSeconds(duration);
-        if (idx >= UI.Length)
+        blocker.SetActive(false);
+        if (idx >= UI.Length - 1)
         {
             idx = 0;
-            blocker.SetActive(false);
         }
         else
         {
