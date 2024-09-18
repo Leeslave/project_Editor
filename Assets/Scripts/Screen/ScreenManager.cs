@@ -20,6 +20,7 @@ public class ScreenManager : Singleton<ScreenManager>
     public GameObject desktop;      // 바탕화면 패널
     public GameObject bootPanel;    //부팅 패널
     public Text bootCLI;     //부팅 콘솔 텍스트
+    public AudioSource bootSFX;     // 부팅 효과음
     [SerializeField]
     private ScreenMode currentBootStatus;    //현 부팅 상태
 
@@ -138,7 +139,9 @@ public class ScreenManager : Singleton<ScreenManager>
     public void OnReturnClicked(string sceneName)
     {
         if (sceneName == null || sceneName == "")
+        {
             sceneName = "MainWorld";
+        }
         GameSystem.LoadScene(sceneName);
     }
 
@@ -151,6 +154,9 @@ public class ScreenManager : Singleton<ScreenManager>
         // 부팅 시작
         currentBootStatus = ScreenMode.OnBoot;
         SetScreen(ScreenMode.OnBoot);
+        
+        // 부팅 효과음 재생
+        bootSFX.Play();
 
         // 로고 활성화 후 종료
         bootPanel.transform.GetChild(0).gameObject.SetActive(true);
@@ -165,7 +171,7 @@ public class ScreenManager : Singleton<ScreenManager>
         // 부팅 완료 (콘솔창 초기화)
         SetScreen(ScreenMode.On);
         GameSystem.Instance.isScreenOn = true;
-        // TODO: desktop 초기화 (시작)
+        bootSFX.Stop();
     }
 
     /**
@@ -191,7 +197,6 @@ public class ScreenManager : Singleton<ScreenManager>
         {
             SetScreen(ScreenMode.Off);
             GameSystem.Instance.isScreenOn = false;
-            // TODO: desktop 초기화 (종료)
         }
         // 종료 취소시
         else
