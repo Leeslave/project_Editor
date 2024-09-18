@@ -10,6 +10,7 @@ public class GlowEffect : MonoBehaviour
     public float Delay;
     public bool Loop;
     private float originAlpha = 1;
+    public float minimumAlpha = 0;
 
     void Awake()
     {
@@ -75,7 +76,7 @@ public class GlowEffect : MonoBehaviour
         while (elapsedTime < Delay)
         {
             elapsedTime += Time.deltaTime;
-            float alpha = Mathf.Lerp(originAlpha, 0f, elapsedTime / Delay);
+            float alpha = Mathf.Lerp(originAlpha, minimumAlpha, elapsedTime / Delay);
             SetAlpha(alpha);
             yield return null;
         }
@@ -87,7 +88,7 @@ public class GlowEffect : MonoBehaviour
         while (elapsedTime < Delay)
         {
             elapsedTime += Time.deltaTime;
-            float alpha = Mathf.Lerp(0f, originAlpha, elapsedTime / Delay);
+            float alpha = Mathf.Lerp(minimumAlpha, originAlpha, elapsedTime / Delay);
             SetAlpha(alpha);
             yield return null;
         }

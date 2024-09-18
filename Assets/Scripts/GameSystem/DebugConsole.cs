@@ -1,3 +1,5 @@
+#if DEBUG
+
 using UnityEngine;
 using TMPro;
 
@@ -76,3 +78,5 @@ public class DebugConsole : SingletonObject<DebugConsole>
         consoleText.text += output;
     }
 }
+
+#endif

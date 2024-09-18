@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7307037406944028267}
   - component: {fileID: 7307037406944028262}
   - component: {fileID: 7307037406944028265}
-  - component: {fileID: 2578020249587310324}
+  - component: {fileID: 4776745137305151951}
   m_Layer: 5
   m_Name: WorldEffect
   m_TagString: Player
@@ -77,7 +77,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2578020249587310324
+--- !u!114 &4776745137305151951
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -86,6 +86,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7307037406944028266}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0658f4c0c3288c34194b8578bf8fa66e, type: 3}
+  m_Script: {fileID: 11500000, guid: f0c974351ec640d7a55204d9ef8aecc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playAwake: 1
+  count: 0
+  location: {fileID: 0}

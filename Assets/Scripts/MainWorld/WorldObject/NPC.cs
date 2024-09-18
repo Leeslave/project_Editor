@@ -44,7 +44,6 @@ public class NPC : WorldObject<NPCData>
         rect.anchorMax = data.anchor;
         
         // 크기 설정
-        Debug.Log(data.size);
         rect.sizeDelta *= data.size;
         rect.localScale = new Vector3(1f,1f,1f);
     }
