@@ -95,7 +95,6 @@ public class ResultPanel : MonoBehaviour
         StartCoroutine(PrintDecryptionSuccess_IE());
         return true;
     }
-
     private IEnumerator PrintDecryptionSuccess_IE()
     {
         //결과 창 이동
@@ -169,7 +168,6 @@ public class ResultPanel : MonoBehaviour
         //결과 창 닫기 버튼 활성화
         CloseButton.SetAvailability(true);   
     }
-
     private IEnumerator PrintDecryptionFailed_IE(string error)
     {
         //결과 창 이동
@@ -308,7 +306,6 @@ public class ResultPanel : MonoBehaviour
         StartCoroutine(PrintEncryptionSuccess_IE());
         return true;
     }
-
     private IEnumerator PrintEncryptionSuccess_IE()
     {
         //결과 창 이동
@@ -384,7 +381,6 @@ public class ResultPanel : MonoBehaviour
         //결과 창 닫기 버튼 활성화
         CloseButton.SetAvailability(true);      
     }
-
     private IEnumerator PrintEncryptionFailed_IE(string error)
     { 
         //결과 창 이동

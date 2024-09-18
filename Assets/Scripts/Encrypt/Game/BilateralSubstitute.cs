@@ -28,7 +28,7 @@ public class BilateralSubstitute : MonoBehaviour
 
     private int CurrentTableNum { get; set; } = 0;
     
-    private const int TableNumMax = 4;
+    private const int TableNumMax = 7;
     
     private void Awake()
     {

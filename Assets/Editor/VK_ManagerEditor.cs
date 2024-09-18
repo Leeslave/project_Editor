@@ -9,11 +9,11 @@ public class VK_ManagerEditor : Editor
         DrawDefaultInspector();
         VK_ManagerScript myScript = (VK_ManagerScript)target;
         if (GUILayout.Button("Start ComplexTurn"))
-            myScript.StartComplexTurn(3f, 15f, 8, 7);
+            myScript.StartComplexTurn(2f, 10f, 8, 7);
         if(GUILayout.Button("Start EyeTurn"))
-            myScript.StartEyeTurn(3f, 15f, 8);
+            myScript.StartEyeTurn(2f, 10f, 8);
         if(GUILayout.Button("Start ArrowTurn"))
-            myScript.StartArrowTurn(3f, 15f, 7);
+            myScript.StartArrowTurn(2f, 10f, 12);
         if (GUILayout.Button("Start Tutorial"))
             myScript.TutorialManager.StartVoightTutorial();
     }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -9,7 +10,7 @@ using static TutorialSetting.TutoList;
 
 public class TutorialSetting : MonoBehaviour
 {
-    public bool Test;
+    public bool AutoStart;
 
     public static TutorialSetting instance;
     public GameObject ForTutoCond;
@@ -41,6 +42,10 @@ public class TutorialSetting : MonoBehaviour
         [Header("---- 마우스 이벤트 ----")]
         public List<EventData> Events;
 
+        [Header("---- 기타 이벤트 ----")]
+        public List<Event> StartEvent;
+        public List<Event> EndEvent;
+
         [Header("---- Object 관련 ----")]
         public List<GameObject> DisableObjects;
         public List<GameObject> AbleObjects;
@@ -54,13 +59,19 @@ public class TutorialSetting : MonoBehaviour
         public List<int> InActiveChild;
 
         [Header("---- 기타 설정 ----")]
-        
+
+        public float StartGap = 0;
         public bool IsRect;
         public float TimeScale = 1;
         public bool GoNextTuto;
         public bool IsHighlight;
         public bool KeepEvent = false;
         public bool IsRemove = true;
+
+        public TutoList()
+        {
+            TimeScale = 1;
+        }
 
         [Serializable]
         public class Event : UnityEvent<BaseEventData> { }
@@ -85,12 +96,13 @@ public class TutorialSetting : MonoBehaviour
         instance = this;
         gameObject.SetActive(false);
         BoxBorder = BoxTuto.GetComponent<TutorialBorder>(); CircleBorder = CircleTuto.GetComponent<TutorialBorder>();
-        if (Test) ActiveTutorial();
+        if (AutoStart) Invoke("ActiveTutorial",0.2f);
     }
 
     public bool GoNextTutorial()
     {
         var cnt = TutorialList[0]; if(cnt.IsRemove) TutorialList.RemoveAt(0);
+        foreach (var k in cnt.EndEvent) k.Invoke(null);
         if ((cnt.GoNextTuto || !gameObject.activeSelf) && TutorialList.Count!=0) ActiveTutorial();
         else gameObject.SetActive(false);
 
@@ -99,6 +111,19 @@ public class TutorialSetting : MonoBehaviour
 
     public void ActiveTutorial()
     {
+        foreach (var k in TutorialList[0].StartEvent) k.Invoke(null);
+
+        gameObject.SetActive(true);
+        StartCoroutine(TutorialSet());
+    }
+
+    IEnumerator TutorialSet()
+    {
+        BoxTuto.SetActive(false);
+        CircleTuto.SetActive(false);
+        TextBox.parent.gameObject.SetActive(false);
+        yield return new WaitForSeconds(TutorialList[0].StartGap);
+        
         Time.timeScale = TutorialList[0].TimeScale;
 
         foreach (var k in TutorialList[0].DisableObjects) k.SetActive(false);
@@ -109,7 +134,6 @@ public class TutorialSetting : MonoBehaviour
 
 
         if (TutorialList[0].TargetObj != null) { Vector2 Pos = Camera.main.WorldToScreenPoint(TutorialList[0].TargetObj.transform.position); TargetPos = Pos; }
-        gameObject.SetActive(true);
 
         if (TutorialList[0].ActiveTarget)
         {
@@ -125,24 +149,26 @@ public class TutorialSetting : MonoBehaviour
 
         if (TutorialList[0].IsRect)
         {
+            BoxTuto.SetActive(true);
             MaxLength = BoxBorder.Init(TutorialList[0].TargetObj, TutorialList[0].Text, TutorialList[0].IsHighlight, TutorialList[0].KeepEvent);
-            CircleTuto.SetActive(false);
         }
         else
         {
+            CircleTuto.SetActive(true);
             MaxLength = CircleBorder.Init(TutorialList[0].TargetObj, TutorialList[0].Text, TutorialList[0].IsHighlight, TutorialList[0].KeepEvent);
-            BoxTuto.SetActive(false);
         }
     }
 
     public void ChangeTarget(GameObject Target)
     {
         CurActive.ChangeTarget(Target);
+        //ReNewTargetPos(Target.transform);
     }
 
     public void ResetTarget()
     {
         CurActive.ChangeTarget(TutorialList[0].TargetObj);
+        ReNewTargetPos(TutorialList[0].TargetObj.transform);
     }
 
     
@@ -177,7 +203,7 @@ public class TutorialSetting : MonoBehaviour
                     var PointerData = (PointerEventData)data;
                     if (PointerData.clickCount >= Data.ClickCount)
                     {
-                        if (Data.ReactAnywhere || Vector2.Distance(TargetPos, PointerData.pressPosition) < MaxLength)
+                        if (Data.ReactAnywhere || Vector2.Distance(TargetPos, PointerData.position) < MaxLength)
                         {
                             foreach (var j in Actions) j.Invoke(data);
                             Data.TutoEvent.Invoke(data);
@@ -193,6 +219,11 @@ public class TutorialSetting : MonoBehaviour
             }
         }
     }
+
+    public void ReNewTargetPos(Transform NewPos)
+    {
+        TargetPos = Camera.main.WorldToScreenPoint(NewPos.position);
+    }
     
     public void SetEvent(EventTrigger trigger)
     {
@@ -202,5 +233,10 @@ public class TutorialSetting : MonoBehaviour
         {
              new EventActions(cnt,trigger,i,i.AddTargetAction,GoNextTutorial);
         }
+    }
+
+    public void ResetTime()
+    {
+        Time.timeScale = 1;
     }
 }

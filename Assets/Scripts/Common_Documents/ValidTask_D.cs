@@ -51,11 +51,14 @@ public class ValidTask_D : MonoBehaviour
                 gameObject.SetActive(false);
             }
         }
-        InfText.text = "";
-        ProgBar.fillAmount = 0;
-        Check.gameObject.SetActive(true);
-        Fill = true;
-        StartCoroutine(ValidStart());
+        else
+        {
+            InfText.text = "";
+            ProgBar.fillAmount = 0;
+            Check.gameObject.SetActive(true);
+            Fill = true;
+            StartCoroutine(ValidStart());
+        }
     }
 
     bool Fill = true;       // true인 경우에만 ProgressBar를 채움

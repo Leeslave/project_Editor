@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.ParticleSystem;
 using Random = UnityEngine.Random;
 
 // Make Pattern / End Pattern
@@ -22,11 +24,6 @@ public class PatternManager : MonoBehaviour
     [SerializeField] GameObject[] Warnings;
     [SerializeField] public GameObject ErrorObject;
 
-    [SerializeField] GameObject Hand1;
-    [SerializeField] GameObject Hand1_2;
-    [SerializeField] GameObject Hand2;
-    [SerializeField] GameObject Hand3;
-    [SerializeField] GameObject Hand3_2;
 
     // ??? ??? ???(1???)
     [SerializeField] Transform[] SPRE;    // Right
@@ -39,7 +36,6 @@ public class PatternManager : MonoBehaviour
     public bool IsEnd = false;      // ??? ???? ????
 
     public int CurPattern = 0;      // ???? ????
-    
 
     List<GameObject> PlatL = new List<GameObject>();        // ?????? ???? ?? ????? Platform???? ???? <- EndPattern?? ?????? ????.
     int PatternNum = 0;             // Num of Pattern(?? ??)
@@ -76,8 +72,11 @@ public class PatternManager : MonoBehaviour
     WaitForSeconds LittleSec = new WaitForSeconds(0.05f);
     WaitForSeconds LittleLittle = new WaitForSeconds(0.02f);
 
+    // 바로 2페이즈로
     [SerializeField] bool IsTest;
-    [SerializeField] bool NormalPattern = false;
+
+    [SerializeField] GameObject TutorialObject;
+    int StageInt = 0;
 
     private void Awake()
     {
@@ -97,8 +96,17 @@ public class PatternManager : MonoBehaviour
         SP = new Vector2[][] { SPB, SPR, SPL, SPT };
         ReadExternalPattern();
 
-        //// Document Secret Test용
-        if (PlayerPrefs.GetInt("DocumentTest") == 1) NormalPattern = true;
+        try
+        {
+            StageInt = GameSystem.Instance.GetTask("Maze");
+        }
+        catch { }
+
+        if (PlayerPrefs.GetInt("DocumentTest") == 1) StageInt = 2;
+
+        if (StageInt == 0) { TutorialObject.SetActive(true); Pl.InitHP = 2; }
+
+        Pl.Init();
     }
 
     private void Start()
@@ -113,23 +121,28 @@ public class PatternManager : MonoBehaviour
         Pl.gameObject.SetActive(true);
         CurPattern = 0;
         StartPT(0);
+        
     }
 
     public void NextPattern(ref int HPForPattern, int change = 1)
     {
+        EndPT(false);
         CamShake(0.5f);
         if(CurPattern == 0)
         {
             HPForPattern -= change;
+            
             if (HPForPattern == 0)
             {
-                if(NormalPattern) StartPT(1);
-                else
+                if(StageInt >= 2) StartPT(1);
+                else if(GameSystem.Instance != null)
                 {
                     GameSystem.Instance.ClearTask("Dodge");
-                    //LoadTestTrash.Instance.LoadScene = "Screen";
-                    //SceneManager.LoadScene("LoadT");
                     GameSystem.LoadScene("Screen");
+                }
+                else
+                {
+                    SceneManager.LoadScene("Screen");
                 }
             }
             else
@@ -139,77 +152,65 @@ public class PatternManager : MonoBehaviour
         }
         else if (CurPattern == 1)
         {
-            if (change == 1)
+            if (change == 1 && StageInt == 3)
             {
                 change = 0;
-                Hand2.SetActive(false);
                 StartPT(2);
             }
             else StartPT(1);
         }
-        else
+        else if (StageInt == 3)
         {
             StartPT(2);
         }
 
     }
 
-    Vector3 Left = new Vector3(-10.65f,3.5f,0);
+    Vector3 Left = new Vector3(-10.65f, 3.5f, 0);
     Vector3 Right = new Vector3(10.65f, 3.5f, 0);
     // EZ
     IEnumerator MakeEasyPattern(bool IsTu = false)     // 1?????? ????? ?????? ??????.
     {
-        /*PlatTop.SetActive(true); PlatTop.SetActive(true);*/
         AD.MusicOn();
-        yield return OneSec;
         int NextPtNum = Random.Range(0, PatternNum + 1);
         List<int[]> CurPT = new List<int[]>();
-        if (NextPtNum < PatternNum) CurPT = PTLE[Random.Range(0, PatternNum)];     // ????? ???? ?? ????? 1???? ?????? ??????
+        if (NextPtNum < PatternNum) CurPT = PTLE[Random.Range(0, PatternNum)];
+
         else
         {
-            for(int i = 0; i < 10; i++) CurPT.Add(new int[25]);
+            for (int i = 0; i < 10; i++) CurPT.Add(new int[25]);
             for (int i = 0; i < 25; i++)
             {
                 List<int> L = new List<int>();
-                    for (int x = 0; x < 1; x++)
-                    {
-                        int cnt = Random.Range(1, 9);
-                        while (L.Contains(cnt)) cnt = Random.Range(1, 9);
-                        L.Add(cnt);
-                    }
+                for (int x = 0; x < 1; x++)
+                {
+                    int cnt = Random.Range(1, 9);
+                    while (L.Contains(cnt)) cnt = Random.Range(1, 9);
+                    L.Add(cnt);
+                }
                 for (int x = 0; x < 10; x++) CurPT[x][i] = i % 5 == 0 ? (L.Contains(x) ? 1 : 0) : 0;
             }
         }
+
+        if (!ErrorObject.activeSelf) StartCoroutine(AddCMD((2 + BulletInterv * CurPT[0].Length + RepeatInterv) * 2));
+
+        yield return OneSec;
+
+
         for (int CurRepeat = 0; CurRepeat < 2; CurRepeat++)             // ???? 2? ??? ????
         {
-            if(CurRepeat % 2 == 0)
+            if (CurRepeat % 2 == 0)
             {
                 Warnings[0].SetActive(true);
-                Hand3.SetActive(true);
-                Hand3.transform.position = Right;
-                for (int i = 0; i < 25; i++)
-                {
-                    yield return LittleLittle;
-                    Hand3.transform.Translate(-1, 0, 0);
-                }
-                Hand3.SetActive(false);
                 yield return TwoSec;
             }
             else
             {
                 Warnings[1].SetActive(true);
-                Hand3_2.SetActive(true);
-                Hand3_2.transform.position = Left;
-                for (int i = 0; i < 25; i++)
-                {
-                    yield return LittleLittle;
-                    Hand3_2.transform.Translate(1, 0, 0);
-                }
-                Hand3_2.SetActive(false);
                 yield return TwoSec;
             }
             int cnt = Random.Range(0, 4);
-            int XL = CurPT[0].Length - 1, YL = CurPT.Count - 1; 
+            int XL = CurPT[0].Length - 1, YL = CurPT.Count - 1;
             switch (cnt)
             {
                 case 0:
@@ -217,7 +218,8 @@ public class PatternManager : MonoBehaviour
                     {
                         for (int y = 0; y < CurPT.Count; y++) if (CurPT[y][x] == 1) { if (CurRepeat % 2 == 0) BM.MakeSmallBul(Vector2.left * 10, Vector2.zero).transform.position = SPRE[y].position; else BM.MakeSmallBul(Vector2.right * 10, Vector2.zero).transform.position = SPLE[y].position; }
                         yield return new WaitForSeconds(BulletInterv);
-                    }break;
+                    }
+                    break;
                 case 1:
                     for (int x = 0; x < CurPT[0].Length; x++)
                     {
@@ -249,12 +251,30 @@ public class PatternManager : MonoBehaviour
         yield break;
     }
 
+    public TMP_Text[] CMDs;
+    [HideInInspector] public int CurProcess = 0;
+
+    string[] Suffix = { "1st", "2nd", "3rd", "4th", "5th" };
+    IEnumerator AddCMD(float time)
+    {
+        string cnt;
+        WaitForSeconds WFS = new WaitForSeconds(time * 0.1f);
+        for (int i = 0; i <= 10; i++)
+        {
+            cnt = $"<i>{Suffix[CurProcess]}</i> Process executed... [";
+            for (int x = 0; x < i; x++) cnt += '■'; for (int x = i; x < 10; x++) cnt += "  "; cnt += ']';
+            CMDs[CurProcess].text = cnt;
+            yield return WFS;
+        }
+
+        CMDs[CurProcess].text = $"<i>{Suffix[CurProcess]}</i> Access Key Acquired!"; CurProcess++;
+    }
+
     // Normal                   N1 -> N2 -> Hard
     IEnumerator PatternN1()       // Play Time : 25s
     {
         MainCam.transform.position = new Vector3(0, 0, -2);
         AD.NoiszeOn();
-        Hand2.SetActive(true);
         CurPattern = 1;
         // ??? ?????? ????
         MakeGlitch(0.1f, 0.5f, 0.7f);
@@ -276,16 +296,16 @@ public class PatternManager : MonoBehaviour
         int dk = -1;                        // K?? ?????
         int k = 7;                          // ?? ??? ????? ???????? ???
         bool jk = true;                     // ?????? ??? ??????? ???? ???
-        for (int i = 0; i < 140; i++)       // ?? 110???? ???? ??????
+        for (int i = 0; i < 190; i++)       // ?? 110???? ???? ??????
         {
             /*
              ?? 30???? ????????? ??, ?????? ?????? ????? ??????
              7???? ???? ??????? ????? ????????? ????? ????? ???, ??????? ????? ??????
             */
-            if (i == 30) for (int y = 6; y <= 12; y++) BM.MakeSmallBul(DF[2 / j] * 1.5f, Vector2.zero).transform.position = SP[2 / j][y];
+            if (i == 30) for (int y = 7; y <= 11; y++) BM.MakeSmallBul(DF[2 / j], Vector2.zero).transform.position = SP[2 / j][y];
             for (int y = 5; y <= 14; y++)
             {
-                if (!(y >= k && y <= k + 3)) BM.MakeSmallBul(DF[j] * 6, Vector2.zero).transform.position = SP[j][y];
+                if (!(y >= k && y <= k + 3)) BM.MakeSmallBul(DF[j] * 12, Vector2.zero).transform.position = SP[j][y];
             }
             // K?? ?????? ????, ???? ????.
             if (k == 7 || k == 10)
@@ -294,7 +314,7 @@ public class PatternManager : MonoBehaviour
                 PlatL.Add(cnt);
                 if (k == 7) cnt.transform.position = SP[j][k];
                 else cnt.transform.position = SP[j][k + 3];
-                cnt.GetComponent<Rigidbody2D>().AddForce(DF[j] * 6, ForceMode2D.Impulse);
+                cnt.GetComponent<Rigidbody2D>().AddForce(DF[j] * 12, ForceMode2D.Impulse);
                 if (jk) dk *= -1;
                 jk = !jk;
             }
@@ -302,7 +322,7 @@ public class PatternManager : MonoBehaviour
             if (jk) k += dk;
             yield return SecC;
         }
-        yield return new WaitForSeconds(10);        // ?????? ???? ???? ??????? ??? ???? ??????? ????? ???
+        yield return new WaitForSeconds(9);        // ?????? ???? ???? ??????? ??? ???? ??????? ????? ???
         if (!ErrorObject.activeSelf) ErrorObject.SetActive(true);
         StartPT(1);
         yield break;
@@ -332,8 +352,8 @@ public class PatternManager : MonoBehaviour
             Warnings[2 + a1].SetActive(true);
             // ???? ????
             GameObject cnt = Instantiate(Plat);
-            cnt.GetComponent<Transform>().localScale = new Vector3(2f,0.1f);
-            if (a1 == 0) 
+            cnt.GetComponent<Transform>().localScale = new Vector3(2f, 0.1f);
+            if (a1 == 0)
             {
                 cnt.transform.position = new Vector3(SPLE[4].position.x + 1, MidY, 0);
                 cnt.GetComponent<Rigidbody2D>().AddForce(Vector2.right * 2, ForceMode2D.Impulse);
@@ -351,7 +371,7 @@ public class PatternManager : MonoBehaviour
             if (a1 == 0)
             {
                 BM.MakeSmallBul(Vector2.left * 3, Vector2.zero).transform.position = SPRE[Random.Range(0, 5)].position;
-                
+
                 for (int y = 0; y < 150; y++)
                 {
                     for (int x = 0; x < 5; x++) BM.MakeSmallBul(Vector2.right * 25, Vector2.zero).transform.position = SPLE[5 + x].position;
@@ -363,7 +383,7 @@ public class PatternManager : MonoBehaviour
             else
             {
                 BM.MakeSmallBul(Vector2.right * 3, Vector2.zero).transform.position = SPLE[Random.Range(5, 10)].position;
-                
+
                 for (int y = 0; y < 150; y++)
                 {
                     for (int x = 0; x < 5; x++) BM.MakeSmallBul(Vector2.left * 25, Vector2.zero).transform.position = SPRE[x].position;
@@ -389,7 +409,7 @@ public class PatternManager : MonoBehaviour
         GameSystem.LoadScene("Screen");
     }
 
-    IEnumerator CamShake(float time,float intensity = 1)      // ????? ???? ????? ??????.
+    IEnumerator CamShake(float time, float intensity = 1)      // ????? ???? ????? ??????.
     {
         float Cx = MainCam.transform.position.x;
         float Cy = MainCam.transform.position.y;
@@ -398,11 +418,11 @@ public class PatternManager : MonoBehaviour
         {
             MainCam.transform.position = new Vector3(Cx - 0.5f * intensity, Cy, -2);
             yield return LittleSec;
-            MainCam.transform.position = new Vector3(Cx+0.5f * intensity, Cy, -2);
+            MainCam.transform.position = new Vector3(Cx + 0.5f * intensity, Cy, -2);
             yield return LittleSec;
-            MainCam.transform.position = new Vector3(Cx, Cy+0.5f * intensity, -2);
+            MainCam.transform.position = new Vector3(Cx, Cy + 0.5f * intensity, -2);
             yield return LittleSec;
-            MainCam.transform.position = new Vector3(Cx, Cy-0.5f * intensity, -2);
+            MainCam.transform.position = new Vector3(Cx, Cy - 0.5f * intensity, -2);
             yield return LittleSec;
             MainCam.transform.position = new Vector3(Cx, Cy, -2);
             yield return LittleSec;
@@ -427,19 +447,16 @@ public class PatternManager : MonoBehaviour
     // ??? CS???? ?????? ???? ??? ??, ?????? ?????? ??????? ??? ?? CS ??????? ?????? ??????? ???? ????.
     // ????? ?? ?????? ??? CS???? ?????? ???? ??? ??? ??? ?????? ?? ??? ?????? ?????? ?? ???? ????
     // Input : ???? ??? ?????? ?????? ??? ????
-    IEnumerator ChangePT(IEnumerator a)     
+    IEnumerator ChangePT(IEnumerator a)
     {
         StartCoroutine(a);
         yield break;
     }
     // ??? CS ?????? ?????? ?????? ?? ????? ???? ???
     // Input : ?? ?????? ?????? ?????? ?????? ??????? int??. 0?? ??? ??? ??????, 1?? ??? 2?????? ????
-    public void StartPT(int i)      
+    public void StartPT(int i)
     {
-        EndPT(false);
         foreach (GameObject s in Warnings) s.SetActive(false);
-        Hand1.SetActive(false); Hand2.SetActive(false); Hand1_2.SetActive(false);
-        Hand3.SetActive(false); Hand3_2.SetActive(false);
         switch (i)
         {
             case 0: StartCoroutine(ChangePT(MakeEasyPattern())); break;
@@ -447,11 +464,11 @@ public class PatternManager : MonoBehaviour
             case 2: StartCoroutine(ChangePT(PatternN2())); break;
         }
     }
-    
+
     // ???? ???????? ?????? ???????, ????? ???? ?????? ????? ???? ?????? ??????? ????
     // ?????? ??? ??? ???? ?????? ???? ????
     // Input : ?????? ??????? ???? ?????? ??????? ??????? bool??. True?? ??? ?????? ??????, false?? ??? ??? ????
-    public void EndPT(bool _IsEnd)     
+    public void EndPT(bool _IsEnd)
     {
         if (!_IsEnd)
         {
@@ -488,4 +505,10 @@ public class PatternManager : MonoBehaviour
             stringReader.Close();
         }
     }
+
+    public void ExternalStopCor()
+    {
+        StopAllCoroutines();
+    }
 }
+

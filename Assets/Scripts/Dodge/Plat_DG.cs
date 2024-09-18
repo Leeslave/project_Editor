@@ -9,6 +9,8 @@ public class Plat_DG : MonoBehaviour
         if (collision.gameObject.CompareTag("Border"))
         {
             gameObject.SetActive(false);
+            Rigidbody2D cnt = GetComponent<Rigidbody2D>();
+            if (cnt.velocity.x == 0) gameObject.SetActive(false);
         }
     }
 }

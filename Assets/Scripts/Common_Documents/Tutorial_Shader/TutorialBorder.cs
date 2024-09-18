@@ -22,8 +22,12 @@ public class TutorialBorder : MonoBehaviour
     Vector2 ScreenSize;
     Vector2 ObjSize;
 
+    bool IsScreen = false;
+
     float MaxSize;
 
+    float CamSize = 1200;
+    float ReverseCamSize;
 
     private void Awake()
     {
@@ -33,6 +37,7 @@ public class TutorialBorder : MonoBehaviour
         trigger = GetComponent<EventTrigger>();
         TextDetail = TextBox.GetChild(0).GetComponent<TMP_Text>();
         gameObject.SetActive(false);
+        ReverseCamSize = 1 / CamSize;
     }
 
     public float Init(GameObject Target,string text,bool IsHighlight,bool KeepEvent)
@@ -60,29 +65,42 @@ public class TutorialBorder : MonoBehaviour
         }
 
         ObjSize = Vector2.one;
+
         Transform ObjTrans = Target.transform;
 
-        while (ObjTrans.parent != null)
+        IsScreen = false;
+        while (ObjTrans != null)
         {
             ObjSize *= ObjTrans.localScale;
+            if (ObjTrans.TryGetComponent(out Canvas cv)) IsScreen = cv.renderMode == RenderMode.ScreenSpaceOverlay;
             ObjTrans = ObjTrans.parent;
         }
+
+
+        if(!IsScreen) ObjSize *= (500 / Camera.main.orthographicSize);
+
+
         if (Target.TryGetComponent(out RectTransform Rect))
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(Rect);
             ObjSize *= Rect.rect.size;
         }
+        else
+        {
+            if(Target.TryGetComponent(out SpriteRenderer Sprite)) ObjSize *= Sprite.sprite.bounds.size;
+        }
         
         if(!IsRect) ObjSize *= 1.2f;
-        MaxSize = Mathf.Max(ObjSize.x / 1200, ObjSize.y / 1200);
+
+        MaxSize = Mathf.Max(ObjSize.x * ReverseCamSize, ObjSize.y * ReverseCamSize);
 
         CalcPosition();
 
         if (IsRect)
         {
             Mat.SetVector("_MaskCenter", new Vector4(Pos.x / Screen.width, (Pos.y + Screen.width * 0.125f) / Screen.width));
-            Mat.SetFloat("_X", ObjSize.x * 0.9f / 1200);
-            Mat.SetFloat("_Y", ObjSize.y * 0.9f / 1200);
+            Mat.SetFloat("_X", ObjSize.x * 0.9f / CamSize);
+            Mat.SetFloat("_Y", ObjSize.y * 0.9f / CamSize);
         }
         else
         {
@@ -94,7 +112,7 @@ public class TutorialBorder : MonoBehaviour
 
         StartCoroutine(Test(text,IsHighlight));
 
-        return Mathf.Max(ObjSize.x, ObjSize.y);
+        return Mathf.Min(ObjSize.x, ObjSize.y);
     }
 
     private void Update()
@@ -104,8 +122,8 @@ public class TutorialBorder : MonoBehaviour
         if (IsRect)
         {
             Mat.SetVector("_MaskCenter", new Vector4(Pos.x / Screen.width, (Pos.y + Screen.width * 0.125f) / Screen.width));
-            Mat.SetFloat("_X", ObjSize.x * 0.9f / 1200);
-            Mat.SetFloat("_Y", ObjSize.y * 0.9f / 1200);
+            Mat.SetFloat("_X", ObjSize.x * 0.9f * ReverseCamSize);
+            Mat.SetFloat("_Y", ObjSize.y * 0.9f * ReverseCamSize);
         }
         else
         {
@@ -144,18 +162,22 @@ public class TutorialBorder : MonoBehaviour
                     MaxSize += Gap;                
                 }
             }
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSecondsRealtime(0.2f);
         }
-        TextDetail.text = text;
-        TextBox.gameObject.SetActive(true);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(TextBox);
-        TextDetail.color = new Color(1, 1, 1, 0);
-        Color ColorCnt = new Color(0, 0, 0, 0.1f);
 
-        for (int i = 0; i < 10; i++)
+        if (text.Length != 0)
         {
-            TextDetail.color += ColorCnt;
-            yield return ts;
+            TextDetail.text = text;
+            TextBox.gameObject.SetActive(true);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(TextBox);
+            TextDetail.color = new Color(1, 1, 1, 0);
+            Color ColorCnt = new Color(0, 0, 0, 0.1f);
+
+            for (int i = 0; i < 10; i++)
+            {
+                TextDetail.color += ColorCnt;
+                yield return ts;
+            }
         }
 
         TutorialSetting.instance.SetEvent(trigger);
@@ -166,7 +188,7 @@ public class TutorialBorder : MonoBehaviour
         this.Target = Target;
     }
 
-
+    Vector2 TextPos = Vector2.zero;
     void CalcPosition()
     {
         if (Target == null)
@@ -175,18 +197,23 @@ public class TutorialBorder : MonoBehaviour
         }
         else
         {
-            Pos = Camera.main.WorldToScreenPoint(Target.transform.position);
-            Vector2 TextPos = new Vector2(Pos.x * 1200 / Screen.width - 600, Pos.y * 900 / Screen.height - 450 - ObjSize.y * 0.7f - TextBox.rect.height * 0.6f);
+            if (IsScreen) Pos = Target.transform.position;
+            else Pos = Camera.main.WorldToScreenPoint(Target.transform.position);
+
+            if (IsRect) TextPos = new Vector2(Pos.x * 1200 / Screen.width - 600, Pos.y * 900 / Screen.height - 450 - ObjSize.y * 0.5f - TextBox.rect.height * 0.5f);
+            else TextPos = new Vector2(Pos.x * 1200 / Screen.width - 600, Pos.y * 900 / Screen.height - 450 - ObjSize.y * 0.8f - TextBox.rect.height * 0.5f);
+
+            if (TextPos.y - TextBox.rect.height * 0.5f < -450)
+            {
+                if (IsRect) TextPos.y += ObjSize.y + TextBox.rect.height;
+                else TextPos.y += ObjSize.y * 1.6f + TextBox.rect.height;
+            }
 
             if (TextPos.x > 600 - TextBox.rect.width * 0.5f) TextPos.x = 600 - TextBox.rect.width * 0.5f;
             else if (TextPos.x < -600 + TextBox.rect.width * 0.5f) TextPos.x = -600 + TextBox.rect.width * 0.5f;
 
-
-            if (TextPos.y - TextBox.rect.height * 0.5f < -450) TextPos.y += (ObjSize.y + TextBox.rect.height) * 1.2f;
-
-            if (TextPos.y + TextBox.rect.height * 0.5f > 450 || TextPos.y - TextBox.rect.height * 0.5f < -450)
-                TextPos.y = Pos.y * 900 / Screen.height - 450 + 100;
-
+            if (TextPos.y > 450 - TextBox.rect.height * 0.5f) TextPos.y = 450 - TextBox.rect.height * 0.5f;
+            else if (TextPos.y < -450 + TextBox.rect.height * 0.5f) TextPos.y = -450 + TextBox.rect.height * 0.5f;
 
             TextBox.localPosition = TextPos;
         }

@@ -27,6 +27,7 @@ public class BasicInputField : MonoBehaviour
     public UnityEvent OnAddInputField;
     public UnityEvent OnDeleteInputField;
     public UnityEvent OnReturnInputField;
+    public UnityEvent OnDisableInputField;
    
     public string DefaultText;
 
@@ -102,6 +103,8 @@ public class BasicInputField : MonoBehaviour
             if(IsMouseOver)
                 return;
 
+            OnDisableInputField?.Invoke();
+            
             InputFieldTMP.text = StringBuffer;
             CheckInputField(); 
             IsReadyForInput = false;

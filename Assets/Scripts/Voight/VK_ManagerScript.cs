@@ -12,11 +12,13 @@ public class VK_ManagerScript : MonoBehaviour
     
     public GameObject EyeDisplay { get; set; }
     private TMP_Text EyeDisplayTimer { get; set; }
-    private GameObject PupilBone { get; set; }
+    private Rigidbody2D PupilBone { get; set; }
     private Vector2 PupilOriginPos { get; set; } = new(1.7f, 0f);
+    [SerializeField] private float pupilSpeed;
     
     private GameObject ArrowSpawnPos { get; set; }
     private GameObject Arrow { get; set; }
+    private int ArrowNum { get; set; }
     private Queue<GameObject> ArrowQueue { get; set; } = new();
     
     public GameObject AnswerScreen { get; set; }
@@ -36,8 +38,8 @@ public class VK_ManagerScript : MonoBehaviour
     private void Awake()
     {
         TutorialManager = FindObjectOfType<VoightTutorialManager>();
-        
-        PupilBone = GameObject.Find("bone_5");
+
+        PupilBone = GameObject.Find("bone_5").GetComponent<Rigidbody2D>();
         ArrowSpawnPos = GameObject.Find("ArrowSpawnPos");
         Arrow = Resources.Load<GameObject>("Voight/Arrow");
         EyeDisplay = GameObject.Find("EyeDisplay");        
@@ -46,13 +48,11 @@ public class VK_ManagerScript : MonoBehaviour
         AnswerScreenTimer = GameObject.Find("AnswerScreenTimer").GetComponent<TMP_Text>();
         WalterBlur = GameObject.Find("WalterBlur").GetComponent<SpriteRenderer>();
     }
-
     private void Start()
     {
         if(startTutorial)
             TutorialManager.StartVoightTutorial();
     }
-
     private void Update()
     {
         ClickKeyCodeArrow();
@@ -85,7 +85,7 @@ public class VK_ManagerScript : MonoBehaviour
         yield return new WaitForSeconds(wait);
         
         Debug.Log("새로운 턴이 시작되었습니다!");
-        
+
         //시퀀스마다 난수를 생성하여 눈동자가 다른 방향으로 움직이게 한다
         for (var i = 0; i < evade; i++)
         {
@@ -96,9 +96,9 @@ public class VK_ManagerScript : MonoBehaviour
             {
                 while (Time.time - startTime < duration / evade)
                 {
-                    var input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * 3.5f;
-                    var result = random + input;
-                    PupilBone.transform.Translate(result * Time.deltaTime);
+                    var input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * pupilSpeed;
+                    PupilBone.AddForce(random);
+                    PupilBone.AddForce(input);
                     yield return new WaitForSeconds(0.02f);
                 }
             }
@@ -115,7 +115,7 @@ public class VK_ManagerScript : MonoBehaviour
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, wait, new Color(1f, 1f, 1f, 1f), WalterBlur);
         
         //눈동자가 출력되는 뷰어를 상승시킨다
-        LJWConverter.Instance.PositionTransform(false, 0f, wait / 2, new Vector3(0.2f, -5.4f, 0f), EyeDisplay.transform, curve);
+        LJWConverter.Instance.PositionTransform(false, 0f, wait, new Vector3(0.2f, -5.4f, 0f), EyeDisplay.transform, curve);
         //타이머를 시작
         LJWConverter.Instance.SetIntTimerTMP(false, wait, duration, EyeDisplayTimer);
 
@@ -133,9 +133,9 @@ public class VK_ManagerScript : MonoBehaviour
             {
                 while (Time.time - startTime < duration / evade)
                 {
-                    var input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * 3.5f;
-                    var result = random + input;
-                    PupilBone.transform.Translate(result * Time.deltaTime);
+                    var input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * pupilSpeed;
+                    PupilBone.AddForce(random);
+                    PupilBone.AddForce(input);
                     yield return new WaitForSeconds(0.02f);
                 }
             }
@@ -145,24 +145,28 @@ public class VK_ManagerScript : MonoBehaviour
         yield return StartCoroutine(EndTurn());
     }
 
-    public void StartArrowTurn(float wait, float duration, int arrow) => Turn = StartCoroutine(ArrowSequence(wait, duration, arrow));
-    private IEnumerator ArrowSequence(float wait, float duration, int arrow)
+    public void StartArrowTurn(float wait, float duration, int arrowNum) => Turn = StartCoroutine(ArrowSequence(wait, duration, arrowNum));
+    private IEnumerator ArrowSequence(float wait, float duration, int arrowNum)
     {
-        //화살표 생성
-        SpawnArrows(arrow);
-        
-        //활성 상태가 아니면 화살표를 입력할 수 없다
-        CurrentTurnStatus = TurnStatus.활성;
+        //이번 턴 화살표의 개수
+        ArrowNum = arrowNum;
         
         //월터 블러를 활성화
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, wait, new Color(1f, 1f, 1f, 1f), WalterBlur);
         
         //답지가 출력되는 스크린을 상승시킨다
-        LJWConverter.Instance.PositionTransform(false, 0f, wait / 2, new Vector3(3.4f, -7f, 0f), AnswerScreen.transform, curve);
+        LJWConverter.Instance.PositionTransform(false, 0f, wait, new Vector3(3.4f, -7f, 0f), AnswerScreen.transform, curve);
+        
         //타이머 시작
         LJWConverter.Instance.SetIntTimerTMP(false, wait, duration, AnswerScreenTimer);
         
         yield return new WaitForSeconds(wait);
+        
+        //화살표 생성
+        SpawnArrows(arrowNum);
+        
+        //활성 상태가 아니면 화살표를 입력할 수 없다
+        CurrentTurnStatus = TurnStatus.활성;
         
         Debug.Log("새로운 턴이 시작되었습니다!");
 
@@ -185,7 +189,8 @@ public class VK_ManagerScript : MonoBehaviour
         //타이머 종료
         LJWConverter.Instance.EndIntTimerTMP(false, 0f, duration, AnswerScreenTimer);
         
-        //눈동자가 출력되는 뷰어를 하강시킨다
+        //눈동자가 출력되는 뷰어를 하강시킨다x
+        PupilBone.velocity = new Vector2(0f, 0f);
         LJWConverter.Instance.PositionTransform(false, duration / 2, duration / 2, new Vector3(0.2f, -14.5f, 0f), EyeDisplay.transform, curve);
         //타이머 종료
         LJWConverter.Instance.EndIntTimerTMP(false, 0f, duration, EyeDisplayTimer);
@@ -207,12 +212,9 @@ public class VK_ManagerScript : MonoBehaviour
 
     #endregion
 
-    #region 눈동자 엑시트 이벤트
+    #region 눈동자 관련 함수
     
-    public void OnPupilExit()
-    {
-        StartCoroutine(OnPupilExit_IE());
-    }
+    public void OnPupilExit() => StartCoroutine(OnPupilExit_IE());
     private IEnumerator OnPupilExit_IE()
     {
         yield return StartCoroutine(EndTurn());
@@ -247,7 +249,8 @@ public class VK_ManagerScript : MonoBehaviour
         else
         {
             Debug.Log("부정확한 키 입력!");
-            StartCoroutine(EndTurn());
+            DespawnArrows();
+            SpawnArrows(ArrowNum);
         }
 
         if (ArrowQueue.Count == 0)
@@ -256,17 +259,17 @@ public class VK_ManagerScript : MonoBehaviour
             StartCoroutine(EndTurn());
         }
     }
-    public void SpawnArrows(int num)
+    public void SpawnArrows(int arrowNum)
     {
-        Debug.Log($"총 {num}개의 화살표를 생성했습니다!");
-        var startPos = num % 2 == 0 ? new Vector3(-1f * num / 2 + 0.5f, 0f, 0f) :  new Vector3(-1f * (num - 1) / 2, 0f, 0f);
-        for (var i = 0; i < num; i++)
+        Debug.Log($"총 {arrowNum}개의 화살표를 생성했습니다!");
+        var startPos = arrowNum % 2 == 0 ? new Vector3(-0.8f * arrowNum / 2 + 0.5f, 0f, 0f) :  new Vector3(-0.8f * (arrowNum - 1) / 2, 0f, 0f);
+        for (var i = 0; i < arrowNum; i++)
         {
             var random = Random.Range(0, 4);
             var arrow = Instantiate(Arrow, ArrowSpawnPos.transform);
             arrow.transform.localPosition = startPos;
             arrow.transform.localRotation = Quaternion.Euler(new Vector3(0f, 0f, -90f * random));
-            startPos += new Vector3(1f,0f, 0f);
+            startPos += new Vector3(0.8f,0f, 0f);
             arrow.name = random switch
             {
                 0 => "UpArrow",

@@ -2,10 +2,10 @@ using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -75,11 +75,17 @@ public class PlayerMove : MonoBehaviour
         AS = GetComponent<AudioSource>();
         Bf_X = transform.position.x;
         Bf_Y = transform.position.y;
-        MoveAble = true;
+        if(TutorialSetting.instance != null) MoveAble = true;
         Dir = Vector3.up;
         LastTrans = transform.position;
         maincam.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
     }
+
+    public void TutoMoveAble()
+    {
+        MoveAble = true;
+    }
+
     private void Start()
     {
         CalcFog();
@@ -91,10 +97,9 @@ public class PlayerMove : MonoBehaviour
             Marks[i].transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(VCnt.y, VCnt.x) * Mathf.Rad2Deg);
         }
         KeyText.text = $"{0}/{MT.KeyNum}";
-        LastMoveVal = transform.position;
+        RaySub_Dist = 3 / (float)Num_Ray;
+        RaySub_Coord = 1 / (float)Num_Ray;
     }
-
-    Vector3 LastMoveVal;
     int GetKeyCount = 0;
 
     [SerializeField] float speed = 5;
@@ -102,7 +107,13 @@ public class PlayerMove : MonoBehaviour
     int KeyMoveSub = 0;
     int KeyMoveGap = 10;
 
-    int[] KeySubSub = { 0, 10, 30, 60,100,150 };
+    int[] KeySubSub = { 0, 10, 30, 60, 100, 150 };
+
+
+    [SerializeField] int Num_Ray = 5;
+    [SerializeField] float RayGap = 0.3f;
+    float RaySub_Dist;
+    float RaySub_Coord;
 
     void FixedUpdate()
     {
@@ -115,7 +126,9 @@ public class PlayerMove : MonoBehaviour
             if (Input.GetButton("Horizontal"))
             {
                 NX = Input.GetAxisRaw("Horizontal") * Time.deltaTime * speed;
+
                 Dir += NX < 0 ? Vector3.left : Vector3.right;
+
             }
             if (Input.GetButton("Vertical"))
             {
@@ -125,9 +138,48 @@ public class PlayerMove : MonoBehaviour
 
             if (NX != 0 || NY != 0)   // 움직임을 감지
             {
+
                 Vector2 NextVec = new Vector2(NX, NY);
-                rayHit = Physics2D.CircleCast(rigid.position + NextVec, 2.5f, Vector2.zero, 2.0f, LayerMask.GetMask("Water"));
-                if (rayHit.collider != null) { if (!rayHit.collider.gameObject.CompareTag("ExitWall")) return; }
+
+                int i;
+                if(NextVec.x > 0)
+                for (i = -Num_Ray + 1; i < Num_Ray; i++)
+                {
+                    Vector2 Origin = new Vector2(rigid.position.x, rigid.position.y + 3 * i * RaySub_Coord);
+                    float Length = Mathf.Sqrt(9 - Mathf.Pow(i * RaySub_Dist, 2)) + RayGap;
+                    rayHit = Physics2D.Raycast(Origin, Vector2.right, Length, LayerMask.GetMask("Water"));
+                    if (rayHit.collider != null) { NextVec.x = 0; break; }
+                }
+
+                if(NextVec.x < 0)
+                for (i = -Num_Ray + 1; i < Num_Ray; i++)
+                {
+                    Vector2 Origin = new Vector2(rigid.position.x, rigid.position.y + 3 * i * RaySub_Coord);
+                    float Length = Mathf.Sqrt(9 - Mathf.Pow(i * RaySub_Dist, 2)) + RayGap;
+                    rayHit = Physics2D.Raycast(Origin, Vector2.left, Length, LayerMask.GetMask("Water"));
+                    if (rayHit.collider != null) { NextVec.x = 0; break; }
+                }
+
+                if(NextVec.y > 0)
+                for (i = -Num_Ray+1; i < Num_Ray; i++)
+                {
+                    Vector2 Origin = new Vector2(rigid.position.x + 3 * i * RaySub_Coord, rigid.position.y);
+                    float Length = Mathf.Sqrt(9 - Mathf.Pow(i * RaySub_Dist, 2)) + RayGap;
+                    rayHit = Physics2D.Raycast(Origin, Vector2.up, Length, LayerMask.GetMask("Water"));
+                    if (rayHit.collider != null) { NextVec.y = 0; break; }
+                }
+
+                if(NextVec.y < 0)
+                for (i = -Num_Ray+1; i < Num_Ray; i++)
+                {
+                    Vector2 Origin = new Vector2(rigid.position.x + 3 * i * RaySub_Coord, rigid.position.y);
+                    float Length = Mathf.Sqrt(9 - Mathf.Pow(i * RaySub_Dist, 2)) + RayGap;
+                    rayHit = Physics2D.Raycast(Origin, Vector2.down, Length, LayerMask.GetMask("Water"));
+                    if (rayHit.collider != null) { NextVec.y = 0; break; }
+                }
+
+                if (NextVec.x == 0 && NextVec.y == 0) return;
+
                 AS.clip = Clips[0];
                 AS.Play();
                 // 다음 이동 시, 조건이 만족되지 않은 출구, 벽과 부딪힌다면 이동하지 않음을 결정. 
@@ -141,25 +193,13 @@ public class PlayerMove : MonoBehaviour
                 CalcFog();
 
 
-                rayHit = Physics2D.Raycast(transform.position, Dir, 1, LayerMask.GetMask("Default"));
-                if (rayHit.collider != null) if (rayHit.collider.CompareTag("Key"))
-                    {
-                        // 플레이어의 뒤를 따라오는 Key의 특성 상, 플레이어와 충돌할 수 있음으로, 해당 연산에 영향을 받지 않는 tag 및 layer로 변경.
-                        KeyTrain.Add(rayHit.collider.gameObject.GetComponent<Rigidbody2D>());
-                        rayHit.collider.tag = "Untagged";
-                        rayHit.collider.gameObject.layer = 6;
-                        rayHit.collider.transform.position = transform.position;
-                        KeyText.text = $"{++GetKeyCount}/{MT.KeyNum}";
-                        AS.clip = Clips[1];
-                        AS.Play();
-                    }
-                for (int I = 0; I < KeyTrain.Count; I++) if (KeyMoveSub >= KeySubSub[I+1])
+                for (int I = 0; I < KeyTrain.Count; I++) if (KeyMoveSub >= KeySubSub[I + 1])
                     {
                         KeyTrain[I].MovePosition(KeyTrain[I].position + DirCommand[DirCommand.Count - (I + 1) * KeyMoveGap]);
                     }
 
 
-                for (int i = 0; i < MT.KeyNum; i++)
+                for (i = 0; i < MT.KeyNum; i++)
                 {
                     VCnt = KeysTrans[i].position - transform.position;
                     float j = Vector3.Magnitude(VCnt);
@@ -345,10 +385,10 @@ public class PlayerMove : MonoBehaviour
                     PlayerPrefs.SetInt("MazeStage", PlayerPrefs.GetInt("MazeStage") + 1);
                     SceneManager.LoadScene("Maze");
                 }
-                else if(PlayerPrefs.GetInt("DocumentTest")==1)
+                else if (PlayerPrefs.GetInt("DocumentTest") == 1)
                 {
-                    GameSystem.LoadScene("Document");
-                    
+                    GameSystem.LoadScene("Dodge");
+
                 }
                 else
                 {
@@ -356,6 +396,24 @@ public class PlayerMove : MonoBehaviour
                     GameSystem.LoadScene("Screen");
                 }
             }
+        }
+    }
+
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Key"))
+        {
+            // 튜토용
+            if (TutorialSetting.instance != null) { TutorialSetting.instance.ForTutoCond.SetActive(true);  MoveAble = false ; }
+            // 플레이어의 뒤를 따라오는 Key의 특성 상, 플레이어와 충돌할 수 있음으로, 해당 연산에 영향을 받지 않는 tag 및 layer로 변경.
+            KeyTrain.Add(collision.gameObject.GetComponent<Rigidbody2D>());
+            collision.tag = "Untagged";
+            collision.gameObject.layer = 6;
+            collision.transform.position = transform.position;
+            KeyText.text = $"{++GetKeyCount}/{MT.KeyNum}";
+            AS.clip = Clips[1];
+            AS.Play();
         }
     }
 

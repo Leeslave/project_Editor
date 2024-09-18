@@ -3783,7 +3783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b92bb7722b512e43a04d8cc1c6a773f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Test: 0
+  AutoStart: 0
   ForTutoCond: {fileID: 1030737602}
   CircleTuto: {fileID: 1105550698}
   BoxTuto: {fileID: 65989928}
@@ -3802,6 +3802,8 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects:
     - {fileID: 1135156206}
     - {fileID: 1283576813}
@@ -3815,6 +3817,7 @@ MonoBehaviour:
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -3823,8 +3826,9 @@ MonoBehaviour:
     IsRemove: 1
   - TargetObj: {fileID: 1308265252}
     ChildInd: 
-    Text: "\uB85C\uADF8\uC778\uD574 \uBD05\uC2DC\uB2E4.\n\uAE08\uC77C <color=red>ID</color>\uB294
-      1\n\uAE08\uC77C <color=blue>PW</color>\uB294 2\n\uC785\uB2C8\uB2E4."
+    Text: "\uC5C5\uBB34\uB97C \uC9C4\uD589\uD558\uB824\uBA74 Tool Kit\uC5D0 \uB85C\uADF8\uC778\uC744
+      \uD574\uC57C\uD569\uB2C8\uB2E4.\n\uAE08\uC77C <color=red>ID</color>\uB294 1\n\uAE08\uC77C
+      <color=blue>PW</color>\uB294 2\n\uC785\uB2C8\uB2E4."
     Events:
     - TriggerType: 3
       ReactAnywhere: 1
@@ -3834,12 +3838,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 7161975753340195427}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 0
@@ -3850,12 +3857,15 @@ MonoBehaviour:
     ChildInd: 
     Text: 
     Events: []
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -3864,7 +3874,7 @@ MonoBehaviour:
     IsRemove: 1
   - TargetObj: {fileID: 7161975753340195427}
     ChildInd: 
-    Text: "<size=150%><color=red><\uD234\uD0B7></color></size>\n\uC8FC\uC694 \uC5C5\uBB34\uC5D0
+    Text: "<size=150%><color=red><\uD234\uD0B7></color></size>\n\uC5C5\uBB34\uC5D0
       \uC0AC\uC6A9\uB420\n\uB3C4\uAD6C \uBAA8\uC74C\uC785\uB2C8\uB2E4."
     Events:
     - TriggerType: 4
@@ -3875,12 +3885,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -3889,9 +3902,9 @@ MonoBehaviour:
     IsRemove: 1
   - TargetObj: {fileID: 1975292933608148624}
     ChildInd: 
-    Text: "<size=150%><color=red><\uC635\uC158 \uC801\uC6A9></color></size>\n\uC5C5\uBB34\uC5D0
-      \uC0AC\uC6A9\uB420 \uC635\uC158 \uD30C\uC77C\uC744\n\uB4DC\uB798\uADF8\uD558\uC5EC
-      \uC5C5\uBB34\uB97C \uD65C\uC131\uD654 \uD569\uB2C8\uB2E4."
+    Text: "<size=150%><color=red><\uD30C\uC77C \uBD88\uB7EC\uC624\uAE30></color></size>\n\uC5C5\uBB34\uC5D0
+      \uC0AC\uC6A9\uB420 \uD30C\uC77C\uC744\n\uB4DC\uB798\uADF8\uD558\uC5EC \uC5C5\uBB34\uB97C
+      \uD65C\uC131\uD654 \uD569\uB2C8\uB2E4."
     Events:
     - TriggerType: 4
       ReactAnywhere: 1
@@ -3901,12 +3914,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -3926,12 +3942,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -3941,7 +3960,7 @@ MonoBehaviour:
   - TargetObj: {fileID: 1975292933042044867}
     ChildInd: 
     Text: "<size=150%><color=red><\uC815\uBCF4 \uC218\uC815 \uD0ED></color></size>\n\uC815\uBCF4
-      \uC704\uC870 \uC5C5\uBB34\uC5D0 \uC0AC\uC6A9\uB418\uB294 \uB3C4\uAD6C\uC785\uB2C8\uB2E4.\n\uC790\uC138\uD55C
+      \uBCC0\uACBD \uC5C5\uBB34\uC5D0 \uC0AC\uC6A9\uB418\uB294 \uB3C4\uAD6C\uC785\uB2C8\uB2E4.\n\uC790\uC138\uD55C
       \uC0AC\uC6A9 \uBC29\uBC95\uC740 \uCD94\uD6C4 \uC54C\uC544\uBD05\uC2DC\uB2E4."
     Events:
     - TriggerType: 4
@@ -3952,12 +3971,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -3976,12 +3998,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4000,6 +4025,8 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects:
     - {fileID: 1135156206}
@@ -4007,6 +4034,7 @@ MonoBehaviour:
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -4027,23 +4055,31 @@ MonoBehaviour:
       IsEndPoint: 0
       AddTargetAction: 1
     - TriggerType: 5
-      ReactAnywhere: 1
+      ReactAnywhere: 0
       ClickCount: 0
       TutoEvent:
         m_PersistentCalls:
           m_Calls:
           - m_Target: {fileID: 503087643}
             m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
-            m_MethodName: OnPointer
-            m_Mode: 1
+            m_MethodName: ReNewTargetPos
+            m_Mode: 2
             m_Arguments:
-              m_ObjectArgument: {fileID: 0}
-              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_ObjectArgument: {fileID: 5781525358652860370}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Transform, UnityEngine
               m_IntArgument: 0
               m_FloatArgument: 0
               m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
+      IsEndPoint: 0
+      AddTargetAction: 1
+    - TriggerType: 13
+      ReactAnywhere: 0
+      ClickCount: 0
+      TutoEvent:
+        m_PersistentCalls:
+          m_Calls:
           - m_Target: {fileID: 503087643}
             m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
             m_MethodName: ChangeTarget
@@ -4056,18 +4092,22 @@ MonoBehaviour:
               m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
-      IsEndPoint: 0
-      AddTargetAction: 1
-    - TriggerType: 13
-      ReactAnywhere: 1
-      ClickCount: 0
-      TutoEvent:
-        m_PersistentCalls:
-          m_Calls: []
+          - m_Target: {fileID: 503087643}
+            m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
+            m_MethodName: OnPointer
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
       IsEndPoint: 0
       AddTargetAction: 1
     - TriggerType: 14
-      ReactAnywhere: 1
+      ReactAnywhere: 0
       ClickCount: 0
       TutoEvent:
         m_PersistentCalls:
@@ -4098,12 +4138,15 @@ MonoBehaviour:
             m_CallState: 2
       IsEndPoint: 0
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 4474680324780423803}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0.1
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -4113,8 +4156,10 @@ MonoBehaviour:
   - TargetObj: {fileID: 4474680324780423803}
     ChildInd: 
     Text: "<size=150%><color=red><\uC778\uBB3C \uC815\uBCF4 \uC218\uC815></color></size>\n\uD574\uB2F9
-      \uCC3D\uC5D0\uC11C \uD2B9\uC815 \uC778\uBB3C\uC758\n\uC815\uBCF4\uB97C \uC54C
-      \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+      \uCC3D\uC5D0\uC11C \uC778\uBB3C DB\uC758 \uC815\uBCF4\uB97C \uC218\uC815\uD560
+      \uC218 \uC788\uC2B5\uB2C8\uB2E4.\n\uC798\uBABB \uC785\uB825\uB418\uC5B4\uC788\uB294
+      \uC815\uBCF4,\n\uD639\uC740 \uAC31\uC2E0\uC774 \uD544\uC694\uD55C \uC815\uBCF4\uB97C
+      \uC5C5\uB370\uC774\uD2B8 \uD574\uC57C\uD569\uB2C8\uB2E4\n"
     Events:
     - TriggerType: 4
       ReactAnywhere: 1
@@ -4124,12 +4169,29 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2022809699}
+          m_TargetAssemblyTypeName: MinimumButton_D, Assembly-CSharp
+          m_MethodName: ClickCall
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0.5
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4149,12 +4211,29 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2022809699}
+          m_TargetAssemblyTypeName: MinimumButton_D, Assembly-CSharp
+          m_MethodName: ClickCall
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0.5
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4174,12 +4253,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4199,12 +4281,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4224,12 +4309,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4265,12 +4353,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 0
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 1975292933527179795}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -4289,12 +4380,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4303,7 +4397,7 @@ MonoBehaviour:
     IsRemove: 1
   - TargetObj: {fileID: 1975292933639079867}
     ChildInd: 
-    Text: "\uD574\uB2F9 \uD30C\uC77C\uC744 \uC120\uD0DD\uD569\uC2DC\uB2E4."
+    Text: "\uD574\uB2F9 \uD30C\uC77C\uC744 \uD074\uB9AD\uD569\uB2C8\uB2E4."
     Events:
     - TriggerType: 4
       ReactAnywhere: 0
@@ -4329,12 +4423,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 0
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 1975292933439532119}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -4346,12 +4443,15 @@ MonoBehaviour:
     Text: "<color=red><\uC778\uBB3C \uC815\uBCF4 \uC218\uC815></color>\uC73C\uB85C\n\uB4DC\uB798\uADF8
       & \uB4DC\uB78D\uD569\uB2C8\uB2E4."
     Events: []
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 1030737602}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -4370,12 +4470,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4394,6 +4497,8 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects:
     - {fileID: 1030737602}
     AbleObjects: []
@@ -4401,6 +4506,7 @@ MonoBehaviour:
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4420,12 +4526,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4444,12 +4553,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4469,12 +4581,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4509,12 +4624,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 0
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4534,12 +4652,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 0
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 1975292933527179795}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -4574,6 +4695,8 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 0
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects:
     - {fileID: 1975292933439532119}
     AbleObjects: []
@@ -4581,6 +4704,7 @@ MonoBehaviour:
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -4592,6 +4716,8 @@ MonoBehaviour:
     Text: "<color=red><\uC778\uBB3C \uC815\uBCF4 \uC218\uC815></color>\uC73C\uB85C\n\uB4DC\uB798\uADF8
       & \uB4DC\uB78D\uD569\uB2C8\uB2E4."
     Events: []
+    StartEvent: []
+    EndEvent: []
     DisableObjects:
     - {fileID: 1030737602}
     AbleObjects: []
@@ -4599,6 +4725,7 @@ MonoBehaviour:
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -4617,12 +4744,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4641,12 +4771,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4666,12 +4799,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4691,12 +4827,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4754,12 +4893,15 @@ MonoBehaviour:
             m_CallState: 2
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4778,6 +4920,8 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects:
     - {fileID: 1135156206}
@@ -4785,6 +4929,7 @@ MonoBehaviour:
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -4803,12 +4948,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4900,12 +5048,15 @@ MonoBehaviour:
             m_CallState: 2
       IsEndPoint: 0
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 5781525358941932206}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -4922,21 +5073,25 @@ MonoBehaviour:
       ClickCount: 0
       TutoEvent:
         m_PersistentCalls:
-          m_Calls:
-          - m_Target: {fileID: 2022809699}
-            m_TargetAssemblyTypeName: MinimumButton_D, Assembly-CSharp
-            m_MethodName: ClickCall
-            m_Mode: 1
-            m_Arguments:
-              m_ObjectArgument: {fileID: 0}
-              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-              m_IntArgument: 0
-              m_FloatArgument: 0
-              m_StringArgument: 
-              m_BoolArgument: 0
-            m_CallState: 2
+          m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent:
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2022809699}
+          m_TargetAssemblyTypeName: MinimumButton_D, Assembly-CSharp
+          m_MethodName: ClickCall
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    EndEvent: []
     DisableObjects:
     - {fileID: 824099586}
     - {fileID: 764075285}
@@ -4947,6 +5102,7 @@ MonoBehaviour:
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0.5
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4966,12 +5122,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -4980,8 +5139,8 @@ MonoBehaviour:
     IsRemove: 1
   - TargetObj: {fileID: 818746827}
     ChildInd: 
-    Text: "\uD574\uB2F9 \uC904\uC758 \uD14D\uC2A4\uD2B8\uB97C \uC218\uC815\uD560
-      \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    Text: "\uD074\uB9AD\uD558\uC5EC \uD65C\uC131\uD654 \uD55C \uD6C4\n\uD574\uB2F9
+      \uC904\uC758 \uD14D\uC2A4\uD2B8\uB97C \uC218\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
     Events:
     - TriggerType: 4
       ReactAnywhere: 1
@@ -4991,12 +5150,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -5017,12 +5179,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -5041,12 +5206,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -5065,12 +5233,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -5089,12 +5260,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 5781525359379806886}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -5104,8 +5278,11 @@ MonoBehaviour:
   - TargetObj: {fileID: 0}
     ChildInd: 
     Text: "\uB610\uD55C <color=red><CTRL + i></color> \uD0A4\uB85C \uC791\uC5C5\uC744
-      \uB418\uB3CC\uB9B4 \uC218\uB3C4 \uC788\uC2B5\uB2C8\uB2E4."
+      \uB418\uB3CC\uB9B4 \uC218\uB3C4 \uC788\uC2B5\uB2C8\uB2E4.\n\uD55C \uBC88 \uC791\uC5C5\uC744
+      \uB418\uB3CC\uB824 \uBD05\uC2DC\uB2E4."
     Events: []
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects:
     - {fileID: 824099586}
@@ -5113,6 +5290,7 @@ MonoBehaviour:
     ActiveChild: 0f000000
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -5123,6 +5301,8 @@ MonoBehaviour:
     ChildInd: 
     Text: "\uD55C\uBC88 \uB354 \uC791\uC5C5\uC744 \uCDE8\uC18C\uD574 \uBD05\uC2DC\uB2E4."
     Events: []
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects:
     - {fileID: 824099586}
@@ -5130,6 +5310,7 @@ MonoBehaviour:
     ActiveChild: 
     InActiveTarget: {fileID: 5781525359379806886}
     InActiveChild: 05000000
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -5150,6 +5331,8 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects:
     - {fileID: 824099586}
     - {fileID: 1030737602}
@@ -5160,6 +5343,7 @@ MonoBehaviour:
     ActiveChild: 
     InActiveTarget: {fileID: 818746827}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 0
@@ -5191,12 +5375,15 @@ MonoBehaviour:
             m_CallState: 2
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -5242,12 +5429,15 @@ MonoBehaviour:
             m_CallState: 2
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -5266,12 +5456,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -5290,6 +5483,8 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 0
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects:
     - {fileID: 1398383036}
@@ -5297,6 +5492,7 @@ MonoBehaviour:
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 1
     TimeScale: 1
     GoNextTuto: 1
@@ -5316,12 +5512,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 710221699}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 0
@@ -5332,12 +5531,15 @@ MonoBehaviour:
     ChildInd: 
     Text: 
     Events: []
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -5357,12 +5559,15 @@ MonoBehaviour:
           m_Calls: []
       IsEndPoint: 1
       AddTargetAction: 1
+    StartEvent: []
+    EndEvent: []
     DisableObjects: []
     AbleObjects: []
     ActiveTarget: {fileID: 0}
     ActiveChild: 
     InActiveTarget: {fileID: 0}
     InActiveChild: 
+    StartGap: 0
     IsRect: 0
     TimeScale: 1
     GoNextTuto: 1
@@ -15186,9 +15391,9 @@ RectTransform:
   m_Father: {fileID: 503087642}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -241.5, y: -301}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -841.5, y: 149}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1510112352
@@ -32135,8 +32340,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1743, y: -17.588013}
-  m_SizeDelta: {x: 600, y: 930}
+  m_AnchoredPosition: {x: -1743, y: 2.6575}
+  m_SizeDelta: {x: 600, y: 889.5089}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &3481814382546894595
 RectTransform:
@@ -34085,7 +34290,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -66, y: 17.588013}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5781525359300854146

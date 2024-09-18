@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -84,6 +86,51 @@ public class DisplayEncrypted : MonoBehaviour
             Debug.Log("이미 같은 이름의 파일이 존재합니다!");
         }
     }
-    
-    
+
+    public void ShowNextTarget()
+    {
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, 0.5f, new Color(1f, 0.2f, 0.2f, 0.2f), ADFGVXGameManager.KeyPriorityTranspose.TargetFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, 0.5f, new Color(1f, 0.2f, 0.2f, 1f), ADFGVXGameManager.KeyPriorityTranspose.TargetFrame);
+        CalculateNextTarget();
+    }
+    public void HideNextTarget()
+    {
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, 0.5f, new Color(1f, 0.2f, 0.2f, 0f), ADFGVXGameManager.KeyPriorityTranspose.TargetFill);
+        LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, 0.5f, new Color(1f, 0.2f, 0.2f, 0f), ADFGVXGameManager.KeyPriorityTranspose.TargetFrame);
+    }
+    public void CalculateNextTarget()
+    {
+        if (ADFGVXGameManager.KeyPriorityTranspose.KeyInputField.StringBuffer.Length == 0)
+            return;
+        if (ADFGVXGameManager.KeyPriorityTranspose.ReverseTransposeLines.StringBuffer.Length == 0)
+            return;
+        
+        var line = ADFGVXGameManager.KeyPriorityTranspose.KeyInputField.StringBuffer.Length;
+        var row = ADFGVXGameManager.KeyPriorityTranspose.ReverseTransposeLines.StringBuffer.Length / line;
+        var lineProgress = EncryptedTextBody.StringBuffer.Replace(" ", "").Length / row;
+        var rowProgress = EncryptedTextBody.StringBuffer.Replace(" ", "").Length % row;
+        if (lineProgress < line)
+        {
+            ADFGVXGameManager.KeyPriorityTranspose.TargetFill.color = new Color(1f, 0.2f, 0.2f, 0.2f);
+            ADFGVXGameManager.KeyPriorityTranspose.TargetFrame.color = new Color(1f, 0.2f, 0.2f, 1f);
+        }
+        else if (lineProgress == line)
+        {
+            ADFGVXGameManager.KeyPriorityTranspose.TargetFill.color = new Color(0.17f, 1f, 0.17f, 0.2f);
+            ADFGVXGameManager.KeyPriorityTranspose.TargetFrame.color = new Color(0.17f, 1f, 0.17f, 1f);
+            return;
+        }
+        Dictionary<int, char> code = new()
+        {
+            { 1, '1' }, { 2, '2' }, { 3, '3' }, { 4, '4' }, { 5, '5' },
+            { 6, '6' }, { 7, '7' }, { 8, '8' }, { 9, '9' },
+        };
+        var priority = ADFGVXGameManager.KeyPriorityTranspose.KeyPriority.TextTMP.text.Replace(" ", "");
+        var gridX = priority.IndexOf(code[lineProgress + 1]);
+        var gridY = rowProgress;
+        var posX = 2.25f + gridX * 3.15f;
+        var posY = -18f + gridY * -3.6f;
+        ADFGVXGameManager.KeyPriorityTranspose.TargetFill.transform.localPosition = new Vector3(posX, posY, 0f);
+        ADFGVXGameManager.KeyPriorityTranspose.TargetFrame.transform.localPosition = new Vector3(posX, posY, 0f);
+    }
 }
