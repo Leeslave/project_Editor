@@ -380,20 +380,14 @@ public class PlayerMove : MonoBehaviour
             }
             else           // 클리어
             {
-                if (IsGoNextStage)
-                {
-                    PlayerPrefs.SetInt("MazeStage", PlayerPrefs.GetInt("MazeStage") + 1);
-                    SceneManager.LoadScene("Maze");
-                }
-                else if (PlayerPrefs.GetInt("DocumentTest") == 1)
-                {
-                    GameSystem.LoadScene("Dodge");
-
-                }
-                else
+                if(GameSystem.Instance != null)
                 {
                     GameSystem.Instance.ClearTask("Maze");
                     GameSystem.LoadScene("Screen");
+                }
+                else
+                {
+                    SceneManager.LoadScene("Screen");
                 }
             }
         }

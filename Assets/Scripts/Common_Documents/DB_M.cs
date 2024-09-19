@@ -134,7 +134,7 @@ public class DB_M : MonoBehaviour
             }
         }
 
-        Secret.gameObject.SetActive(PlayerPrefs.GetInt("DocumentTest")==1);
+        //Secret.gameObject.SetActive(PlayerPrefs.GetInt("DocumentTest")==1);
 
         StartCoroutine(TutoTest(cnt));
     }
