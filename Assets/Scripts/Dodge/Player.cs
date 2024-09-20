@@ -162,19 +162,18 @@ public class Player : MonoBehaviour
         }
     }
 
+    // 게임 클리어
     public void GameClear()
     {
         if (GameSystem.Instance != null)
         {
-            if (PlayerPrefs.GetInt("DocumentTest") != 1)
-            {
-                GameSystem.Instance.ClearTask("Dodge");
-                GameSystem.LoadScene("Screen");
-            }
-            else
-            {
-                GameSystem.LoadScene("Document");
-            }
+            GameSystem.Instance.ClearTask("Dodge");
+            GameSystem.LoadScene("Screen");
+            //GameSystem.LoadScene("Document");
+        }
+        else
+        {
+            SceneManager.LoadScene("Screen");
         }
     }
 

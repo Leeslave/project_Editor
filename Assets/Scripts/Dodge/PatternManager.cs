@@ -102,7 +102,7 @@ public class PatternManager : MonoBehaviour
         }
         catch { }
 
-        if (PlayerPrefs.GetInt("DocumentTest") == 1) StageInt = 2;
+        
 
         if (StageInt == 0) { TutorialObject.SetActive(true); Pl.InitHP = 2; }
 
