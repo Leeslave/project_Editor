@@ -6,7 +6,7 @@ using UnityEngine;
 public class ScreenTutorialManager : TutorialManager
 {
     public GameObject UI;
-    public static int count = 0;
+    public int count = 0;
     public float duration;
     private void Awake()
     {
