@@ -16,8 +16,8 @@ public class GameSystem : SingletonObject<GameSystem>
     private List<SaveData> saveList = new();    // 저장 데이터
     private List<DailyData> dailyList = new();     // 날짜별 데이터
 
-    public SaveData player { get { return saveList[gameData.date]; } }      // 오늘 세이브 데이터
-    public DailyData today { get { return dailyList[gameData.date]; } }    // 오늘 날짜 데이터
+    public SaveData player => saveList[gameData.date];      // 오늘 세이브 데이터
+    public DailyData today => dailyList[gameData.date];    // 오늘 날짜 데이터
 
     /// 오늘 날짜 데이터
     public GameData gameData = new();
@@ -49,7 +49,7 @@ public class GameSystem : SingletonObject<GameSystem>
         // 날짜 선택 기능 미구현
         SetDate(0);
     }
-
+    
 
     ///<summary>
     /// 날짜 전환 (게임 저장)
@@ -167,6 +167,7 @@ public class GameSystem : SingletonObject<GameSystem>
         today.workList[currentWork] = true;
     }
 
+    
     /// <summary>
     /// 해당 씬 로드
     /// </summary>
@@ -175,4 +176,19 @@ public class GameSystem : SingletonObject<GameSystem>
     {
         SceneManager.LoadScene(sceneName);
     }
+    
+    
+#if DEBUG
+    public DailyData GetDailyData(int num)
+    {
+        if (dailyList.Count <= num || num < 0)
+        {
+            return null;
+        }
+        else
+        {
+            return dailyList[num];
+        }
+    }
+#endif
 }
