@@ -120,7 +120,7 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 break;
         }
 
-        consoleText.AddMessage($"{input.text} : {output}");
+        consoleText.AddMessage($"<b><color=#0000ff>{input.text}</color><b> : {output}");
     }
 
     private string GetHelpCommand()
