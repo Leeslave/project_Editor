@@ -21,16 +21,14 @@ public class DisplayEncrypted : MonoBehaviour
         EncryptedTextWriter = transform.GetChild(3).GetComponent<BasicText>();
         EncryptedTextDate = transform.GetChild(4).GetComponent<BasicText>();
         SaveButton = transform.GetChild(5).GetComponent<BasicButton>();
-        
-        Initialize();
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public void Initialize()
+    private void Start()
     {
-        EncryptedTextBody.Initialize();
+        Init();
+    }
+    public void Init()
+    {
+        EncryptedTextBody.Init();
     }
 
     /// <summary>
@@ -86,7 +84,7 @@ public class DisplayEncrypted : MonoBehaviour
             Debug.Log("이미 같은 이름의 파일이 존재합니다!");
         }
     }
-
+    
     public void ShowNextTarget()
     {
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, 0.5f, new Color(1f, 0.2f, 0.2f, 0.2f), ADFGVXGameManager.KeyPriorityTranspose.TargetFill);
@@ -104,11 +102,15 @@ public class DisplayEncrypted : MonoBehaviour
             return;
         if (ADFGVXGameManager.KeyPriorityTranspose.ReverseTransposeLines.StringBuffer.Length == 0)
             return;
+
+        EncryptedTextBody.InputFieldTMP.color = EncryptedTextBody.StringBuffer.Replace(" ", "") == ADFGVXGameManager.Instance.encryptResultText
+            ? new Color(0.2f, 1f, 1f, 1f)
+            : new Color(1f, 0.2f, 0.2f, 1f);
         
-        var line = ADFGVXGameManager.KeyPriorityTranspose.KeyInputField.StringBuffer.Length;
-        var row = ADFGVXGameManager.KeyPriorityTranspose.ReverseTransposeLines.StringBuffer.Length / line;
-        var lineProgress = EncryptedTextBody.StringBuffer.Replace(" ", "").Length / row;
-        var rowProgress = EncryptedTextBody.StringBuffer.Replace(" ", "").Length % row;
+        int line = ADFGVXGameManager.KeyPriorityTranspose.KeyInputField.StringBuffer.Length;
+        int row = ADFGVXGameManager.KeyPriorityTranspose.ReverseTransposeLines.StringBuffer.Length / line;
+        int lineProgress = EncryptedTextBody.StringBuffer.Replace(" ", "").Length / row;
+        int rowProgress = EncryptedTextBody.StringBuffer.Replace(" ", "").Length % row;
         if (lineProgress < line)
         {
             ADFGVXGameManager.KeyPriorityTranspose.TargetFill.color = new Color(1f, 0.2f, 0.2f, 0.2f);
@@ -116,8 +118,8 @@ public class DisplayEncrypted : MonoBehaviour
         }
         else if (lineProgress == line)
         {
-            ADFGVXGameManager.KeyPriorityTranspose.TargetFill.color = new Color(0.17f, 1f, 0.17f, 0.2f);
-            ADFGVXGameManager.KeyPriorityTranspose.TargetFrame.color = new Color(0.17f, 1f, 0.17f, 1f);
+            ADFGVXGameManager.KeyPriorityTranspose.TargetFill.color = new Color(0.2f, 1f, 1f, 0.2f);
+            ADFGVXGameManager.KeyPriorityTranspose.TargetFrame.color = new Color(0.2f, 1f, 1f, 1f);
             return;
         }
         Dictionary<int, char> code = new()
@@ -125,11 +127,11 @@ public class DisplayEncrypted : MonoBehaviour
             { 1, '1' }, { 2, '2' }, { 3, '3' }, { 4, '4' }, { 5, '5' },
             { 6, '6' }, { 7, '7' }, { 8, '8' }, { 9, '9' },
         };
-        var priority = ADFGVXGameManager.KeyPriorityTranspose.KeyPriority.TextTMP.text.Replace(" ", "");
-        var gridX = priority.IndexOf(code[lineProgress + 1]);
-        var gridY = rowProgress;
-        var posX = 2.25f + gridX * 3.15f;
-        var posY = -18f + gridY * -3.6f;
+        string priority = ADFGVXGameManager.KeyPriorityTranspose.KeyPriority.TextTMP.text.Replace(" ", "");
+        int gridX = priority.IndexOf(code[lineProgress + 1]);
+        int gridY = rowProgress;
+        float posX = 2.25f + gridX * 3.15f;
+        float posY = -18.25f + gridY * -3.6f;
         ADFGVXGameManager.KeyPriorityTranspose.TargetFill.transform.localPosition = new Vector3(posX, posY, 0f);
         ADFGVXGameManager.KeyPriorityTranspose.TargetFrame.transform.localPosition = new Vector3(posX, posY, 0f);
     }

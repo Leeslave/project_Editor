@@ -2159,12 +2159,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   encryptTargetText: 
   encryptTransposeKey: 
+  encryptTransposeTable: 
+  encryptTransposeText: 
   encryptResultText: 
-  encryptSaveText: 
+  encryptSaveTitle: 
+  decryptTargetTitle: 
   decryptTargetText: 
   decryptTransposeKey: 
+  decryptTransposeTable: 
+  decryptTransposeText: 
   decryptResultText: 
-  decryptSaveText: 
+  decryptSaveTitle: 
   encryptClear: 0
   decryptClear: 0
   startTutorial: 1
@@ -4207,7 +4212,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.2, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -6192,7 +6197,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.2, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -7778,7 +7783,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.2, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -17646,7 +17651,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.2, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -17761,7 +17766,7 @@ GameObject:
   - component: {fileID: 713321985}
   - component: {fileID: 713321986}
   m_Layer: 0
-  m_Name: Transpose
+  m_Name: KeyPrioirityTranspose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17992,7 +17997,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.2, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -18880,12 +18885,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 181432772}
+        m_TargetAssemblyTypeName: DisplayDecrypted, Assembly-CSharp
+        m_MethodName: TypeDecryptedTextBody
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnDeleteInputField:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1564639075}
         m_TargetAssemblyTypeName: BiliteralSubstituteTextFile_ForGame, Assembly-CSharp
         m_MethodName: UpdateTransposedTextDisplayAndTable
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 181432772}
+        m_TargetAssemblyTypeName: DisplayDecrypted, Assembly-CSharp
+        m_MethodName: TypeDecryptedTextBody
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -19130,7 +19159,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.2, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -19809,7 +19838,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.2, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -22256,7 +22285,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.2, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -24824,7 +24853,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.2, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -26911,16 +26940,52 @@ MonoBehaviour:
       m_Calls: []
   OnAddInputField:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1551517730}
+        m_TargetAssemblyTypeName: LoadEncrypted, Assembly-CSharp
+        m_MethodName: TypeEncryptTextTitle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnDeleteInputField:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1551517730}
+        m_TargetAssemblyTypeName: LoadEncrypted, Assembly-CSharp
+        m_MethodName: TypeEncryptTextTitle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnReturnInputField:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1551517730}
         m_TargetAssemblyTypeName: LoadEncryptedTextFile_ForGame, Assembly-CSharp
         m_MethodName: LoadEncryptedText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1551517730}
+        m_TargetAssemblyTypeName: LoadEncrypted, Assembly-CSharp
+        m_MethodName: DecryptTutorialPhase_0
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -35150,6 +35215,30 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1564639075}
+        m_TargetAssemblyTypeName: BilateralSubstitute, Assembly-CSharp
+        m_MethodName: EncryptTutorialPhase_1
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1564639075}
+        m_TargetAssemblyTypeName: BilateralSubstitute, Assembly-CSharp
+        m_MethodName: DecryptTutorialPhase_2
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnMouseEnterEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -38765,7 +38854,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1564639075}
         m_TargetAssemblyTypeName: BiliteralSubstitute_ForGame, Assembly-CSharp
-        m_MethodName: Initialize
+        m_MethodName: Init
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -38777,7 +38866,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 181432772}
         m_TargetAssemblyTypeName: DisplayDecrypted_ForGame, Assembly-CSharp
-        m_MethodName: Initialize
+        m_MethodName: Init
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -38801,7 +38890,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1472704928}
         m_TargetAssemblyTypeName: DisplayEncrypted_ForGame, Assembly-CSharp
-        m_MethodName: Initialize
+        m_MethodName: Init
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -38813,7 +38902,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 713321986}
         m_TargetAssemblyTypeName: TransposeEncrypted_ForGame, Assembly-CSharp
-        m_MethodName: Initialize
+        m_MethodName: Init
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -39108,6 +39197,30 @@ MonoBehaviour:
       - m_Target: {fileID: 1564639075}
         m_TargetAssemblyTypeName: BilateralSubstitute_ForGame, Assembly-CSharp
         m_MethodName: UpdateTransposedTextDisplayAndTable
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1564639075}
+        m_TargetAssemblyTypeName: BilateralSubstitute, Assembly-CSharp
+        m_MethodName: EncryptTutorialPhase_1
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1564639075}
+        m_TargetAssemblyTypeName: BilateralSubstitute, Assembly-CSharp
+        m_MethodName: DecryptTutorialPhase_2
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -39429,7 +39542,19 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 713321986}
         m_TargetAssemblyTypeName: KeyPriorityTranspose, Assembly-CSharp
-        m_MethodName: EncryptTutorialPhase_4
+        m_MethodName: EncryptTutorialPhase_2
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 713321986}
+        m_TargetAssemblyTypeName: KeyPriorityTranspose, Assembly-CSharp
+        m_MethodName: DecryptTutorialPhase_1
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -42026,7 +42151,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 713321986}
         m_TargetAssemblyTypeName: Transpose_ForGame, Assembly-CSharp
-        m_MethodName: Initialize
+        m_MethodName: Init
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -42065,7 +42190,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 713321986}
         m_TargetAssemblyTypeName: Transpose_ForGame, Assembly-CSharp
-        m_MethodName: Initialize
+        m_MethodName: Init
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -42101,7 +42226,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1378305428}
         m_TargetAssemblyTypeName: BasicInputField, Assembly-CSharp
-        m_MethodName: Initialize
+        m_MethodName: Init
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -42116,7 +42241,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1849005364}
         m_TargetAssemblyTypeName: WritePlain, Assembly-CSharp
-        m_MethodName: CheckTutorialPhaseCompleted
+        m_MethodName: EncryptTutorialPhase_0
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -43854,7 +43979,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 713321986}
         m_TargetAssemblyTypeName: KeyPriorityTranspose, Assembly-CSharp
-        m_MethodName: EncryptTutorialPhase_5
+        m_MethodName: EncryptTutorialPhase_3
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

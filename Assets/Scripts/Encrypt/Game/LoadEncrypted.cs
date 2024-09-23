@@ -27,7 +27,7 @@ public class LoadEncrypted : MonoBehaviour
     
     public void Init()
     {
-        EncryptedTextTitle.Initialize();
+        EncryptedTextTitle.Init();
         EncryptedTextBody.TextTMP.text = "";
         EncryptedTextWriter.TextTMP.text = "작성자: NULL";
         EncryptedTextDate.TextTMP.text = "작성자: NULL";
@@ -55,7 +55,7 @@ public class LoadEncrypted : MonoBehaviour
 
     public void LoadEncryptedText()
     {
-        if (ADFGVXGameManager.Instance.decryptTargetText != EncryptedTextTitle.StringBuffer)
+        if (ADFGVXGameManager.Instance.decryptTargetTitle != EncryptedTextTitle.StringBuffer)
         {
             LJWConverter.Instance.PrintTMPByDuration(false, 0f, 1f, "잘못된 파일 이름을 입력했습니다.", true, EncryptedTextBody.TextTMP);
             return;
@@ -88,15 +88,23 @@ public class LoadEncrypted : MonoBehaviour
             CalculateKeyLength(encryptedText);
             
             //새로운 암호문을 로드하였으므로 전에 작업 내용은 파기
-            ADFGVXGameManager.KeyPriorityTranspose.Initialize();
-            ADFGVXGameManager.BilateralSubstitute.Initialize();
+            ADFGVXGameManager.KeyPriorityTranspose.Init();
+            ADFGVXGameManager.BilateralSubstitute.Init();
             
             //출력하는 동안 차단
             ADFGVXGameManager.CutAvailabilityInputForWhile(0f, 2f);
             reader.Close();   
         }
     }
-
+    public void TypeEncryptTextTitle()
+    {
+        EncryptedTextTitle.InputFieldTMP.color = EncryptedTextTitle.StringBuffer == ADFGVXGameManager.Instance.decryptTargetTitle 
+            ? new Color(0.2f, 1f, 1f, 1f)
+            : new Color(1f, 0.2f, 0.2f, 1f);
+        EncryptedTextBody.TextTMP.color = EncryptedTextTitle.StringBuffer == ADFGVXGameManager.Instance.decryptTargetTitle 
+            ? new Color(0.2f, 1f, 1f, 1f)
+            : new Color(1f, 0.2f, 0.2f, 1f);
+    }
     private void CalculateKeyLength(string value)
     {
         var length = value.Replace(" ", "").Length;
@@ -112,4 +120,15 @@ public class LoadEncrypted : MonoBehaviour
             PrimeNumDisplay.TextTMP.text = result.Substring(0, result.Length - 2);
         }
     }
+
+    #region 튜토리얼 전용
+
+    public void DecryptTutorialPhase_0()
+    {
+        if (ADFGVXGameManager.ADFGVXTutorialManager.IsDecryptPlaying())
+            if(EncryptedTextTitle.StringBuffer == "RENDEZVOUS-POINT")
+                ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
+    }
+
+    #endregion
 }

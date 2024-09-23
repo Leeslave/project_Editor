@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class DisplayDecrypted : MonoBehaviour
 {
-
     public BasicText Title { get; set; }
     public BasicText DecryptedTextTitle { get; set; }
     public BasicInputField DecryptedTextBody { get; set; }
@@ -14,7 +13,6 @@ public class DisplayDecrypted : MonoBehaviour
     public BasicText DecryptedTextDate { get; set; }
     public BasicButton SaveButton { get; set; }
     
-
     private void Awake()
     {
         Title = transform.GetChild(0).GetComponent<BasicText>();
@@ -23,16 +21,16 @@ public class DisplayDecrypted : MonoBehaviour
         DecryptedTextWriter = transform.GetChild(3).GetComponent<BasicText>();
         DecryptedTextDate = transform.GetChild(4).GetComponent<BasicText>();
         SaveButton = transform.GetChild(5).GetComponent<BasicButton>();
-        
+    }
+    private void Start()
+    {
         DecryptedTextWriter.TextTMP.text = "작성자: ANONYMOUS";
         DecryptedTextDate.TextTMP.text = "작성일: " + DateTime.Today.Year + "년 " + DateTime.Today.Month + "월 " + DateTime.Today.Day + "일";
-        
-        Initialize();
+        Init();
     }
-    
-    public void Initialize()
+    public void Init()
     {
-        DecryptedTextBody.Initialize();
+        DecryptedTextBody.Init();
         DecryptedTextTitle.TextTMP.text = "저장할 복호화 파일 이름";
         DecryptedTextWriter.TextTMP.text = "작성자: ANONYMOUS";
         DecryptedTextDate.TextTMP.text = "작성일: " + DateTime.Today.Year + "년 " + DateTime.Today.Month + "월 " + DateTime.Today.Day + "일";
@@ -87,5 +85,12 @@ public class DisplayDecrypted : MonoBehaviour
         {
             Debug.Log("이미 같은 이름의 파일이 존재합니다!");
         }   
+    }
+
+    public void TypeDecryptedTextBody()
+    {
+        DecryptedTextBody.InputFieldTMP.color = DecryptedTextBody.StringBuffer == ADFGVXGameManager.Instance.decryptResultText
+            ? new Color(0.2f, 1f, 1f, 1f)
+            : new Color(1f, 0.2f, 0.2f, 1f);
     }
 }
