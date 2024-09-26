@@ -32,8 +32,6 @@ public class MakeTile : MonoBehaviour
 
     [SerializeField] string[] Paths;
 
-    [SerializeField] bool IsGoNextStage = false;
-
     [SerializeField] List<StageData> Stages;
 
     [SerializeField] Transform Walls;

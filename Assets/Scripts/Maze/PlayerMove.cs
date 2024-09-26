@@ -366,9 +366,6 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-
-
-    [SerializeField] bool IsGoNextStage = false;
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("ExitWall"))
