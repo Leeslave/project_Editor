@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ChatTutorialManager : TutorialManager
 {
@@ -15,14 +16,9 @@ public class ChatTutorialManager : TutorialManager
     }
     
     public RectTransform TargetArea;
-    public GameObject[] UI;
+    public GameObject[] tutorials;
     public static int idx = 0;
 
-    private void SetArea(Vector2 position, Vector2 size)
-    {
-        TargetArea.localPosition = new Vector3(position.x, position.y, 0);
-        TargetArea.sizeDelta = new Vector2(size.x, size.y);
-    }
 
     public void Show(float duration)
     {
@@ -31,11 +27,11 @@ public class ChatTutorialManager : TutorialManager
 
     public IEnumerator ShowTutorial(float duration)
     {
-        blocker = UI[idx];
-        StartCoroutine(ShowPopUp(UI[idx]));
+        blocker = tutorials[idx];
+        StartCoroutine(ShowPopUp(tutorials[idx]));
         yield return new WaitForSeconds(duration);
         blocker.SetActive(false);
-        if (idx >= UI.Length - 1)
+        if (idx >= tutorials.Length - 1)
         {
             idx = 0;
         }
