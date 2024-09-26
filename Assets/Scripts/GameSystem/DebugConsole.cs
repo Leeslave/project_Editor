@@ -6,14 +6,10 @@ using TMPro;
 public class DebugConsole : SingletonObject<DebugConsole>
 {
     public GameObject console;
-    public TMP_Text consoleText;
+    public ScrollText consoleText;
     public TMP_InputField input;
 
-    new void Awake()
-    {
-        base.Awake();
-    }
-
+    
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.F1))
@@ -22,60 +18,123 @@ public class DebugConsole : SingletonObject<DebugConsole>
             console.SetActive(!console.activeSelf);
         }
     }
+    
+    
     public void GetConsoleInput()
     {
         string output = "";
-        switch(input.text)
+        string[] inputArgs = input.text.Split(" ");
+        switch(inputArgs[0])
         {
-            case "today" :
-                DailyData todayData = GameSystem.Instance.today;
-                output += $"{todayData.date.year}년 {todayData.date.month}월 {todayData.date.day}일\n";
-                output += $"오늘의 업무 현황\n";
-                foreach(var work in todayData.workList.Keys)
+            case "showDay" :
+                DailyData dayData;
+                if (inputArgs.Length < 2) // no additional args : today
                 {
-                    output += $"WORK: {work.code}, Stage: {work.stage} = Done: {todayData.workList[work]}\n";
+                    dayData = GameSystem.Instance.today;
+                }
+                else if (int.TryParse(inputArgs[1], out int date)) // with args : certain date
+                {
+                    dayData = GameSystem.Instance.GetDailyData(date);
+                    if (dayData == null)
+                    {
+                        output += "<color=#ff0000>Invalid date</color>";
+                        break;
+                    }
+                }
+                else // invalid args
+                {
+                    output += "<color=#ff0000>Invalid Parameter</color>";
+                    break;
+                }
+                output += $"{dayData.date.year}년 {dayData.date.month}월 {dayData.date.day}일\n";
+                output += $"해당 날짜의 업무\n";
+                foreach(var work in dayData.workList.Keys)
+                {
+                    output += $"WORK: {work.code}, Stage: {work.stage} = Done: {dayData.workList[work]}\n";
                 }
                 output += "\n";
                 break;
-            case "player" :
+            
+            case "showData" :
                 SaveData player = GameSystem.Instance.player;
-                output += $"Current Date Index: {GameSystem.Instance.gameData.date}\n";
-                output += $"Current location: {GameSystem.Instance.gameData.location}\n";
-                output += $"Current time: {GameSystem.Instance.gameData.time}\n";
+                GameData gameData = GameSystem.Instance.gameData;
+                output += $"Current Day: {gameData.date} - {gameData.time}\n";
+                output += $"Current location: {gameData.location} - {gameData.position}\n";
                 output += $"Current renown: {player.renown}\n";
                 break;
-            case "worldObjects":
+            
+            case "setDay":
+                if (inputArgs.Length < 2) // no additional args : nexttime
+                {
+                    output += "<color=#ff0000>date number required</color>";
+                    break;
+                }
+                
+                if (int.TryParse(inputArgs[1], out int dayCount)) // with args : certain date
+                {
+                    GameSystem.Instance.SetDate(dayCount);
+                    GameSystem.LoadScene("DayLoading");
+                }
+                else // invalid args
+                {
+                    output += "<color=#ff0000>Invalid Parameter</color>";
+                }
+                break;
+            
+            case "setTime":
+                if (inputArgs.Length < 2) // no additional args
+                {
+                    GameSystem.Instance.SetTime(GameSystem.Instance.gameData.time + 1);
+                    GameSystem.LoadScene("DayLoading");
+                    break;
+                }
+                
+                if (int.TryParse(inputArgs[1], out int timeCount)) // with args : certain date
+                {
+                    GameSystem.Instance.SetTime(timeCount);
+                    GameSystem.LoadScene("DayLoading");
+                }
+                else // invalid args
+                {
+                    output += "<color=#ff0000>Invalid Parameter</color>";
+                }
+                break;
+            
+            case "objectList":
                 for(int i = 0; i < ObjectDatabase.ObjectList.Count; i++)
                 {
                     output += $"{(World)i}지역 Object : {ObjectDatabase.ObjectList[i].Count}개\n";
                 }
                 break;
-            case "help" :
-                output += $"today: show today's Date, Work Status\n";
-                output += $"player: show current date Index, location, time and renown\n";
-                output += $"worldObjects: show every world's object counts\n";
-                output += $"clear: clear all today works\n";
-                output += $"nextday: skip one day\n";
-                output += $"nexttime: skip one time\n";
-                break;
-            case "clear" :
+            
+            case "clearTask" :
                 foreach(var work in GameSystem.Instance.today.workList.Keys)
                 {
                     GameSystem.Instance.ClearTask(work.code);
+                    output += $"Clear work : {work.code}";
                 }
-                GameSystem.LoadScene("Screen");
                 break;
-            case "nextday":
-                GameSystem.Instance.SetDate();
-                GameSystem.LoadScene("DayLoading");
-                break;
-            case "nexttime":
-                GameSystem.Instance.SetTime(GameSystem.Instance.gameData.time + 1);
+            
+            default:
+                output += GetHelpCommand();
                 break;
         }
 
-        consoleText.text = "";
-        consoleText.text += output;
+        consoleText.AddMessage($"<b><color=#0000ff>{input.text}</color><b> : {output}");
+    }
+
+    private string GetHelpCommand()
+    {
+        string result = "<color=#00ff00>";
+        result += $"showDay <day = today> : show Day data.\n";
+        result += $"showData: show current date Index, location, time and renown\n";
+        result += $"setDay <day> : skip to certain day\n";
+        result += $"setTime <time = next Time> : skip one time\n";
+        result += $"objectList: show every world's object counts\n";
+        result += $"clearTask: clear all today works\n";
+
+        result += "</color>";
+        return result;
     }
 }
 
