@@ -98,9 +98,10 @@ public class PatternManager : MonoBehaviour
 
         try
         {
-            StageInt = GameSystem.Instance.GetTask("Maze");
+            StageInt = GameSystem.Instance.GetTask("Dodge");
         }
         catch { }
+        StageInt = 1;
 
         
 
@@ -269,11 +270,13 @@ public class PatternManager : MonoBehaviour
         if (GameSystem.Instance != null)
         {
             GameSystem.Instance.ClearTask("Dodge");
-            GameSystem.LoadScene("Screen");
+            if (StageInt == 0) GameSystem.LoadScene("Screen");
+            else GameSystem.LoadScene("Document");
         }
         else
         {
-            SceneManager.LoadScene("Screen");
+            if (StageInt == 0) SceneManager.LoadScene("Screen");
+            else SceneManager.LoadScene("Document");
         }
     }
 
