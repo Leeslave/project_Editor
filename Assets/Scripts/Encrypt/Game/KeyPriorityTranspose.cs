@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using TMPro;
@@ -35,20 +34,25 @@ public class KeyPriorityTranspose : MonoBehaviour
         TargetFill = transform.GetChild(5).GetComponent<SpriteRenderer>();
         TargetFrame = transform.GetChild(6).GetComponent<SpriteRenderer>();
     }
-    private void Start() => Initialize();
+    private void Start() => Init();
 
     /// <summary>
     /// 모드가 전환될 때마다 버퍼에 있는 내용을 깨끗하게 비우고 초기화해야 한다
     /// </summary>
-    public void Initialize() {
-        KeyInputField.Initialize();
+    public void Init() {
+        KeyInputField.Init();
         KeyPriority.TextTMP.text = "_ _ _ _ _ _ _ _ _";
         KeyInputField.InputFieldTMP.color = new Color(1f, 1f, 1f, 1f);
         KeyPriority.TextTMP.color = new Color(1f, 1f, 1f, 1f);
         
-        ClearTransposedMatrix();
+        KeyInputField.CheckInputField();
+        for (int i = 0; i < 9; i++)
+        {
+            TempLine[i] = "";
+            TransposeLines[i].text = "";
+        }
         
-        ReverseTransposeLines.Initialize();
+        ReverseTransposeLines.Init();
         ReverseTransposeLines.SetAvailability(ADFGVXGameManager.CurrentSystemMode != ADFGVXGameManager.SystemMode.Decryption);
     }
     
@@ -67,89 +71,74 @@ public class KeyPriorityTranspose : MonoBehaviour
     /// </summary>
     public void UpdateKeyPriority()
     {
-        var value = KeyInputField.StringBuffer;
+        string inputKey = KeyInputField.StringBuffer;
         
         //키 순서를 결정하는 알고리즘
-        for(var i = 0; i < value.Length; i++)
-            Priority[i] = 1;
-        for (var i = 0; i < value.Length; i++)
-        {
-            for (var j = 0; j < value.Length; j++)
+        for(int i = 0; i < inputKey.Length; i++)
+                Priority[i] = 1;
+        for (int i = 0; i < inputKey.Length; i++)
+            for (int j = 0; j < inputKey.Length; j++)
             {
                 if (i == j) 
                     continue;
-                if (value[i] > value[j])
+                if (inputKey[i] > inputKey[j])
                     Priority[i]++;
-                if (value[i] == value[j] && i < j)
+                if (inputKey[i] == inputKey[j] && i < j)
                     Priority[j]++;
             }
-        }
         
-        //디스플레이 부분
-        var result = "";
-        for (var i = 0; i < KeyInputField.StringBuffer.Length; i++)
+        //키 순위 디스플레이
+        string result = "";
+        for (int i = 0; i < KeyInputField.StringBuffer.Length; i++)
             result += Priority[i] + " ";
-        for (var i = KeyInputField.StringBuffer.Length; i < 9; i++)
+        for (int i = KeyInputField.StringBuffer.Length; i < 9; i++)
             result += "_ ";
         KeyPriority.TextTMP.text = result;
         
-        //행렬 디스플레이 비움
-        for (var i = 0; i < 9; i++)
+        //행렬 디스플레이 초기화
+        for (int i = 0; i < 9; i++)
         {
             TempLine[i] = "";
             TransposeLines[i].text = "";
         }
         
-        //키가 없다면 초기화
-        if (KeyInputField.StringBuffer.Length == 0)
+        //전치 키 확인
+        if (inputKey.Length == 0)
         {
             KeyInputField.InputFieldTMP.color = new Color(1f, 1f, 1f, 1f);
             KeyPriority.TextTMP.color = new Color(1f, 1f, 1f, 1f);
             return;
         }
-        
-        //길이가 1인 키는 사용할 수 없음
-        if (KeyInputField.StringBuffer.Length == 1)
-        {
-            KeyInputField.InputFieldTMP.color = new Color(1f, 0.17f, 0.17f, 1f);
-            KeyPriority.TextTMP.color = new Color(1f, 0.17f, 0.17f, 1f);
-            return;
-        }
 
         if (ADFGVXGameManager.CurrentSystemMode == ADFGVXGameManager.SystemMode.Encryption)
         {
-            var color = ADFGVXGameManager.WritePlain.PlainTextBody.StringBuffer.Length % KeyInputField.StringBuffer.Length != 0 
-                ? new Color(1f, 0.17f, 0.17f, 1f) 
-                : new Color(0.2f, 1f, 1f, 1f);
+            //키 값이 정확할 경우
+            Color color = ADFGVXGameManager.Instance.encryptTransposeKey == inputKey
+                ? new Color(0.2f, 1f, 1f, 1f)
+                : new Color(1f, 0.2f, 0.2f, 1f);
             KeyInputField.InputFieldTMP.color = color;
             KeyPriority.TextTMP.color = color;
             
-            if (value.Length == 0 || value.Length == 1)
-            {
-                //키의 길이는 0이나 1이 될 수 없다
-                ReverseTransposeLines.InputFieldTMP.color = new Color(1f, 0.3f, 0.3f, 1f);
-                ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3f * 9, 80);
-            }
-            else if((ReverseTransposeLines.StringBuffer.Length != 2 * ADFGVXGameManager.WritePlain.PlainTextBody.StringBuffer.Length) || (ReverseTransposeLines.StringBuffer.Length % value.Length != 0))
-            {
-                //평문 전체를 전치하지 못했거나 키값이 유효하지 않다면
-                ReverseTransposeLines.InputFieldTMP.color = new Color(1f, 0.3f, 0.3f, 1f);
-                ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3f * value.Length, 80);
-            }
-            else
-            {
-                //색을 통해서 플레이어에게 현재 역전치 내용이 유효함을 알린다
-                ReverseTransposeLines.InputFieldTMP.color = new Color(0.3f, 1f, 0.3f, 1f);
-                ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3f * value.Length, 80);
-            }   
+            //전치 입력이 정확할 경우
+            color = ADFGVXGameManager.Instance.encryptTransposeText == ReverseTransposeLines.StringBuffer
+                ? new Color(0.2f, 1f, 1f, 1f)
+                : new Color(1f, 0.2f, 0.2f, 1f);
+            ReverseTransposeLines.InputFieldTMP.color = color;
+            ReverseTransposeLines.InputFieldTMP.rectTransform.sizeDelta = new Vector2(3f * inputKey.Length, 80);
         }
         else
         {
-            var color = ADFGVXGameManager.LoadEncrypted.EncryptedTextBody.TextTMP.text.Replace(" ", "").Length % KeyInputField.StringBuffer.Length != 0 
-                ? new Color(1f, 0.17f, 0.17f, 1f) 
-                : new Color(0.2f, 1f, 1f, 1f);
+            //키 값이 정확할 경우
+            Color color = ADFGVXGameManager.Instance.decryptTransposeKey == inputKey
+                ? new Color(0.2f, 1f, 1f, 1f)
+                : new Color(1f, 0.2f, 0.2f, 1f);
             KeyInputField.InputFieldTMP.color = color;
             KeyPriority.TextTMP.color = color;
+            
+            foreach(var i in TransposeLines)
+                i.color = inputKey == ADFGVXGameManager.Instance.decryptTransposeKey
+                    ? new Color(0.2f, 1f, 1f, 1f)
+                    : new Color(1f, 0.2f, 0.2f, 1f);
         }
     }
 
@@ -167,24 +156,29 @@ public class KeyPriorityTranspose : MonoBehaviour
                 
                 //빈칸을 제거하여 반환
                 string encryptedText = ADFGVXGameManager.LoadEncrypted.EncryptedTextBody.TextTMP.text.Replace(" ", "");
-                string key = KeyInputField.StringBuffer;
+                string inputKey = KeyInputField.StringBuffer;
 
                 //에러
-                if (key.Length == 0)
+                if (inputKey.Length == 0)
                     return;
-                if (encryptedText.Length / key.Length > 30)
+                if (encryptedText.Length / inputKey.Length > 30)
                     return;
-                if (encryptedText.Length % key.Length != 0)
+                if (encryptedText.Length % inputKey.Length != 0)
                     return;
                 
-                ClearTransposedMatrix();
+                KeyInputField.CheckInputField();
+                for (int i = 0; i < 9; i++)
+                {
+                    TempLine[i] = "";
+                    TransposeLines[i].text = "";
+                }
                 
                 var inputPriority = 1;
-                RowLength = key.Length;
-                LineLength = encryptedText.Length / key.Length;
-                for (var i = 0; i < key.Length; i++)
+                RowLength = inputKey.Length;
+                LineLength = encryptedText.Length / inputKey.Length;
+                for (var i = 0; i < inputKey.Length; i++)
                 {
-                    for (var j = 0; j < key.Length; j++)
+                    for (var j = 0; j < inputKey.Length; j++)
                     {
                         if (Priority[j] == inputPriority)
                         {
@@ -199,14 +193,6 @@ public class KeyPriorityTranspose : MonoBehaviour
                 for(var i = 0; i < LineLength; i++)
                 for(var j = 0; j < RowLength; j++)
                     CurrentTransposedText += TempLine[j].ToCharArray()[i];
-                
-                if (ADFGVXGameManager.ADFGVXTutorialManager.IsDecryptPlaying())
-                {
-                    if (key == "WAIT")
-                        ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase((RowLength + LineLength) * 0.1f + 2f);        
-                    else
-                        return;
-                }
 
                 //전치 행렬 출력
                 StartCoroutine(CircumventRow(0));
@@ -223,20 +209,8 @@ public class KeyPriorityTranspose : MonoBehaviour
             {
                 KeyInputField.IsReadyForInput = false;
                 KeyInputField.IsFlash = false;
-
-                //이제 필요없는 부분
                 return;
             }
-        }
-    }
-    
-    private void ClearTransposedMatrix()
-    {
-        KeyInputField.CheckInputField();
-        for (var i = 0; i < 9; i++)
-        {
-            TempLine[i] = "";
-            TransposeLines[i].text = "";
         }
     }
 
@@ -267,18 +241,24 @@ public class KeyPriorityTranspose : MonoBehaviour
 
     #region 튜토리얼 전용
 
-    public void EncryptTutorialPhase_4()
+    public void EncryptTutorialPhase_2()
     {
         if (ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
             if(KeyInputField.StringBuffer == "WAIT")
                 ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
     }
-    public void EncryptTutorialPhase_5()
+    public void EncryptTutorialPhase_3()
     {
         if (ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
             if(ReverseTransposeLines.StringBuffer == "XXAFAFAVFGVGXVFGDDAVAGAFAFAVFGGG")
                 ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
-    }    
+    }
+    public void DecryptTutorialPhase_1()
+    {
+        if (ADFGVXGameManager.ADFGVXTutorialManager.IsDecryptPlaying())
+            if(KeyInputField.StringBuffer == "WAIT")
+                ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
+    }
 
     #endregion
 }

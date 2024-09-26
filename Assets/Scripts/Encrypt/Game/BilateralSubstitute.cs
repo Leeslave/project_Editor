@@ -46,13 +46,13 @@ public class BilateralSubstitute : MonoBehaviour
         BeforeTableButton = transform.GetChild(7).GetComponent<BasicButton>();
         
         UpdateTable();
-        Initialize();
+        Init();
     }
 
     /// <summary>
     /// 모드가 전환될 때마다 버퍼에 있는 내용을 깨끗하게 비우고 초기화해야 한다
     /// </summary>
-    public void Initialize()
+    public void Init()
     {
         TransposedTextDisplay.TextTMP.text = "-WAITING TASK-";
         
@@ -99,7 +99,7 @@ public class BilateralSubstitute : MonoBehaviour
                 //전치된 텍스트가 없으면 종료
                 if (transposedText == "")
                 {
-                    Initialize();
+                    Init();
                     return;
                 }
 
@@ -113,7 +113,7 @@ public class BilateralSubstitute : MonoBehaviour
                 if (2 * length >= transposedText.Length)
                 {
                     //복호화가 완료되었을 경우
-                    TransposedTextDisplay.TextTMP.text = "<color=#2DFF2D>TASK COMPLETE!</color>";
+                    TransposedTextDisplay.TextTMP.text = "<color=#33FFFF>TASK COMPLETE!</color>";
                     
                     //테이블 소등
                     LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
@@ -129,7 +129,7 @@ public class BilateralSubstitute : MonoBehaviour
                     //복호화가 진행 중일 경우
                     var red = transposedText.Substring(2 * length, 2);
                     var left = transposedText.Substring(2 * length + 2);
-                    var result = "<color=#FF0000>" + red + "</color>" + left;
+                    var result = "<color=#FF3333>" + red + "</color>" + left;
                     TransposedTextDisplay.TextTMP.text = result;
                     
                     //테이블 소등
@@ -163,7 +163,7 @@ public class BilateralSubstitute : MonoBehaviour
                 //평문 텍스트가 없으면 종료
                 if (plainText == "")
                 {
-                    Initialize();
+                    Init();
                     return;
                 }
                 
@@ -177,7 +177,7 @@ public class BilateralSubstitute : MonoBehaviour
                 if (length >= plainText.Length * 2)
                 {
                     //역전치가 완료되었을 경우
-                    TransposedTextDisplay.TextTMP.text = "<color=#2DFF2D>TASK COMPLETE!</color>";
+                    TransposedTextDisplay.TextTMP.text = "<color=#33FFFF>TASK COMPLETE!</color>";
                     
                     //테이블 소등
                     LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
@@ -193,7 +193,7 @@ public class BilateralSubstitute : MonoBehaviour
                     //역전치가 진행 중일 경우
                     var red = plainText.Substring(Mathf.FloorToInt(length / 2f), 1);
                     var left = plainText.Substring(Mathf.FloorToInt(length / 2f) + 1);
-                    var result = "<color=#FF0000>" + red + "</color>" + left;
+                    var result = "<color=#FF3333>" + red + "</color>" + left;
                     TransposedTextDisplay.TextTMP.text = result;
                     
                     //테이블 소등
@@ -231,7 +231,7 @@ public class BilateralSubstitute : MonoBehaviour
     /// </summary>
     private void UpdateTable()
     {
-        string filePath = Application.dataPath + "/Resources/GameData/Encrypt/Tables/Table_" + CurrentTableNum.ToString() + ".txt";
+        string filePath = Application.dataPath + "/Resources/GameData/Encrypt/Tables/Table_" + CurrentTableNum + ".txt";
         FileInfo txtFile = new(filePath);
 
         if (!txtFile.Exists)
@@ -243,29 +243,38 @@ public class BilateralSubstitute : MonoBehaviour
 
         for(var i = 0; i < 36; i++)
             TableElements[i].TextTMP.text = value[i].ToString();
-
-        //튜토리얼 전용
-        if (ADFGVXGameManager.ADFGVXTutorialManager.IsDecryptPlaying() || ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
-            if(CurrentTableNum == 0)
-                ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
     }
-
     public void TablePlus()
     {
         int next = CurrentTableNum + 1 >= TableNumMax ? 0 : CurrentTableNum + 1;
         SetTable(next);
     }
-
     public void TableMinus()
     {
         int next = CurrentTableNum - 1 < 0 ? TableNumMax - 1 : CurrentTableNum - 1;
         SetTable(next);
     }
-
     public void SetTable(int num)
     {
         CurrentTableNum = num;
         CurrentTableNumDisplay.TextTMP.text = "치환 테이블 " + CurrentTableNum + "번";
         UpdateTable();
     }
+
+    #region 튜토리얼 전용
+
+    public void EncryptTutorialPhase_1()
+    {
+        if (ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
+            if(CurrentTableNum == 0)
+                ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
+    }
+    public void DecryptTutorialPhase_2()
+    {
+        if (ADFGVXGameManager.ADFGVXTutorialManager.IsDecryptPlaying())
+            if(CurrentTableNum == 0)
+                ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
+    }
+
+    #endregion
 }

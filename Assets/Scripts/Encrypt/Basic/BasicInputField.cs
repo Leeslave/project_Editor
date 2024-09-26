@@ -59,7 +59,7 @@ public class BasicInputField : MonoBehaviour
     /// <summary>
     /// 인풋 필드 초기화
     /// </summary>
-    public void Initialize()
+    public void Init()
     {
         StringBuffer = "";
         InputFieldTMP.text = DefaultText;

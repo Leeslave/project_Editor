@@ -147,6 +147,7 @@ public class ResultPanel : MonoBehaviour
             CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
             CloseButton.OnMouseUpEvent.AddListener(() => {
                 Debug.Log("복호화 튜토리얼 종료!");
+                GameSystem.Instance.ClearTask("ADFGVX_DT");
                 GameSystem.LoadScene("Screen"); });
         }
         else
@@ -359,6 +360,7 @@ public class ResultPanel : MonoBehaviour
             CloseButton.OnMouseUpEvent.AddListener(() =>
             {
                 Debug.Log("암호화 튜토리얼 종료!");
+                GameSystem.Instance.ClearTask("ADFGVX_ET");
                 GameSystem.LoadScene("Screen");
             });
         }

@@ -26,11 +26,15 @@ public class ADFGVXTutorialManager : TutorialManager
     private IEnumerator StartDecryptTutorial_IE()
     {
         //튜토리얼 시작
-        ADFGVXGameManager.Instance.decryptTargetText = "RENDEZVOUS-POINT";
+        ADFGVXGameManager.Instance.decryptTargetTitle = "RENDEZVOUS-POINT";
+        ADFGVXGameManager.Instance.decryptTargetText = "XFGVDGFGAAVFAAAGFVGGVFVGXAFXDAAF";
+        ADFGVXGameManager.Instance.decryptTransposeKey = "WAIT";
+        ADFGVXGameManager.Instance.decryptTransposeTable = "0";
+        ADFGVXGameManager.Instance.decryptTransposeText = "XXAFAFAVFGVGXVFGDDAVAGAFAFAVFGGG";
         ADFGVXGameManager.Instance.decryptResultText = "MEET-ON-STREET-6";
-        ADFGVXGameManager.Instance.decryptSaveText = "USER621-DECRYPT-QUALIFICATION";
+        ADFGVXGameManager.Instance.decryptSaveTitle = "USER621-DECRYPT-QUALIFICATION";
         ADFGVXGameManager.BilateralSubstitute.SetTable(2);
-        ADFGVXGameManager.DisplayDecrypted.DecryptedTextTitle.TextTMP.text = ADFGVXGameManager.Instance.decryptSaveText;
+        ADFGVXGameManager.DisplayDecrypted.DecryptedTextTitle.TextTMP.text = ADFGVXGameManager.Instance.decryptSaveTitle;
         _playingDecrypt = true;
         
         //페이즈
@@ -50,10 +54,13 @@ public class ADFGVXTutorialManager : TutorialManager
     {
         //튜토리얼 시작
         ADFGVXGameManager.Instance.encryptTargetText = "MEET-ON-STREET-6";
+        ADFGVXGameManager.Instance.encryptTransposeKey = "WAIT";
+        ADFGVXGameManager.Instance.encryptTransposeTable = "0";
+        ADFGVXGameManager.Instance.encryptTransposeText = "XXAFAFAVFGVGXVFGDDAVAGAFAFAVFGGG";
         ADFGVXGameManager.Instance.encryptResultText = "XFGVDGFGAAVFAAAGFVGGVFVGXAFXDAAF";
-        ADFGVXGameManager.Instance.decryptSaveText = "USER621-ENCRYPT-QUALIFICATION";
+        ADFGVXGameManager.Instance.encryptSaveTitle = "USER621-ENCRYPT-QUALIFICATION";
         ADFGVXGameManager.BilateralSubstitute.SetTable(2);
-        ADFGVXGameManager.DisplayEncrypted.EncryptedTextTitle.TextTMP.text = ADFGVXGameManager.Instance.decryptSaveText;
+        ADFGVXGameManager.DisplayEncrypted.EncryptedTextTitle.TextTMP.text = ADFGVXGameManager.Instance.encryptSaveTitle;
         _playingEncrypt = true;
 
         //페이즈
