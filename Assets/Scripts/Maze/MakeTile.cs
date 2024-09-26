@@ -32,8 +32,6 @@ public class MakeTile : MonoBehaviour
 
     [SerializeField] string[] Paths;
 
-    [SerializeField] bool IsGoNextStage = false;
-
     [SerializeField] List<StageData> Stages;
 
     [SerializeField] Transform Walls;
@@ -55,22 +53,7 @@ public class MakeTile : MonoBehaviour
 
     void Awake()
     {
-        try
-        {
-            Difficulty = GameSystem.Instance.GetTask("Maze");
-        }
-        catch
-        {
-            //Difficulty = 0;
-        }
-
-        // 클리어시 다음으로 넘어가게 임시로 해둔 거
-        if (IsGoNextStage) Difficulty = PlayerPrefs.GetInt("MazeStage");
-        else PlayerPrefs.DeleteKey("MazeStage");
-
-        // Document Secret 폴더 오픈되게 임시로 해둔거
-        if (PlayerPrefs.GetInt("DocumentTest") == 1) Difficulty = 10;
-
+        if(GameSystem.Instance != null) Difficulty = GameSystem.Instance.GetTask("Maze");
         if (Difficulty > 0) GetDifficulty();
         else MakeTutorial();
 

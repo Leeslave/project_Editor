@@ -20,7 +20,7 @@ public class WritePlain : MonoBehaviour
 
     public void Initialize()
     {
-        PlainTextBody.Initialize();
+        PlainTextBody.Init();
         PlainTextBody.InputFieldTMP.color = new Color(1f, 1f, 1f, 1f);
         PrimeNumDisplay.TextTMP.text = "사용 가능한 암호키 길이: NULL";
     }
@@ -71,12 +71,14 @@ public class WritePlain : MonoBehaviour
         }
     }
 
-    public void CheckTutorialPhaseCompleted()
+    #region 튜토리얼 전용
+
+    public void EncryptTutorialPhase_0()
     {
         if (ADFGVXGameManager.ADFGVXTutorialManager.IsEncryptPlaying())
-        {
             if(PlainTextBody.StringBuffer == "MEET-ON-STREET-6")
                 ADFGVXGameManager.ADFGVXTutorialManager.MoveToNextTutorialPhase(2f);
-        }
     }
+
+    #endregion
 }

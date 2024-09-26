@@ -1,0 +1,75 @@
+{
+    "name": "Clover_CG",
+    "image": "Clover_CG",
+    "position": 0,
+    "anchor": { "x": 0.5, "y": 0.33 },
+    "triggerType": "Auto",
+    "chatList": [
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"헤헤. 역시 사람은 술을 먹어야 하나봐요~",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Clover_CG",
+                "index": 0
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"왜 이러나. 주정뱅이 같이.",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Clover_CG",
+                "index": 0
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"뭐, 어때요~",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Clover_CG",
+                "index": 0
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"날씨가 차네. 어서 들어가게.",
+            "characterL": {
+                "fileName": "Klayton_CG",
+                "index": 0
+            },
+            "characterR": {
+                "fileName": "Clover_CG",
+                "index": 0
+            } 
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클로버",
+            "text":"히히. 조심히 들어가세요! 다음주에 회사에서 봬요!",
+            "chatType": "CutScene",
+		    "background": "GoodBye_Clover_2"
+        },
+        {
+            "$type": "TalkParagraph, Assembly-CSharp",
+            "talker": "클레이튼",
+            "text":"그래. 그럼 회사에서 봅세.",
+            "chatType": "CutScene",
+		    "background": "GoodBye_Clover_2"
+        }
+    ]
+}
