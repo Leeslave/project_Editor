@@ -75,7 +75,7 @@ public class PlayerMove : MonoBehaviour
         AS = GetComponent<AudioSource>();
         Bf_X = transform.position.x;
         Bf_Y = transform.position.y;
-        if(TutorialSetting.instance != null) MoveAble = true;
+        if(TutorialSetting.instance == null) MoveAble = true;
         Dir = Vector3.up;
         LastTrans = transform.position;
         maincam.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
@@ -383,11 +383,13 @@ public class PlayerMove : MonoBehaviour
                 if(GameSystem.Instance != null)
                 {
                     GameSystem.Instance.ClearTask("Maze");
-                    GameSystem.LoadScene("Screen");
+                    if (TutorialSetting.instance != null) GameSystem.LoadScene("Screen");
+                    else GameSystem.LoadScene("Dodge");
                 }
                 else
                 {
-                    SceneManager.LoadScene("Screen");
+                    if (TutorialSetting.instance != null) SceneManager.LoadScene("Screen");
+                    else SceneManager.LoadScene("Dodge");
                 }
             }
         }

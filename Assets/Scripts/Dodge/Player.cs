@@ -165,16 +165,7 @@ public class Player : MonoBehaviour
     // 게임 클리어
     public void GameClear()
     {
-        if (GameSystem.Instance != null)
-        {
-            GameSystem.Instance.ClearTask("Dodge");
-            GameSystem.LoadScene("Screen");
-            //GameSystem.LoadScene("Document");
-        }
-        else
-        {
-            SceneManager.LoadScene("Screen");
-        }
+        StartCoroutine(PM.EndCMD());
     }
 
     void OnGameOver()
