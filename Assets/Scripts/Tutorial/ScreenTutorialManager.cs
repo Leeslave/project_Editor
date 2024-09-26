@@ -1,19 +1,20 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ScreenTutorialManager : TutorialManager
 {
     public GameObject UI;
-    public int count = 0;
+    public int day;
+    public int time;
     public float duration;
-    private void Awake()
+    private void OnEnable()
     {
-        if (count <= 0)
+        if (GameSystem.Instance.gameData.date == day)
         {
-            StartCoroutine(ShowTutorial(duration));
-            count++;
+            if (GameSystem.Instance.gameData.time == time)
+            {
+                StartCoroutine(ShowTutorial(duration));
+            }
         }
     }
     
@@ -22,5 +23,7 @@ public class ScreenTutorialManager : TutorialManager
         StartCoroutine(ShowPopUp(UI));
         yield return new WaitForSeconds(duration);
         blocker.SetActive(false);
+        // Destroy(UI);
+        // UI = null;
     }
 }
