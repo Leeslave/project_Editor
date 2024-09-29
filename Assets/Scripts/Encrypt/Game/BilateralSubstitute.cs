@@ -94,7 +94,7 @@ public class BilateralSubstitute : MonoBehaviour
             case ADFGVXGameManager.SystemMode.Decryption: 
             { 
                 //복호화 해야하는 전치된 텍스트를 불러온다
-                var transposedText = ADFGVXGameManager.KeyPriorityTranspose.CurrentTransposedText;
+                var transposedText = ADFGVXGameManager.KeyPriorityTranspose.DecryptedTransposedText;
                
                 //전치된 텍스트가 없으면 종료
                 if (transposedText == "")
@@ -113,7 +113,10 @@ public class BilateralSubstitute : MonoBehaviour
                 if (2 * length >= transposedText.Length)
                 {
                     //복호화가 완료되었을 경우
-                    TransposedTextDisplay.TextTMP.text = "<color=#33FFFF>TASK COMPLETE!</color>";
+                    if (ADFGVXGameManager.DisplayDecrypted.DecryptedTextBody.StringBuffer == ADFGVXGameManager.Instance.decryptResultText)
+                        TransposedTextDisplay.TextTMP.text = "<color=#33FFFF>TASK COMPLETE!</color>";
+                    else
+                        TransposedTextDisplay.TextTMP.text = "<color=#FF3333>ERROR OCCURRED</color";
                     
                     //테이블 소등
                     LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);
@@ -171,13 +174,17 @@ public class BilateralSubstitute : MonoBehaviour
                 ADFGVXGameManager.KeyPriorityTranspose.ReverseTransposeLines.MaxInputLength = plainText.Length * 2;
                 
                 //현재까지 역전치한 내용의 길이
+                var transposedText = ADFGVXGameManager.KeyPriorityTranspose.ReverseTransposeLines.StringBuffer;
                 var length = ADFGVXGameManager.KeyPriorityTranspose.ReverseTransposeLines.StringBuffer.Length;
 
                 //현재까지 진행된 암호화 정도에 따라서 작업
                 if (length >= plainText.Length * 2)
                 {
-                    //역전치가 완료되었을 경우
-                    TransposedTextDisplay.TextTMP.text = "<color=#33FFFF>TASK COMPLETE!</color>";
+                    //암호화가 완료되었을 경우
+                    if (transposedText == ADFGVXGameManager.Instance.encryptTransposeText)
+                        TransposedTextDisplay.TextTMP.text = "<color=#33FFFF>TASK COMPLETE!</color>";
+                    else
+                        TransposedTextDisplay.TextTMP.text = "<color=#FF3333>ERROR OCCURRED!</color";
                     
                     //테이블 소등
                     LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 1.0f, 1.0f, 0.0f), LineElements[LastLineRowElements[0]].TextFill);

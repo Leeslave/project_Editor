@@ -17,7 +17,7 @@ public class KeyPriorityTranspose : MonoBehaviour
     public int RowLength { get; set; }
     public int LineLength { get; set; }
     public string[] TempLine { get; set; } = new string[9];
-    public string CurrentTransposedText { get; set; } = "";
+    public string DecryptedTransposedText { get; set; } = "";
 
     private void Awake()
     {
@@ -189,10 +189,10 @@ public class KeyPriorityTranspose : MonoBehaviour
                     }
                 }
 
-                CurrentTransposedText = "";
+                DecryptedTransposedText = "";
                 for(var i = 0; i < LineLength; i++)
                 for(var j = 0; j < RowLength; j++)
-                    CurrentTransposedText += TempLine[j].ToCharArray()[i];
+                    DecryptedTransposedText += TempLine[j].ToCharArray()[i];
 
                 //전치 행렬 출력
                 StartCoroutine(CircumventRow(0));
