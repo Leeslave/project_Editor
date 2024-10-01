@@ -34,7 +34,6 @@ public class MsgManager : Singleton<MsgManager>
         // 메시지 패널 생성
         for(int i = 0; i < messageDatas.Count; i++)
         {
-            Debug.Log(messageDatas.Count);
             GameObject newPanel = Instantiate(MsgPrefab, MsgListPanel);
             newPanel.transform.GetChild(0).GetComponent<TMP_Text>().text = messageDatas[i].name;
             MsgListPanel.sizeDelta += new Vector2(0, panelSize);

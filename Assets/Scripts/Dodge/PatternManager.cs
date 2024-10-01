@@ -14,7 +14,7 @@ public class PatternManager : MonoBehaviour
 {
     [SerializeField] BulletManager BM;
     [SerializeField] Camera MainCam;
-    [SerializeField] Player Pl;
+    [SerializeField] Player player;
 
     [SerializeField] GameObject PlatTop;          // ?? Platform
     [SerializeField] GameObject PlatBottom;       // ??? Platform
@@ -98,15 +98,16 @@ public class PatternManager : MonoBehaviour
 
         try
         {
-            StageInt = GameSystem.Instance.GetTask("Maze");
+            StageInt = GameSystem.Instance.GetTask("Dodge");
         }
         catch { }
+        StageInt = 1;
 
         
 
-        if (StageInt == 0) { TutorialObject.SetActive(true); Pl.InitHP = 2; }
+        if (StageInt == 0) { TutorialObject.SetActive(true); player.InitHP = 2; }
 
-        Pl.Init();
+        player.Init();
     }
 
     private void Start()
@@ -118,7 +119,7 @@ public class PatternManager : MonoBehaviour
 
     public void StartInit()
     {
-        Pl.gameObject.SetActive(true);
+        player.gameObject.SetActive(true);
         CurPattern = 0;
         StartPT(0);
         
@@ -134,16 +135,8 @@ public class PatternManager : MonoBehaviour
             
             if (HPForPattern == 0)
             {
-                if(StageInt >= 2) StartPT(1);
-                else if(GameSystem.Instance != null)
-                {
-                    GameSystem.Instance.ClearTask("Dodge");
-                    GameSystem.LoadScene("Screen");
-                }
-                else
-                {
-                    SceneManager.LoadScene("Screen");
-                }
+                if (StageInt >= 2) StartPT(1);
+                else player.GameClear();
             }
             else
             {
@@ -268,6 +261,23 @@ public class PatternManager : MonoBehaviour
         }
 
         CMDs[CurProcess].text = $"<i>{Suffix[CurProcess]}</i> Access Key Acquired!"; CurProcess++;
+    }
+
+    public IEnumerator EndCMD()
+    {
+        CMDs[CurProcess].text = "Access Accept!";
+        yield return TwoSec;
+        if (GameSystem.Instance != null)
+        {
+            GameSystem.Instance.ClearTask("Dodge");
+            if (StageInt == 0) GameSystem.LoadScene("Screen");
+            else GameSystem.LoadScene("Document");
+        }
+        else
+        {
+            if (StageInt == 0) SceneManager.LoadScene("Screen");
+            else SceneManager.LoadScene("Document");
+        }
     }
 
     // Normal                   N1 -> N2 -> Hard
@@ -402,9 +412,9 @@ public class PatternManager : MonoBehaviour
     public void Clear()
     {
         EndPT(false);
-        Pl.gameObject.SetActive(false);
-        Pl.EndG.SetActive(true);
-        Pl.EndG.GetComponent<RealEnd>().Ending(true);
+        player.gameObject.SetActive(false);
+        player.EndG.SetActive(true);
+        player.EndG.GetComponent<RealEnd>().Ending(true);
         GameSystem.Instance.ClearTask("Dodge");
         GameSystem.LoadScene("Screen");
     }
@@ -474,7 +484,7 @@ public class PatternManager : MonoBehaviour
         {
             StopAllCoroutines();
             foreach (var a in PlatL) Destroy(a);
-            Pl.transform.GetChild(0).gameObject.SetActive(false);
+            player.transform.GetChild(0).gameObject.SetActive(false);
             BM.DelBul();
         }
         else StopAllCoroutines();
