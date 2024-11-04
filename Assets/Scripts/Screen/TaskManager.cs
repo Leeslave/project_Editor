@@ -16,7 +16,7 @@ public class TaskManager : MonoBehaviour
     public GameObject taskWindow;       // 업무 프로그램 창
     public AnimationController taskConsoleAnimation;    //업무 대화 콘솔 애니메이션
     public TMP_InputField consoleInput;     // 업무 입력 창
-    public GameObject closeButton;      // 업무창 닫기 버튼
+    //public GameObject closeButton;      // 업무창 닫기 버튼
 
     /// 업무 완료 확인
     void OnEnable()
@@ -34,7 +34,7 @@ public class TaskManager : MonoBehaviour
         if (!taskWindow.activeSelf)
         {
             taskWindow.SetActive(true);     // 오브젝트 활성화
-            closeButton.SetActive(false);
+            //closeButton.SetActive(false);
             consoleInput.gameObject.SetActive(false);   //입력창 비활성화
             // 콘솔 대사 출력
             if (GameSystem.Instance.isTaskClear)
@@ -55,7 +55,7 @@ public class TaskManager : MonoBehaviour
         taskConsoleAnimation.anims[idx].Clear();
         taskConsoleAnimation.Play(idx);
         yield return new WaitUntil(() => taskConsoleAnimation.isFinished);
-        closeButton.SetActive(true);
+        //closeButton.SetActive(true);
 
         // 텍스트 출력 후 입력창 활성화
         if (idx == 0)
