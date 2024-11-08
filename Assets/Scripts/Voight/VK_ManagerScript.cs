@@ -1,14 +1,27 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class VK_ManagerScript : MonoBehaviour
 {
     public VoightTutorialManager TutorialManager { get; set; }
 
-    public Coroutine Turn { get; set; }
+    #region 턴 관련 프로퍼티
+    
+    public Coroutine TurnCoroutine { get; set; }
+    private enum TurnStatus { 비활성, 활성 }
+    private TurnStatus CurrentTurnStatus { get; set; } = TurnStatus.비활성;
+
+    #endregion
+    
+    #region 눈동자 디스플레이 프로퍼티
     
     public GameObject EyeDisplay { get; set; }
     private TMP_Text EyeDisplayTimer { get; set; }
@@ -16,24 +29,43 @@ public class VK_ManagerScript : MonoBehaviour
     private Vector2 PupilOriginPos { get; set; } = new(1.7f, 0f);
     [SerializeField] private float pupilSpeed;
     
+    #endregion
+
+    #region 화살표 스크린 프로퍼티
+    
     private GameObject ArrowSpawnPos { get; set; }
     private GameObject Arrow { get; set; }
     private int ArrowNum { get; set; }
     private Queue<GameObject> ArrowQueue { get; set; } = new();
-    
     public GameObject AnswerScreen { get; set; }
     private TMP_Text AnswerScreenTimer { get; set; }
+
+    #endregion
+
+    #region 오디오 관련 프로퍼티
+    
+    private AudioSource AudioSource { get; set; }
+    private Coroutine BGMCoroutine { get; set; }
+    private Coroutine StereoCoroutine { get; set; }
+    private Coroutine BeepCoroutine { get; set; }
+    [SerializeField] private AudioClip startGameAudio;
+    [SerializeField] private AudioClip backgroundGameAudio;
+    [SerializeField] private AudioClip startTurnAudio;
+    [SerializeField] private AudioClip endTurnAudio;
+    [SerializeField] private AudioClip successTurnAudio;
+    [SerializeField] private AudioClip failTurnAudio;
+    [SerializeField] private AudioClip shortBeepAudio;
+    [SerializeField] private AudioClip longBeepAudio;
+    [SerializeField] private AudioClip[] robotMotorAudios;
+    
+    #endregion
     
     private SpriteRenderer WalterBlur { get; set; }
-
-    private enum TurnStatus
-    {
-        비활성, 활성
-    }
-    private TurnStatus CurrentTurnStatus { get; set; } = TurnStatus.비활성;
     
     [SerializeField] public AnimationCurve curve;
     [SerializeField] private bool startTutorial;
+
+    public event Action<bool> TurnOverEvent;
     
     private void Awake()
     {
@@ -47,70 +79,156 @@ public class VK_ManagerScript : MonoBehaviour
         AnswerScreen = GameObject.Find("AnswerScreen");
         AnswerScreenTimer = GameObject.Find("AnswerScreenTimer").GetComponent<TMP_Text>();
         WalterBlur = GameObject.Find("WalterBlur").GetComponent<SpriteRenderer>();
+        AudioSource = transform.GetComponent<AudioSource>();
+        
+        TurnOverEvent += success => Debug.Log(success ? "이번 턴은 성공!" : "이번 턴은 실패!");
     }
     private void Start()
     {
-        if(startTutorial)
+        if (startTutorial)
             TutorialManager.StartVoightTutorial();
+        BGMCoroutine = StartCoroutine(BGM());
+        StereoCoroutine = StartCoroutine(Stereo());
+    }
+    private void OnDestroy()
+    {
+        StopCoroutine(BGMCoroutine);
+        StopCoroutine(StereoCoroutine);
     }
     private void Update()
     {
         ClickKeyCodeArrow();
     }
 
-    #region 턴 관련 함수
+    #region 오디오 관련 함수
     
-    public void StartComplexTurn(float wait, float duration, int evade, int arrow) => Turn = StartCoroutine(ComplexSequence(wait, duration, evade, arrow));
-    private IEnumerator ComplexSequence(float wait, float duration, int evade, int arrow)
+    private IEnumerator BGM()
     {
+        AudioSource.PlayOneShot(startGameAudio);
+        yield return new WaitForSeconds(9f);
+        while (true)
+        {
+            AudioSource.PlayOneShot(backgroundGameAudio);
+            yield return new WaitForSeconds(19f);
+        }
+    }
+    private IEnumerator Stereo()
+    {
+        float time = 0;
+        bool flip = true;
+        while (true)
+        {
+            float eval = curve.Evaluate(time);
+            float target = flip ? Mathf.Lerp(-0.8f, 0.8f, eval) : Mathf.Lerp(0.8f, -0.8f, eval);
+            AudioSource.panStereo = target;
+            if (time > 1f)
+            {
+                time = 0;
+                flip = !flip;
+            }
+            yield return new WaitForSeconds(0.02f);
+            time += 0.005f;
+        }
+    }
+    private IEnumerator Beep(float duration)
+    {
+        int count = Mathf.CeilToInt(duration);
+        for (int i = 0; i < count; i++)
+        {
+            AudioSource.PlayOneShot((i < count - 1) ? shortBeepAudio : longBeepAudio, 0.5f);
+            yield return new WaitForSeconds(1f);
+        }
+    }
+    public void PlayMotor()
+    {
+        //모터 효과음 재생
+        AudioSource.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
+    }
+    
+    #endregion
+
+    #region 턴 관련 함수
+
+    public void StartRandomTurn()
+    {
+        switch (Random.Range(0, 3))
+        {
+            case 0: 
+                StartComplexTurn(2f, 10f, 8, 7);
+                break;
+            case 1:
+                StartEyeTurn(2f, 10f, 8);
+                break;
+            case 2:
+                StartEyeTurn(2f, 10f, 12);
+                break;
+        }
+    }
+    
+    public void StartComplexTurn(float wait, float duration, int evade, int arrowNum) => TurnCoroutine = StartCoroutine(ComplexSequence(wait, duration, evade, arrowNum));
+    private IEnumerator ComplexSequence(float wait, float duration, int evade, int arrowNum)
+    {
+        //이번 턴 화살표의 개수
+        ArrowNum = arrowNum;
+        
         //화살표 생성
-        SpawnArrows(arrow);
+        SpawnArrows(arrowNum);
         
         //활성 상태가 아니면 화살표를 입력할 수 없다
         CurrentTurnStatus = TurnStatus.활성;
+        
+        //모터 효과음 재생
+        AudioSource.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
         
         //월터 블러를 활성화
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, wait, new Color(1f, 1f, 1f, 1f), WalterBlur);
         
         //답지가 출력되는 스크린을 상승시킨다
-        LJWConverter.Instance.PositionTransform(false, wait / 2, wait / 2, new Vector3(3.4f, -7f, 0f), AnswerScreen.transform, curve);
+        LJWConverter.Instance.PositionTransform(false, 0f, wait * 0.8f, new Vector3(3.4f, -7f, 0f), AnswerScreen.transform, curve);
         //타이머 시작
         LJWConverter.Instance.SetIntTimerTMP(false, wait, duration, AnswerScreenTimer);
         
         //눈동자가 출력되는 뷰어를 상승시킨다
-        LJWConverter.Instance.PositionTransform(false, 0f, wait / 2, new Vector3(0.2f, -5.4f, 0f), EyeDisplay.transform, curve);
+        LJWConverter.Instance.PositionTransform(false, wait * 0.2f, wait * 0.8f, new Vector3(0.2f, -5.4f, 0f), EyeDisplay.transform, curve);
         //타이머를 시작
         LJWConverter.Instance.SetIntTimerTMP(false, wait, duration, EyeDisplayTimer);
 
         yield return new WaitForSeconds(wait);
+        
+        //비프음 재생
+        BeepCoroutine = StartCoroutine(Beep(duration));
         
         Debug.Log("새로운 턴이 시작되었습니다!");
 
         //시퀀스마다 난수를 생성하여 눈동자가 다른 방향으로 움직이게 한다
         for (var i = 0; i < evade; i++)
         {
-            var x = Random.Range(0, 2) == 0 ? Random.Range(-2f, -1f) : Random.Range(1f, 2f);
-            var y = Random.Range(0, 2) == 0 ? Random.Range(-2f, -1f) : Random.Range(1f, 2f);
+            var x = Random.Range(0, 2) == 0 ? Random.Range(-1.5f, -1f) : Random.Range(1f, 1.5f);
+            var y = Random.Range(0, 2) == 0 ? Random.Range(-1.5f, -1f) : Random.Range(1f, 1.5f);
             var random = new Vector2(x, y);
             var startTime = Time.time;
+            while (Time.time - startTime < duration / evade)
             {
-                while (Time.time - startTime < duration / evade)
-                {
-                    var input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * pupilSpeed;
-                    PupilBone.AddForce(random);
-                    PupilBone.AddForce(input);
-                    yield return new WaitForSeconds(0.02f);
-                }
+                var input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * pupilSpeed;
+                PupilBone.AddForce(random);
+                PupilBone.AddForce(input);
+                yield return new WaitForSeconds(0.02f);
             }
         }
         
-        //모든 시퀀스를 소화했으므로 턴을 종료한다
-        yield return StartCoroutine(EndTurn());
+        //실패 효과음 재생
+        AudioSource.PlayOneShot(failTurnAudio);
+        
+        //시간 내에 모든 시퀀스를 완료하지 못했으므로 턴을 종료한다
+        yield return StartCoroutine(EndTurn(false));
     }
 
-    public void StartEyeTurn(float wait, float duration, int evade) => Turn = StartCoroutine(EyeSequence(wait, duration, evade));
+    public void StartEyeTurn(float wait, float duration, int evade) => TurnCoroutine = StartCoroutine(EyeSequence(wait, duration, evade));
     private IEnumerator EyeSequence(float wait, float duration, int evade)
     {
+        //모터 효과음 재생
+        AudioSource.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
+        
         //월터 블러를 활성화
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, wait, new Color(1f, 1f, 1f, 1f), WalterBlur);
         
@@ -121,33 +239,37 @@ public class VK_ManagerScript : MonoBehaviour
 
         yield return new WaitForSeconds(wait);
         
+        //비프음 재생
+        BeepCoroutine = StartCoroutine(Beep(duration));
+        
         Debug.Log("새로운 턴이 시작되었습니다!");
         
         //시퀀스마다 난수를 생성하여 눈동자가 다른 방향으로 움직이게 한다
         for (var i = 0; i < evade; i++)
         {
-            var x = Random.Range(0, 2) == 0 ? Random.Range(-2f, -1f) : Random.Range(1f, 2f);
-            var y = Random.Range(0, 2) == 0 ? Random.Range(-2f, -1f) : Random.Range(1f, 2f);
+            var x = Random.Range(0, 2) == 0 ? Random.Range(-1.5f, -1f) : Random.Range(1f, 1.5f);
+            var y = Random.Range(0, 2) == 0 ? Random.Range(-1.5f, -1f) : Random.Range(1f, 1.5f);
             var random = new Vector2(x, y);
             var startTime = Time.time;
+            while (Time.time - startTime < duration / evade)
             {
-                while (Time.time - startTime < duration / evade)
-                {
-                    var input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * pupilSpeed;
-                    PupilBone.AddForce(random);
-                    PupilBone.AddForce(input);
-                    yield return new WaitForSeconds(0.02f);
-                }
+                var input = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * pupilSpeed;
+                PupilBone.AddForce(random);
+                PupilBone.AddForce(input);
+                yield return new WaitForSeconds(0.02f);
             }
         }
         
         //모든 시퀀스를 소화했으므로 턴을 종료한다
-        yield return StartCoroutine(EndTurn());
+        yield return StartCoroutine(EndTurn(true));
     }
 
-    public void StartArrowTurn(float wait, float duration, int arrowNum) => Turn = StartCoroutine(ArrowSequence(wait, duration, arrowNum));
+    public void StartArrowTurn(float wait, float duration, int arrowNum) => TurnCoroutine = StartCoroutine(ArrowSequence(wait, duration, arrowNum));
     private IEnumerator ArrowSequence(float wait, float duration, int arrowNum)
     {
+        //모터 효과음 재생
+        AudioSource.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
+        
         //이번 턴 화살표의 개수
         ArrowNum = arrowNum;
         
@@ -162,6 +284,9 @@ public class VK_ManagerScript : MonoBehaviour
         
         yield return new WaitForSeconds(wait);
         
+        //비프음 재생
+        BeepCoroutine = StartCoroutine(Beep(duration));
+        
         //화살표 생성
         SpawnArrows(arrowNum);
         
@@ -170,30 +295,48 @@ public class VK_ManagerScript : MonoBehaviour
         
         Debug.Log("새로운 턴이 시작되었습니다!");
 
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSeconds(duration + 0.1f);
         
-        //모든 시퀀스를 소화했으므로 턴을 종료한다
-        yield return StartCoroutine(EndTurn());
+        //실패 효과음 재생
+        AudioSource.PlayOneShot(failTurnAudio);
+        
+        //시간 내에 모든 시퀀스를 완료하지 못했으므로 턴을 종료한다
+        yield return StartCoroutine(EndTurn(false));
     }
     
-    private IEnumerator EndTurn()
+    private IEnumerator EndTurn(bool success)
     {
-        //턴을 진행시키던 코루틴을 종료시킨다
-        if(Turn != null)
-            StopCoroutine(Turn);
+        //비프음 재생 코루틴을 종료시킨다
+        if(BeepCoroutine != null)
+            StopCoroutine(BeepCoroutine);
         
-        const float duration = 3f;
+        //턴을 진행시키던 코루틴을 종료시킨다
+        if(TurnCoroutine != null)
+            StopCoroutine(TurnCoroutine);
+        
+        //이벤트 발생
+        TurnOverEvent?.Invoke(success);
+        
+        yield return new WaitForSeconds(1f);
+        
+        //종료 효과음 재생
+        AudioSource.PlayOneShot(endTurnAudio, 1.5f);
+        
+        //모터 효과음 재생
+        AudioSource.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
+        
+        const float duration = 2f;
         
         //답지가 출력되는 스크린을 하강시킨다
-        LJWConverter.Instance.PositionTransform(false, 0f, duration / 2, new Vector3(3.4f, -11f, 0f), AnswerScreen.transform, curve);
+        LJWConverter.Instance.PositionTransform(false, 0f, duration * 0.8f, new Vector3(3.4f, -11f, 0f), AnswerScreen.transform, curve);
         //타이머 종료
-        LJWConverter.Instance.EndIntTimerTMP(false, 0f, duration, AnswerScreenTimer);
+        LJWConverter.Instance.EndIntTimerTMP(false, 0f, 1f, AnswerScreenTimer);
         
         //눈동자가 출력되는 뷰어를 하강시킨다x
         PupilBone.velocity = new Vector2(0f, 0f);
-        LJWConverter.Instance.PositionTransform(false, duration / 2, duration / 2, new Vector3(0.2f, -14.5f, 0f), EyeDisplay.transform, curve);
+        LJWConverter.Instance.PositionTransform(false, duration * 0.2f, duration * 0.8f, new Vector3(0.2f, -14.5f, 0f), EyeDisplay.transform, curve);
         //타이머 종료
-        LJWConverter.Instance.EndIntTimerTMP(false, 0f, duration, EyeDisplayTimer);
+        LJWConverter.Instance.EndIntTimerTMP(false, 0f, 1f, EyeDisplayTimer);
         
         //월터 블러를 비활성화
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, duration, new Color(1f, 1f, 1f, 0f), WalterBlur);
@@ -205,7 +348,7 @@ public class VK_ManagerScript : MonoBehaviour
         DespawnArrows();
         
         //눈동자 원위치
-        LJWConverter.Instance.PositionTransform(false, 0f, duration, PupilOriginPos, PupilBone.transform, curve);
+        LJWConverter.Instance.PositionTransform(false, 0f, duration * 0.8f, PupilOriginPos, PupilBone.transform, curve);
         
         yield return new WaitForSeconds(duration);
     }
@@ -217,7 +360,8 @@ public class VK_ManagerScript : MonoBehaviour
     public void OnPupilExit() => StartCoroutine(OnPupilExit_IE());
     private IEnumerator OnPupilExit_IE()
     {
-        yield return StartCoroutine(EndTurn());
+        AudioSource.PlayOneShot(failTurnAudio);
+        yield return StartCoroutine(EndTurn(false));
         Debug.Log("눈동자를 제어하지 못해서 턴이 종료되었습니다!");
     }
     
@@ -245,18 +389,20 @@ public class VK_ManagerScript : MonoBehaviour
         {
             Debug.Log("정확한 키 입력!");
             Destroy(ArrowQueue.Dequeue());
+            AudioSource.PlayOneShot(successTurnAudio);
         }
         else
         {
             Debug.Log("부정확한 키 입력!");
             DespawnArrows();
             SpawnArrows(ArrowNum);
+            AudioSource.PlayOneShot(failTurnAudio);
         }
 
         if (ArrowQueue.Count == 0)
         {
             Debug.Log("모든 화살표를 소화하였으므로 턴을 종료합니다!");
-            StartCoroutine(EndTurn());
+            StartCoroutine(EndTurn(true));
         }
     }
     public void SpawnArrows(int arrowNum)
