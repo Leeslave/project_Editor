@@ -25,6 +25,7 @@ public class VK_ManagerScript : MonoBehaviour
     
     public GameObject EyeDisplay { get; set; }
     private TMP_Text EyeDisplayTimer { get; set; }
+    private TMP_Text EyeDisplayResult { get; set; }
     private Rigidbody2D PupilBone { get; set; }
     private Vector2 PupilOriginPos { get; set; } = new(1.7f, 0f);
     [SerializeField] private float pupilSpeed;
@@ -39,6 +40,7 @@ public class VK_ManagerScript : MonoBehaviour
     private Queue<GameObject> ArrowQueue { get; set; } = new();
     public GameObject AnswerScreen { get; set; }
     private TMP_Text AnswerScreenTimer { get; set; }
+    private TMP_Text AnswerScreenResult { get; set; }
 
     #endregion
 
@@ -49,8 +51,8 @@ public class VK_ManagerScript : MonoBehaviour
     private Coroutine StereoCoroutine { get; set; }
     private Coroutine BeepCoroutine { get; set; }
     [SerializeField] private AudioClip startGameAudio;
+    [SerializeField] private AudioClip startComputerAudio;
     [SerializeField] private AudioClip backgroundGameAudio;
-    [SerializeField] private AudioClip startTurnAudio;
     [SerializeField] private AudioClip endTurnAudio;
     [SerializeField] private AudioClip successTurnAudio;
     [SerializeField] private AudioClip failTurnAudio;
@@ -74,10 +76,15 @@ public class VK_ManagerScript : MonoBehaviour
         PupilBone = GameObject.Find("bone_5").GetComponent<Rigidbody2D>();
         ArrowSpawnPos = GameObject.Find("ArrowSpawnPos");
         Arrow = Resources.Load<GameObject>("Voight/Arrow");
+        
         EyeDisplay = GameObject.Find("EyeDisplay");        
         EyeDisplayTimer = GameObject.Find("EyeDisplayTimer").GetComponent<TMP_Text>();
+        EyeDisplayResult = GameObject.Find("EyeDisplayResult").GetComponent<TMP_Text>();
+        
         AnswerScreen = GameObject.Find("AnswerScreen");
         AnswerScreenTimer = GameObject.Find("AnswerScreenTimer").GetComponent<TMP_Text>();
+        AnswerScreenResult = GameObject.Find("AnswerScreenResult").GetComponent<TMP_Text>();
+        
         WalterBlur = GameObject.Find("WalterBlur").GetComponent<SpriteRenderer>();
         AudioSource = transform.GetComponent<AudioSource>();
         
@@ -104,7 +111,10 @@ public class VK_ManagerScript : MonoBehaviour
     
     private IEnumerator BGM()
     {
+        yield return new WaitForSeconds(1f);
         AudioSource.PlayOneShot(startGameAudio);
+        yield return new WaitForSeconds(4f);
+        AudioSource.PlayOneShot(startComputerAudio);
         yield return new WaitForSeconds(9f);
         while (true)
         {
@@ -135,7 +145,7 @@ public class VK_ManagerScript : MonoBehaviour
         int count = Mathf.CeilToInt(duration);
         for (int i = 0; i < count; i++)
         {
-            AudioSource.PlayOneShot((i < count - 1) ? shortBeepAudio : longBeepAudio, 0.5f);
+            AudioSource.PlayOneShot((i < count) ? shortBeepAudio : longBeepAudio, 0.5f);
             yield return new WaitForSeconds(1f);
         }
     }
@@ -151,6 +161,8 @@ public class VK_ManagerScript : MonoBehaviour
 
     public void StartRandomTurn()
     {
+        if (TurnCoroutine != null)
+            return;
         switch (Random.Range(0, 3))
         {
             case 0: 
@@ -165,7 +177,7 @@ public class VK_ManagerScript : MonoBehaviour
         }
     }
     
-    public void StartComplexTurn(float wait, float duration, int evade, int arrowNum) => TurnCoroutine = StartCoroutine(ComplexSequence(wait, duration, evade, arrowNum));
+    public void StartComplexTurn(float wait, float duration, int evade, int arrowNum) => TurnCoroutine ??= StartCoroutine(ComplexSequence(wait, duration, evade, arrowNum));
     private IEnumerator ComplexSequence(float wait, float duration, int evade, int arrowNum)
     {
         //이번 턴 화살표의 개수
@@ -216,14 +228,11 @@ public class VK_ManagerScript : MonoBehaviour
             }
         }
         
-        //실패 효과음 재생
-        AudioSource.PlayOneShot(failTurnAudio);
-        
         //시간 내에 모든 시퀀스를 완료하지 못했으므로 턴을 종료한다
         yield return StartCoroutine(EndTurn(false));
     }
 
-    public void StartEyeTurn(float wait, float duration, int evade) => TurnCoroutine = StartCoroutine(EyeSequence(wait, duration, evade));
+    public void StartEyeTurn(float wait, float duration, int evade) => TurnCoroutine ??= StartCoroutine(EyeSequence(wait, duration, evade));
     private IEnumerator EyeSequence(float wait, float duration, int evade)
     {
         //모터 효과음 재생
@@ -238,6 +247,9 @@ public class VK_ManagerScript : MonoBehaviour
         LJWConverter.Instance.SetIntTimerTMP(false, wait, duration, EyeDisplayTimer);
 
         yield return new WaitForSeconds(wait);
+        
+        //활성 상태가 아니면 이동을 입력할 수 없다
+        CurrentTurnStatus = TurnStatus.활성;
         
         //비프음 재생
         BeepCoroutine = StartCoroutine(Beep(duration));
@@ -264,7 +276,8 @@ public class VK_ManagerScript : MonoBehaviour
         yield return StartCoroutine(EndTurn(true));
     }
 
-    public void StartArrowTurn(float wait, float duration, int arrowNum) => TurnCoroutine = StartCoroutine(ArrowSequence(wait, duration, arrowNum));
+    public void StartArrowTurn(float wait, float duration, int arrowNum) => TurnCoroutine ??= StartCoroutine(ArrowSequence(wait, duration, arrowNum));
+
     private IEnumerator ArrowSequence(float wait, float duration, int arrowNum)
     {
         //모터 효과음 재생
@@ -295,10 +308,7 @@ public class VK_ManagerScript : MonoBehaviour
         
         Debug.Log("새로운 턴이 시작되었습니다!");
 
-        yield return new WaitForSeconds(duration + 0.1f);
-        
-        //실패 효과음 재생
-        AudioSource.PlayOneShot(failTurnAudio);
+        yield return new WaitForSeconds(duration);
         
         //시간 내에 모든 시퀀스를 완료하지 못했으므로 턴을 종료한다
         yield return StartCoroutine(EndTurn(false));
@@ -306,16 +316,46 @@ public class VK_ManagerScript : MonoBehaviour
     
     private IEnumerator EndTurn(bool success)
     {
+        if(CurrentTurnStatus == TurnStatus.비활성)
+            yield break;
+        
+        //활성 상태가 아니면 화살표를 입력할 수 없다
+        CurrentTurnStatus = TurnStatus.비활성;
+        
         //비프음 재생 코루틴을 종료시킨다
-        if(BeepCoroutine != null)
+        if (BeepCoroutine != null)
+        {
             StopCoroutine(BeepCoroutine);
+            BeepCoroutine = null;
+        }
         
         //턴을 진행시키던 코루틴을 종료시킨다
-        if(TurnCoroutine != null)
+        if (TurnCoroutine != null)
+        {
             StopCoroutine(TurnCoroutine);
+            TurnCoroutine = null;
+        }
         
         //이벤트 발생
         TurnOverEvent?.Invoke(success);
+
+        //화살표 삭제
+        DespawnArrows();
+        
+        //눈동자 원위치
+        LJWConverter.Instance.PositionTransform(false, 0f,  1f, PupilOriginPos, PupilBone.transform, curve);
+        
+        if (success)
+        {
+            EyeDisplayResult.text = "FEEDBACK CHECK";
+            AnswerScreenResult.text = "FOCUS CHECK";
+        }
+        else
+        {
+            AudioSource.PlayOneShot(failTurnAudio);
+            EyeDisplayResult.text = "FOCUS INACCURATE";
+            AnswerScreenResult.text = "FEEDBACK UNCLEAR";
+        }
         
         yield return new WaitForSeconds(1f);
         
@@ -341,16 +381,10 @@ public class VK_ManagerScript : MonoBehaviour
         //월터 블러를 비활성화
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, duration, new Color(1f, 1f, 1f, 0f), WalterBlur);
         
-        //활성 상태가 아니면 화살표를 입력할 수 없다
-        CurrentTurnStatus = TurnStatus.비활성;
-
-        //화살표 삭제
-        DespawnArrows();
-        
-        //눈동자 원위치
-        LJWConverter.Instance.PositionTransform(false, 0f, duration * 0.8f, PupilOriginPos, PupilBone.transform, curve);
-        
         yield return new WaitForSeconds(duration);
+
+        EyeDisplayResult.text = "";
+        AnswerScreenResult.text = "";
     }
 
     #endregion
@@ -360,9 +394,7 @@ public class VK_ManagerScript : MonoBehaviour
     public void OnPupilExit() => StartCoroutine(OnPupilExit_IE());
     private IEnumerator OnPupilExit_IE()
     {
-        AudioSource.PlayOneShot(failTurnAudio);
         yield return StartCoroutine(EndTurn(false));
-        Debug.Log("눈동자를 제어하지 못해서 턴이 종료되었습니다!");
     }
     
     #endregion
@@ -385,18 +417,18 @@ public class VK_ManagerScript : MonoBehaviour
     }
     private void CheckInputResult(string keyCode)
     {
+        AudioSource.PlayOneShot(successTurnAudio);
+        
         if (ArrowQueue.Peek().name == keyCode)
         {
             Debug.Log("정확한 키 입력!");
             Destroy(ArrowQueue.Dequeue());
-            AudioSource.PlayOneShot(successTurnAudio);
         }
         else
         {
             Debug.Log("부정확한 키 입력!");
             DespawnArrows();
             SpawnArrows(ArrowNum);
-            AudioSource.PlayOneShot(failTurnAudio);
         }
 
         if (ArrowQueue.Count == 0)
