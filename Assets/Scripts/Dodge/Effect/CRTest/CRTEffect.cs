@@ -18,6 +18,7 @@ public class CRTEffect : MonoBehaviour
     private void Start()
     {
         _material = new Material(Shader);
+        if (CRTEventSystem.System != null) CRTEventSystem.CRTMat = _material;
     }
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
