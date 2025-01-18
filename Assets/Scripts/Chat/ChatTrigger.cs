@@ -1,11 +1,16 @@
-using System;
+using JetBrains.Annotations;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class ChatTrigger : MonoBehaviour
 {
-    [SerializeField] private string[] chatAssets;
+    /**
+     * 대사를 출력하는 컴포넌트
+     * - 필요한 대사 목록으로 데이터를 미리 로드
+     * - index를 통해 대사를 선택하여 출력 가능
+     */
+    
+    public List<string> chatAssets;
     private List<List<Paragraph>> _chatData;
 
 
@@ -29,6 +34,10 @@ public class ChatTrigger : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Start Chat
+    /// </summary>
+    /// <param name="idx">chat data index</param>
     public void Init(int idx)
     {
         if (idx < 0 || idx >= _chatData.Count )

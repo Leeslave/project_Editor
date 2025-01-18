@@ -1,42 +1,56 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
 public class NPC : WorldObject<NPCData>
-{   
+{
     /**
-    대사 실행 오브젝트
-    - 타입에 따라 타이밍 맞춰 대사 실행
+    상호작용 오브젝트
+    - 버튼 클릭시 해당 파라미터로 상호작용
     */
-    public override void OnActive()
-    {
-        data.awakeTalk = null;
-        if (data.awakeParam is not "")
-        {
-            data.awakeTalk = DataLoader.GetChatData(data.awakeParam);
-        }
-        data.clickTalk = null;
-        if (data.clickParam is not "")
-        {
-            data.clickTalk = DataLoader.GetChatData(data.clickParam);
-        }
 
-        if (!playAwake)
+    public int param = 0;
+    
+    public ChatTrigger chatTrigger;
+
+
+    /// <summary>
+    /// NPC 초기화
+    /// </summary>
+    public void onAwake()
+    {
+        chatTrigger = gameObject.AddComponent<ChatTrigger>();
+        
+        foreach (var _data in data.chatData)
         {
-            playAwake = true;
-            InitChat(data.awakeTalk);
+            chatTrigger.chatAssets.Add(_data.chat);
+        }
+        // TODO: 로딩씬으로 빼기, 
+        chatTrigger.LoadChatData();
+        SetPosition();
+
+        param = 0;
+    }
+
+    
+    public void OnEnable()
+    {
+        if (data.chatData[param].onAwake)
+        {
+            chatTrigger.Init(param);
         }
     }
 
 
     public void OnClicked()
     {
-        InitChat(data.clickTalk);
+        chatTrigger.Init(param);
     }
 
 
-    public void SetPosition()
+    private void SetPosition()
     {
         // 위치 설정
         RectTransform rect = GetComponent<RectTransform>();
@@ -46,19 +60,5 @@ public class NPC : WorldObject<NPCData>
         // 크기 설정
         rect.sizeDelta *= data.size;
         rect.localScale = new Vector3(1f,1f,1f);
-    }
-
-    private void InitChat(List<Paragraph> para)
-    {
-        if (para == null)
-        {
-            return;
-        }
-        
-        if (data.count == 0 || data.count > count)
-        {
-            count++;
-            Chat.Instance.StartChat(para);
-        }
     }
 }

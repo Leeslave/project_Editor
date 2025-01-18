@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class DailyWrapper
 { 
     public Date date;
-    public DayTime[] dateTimes = new DayTime[]
+    public DayTime[] dateTimes = new[]
     {
         new DayTime(6, 30),
         new DayTime(9, 0),
@@ -15,10 +15,10 @@ public class DailyWrapper
 
     public string startLocation = "Street";
     public int startPosition = 0;
-    public uint startTime = 0;
 
 
     public List<Work> workList = new();
+    public List<NPCData> objList = new();
 }
 
 [Serializable]
@@ -37,22 +37,21 @@ public class DailyData
     */
     
     /// 하루 날짜 정보
-    public readonly Date date;   // 날짜 
+    public Date date;   // 날짜 
 
-    public readonly DayTime[] dateTimes = new DayTime[4];      // 각 시간대
+    public DayTime[] dateTimes = new DayTime[4];      // 각 시간대
 
 
     /// 게임 플레이 정보
-    public readonly World startLocation;     // 시작 장소
+    public World startLocation;     // 시작 장소
 
-    public readonly int startPosition;   //시작 위치
-
-    public readonly uint startTime;  // 시작 시간대
+    public int startPosition;   //시작 위치
 
 
     /// 업무 정보
     public Dictionary<Work, bool> workList = new();
 
+    
     /// Wrapper에서 생성자
     public DailyData(DailyWrapper wrapper)
     {
@@ -71,17 +70,6 @@ public class DailyData
             // 시작 위치값 오류 시 예외처리
             startLocation = World.Street;
         }
-        
-        // 시작 시간대
-        if (wrapper.startTime < 0 || wrapper.startTime > 3)
-        {
-            //시작 시간대 오류 시 예외처리
-            startTime = 0;
-        }
-        else
-        {
-            startTime = wrapper.startTime;
-        }
 
         // 업무
         foreach(var work in wrapper.workList)
@@ -92,6 +80,24 @@ public class DailyData
     
 }
 
+[Serializable]
+public class TimeData
+{
+    /**
+    * 1개 시간대 인게임 데이터
+    *   시간대
+    *   인게임 정보
+        - NPC
+        - block
+        - bgm 변경
+    */
+    
+    public DayTime daytime;
+    
+    public List<NPCData> npcList = new();
+    public List<BlockData> blockList = new();
+    public List<BGMData> bgmList = new();
+}
 
 [Serializable]
 public class Date

@@ -104,27 +104,6 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
     }
 }
 
-public enum ObjectType {
-    /**
-    월드 내 생성 오브젝트 목록
-    */
-    none,
-    Klayton,
-    Clover,
-    Henderson,
-    Walter,
-    King,
-    Rex,
-    Kennedy,
-    Price,
-    Monk,
-    Mechanic,
-    Reporter,
-    Nametag,
-    BGM,
-    Block,
-}
-
 internal enum DataColumn {
     time,
     type,
