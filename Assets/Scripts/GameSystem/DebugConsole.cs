@@ -30,7 +30,7 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 DailyData dayData;
                 if (inputArgs.Length < 2) // no additional args : today
                 {
-                    dayData = GameSystem.Instance.today;
+                    dayData = GameSystem.Instance.dayData;
                 }
                 else if (int.TryParse(inputArgs[1], out int date)) // with args : certain date
                 {
@@ -48,9 +48,9 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 }
                 output += $"{dayData.date.year}년 {dayData.date.month}월 {dayData.date.day}일\n";
                 output += $"해당 날짜의 업무\n";
-                foreach(var work in dayData.workList.Keys)
+                foreach(var work in dayData.workList)
                 {
-                    output += $"WORK: {work.code}, Stage: {work.stage} = Done: {dayData.workList[work]}\n";
+                    output += $"WORK: {work.code}, Stage: {work.stage} = Done: {work.isClear}\n";
                 }
                 output += "\n";
                 break;
@@ -108,7 +108,7 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 break;
             
             case "clearTask" :
-                foreach(var work in GameSystem.Instance.today.workList.Keys)
+                foreach(var work in GameSystem.Instance.dayData.workList.Keys)
                 {
                     GameSystem.Instance.ClearTask(work.code);
                     output += $"Clear work : {work.code}";

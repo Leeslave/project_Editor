@@ -191,11 +191,11 @@ public class Location : MonoBehaviour
                 targetObject.location = this;
                 targetObject.data = _data as EffectData;
             }
-            if(_data is NPCData)
+            if(_data is ObjData)
             {
                 var targetObject = newObj.GetComponent<NPC>();
                 targetObject.location = this;
-                targetObject.data = _data as NPCData;
+                targetObject.data = _data as ObjData;
                 targetObject.SetPosition();
             }
             

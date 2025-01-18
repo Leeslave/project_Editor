@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
-public class NPC : WorldObject<NPCData>
+public class NPC : WorldObject<ObjData>
 {
     /**
     상호작용 오브젝트

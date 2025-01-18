@@ -2,26 +2,6 @@ using System;
 using System.Collections.Generic;
 
 [Serializable]
-public class DailyWrapper
-{ 
-    public Date date;
-    public DayTime[] dateTimes = new[]
-    {
-        new DayTime(6, 30),
-        new DayTime(9, 0),
-        new DayTime(17, 0),
-        new DayTime(19, 30)
-    };
-
-    public string startLocation = "Street";
-    public int startPosition = 0;
-
-
-    public List<Work> workList = new();
-    public List<NPCData> objList = new();
-}
-
-[Serializable]
 public class DailyData
 {
     /**
@@ -39,46 +19,15 @@ public class DailyData
     /// 하루 날짜 정보
     public Date date;   // 날짜 
 
-    public DayTime[] dateTimes = new DayTime[4];      // 각 시간대
-
-
     /// 게임 플레이 정보
-    public World startLocation;     // 시작 장소
-
-    public int startPosition;   //시작 위치
-
+    public WorldVector startLocation;
 
     /// 업무 정보
-    public Dictionary<Work, bool> workList = new();
+    public List<Work> workList = new();
 
-    
-    /// Wrapper에서 생성자
-    public DailyData(DailyWrapper wrapper)
-    {
-        // 날짜, 시간대
-        date = wrapper.date;
-        dateTimes = wrapper.dateTimes;
-
-        // 시작 위치
-        try
-        {
-            startPosition = wrapper.startPosition;
-            startLocation = Enum.Parse<World>(wrapper.startLocation);   // string을 World로 할당
-        }
-        catch(ArgumentException)
-        {
-            // 시작 위치값 오류 시 예외처리
-            startLocation = World.Street;
-        }
-
-        // 업무
-        foreach(var work in wrapper.workList)
-        {
-            workList.Add(work, false);
-        }
-    }
-    
+    public TimeData[] dayTimes = new TimeData[4];
 }
+
 
 [Serializable]
 public class TimeData
@@ -93,11 +42,14 @@ public class TimeData
     */
     
     public DayTime daytime;
+
+    public bool isNight;
     
     public List<NPCData> npcList = new();
-    public List<BlockData> blockList = new();
+    public List<WorldVector> blockList = new();
     public List<BGMData> bgmList = new();
 }
+
 
 [Serializable]
 public class Date
@@ -146,6 +98,7 @@ public class Work
     */
     public string code;     // 업무 코드명
     public int stage;       // 스테이지 번호
+    public bool isClear = false;
     public Work(string _code, int _stage = 0)
     {
         code = _code;

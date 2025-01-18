@@ -4,24 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[Serializable]
-public enum World {
-    /**
-    월드 내 지역 목록
-    */
-    Street,
-    Bar,
-    Cafe,
-    Restaurant,
-    Temple,
-    Hallway,
-    Office,
-    Office2,
-    Interrogate,
-    
-    NullMax
-}
-
 
 public class WorldSceneManager : Singleton<WorldSceneManager> 
 {

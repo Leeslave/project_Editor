@@ -68,7 +68,7 @@ public class TaskManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in GameSystem.Instance.today.workList.Keys)
+        foreach(var work in GameSystem.Instance.dayData.workList.Keys)
         {
             if(work.code == consoleInput.text)
             {

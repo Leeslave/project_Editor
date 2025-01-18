@@ -12,27 +12,27 @@ public class GameSystem : SingletonObject<GameSystem>
         날짜, 시간대, 진행상황 적용
     */ 
 
-    /// 플레이 데이터 
+    /// 게임 데이터 
     private List<SaveData> saveList = new();    // 저장 데이터
-    private List<DailyData> dailyList = new();     // 날짜별 데이터
+    private SaveData player => saveList[dateIndex];      // 오늘 세이브 데이터
+    public DailyData dayData { get; private set; }    // 오늘 날짜 데이터
 
-    public SaveData player => saveList[gameData.date];      // 오늘 세이브 데이터
-    public DailyData today => dailyList[gameData.date];    // 오늘 날짜 데이터
+    /// 게임 플레이 데이터 
+    public int dateIndex = 0;
 
-    /// 오늘 날짜 데이터
-    public GameData gameData = new();
-
-    // 스크린 활성화 여부
+    public int timeIndex = 0;
+    
+    public WorldVector currentLocation;
+    
     public bool isScreenOn = false; 
     
-    // 업무 클리어 여부
     public bool isTaskClear   // 모든 업무 완료 플래그
     {
         get { 
             bool workResult = true;
-            foreach(var workStatus in Instance.today.workList.Values)
+            foreach(var workStatus in dayData.workList)
             {
-                workResult = workResult & workStatus;
+                workResult = workResult & workStatus.isClear;
             }
             return workResult;
         }
@@ -44,9 +44,9 @@ public class GameSystem : SingletonObject<GameSystem>
         base.Awake();
 
         saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
-        dailyList = DataLoader.LoadGameData();     // 게임 데이터 로드  
+        dayData = DataLoader.LoadGameData(dateIndex);     // 게임 데이터 로드  
 
-        // 날짜 선택 기능 미구현
+        // TODO: 날짜 선택 기능 구현 (임시로 0일차부터 로드)
         SetDate(0);
     }
     
@@ -60,28 +60,18 @@ public class GameSystem : SingletonObject<GameSystem>
         // 다음 날짜로 이동시
         if (date == -1)
         {
-            date = gameData.date + 1;
+            date = dateIndex + 1;
         }
+        
+        // TODO: 이전 날짜 저장
+        // DataLoader.SavePlayerData(saveList);
 
-        // 날짜 오류
-        if (date > dailyList.Count || date < 0)
-        {
-            Debug.Log($"Day Out Of Range: {date}");
-            return;
-        }
+        // TODO: 날짜 로드, 로딩씬
+        dayData = DataLoader.LoadGameData(date);
 
-        // 해당 날짜 불러오기
-        gameData.date = date;
-        gameData.time = 0;
-        gameData.SetLocation(today.startLocation);
-        gameData.SetPosition(today.startPosition);
+        // TODO: 해당 날짜 불러오기
+
         isScreenOn = false;
-
-        // 게임 저장 (튜토리얼 날짜 제외)
-        if (date > 1)
-        {
-            // DataLoader.SavePlayerData(saveList);
-        }
 
         ObjectDatabase.Instance.Read();
     }
@@ -97,7 +87,7 @@ public class GameSystem : SingletonObject<GameSystem>
             return;
         
         // 시간대 적용
-        gameData.time = _time;
+        // gameData.time = _time;
 
         // 월드 리로드
         if (SceneManager.GetActiveScene().name == "MainWorld")
@@ -125,11 +115,11 @@ public class GameSystem : SingletonObject<GameSystem>
     /// <returns></returns>
     public int GetTask(string workCode)
     {
-        foreach(var work in today.workList)
+        foreach(var work in dayData.workList)
         {
-            if (work.Key.code == workCode)
+            if (work.code == workCode)
             {
-                return work.Key.stage;
+                return work.stage;
             }
         }
         return -1;
@@ -145,13 +135,13 @@ public class GameSystem : SingletonObject<GameSystem>
     {
         // 코드에 해당하는 업무 불러오기
         Work currentWork = null;
-        foreach (var work in today.workList)
+        foreach (var work in dayData.workList)
         {
-            if (work.Value == true)
+            if (work.isClear == true)
                 continue;
-            if (work.Key.code == workCode)
+            if (work.code == workCode)
             {
-                currentWork = work.Key;
+                currentWork = work;
                 break;
             }
         }
@@ -163,8 +153,8 @@ public class GameSystem : SingletonObject<GameSystem>
             return;
         }
 
-        // 업무 완료로 전환
-        today.workList[currentWork] = true;
+        // TODO: 업무 완료로 전환
+        currentWork.isClear = true;
     }
 
     
@@ -181,14 +171,7 @@ public class GameSystem : SingletonObject<GameSystem>
 #if DEBUG
     public DailyData GetDailyData(int num)
     {
-        if (dailyList.Count <= num || num < 0)
-        {
-            return null;
-        }
-        else
-        {
-            return dailyList[num];
-        }
+        return dayData;
     }
 #endif
 }

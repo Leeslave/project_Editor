@@ -1,10 +1,10 @@
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
+
 
 public static class DataLoader
 {
@@ -14,14 +14,13 @@ public static class DataLoader
         - Json 파싱으로 플레이어 데이터 저장, 로드
     */
     [SerializeField]
-    private static string GAMEDATAPATH = Application.dataPath + "/Resources/GameData/Main/dailyData.json";   // 게임 데이터 파일 경로
+    private static string GAMEDATAPATH = Application.dataPath + "/Resources/GameData/Main";   // 게임 데이터 파일 경로
+
+    private static string GAMEFILE = "dailyData";
     [SerializeField]
-    private static string SAVEPATH = Application.dataPath + "/Resources/Save/savedata.json";    // 세이브 파일 경로
+    private static string SAVEPATH = Application.dataPath + "/Resources/Save";    // 세이브 파일 경로
     [SerializeField]
     private static string CHATPATH = Application.dataPath + "/Resources/Chat/Text";     // 대화 파일 경로
-
-    [Serializable]
-    class GameDataWrapper { public List<DailyWrapper> days = new(); }     // JsonUtility용 DailyData들 Wrapper
     
 
     /// <summary>
@@ -29,9 +28,9 @@ public static class DataLoader
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
-    public static List<Paragraph> GetChatData(string path)
+    public static List<Paragraph> GetChatData(string fileName)
     {
-        FileStream fs = new FileStream(Application.dataPath + "/Resources/" + path, FileMode.Open);
+        FileStream fs = new FileStream(CHATPATH + fileName, FileMode.Open);
         byte[] buffer = new byte[fs.Length];
         fs.Read(buffer, 0, (int)fs.Length);
         string jsonText = Encoding.UTF8.GetString(buffer);
@@ -42,18 +41,19 @@ public static class DataLoader
 
 
     /// JSON으로부터 게임 데이터를 로드
-    public static List<DailyData> LoadGameData()
+    public static DailyData LoadGameData(int index)
     {
         // daily 초기화
-        List<DailyData> result = new();
+        DailyData result = new();
+        string gameFile = $"{GAMEDATAPATH}/{GAMEFILE}{index}.json";
 
         // 파일 읽어오기
-        if (!File.Exists(GAMEDATAPATH))
+        if (!File.Exists(gameFile))
         {
-            throw new Exception($"GAME DATA CANNOT FOUND : ${GAMEDATAPATH}");
+            throw new Exception($"GAME DATA CANNOT FOUND : ${GAMEFILE}{index}");
             // 치명적 오류, 게임 종료시키기
         }
-        FileStream fileStream = new FileStream(GAMEDATAPATH, FileMode.Open);
+        FileStream fileStream = new FileStream(gameFile, FileMode.Open);
         byte[] data = new byte[fileStream.Length];
         fileStream.Read(data, 0, data.Length);
         fileStream.Close();
@@ -62,17 +62,12 @@ public static class DataLoader
         string jsonText = Encoding.UTF8.GetString(data);
 
         //Wrapper로 파싱
-        GameDataWrapper wrapper = JsonConvert.DeserializeObject<GameDataWrapper>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-
-        // Wrapper를 DailyData로 전환
-        foreach (DailyWrapper element in wrapper.days)
-        {
-            result.Add(new DailyData(element));
-        }
+        result = JsonConvert.DeserializeObject<DailyData>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 
         return result;
     }
 
+    
     /// 플레이어 데이터 JSON에서 로드
     public static List<SaveData> LoadSaveData()
     {

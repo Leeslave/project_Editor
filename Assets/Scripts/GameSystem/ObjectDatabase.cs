@@ -31,7 +31,7 @@ public class ObjectDatabase : SingletonObject<ObjectDatabase>
             {
                 // NPC 데이터 생성
                 case "npc":
-                    NPCData newNPC = new()
+                    ObjData newNPC = new()
                     {
                         time = int.Parse(obj[(int)DataColumn.time]),
                         name = obj[(int)DataColumn.name],
