@@ -136,7 +136,9 @@ public class DB_M : MonoBehaviour
 
         //Secret.gameObject.SetActive(PlayerPrefs.GetInt("DocumentTest")==1);
 
+#if !UNITY_EDITOR
         StartCoroutine(TutoTest(cnt));
+#endif
     }
 
     IEnumerator TutoTest(GameObject cnt)
