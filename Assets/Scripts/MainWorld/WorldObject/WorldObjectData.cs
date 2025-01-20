@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 [Serializable]
@@ -25,7 +26,7 @@ public enum World {
 public class WorldVector
 {
     public string location;
-    public int positon;
+    public int position;
     public string name = "???";
 
     public World getLocation()

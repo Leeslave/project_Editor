@@ -48,7 +48,7 @@ public class DayChangeAction : Action
     {
         if(int.TryParse(param, out int dayIndex))
         {
-            if(GameSystem.Instance.gameData.time == 3)
+            if(GameSystem.Instance.timeIndex == 3)
             {
                 GameSystem.Instance.SetDate(dayIndex);
                 SceneManager.LoadScene("DayLoading");
@@ -72,7 +72,7 @@ public class TimeChangeAction : Action
     {
         if(int.TryParse(param, out int time))
         {
-            if (GameSystem.Instance.gameData.time != time - 1)
+            if (GameSystem.Instance.timeIndex != time - 1)
             {
                 return -1;
             }

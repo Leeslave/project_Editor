@@ -15,7 +15,7 @@ public class GameSystem : SingletonObject<GameSystem>
 
     /// 게임 데이터 (ReadOnly)
     private List<SaveData> saveList = new();    // 저장 데이터
-    private SaveData player => saveList[dateIndex];      // 오늘 세이브 데이터
+    public SaveData player => saveList[dateIndex];      // 오늘 세이브 데이터
     public DailyData dayData { get; private set; }    // 오늘 날짜 데이터
 
     

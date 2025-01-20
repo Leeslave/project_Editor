@@ -10,9 +10,9 @@ public class DayTutorialManager : TutorialManager
     public float duration;
     private void OnEnable()
     {
-        if (date == GameSystem.Instance.gameData.date)
+        if (date == GameSystem.Instance.dateIndex)
         {
-            if (time == GameSystem.Instance.gameData.time)
+            if (time == GameSystem.Instance.dateIndex)
             {
                 StartCoroutine(ShowTutorial(duration, 0));
             }
