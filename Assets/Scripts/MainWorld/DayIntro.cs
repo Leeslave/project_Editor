@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using TMPro;
@@ -20,19 +21,23 @@ public class DayIntro : MonoBehaviour
 
     void OnEnable()
     {
-        StartCoroutine(SceneLoading("MainWorld"));
+        StartCoroutine(LoadScene("MainWorld"));
     }
 
 
-    private IEnumerator SceneLoading(string scene)
+    private IEnumerator LoadScene(string scene)
     {
         // 인트로 실행
+        StopAllCoroutines();
         StartCoroutine(DayCountIntro());
-        yield return new WaitUntil(() => isFinished == true);
-
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scene);
-        asyncLoad.allowSceneActivation = false;
 
+        if (asyncLoad is null)
+        {
+            throw new ArgumentException("Invalid Scene");
+        }
+        asyncLoad.allowSceneActivation = false;
+        
         while (asyncLoad.progress <  0.9f)
         {
             yield return null;
@@ -40,7 +45,7 @@ public class DayIntro : MonoBehaviour
 
         Debug.Log($"Scene Loaded : {scene}");
         asyncLoad.allowSceneActivation = true;
-        yield break;    
+        yield return new WaitUntil(() => isFinished == true);
     }
 
 
@@ -84,25 +89,5 @@ public class DayIntro : MonoBehaviour
 
         //종료 및 flag 설정
         isFinished = true;
-    }
-
-    
-    /**
-    * 장소 문자열 설정 함수
-    */ 
-    string getLocationName(World text)
-    {
-        string result = "???";
-        switch(text)
-        {
-            case World.Street: 
-                result = "신시가지";
-                break;
-            case World.Cafe:
-                result = "신문사 앞 카페";
-                break;
-                
-        }
-        return result;
     }
 }

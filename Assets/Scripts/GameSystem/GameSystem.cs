@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,12 +13,13 @@ public class GameSystem : SingletonObject<GameSystem>
         날짜, 시간대, 진행상황 적용
     */ 
 
-    /// 게임 데이터 
+    /// 게임 데이터 (ReadOnly)
     private List<SaveData> saveList = new();    // 저장 데이터
     private SaveData player => saveList[dateIndex];      // 오늘 세이브 데이터
     public DailyData dayData { get; private set; }    // 오늘 날짜 데이터
 
-    /// 게임 플레이 데이터 
+    
+    /// 게임 플레이 데이터 (ReadWrite)
     public int dateIndex = 0;
 
     public int timeIndex = 0;
@@ -44,9 +46,9 @@ public class GameSystem : SingletonObject<GameSystem>
         base.Awake();
 
         saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
-        dayData = DataLoader.LoadGameData(dateIndex);     // 게임 데이터 로드  
-
+        
         // TODO: 날짜 선택 기능 구현 (임시로 0일차부터 로드)
+        dayData = DataLoader.LoadGameData(dateIndex);     // 게임 데이터 로드  
         SetDate(0);
     }
     
@@ -66,30 +68,39 @@ public class GameSystem : SingletonObject<GameSystem>
         // TODO: 이전 날짜 저장
         // DataLoader.SavePlayerData(saveList);
 
-        // TODO: 날짜 로드, 로딩씬
-        dayData = DataLoader.LoadGameData(date);
-
         // TODO: 해당 날짜 불러오기
+        /*
+         * 로딩씬 진입,
+         * 날짜 데이터 로드, 
+         * 시간대 로드 SetTime(0)
+         * 날짜 시작 위치 설정
+         */
+        dayData = DataLoader.LoadGameData(date);
 
         isScreenOn = false;
 
-        ObjectDatabase.Instance.Read();
+        // 로딩씬 끝
     }
 
+    
     ///<summary>
     /// 다음 시간대로 전환
     ///</summary>
-    ///<param name="time">전환할 시간(마지막 시간대면 다음 날짜로)</param>
-    public void SetTime(int _time)
+    ///<param name="time">전환할 시간</param>
+    public void SetTime(int time)
     {
         // 시간대 오류
-        if (_time < 0 || _time >= 4)
+        if (time is < 0 or >= 4)
             return;
         
-        // 시간대 적용
-        // gameData.time = _time;
+        /* 시간대 로드
+        - NPC 생성
+            - 지역 락
+            - BGM 변경
+        */
+        timeIndex = time;
 
-        // 월드 리로드
+        // TODO: 월드 리로드 (개선 필요)
         if (SceneManager.GetActiveScene().name == "MainWorld")
         {
             WorldSceneManager.Instance.ReloadWorld();
@@ -102,7 +113,7 @@ public class GameSystem : SingletonObject<GameSystem>
     /// </summary>
     /// <param name="num">변경할 만큼의 명성치</param>
     /// <returns></returns>
-    public void SetRenown(int num)
+    public void AddRenown(int num)
     {
         player.renown += num;
     }
@@ -122,7 +133,7 @@ public class GameSystem : SingletonObject<GameSystem>
                 return work.stage;
             }
         }
-        return -1;
+        throw new DataException("Invalid work code");
     }
 
 
@@ -147,13 +158,11 @@ public class GameSystem : SingletonObject<GameSystem>
         }
 
         // 업무 불일치 오류
-        if (currentWork == null)
+        if (currentWork is null)
         {
-            Debug.Log("Work doesn't Match");
-            return;
+            throw new DataException("Invalid work code");
         }
 
-        // TODO: 업무 완료로 전환
         currentWork.isClear = true;
     }
 
@@ -166,12 +175,4 @@ public class GameSystem : SingletonObject<GameSystem>
     {
         SceneManager.LoadScene(sceneName);
     }
-    
-    
-#if DEBUG
-    public DailyData GetDailyData(int num)
-    {
-        return dayData;
-    }
-#endif
 }

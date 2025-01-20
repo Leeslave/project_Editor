@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EffectData : WorldObjectData
+public class EffectData : MonoBehaviour
 {
     
 }

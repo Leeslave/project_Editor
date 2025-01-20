@@ -26,6 +26,7 @@ public class WorldVector
 {
     public string location;
     public int positon;
+    public string name = "???";
 
     public World getLocation()
     {

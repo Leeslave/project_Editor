@@ -95,7 +95,7 @@ public class Location : MonoBehaviour
         // 이동할 장소의 오브젝트 활성화
         foreach(var obj in objList[newPos])
         {
-            if (obj.TryGetComponent(out NPC npc))
+            if (obj.TryGetComponent(out WorldObject npc))
             {
                 npc.OnActive();
             }
@@ -193,7 +193,7 @@ public class Location : MonoBehaviour
             }
             if(_data is ObjData)
             {
-                var targetObject = newObj.GetComponent<NPC>();
+                var targetObject = newObj.GetComponent<WorldObject>();
                 targetObject.location = this;
                 targetObject.data = _data as ObjData;
                 targetObject.SetPosition();
