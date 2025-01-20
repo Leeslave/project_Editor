@@ -5,6 +5,11 @@ Shader "Unlit/CRT"
         _MainTex ("Texture", 2D) = "white" {}
         _Distort ("Distortion",Float) = 0.1
         _Line("Line",Float) = 0.1
+        _Thick("Thick",Float) = 0.1
+        _Speed("Speed",Float) = 1
+        _Flip("Flip",Float) = 1
+        _FlipProb("FlipProb",Float) = 1
+        _Rand("Rand",Float) = 1
     }
 SubShader{
     Pass {
@@ -21,7 +26,12 @@ SubShader{
             uniform sampler2D _MainTex;
             float _Distort;
             float _Line;
-
+            float _Thick;
+            float _Speed;
+            float _Flip;
+            float _FlipProb;
+            float _Rand;
+            
             struct v2f {
 			    float4 pos : POSITION;
 			    float2 uv : TEXCOORD0;
@@ -36,17 +46,26 @@ SubShader{
 			    return o;
 		    }
 
-            half4 frag (v2f i) : COLOR
+            float RandomUV(float2 uv)
             {
+                return frac(sin(_Time.x));
+            }
+
+            half4 frag(v2f i) : COLOR
+            {
+                float flip_up = step(_Rand,_FlipProb) * _Rand * 5;
+                float flip_down = 1 - flip_up;
+                i.uv.y -= ((1 - (i.uv.y + flip_up)) * step(i.uv.y, flip_up) + (1 - (i.uv.y - flip_down)) * step(flip_down, i.uv.y));
+
                 float2 uv = i.uv - 0.5;
                 float sub = 1.0 + _Distort * (uv.x * uv.x + uv.y * uv.y);
                 uv *= float2(sub, sub);
                 uv += 0.5;
 
                 float4 color = tex2D(_MainTex,uv);
-                float scanline = sin((i.uv.y + _SinTime.w)* _ScreenParams.y * 200.0) * 0.5 + 0.5;
-                
-                color.rgb *= lerp(1,scanline,_Line);
+                float scanline = abs(sin((i.uv.y - 0.5 + frac(_Time.x * _Speed * 2)) * 1000 * _Thick));
+
+                color.rgb *= lerp(_Line,1,scanline);
 
                 return color;
             }
