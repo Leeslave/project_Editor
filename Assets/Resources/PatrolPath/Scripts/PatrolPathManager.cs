@@ -1,16 +1,19 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.SocialPlatforms;
 using UnityEngine.Tilemaps;
 
 public class PatrolPathManager : MonoBehaviour
 {
     public static PatrolPathManager Instance;
     
-    [SerializeField] private int magentaLengthLimit;
     [SerializeField] private int cyanLengthLimit;
+    [SerializeField] private int magentaLengthLimit;
     [SerializeField] private int yellowLengthLimit;
     [SerializeField] private TMP_Text cyanLimitText;
     [SerializeField] private TMP_Text magentaLimitText;
@@ -24,6 +27,9 @@ public class PatrolPathManager : MonoBehaviour
 
     [Header("블로킹 타일 맵")] 
     public Tilemap blockingTileMap;
+
+    [Header("해답 타일 맵")] 
+    public Tilemap answerTileMap;
     
     [Header("경로 타일 맵")] 
     public Tilemap[] pathTileMap;
@@ -77,14 +83,26 @@ public class PatrolPathManager : MonoBehaviour
                 throw new ArgumentOutOfRangeException(nameof(color), color, null);            
         }
     }
+    private void IsMapFullFilled()
+    {
+        List<Vector3Int> location = new();
+        foreach (Vector3Int pos in answerTileMap.cellBounds.allPositionsWithin)
+            if(answerTileMap.HasTile(pos))
+                location.Add(pos);
+        if(location.All(p => pathTileMap.Any(m => m.HasTile(p)) || blockingTileMap.HasTile(p)))
+            answerTileMap.color = new Color(0f, 0.5f, 0f, 0.2f);
+        else
+            answerTileMap.color = answerTileMap.color = new Color(0f, 0.5f, 0.5f, 0f);
+    }
     
     void Start()
     {
-        
+        answerTileMap.color = new Color(0f, 0.5f, 0f, 0f);
+        InvokeRepeating(nameof(IsMapFullFilled), 0f, 0.1f);        
     }
 
     void Update()
     {
-        
+
     }
 }
