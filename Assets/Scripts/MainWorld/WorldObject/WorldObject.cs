@@ -23,10 +23,10 @@ public class WorldObject : MonoBehaviour
     {
         chatTrigger = gameObject.AddComponent<ChatTrigger>();
         
-        foreach (var _data in data.chatData)
-        {
-            chatTrigger.chatAssets.Add(_data.chat);
-        }
+        // foreach (var _data in data.chatData)
+        // {
+        //     chatTrigger.chatAssets.Add(_data.chat);
+        // }
         // TODO: 로딩씬으로 빼기, 
         chatTrigger.LoadChatData();
         SetPosition();
@@ -37,10 +37,10 @@ public class WorldObject : MonoBehaviour
     
     public void OnEnable()
     {
-        if (data.chatData[param].onAwake)
-        {
-            chatTrigger.Init(param);
-        }
+        // if (data.chatData[param].onAwake)
+        // {
+        //     chatTrigger.Init(param);
+        // }
     }
 
 
@@ -53,12 +53,12 @@ public class WorldObject : MonoBehaviour
     private void SetPosition()
     {
         // 위치 설정
-        RectTransform rect = GetComponent<RectTransform>();
-        rect.anchorMin = data.anchor;
-        rect.anchorMax = data.anchor;
-        
-        // 크기 설정
-        rect.sizeDelta *= data.size;
-        rect.localScale = new Vector3(1f,1f,1f);
+        // RectTransform rect = GetComponent<RectTransform>();
+        // rect.anchorMin = data.anchor;
+        // rect.anchorMax = data.anchor;
+        //
+        // // 크기 설정
+        // rect.sizeDelta *= data.size;
+        // rect.localScale = new Vector3(1f,1f,1f);
     }
 }

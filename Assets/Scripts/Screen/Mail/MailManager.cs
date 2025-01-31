@@ -22,7 +22,7 @@ public class MailManager : Singleton<MailManager>
         mailList.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
         
         // 폴더에 있는 모든 .txt 파일
-        string[] fileNames = Directory.GetFiles($"{Application.dataPath}{folderPath}/day {GameSystem.Instance.gameData.date}", "*.txt");
+        string[] fileNames = Directory.GetFiles($"{Application.dataPath}{folderPath}/day {GameSystem.Instance.dateIndex}", "*.txt");
 
         // 각 파일 이름을 순회하며 파일 제목과 내용 읽기
         foreach (string fileName in fileNames)

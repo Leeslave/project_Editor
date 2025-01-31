@@ -43,7 +43,7 @@ public class Location : MonoBehaviour
             SetBGM(bgmNumber);
 
             // 해당하는 위치 활성화
-            SetPosition(GameSystem.Instance.gameData.position);
+            SetPosition(GameSystem.Instance.currentLocation.position);
         }
         // 비활성화
         else
@@ -95,15 +95,15 @@ public class Location : MonoBehaviour
         // 이동할 장소의 오브젝트 활성화
         foreach(var obj in objList[newPos])
         {
-            if (obj.TryGetComponent(out WorldObject npc))
-            {
-                npc.OnActive();
-            }
-            else 
-            {
-                obj.TryGetComponent(out WorldEffect effect);
-                effect.OnActive();
-            }
+            // if (obj.TryGetComponent(out WorldObject npc))
+            // {
+            //     npc.OnActive();
+            // }
+            // else 
+            // {
+            //     obj.TryGetComponent(out WorldEffect effect);
+            //     effect.OnActive();
+            // }
         }
         // 나머지 장소 비활성화
         for(int i = 0; i < Positions.Count; i++)
@@ -116,7 +116,7 @@ public class Location : MonoBehaviour
         }
         
         // 장소 데이터 변경
-        GameSystem.Instance.gameData.SetPosition(newPos);
+        // GameSystem.Instance.gameData.SetPosition(newPos);
     }
 
 
@@ -130,7 +130,7 @@ public class Location : MonoBehaviour
     // 연결된 맵 왼쪽으로 이동
     public void MoveLeft()
     {
-        int newPos = GameSystem.Instance.gameData.position - 1;
+        int newPos = GameSystem.Instance.currentLocation.position - 1;
 
         SetPosition(newPos);
     }
@@ -139,7 +139,7 @@ public class Location : MonoBehaviour
     // 연결된 맵 오른쪽으로 이동
     public void MoveRight()
     {
-        int newPos = GameSystem.Instance.gameData.position + 1;
+        int newPos = GameSystem.Instance.currentLocation.position + 1;
 
         SetPosition(newPos);
     }
@@ -167,40 +167,40 @@ public class Location : MonoBehaviour
     /// <param name="time">시간대</param>
     public void SetObjects()
     {
-        // 오브젝트 리스트 초기화
-        ClearObjects();
-
-        // 새 오브젝트 정보 불러오기
-        List<WorldObjectData> dataList = ObjectDatabase.ObjectList[(int)locationName];
-
-        // NPC들 생성
-        foreach(WorldObjectData _data in dataList)
-        {
-            if (_data.time != GameSystem.Instance.gameData.time)
-            {
-                continue;
-            }
-            
-            GameObject newObj = Instantiate(ObjectDatabase.Instance.prefabs[(int)_data.objType], Positions[_data.position].transform);     // instantiate 
-            newObj.name = _data.name;
-
-            // 타입에 따라 컴포넌트 추가
-            if (_data is EffectData)
-            {
-                var targetObject = newObj.GetComponent<WorldEffect>();
-                targetObject.location = this;
-                targetObject.data = _data as EffectData;
-            }
-            if(_data is ObjData)
-            {
-                var targetObject = newObj.GetComponent<WorldObject>();
-                targetObject.location = this;
-                targetObject.data = _data as ObjData;
-                targetObject.SetPosition();
-            }
-            
-            objList[_data.position].Add(newObj);
-        }
+        // // 오브젝트 리스트 초기화
+        // ClearObjects();
+        //
+        // // 새 오브젝트 정보 불러오기
+        // List<WorldObjectData> dataList = ObjectDatabase.ObjectList[(int)locationName];
+        //
+        // // NPC들 생성
+        // foreach(WorldObjectData _data in dataList)
+        // {
+        //     if (_data.time != GameSystem.Instance.gameData.time)
+        //     {
+        //         continue;
+        //     }
+        //     
+        //     GameObject newObj = Instantiate(ObjectDatabase.Instance.prefabs[(int)_data.objType], Positions[_data.position].transform);     // instantiate 
+        //     newObj.name = _data.name;
+        //
+        //     // 타입에 따라 컴포넌트 추가
+        //     if (_data is EffectData)
+        //     {
+        //         var targetObject = newObj.GetComponent<WorldEffect>();
+        //         targetObject.location = this;
+        //         targetObject.data = _data as EffectData;
+        //     }
+        //     if(_data is ObjData)
+        //     {
+        //         var targetObject = newObj.GetComponent<WorldObject>();
+        //         targetObject.location = this;
+        //         targetObject.data = _data as ObjData;
+        //         targetObject.SetPosition();
+        //     }
+        //     
+        //     objList[_data.position].Add(newObj);
+        // }
     }
 
 

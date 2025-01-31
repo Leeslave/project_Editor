@@ -17,7 +17,7 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     [Header("지역 데이터")]
     [SerializeField]
     private Location[] locationList;    // 지역 오브젝트 리스트
-    public Location CurrentLocation { get { return locationList[(int)GameSystem.Instance.gameData.location]; } }
+    public Location CurrentLocation { get { return locationList[(int)GameSystem.Instance.currentLocation.getLocation()]; } }
     
 
     public SoundManager worldBGM;  // 지역 내 배경음악
@@ -74,8 +74,8 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
         // 기존 지역 비활성화
         CurrentLocation.ActiveLocation(false);
 
-        // 현재 지역 설정
-        GameSystem.Instance.gameData.SetLocation(location);
+        // TODO: 현재 지역 설정
+        // GameSystem.Instance.SetLocation(location);
 
         // 새 지역 활성화
         CurrentLocation.ActiveLocation(true);

@@ -19,7 +19,7 @@ public class Door : MonoBehaviour
         // 지역 이동 실행
         if (destPos >= 0)
         {
-            GameSystem.Instance.gameData.SetPosition(destPos);
+            // GameSystem.Instance.gameData.SetPosition(destPos);
         }
         if (dest != World.NullMax)
         {
