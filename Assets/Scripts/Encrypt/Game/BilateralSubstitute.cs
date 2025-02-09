@@ -240,9 +240,7 @@ public class BilateralSubstitute : MonoBehaviour
     {
         string filePath = Application.dataPath + "/Resources/GameData/Encrypt/Tables/Table_" + CurrentTableNum + ".txt";
         FileInfo txtFile = new(filePath);
-
-        if (!txtFile.Exists)
-            Debug.Log("테이블 로드에 문제 발생!");
+        
             
         StreamReader reader = new(filePath);
         string value = reader.ReadToEnd();

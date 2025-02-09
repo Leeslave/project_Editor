@@ -83,7 +83,7 @@ public class DisplayDecrypted : MonoBehaviour
         }
         else
         {
-            Debug.Log("이미 같은 이름의 파일이 존재합니다!");
+            //Debug.Log("이미 같은 이름의 파일이 존재합니다!");
         }   
     }
 

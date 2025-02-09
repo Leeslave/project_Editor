@@ -46,7 +46,8 @@ public class VK_ManagerScript : MonoBehaviour
 
     #region 오디오 관련 프로퍼티
     
-    private AudioSource AudioSource { get; set; }
+    private AudioSource AudioSourceBackground { get; set; }
+    private AudioSource AudioSourceSFX { get; set; }
     private Coroutine BGMCoroutine { get; set; }
     private Coroutine StereoCoroutine { get; set; }
     private Coroutine BeepCoroutine { get; set; }
@@ -86,9 +87,8 @@ public class VK_ManagerScript : MonoBehaviour
         AnswerScreenResult = GameObject.Find("AnswerScreenResult").GetComponent<TMP_Text>();
         
         WalterBlur = GameObject.Find("WalterBlur").GetComponent<SpriteRenderer>();
-        AudioSource = transform.GetComponent<AudioSource>();
-        
-        TurnOverEvent += success => Debug.Log(success ? "이번 턴은 성공!" : "이번 턴은 실패!");
+        AudioSourceBackground = transform.GetComponents<AudioSource>()[0];
+        AudioSourceSFX = transform.GetComponents<AudioSource>()[1];
     }
     private void Start()
     {
@@ -112,13 +112,13 @@ public class VK_ManagerScript : MonoBehaviour
     private IEnumerator BGM()
     {
         yield return new WaitForSeconds(1f);
-        AudioSource.PlayOneShot(startGameAudio);
+        AudioSourceBackground.PlayOneShot(startGameAudio);
         yield return new WaitForSeconds(4f);
-        AudioSource.PlayOneShot(startComputerAudio);
+        AudioSourceBackground.PlayOneShot(startComputerAudio);
         yield return new WaitForSeconds(9f);
         while (true)
         {
-            AudioSource.PlayOneShot(backgroundGameAudio);
+            AudioSourceBackground.PlayOneShot(backgroundGameAudio);
             yield return new WaitForSeconds(19f);
         }
     }
@@ -130,7 +130,8 @@ public class VK_ManagerScript : MonoBehaviour
         {
             float eval = curve.Evaluate(time);
             float target = flip ? Mathf.Lerp(-0.8f, 0.8f, eval) : Mathf.Lerp(0.8f, -0.8f, eval);
-            AudioSource.panStereo = target;
+            AudioSourceBackground.panStereo = target;
+            AudioSourceSFX.panStereo = target;
             if (time > 1f)
             {
                 time = 0;
@@ -145,14 +146,14 @@ public class VK_ManagerScript : MonoBehaviour
         int count = Mathf.CeilToInt(duration);
         for (int i = 0; i < count; i++)
         {
-            AudioSource.PlayOneShot((i < count) ? shortBeepAudio : longBeepAudio, 0.5f);
+            AudioSourceSFX.PlayOneShot((i < count) ? shortBeepAudio : longBeepAudio, 0.5f);
             yield return new WaitForSeconds(1f);
         }
     }
     public void PlayMotor()
     {
         //모터 효과음 재생
-        AudioSource.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
+        AudioSourceSFX.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
     }
     
     #endregion
@@ -190,7 +191,7 @@ public class VK_ManagerScript : MonoBehaviour
         CurrentTurnStatus = TurnStatus.활성;
         
         //모터 효과음 재생
-        AudioSource.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
+        AudioSourceSFX.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
         
         //월터 블러를 활성화
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, wait, new Color(1f, 1f, 1f, 1f), WalterBlur);
@@ -210,7 +211,7 @@ public class VK_ManagerScript : MonoBehaviour
         //비프음 재생
         BeepCoroutine = StartCoroutine(Beep(duration));
         
-        Debug.Log("새로운 턴이 시작되었습니다!");
+        //Debug.Log("새로운 턴이 시작되었습니다!");
 
         //시퀀스마다 난수를 생성하여 눈동자가 다른 방향으로 움직이게 한다
         for (var i = 0; i < evade; i++)
@@ -236,7 +237,7 @@ public class VK_ManagerScript : MonoBehaviour
     private IEnumerator EyeSequence(float wait, float duration, int evade)
     {
         //모터 효과음 재생
-        AudioSource.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
+        AudioSourceSFX.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
         
         //월터 블러를 활성화
         LJWConverter.Instance.GradientSpriteRendererColor(false, 0f, wait, new Color(1f, 1f, 1f, 1f), WalterBlur);
@@ -254,7 +255,7 @@ public class VK_ManagerScript : MonoBehaviour
         //비프음 재생
         BeepCoroutine = StartCoroutine(Beep(duration));
         
-        Debug.Log("새로운 턴이 시작되었습니다!");
+        //Debug.Log("새로운 턴이 시작되었습니다!");
         
         //시퀀스마다 난수를 생성하여 눈동자가 다른 방향으로 움직이게 한다
         for (var i = 0; i < evade; i++)
@@ -281,7 +282,7 @@ public class VK_ManagerScript : MonoBehaviour
     private IEnumerator ArrowSequence(float wait, float duration, int arrowNum)
     {
         //모터 효과음 재생
-        AudioSource.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
+        AudioSourceSFX.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
         
         //이번 턴 화살표의 개수
         ArrowNum = arrowNum;
@@ -306,7 +307,7 @@ public class VK_ManagerScript : MonoBehaviour
         //활성 상태가 아니면 화살표를 입력할 수 없다
         CurrentTurnStatus = TurnStatus.활성;
         
-        Debug.Log("새로운 턴이 시작되었습니다!");
+        //Debug.Log("새로운 턴이 시작되었습니다!");
 
         yield return new WaitForSeconds(duration);
         
@@ -352,7 +353,7 @@ public class VK_ManagerScript : MonoBehaviour
         }
         else
         {
-            AudioSource.PlayOneShot(failTurnAudio);
+            AudioSourceSFX.PlayOneShot(failTurnAudio);
             EyeDisplayResult.text = "FOCUS INACCURATE";
             AnswerScreenResult.text = "FEEDBACK UNCLEAR";
         }
@@ -360,10 +361,10 @@ public class VK_ManagerScript : MonoBehaviour
         yield return new WaitForSeconds(1f);
         
         //종료 효과음 재생
-        AudioSource.PlayOneShot(endTurnAudio, 1.5f);
+        AudioSourceSFX.PlayOneShot(endTurnAudio, 1.5f);
         
         //모터 효과음 재생
-        AudioSource.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
+        AudioSourceSFX.PlayOneShot(robotMotorAudios[Random.Range(0, robotMotorAudios.Length)]);
         
         const float duration = 2f;
         
@@ -417,29 +418,29 @@ public class VK_ManagerScript : MonoBehaviour
     }
     private void CheckInputResult(string keyCode)
     {
-        AudioSource.PlayOneShot(successTurnAudio);
+        AudioSourceSFX.PlayOneShot(successTurnAudio);
         
         if (ArrowQueue.Peek().name == keyCode)
         {
-            Debug.Log("정확한 키 입력!");
+            //Debug.Log("정확한 키 입력!");
             Destroy(ArrowQueue.Dequeue());
         }
         else
         {
-            Debug.Log("부정확한 키 입력!");
+            //Debug.Log("부정확한 키 입력!");
             DespawnArrows();
             SpawnArrows(ArrowNum);
         }
 
         if (ArrowQueue.Count == 0)
         {
-            Debug.Log("모든 화살표를 소화하였으므로 턴을 종료합니다!");
+            ////Debug.Log("모든 화살표를 소화하였으므로 턴을 종료합니다!");
             StartCoroutine(EndTurn(true));
         }
     }
     public void SpawnArrows(int arrowNum)
     {
-        Debug.Log($"총 {arrowNum}개의 화살표를 생성했습니다!");
+        ////Debug.Log($"총 {arrowNum}개의 화살표를 생성했습니다!");
         var startPos = arrowNum % 2 == 0 ? new Vector3(-0.8f * arrowNum / 2 + 0.5f, 0f, 0f) :  new Vector3(-0.8f * (arrowNum - 1) / 2, 0f, 0f);
         for (var i = 0; i < arrowNum; i++)
         {
@@ -464,7 +465,7 @@ public class VK_ManagerScript : MonoBehaviour
         var count = ArrowQueue.Count;
         for (var i = 0; i < count; i++)
             Destroy(ArrowQueue.Dequeue());
-        Debug.Log($"총 {count}개의 화살표를 삭제했습니다!");
+        ////Debug.Log($"총 {count}개의 화살표를 삭제했습니다!");
     }
 
     #endregion

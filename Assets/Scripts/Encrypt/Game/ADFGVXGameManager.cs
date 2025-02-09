@@ -93,31 +93,31 @@ public class ADFGVXGameManager : MonoBehaviour
         int stageNum = GameSystem.Instance.GetTask("ADFGVX");
         if (stageNum == -1)
         {
-            Debug.LogError("스테이지 데이터 로드 실패!");
+            //Debug.LogError("스테이지 데이터 로드 실패!");
             return;
         }
         
         if (stageData.Decrypt.TryGetValue(stageNum.ToString(), out var decryptData))
         {
-            Debug.Log($"이번 날짜의 Decrypt Task[targetText:{decryptData["targetText"]}, decryptKey:{decryptData["decryptKey"]}, resultText:{decryptData["resultText"]}");
+            //Debug.Log($"이번 날짜의 Decrypt Task[targetText:{decryptData["targetText"]}, decryptKey:{decryptData["decryptKey"]}, resultText:{decryptData["resultText"]}");
             decryptTargetTitle = decryptData["targetText"];
             decryptResultText = decryptData["resultText"];
         }
         else
         {
-            Debug.Log("이번 날짜의 Decrypt Task는 없음!");
+            //Debug.Log("이번 날짜의 Decrypt Task는 없음!");
             decryptClear = true;
         }
         
         if (stageData.Encrypt.TryGetValue(stageNum.ToString(), out var encryptData))
         {
-            Debug.Log($"이번 날짜의 Encrypt Task[targetText:{encryptData["targetText"]}, encryptKey:{encryptData["encryptKey"]}, resultText:{encryptData["resultText"]}");
+            //Debug.Log($"이번 날짜의 Encrypt Task[targetText:{encryptData["targetText"]}, encryptKey:{encryptData["encryptKey"]}, resultText:{encryptData["resultText"]}");
             encryptTargetText = encryptData["targetText"];
             encryptResultText = encryptData["resultText"];
         }
         else
         {
-            Debug.Log("이번 날짜의 Encrypt Task는 없음!"); 
+            //Debug.Log("이번 날짜의 Encrypt Task는 없음!"); 
             encryptClear = true;
         }
     }
@@ -220,8 +220,6 @@ public class ADFGVXGameManager : MonoBehaviour
         //치환 테이블 로드
         string filePath = Application.dataPath + "/Resources/GameData/Encrypt/Tables/Table_" + encryptTransposeTable + ".txt";
         FileInfo txtFile = new(filePath);
-        if (!txtFile.Exists)
-            Debug.Log("테이블 로드에 문제 발생!");
         StreamReader reader = new(filePath);
         string substitutionTable = reader.ReadToEnd();
         reader.Close();
@@ -246,8 +244,8 @@ public class ADFGVXGameManager : MonoBehaviour
             resultText += orderedText[i];
         
         
-        Debug.Log($"전치 결과: {transposeText.Aggregate("", (current, i) => current + i + " ")}");
-        Debug.Log($"암호화 결과: {resultText.Aggregate("", (current, i) => current + i + " ")}");
+        //Debug.Log($"전치 결과: {transposeText.Aggregate("", (current, i) => current + i + " ")}");
+        //Debug.Log($"암호화 결과: {resultText.Aggregate("", (current, i) => current + i + " ")}");
     }
     private void DecryptCheck()
     {
@@ -283,8 +281,6 @@ public class ADFGVXGameManager : MonoBehaviour
         //치환 테이블 로드
         string filePath = Application.dataPath + "/Resources/GameData/Encrypt/Tables/Table_" + decryptTransposeTable + ".txt";
         FileInfo txtFile = new(filePath);
-        if (!txtFile.Exists)
-            Debug.Log("테이블 로드에 문제 발생!");
         StreamReader reader = new(filePath);
         string substitutionTable = reader.ReadToEnd();
         reader.Close();
@@ -300,7 +296,7 @@ public class ADFGVXGameManager : MonoBehaviour
             transposedText = transposedText[2..];
         }
         
-        Debug.Log($"전치 결과: {transposedText}");
-        Debug.Log($"복호화 결과: {resultText}");
+        //Debug.Log($"전치 결과: {transposedText}");
+        //Debug.Log($"복호화 결과: {resultText}");
     }
 }
