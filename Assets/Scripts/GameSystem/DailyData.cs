@@ -98,7 +98,7 @@ public class Work
     */
     public string code;     // 업무 코드명
     public int stage;       // 스테이지 번호
-    public bool isClear = false;
+    public bool isClear;
     public Work(string _code, int _stage = 0)
     {
         code = _code;

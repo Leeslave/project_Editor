@@ -21,7 +21,7 @@ public class TaskManager : MonoBehaviour
     /// 업무 완료 확인
     void OnEnable()
     {
-        if (GameSystem.Instance.isTaskClear == true)
+        if (GameSystem.Instance.IsTaskClear == true)
         {
             GameSystem.Instance.SetTime(2);
         }
@@ -37,7 +37,7 @@ public class TaskManager : MonoBehaviour
             closeButton.SetActive(false);
             consoleInput.gameObject.SetActive(false);   //입력창 비활성화
             // 콘솔 대사 출력
-            if (GameSystem.Instance.isTaskClear)
+            if (GameSystem.Instance.IsTaskClear)
             {
                 StartCoroutine(TaskConsoleAnimation(1));
             }
@@ -68,7 +68,7 @@ public class TaskManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in GameSystem.Instance.dayData.workList)
+        foreach(var work in GameSystem.Instance.DayData.workList)
         {
             if(work.code == consoleInput.text)
             {

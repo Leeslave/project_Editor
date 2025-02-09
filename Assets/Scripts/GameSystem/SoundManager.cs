@@ -9,7 +9,7 @@ public class SoundManager : MonoBehaviour
     public List<AudioClip> clips = new();   // 사용할 오디오 클립들
     [SerializeField]
     private float overlapDelay = 0.5f;  // 오버랩 딜레이
-    public bool isPlaying { get { return Audio.isPlaying; } }   // 현재 플레이 상태
+    public bool isPlaying => Audio.isPlaying; // 현재 플레이 상태
 
     // 일반 재생
     public void Play()
@@ -36,7 +36,7 @@ public class SoundManager : MonoBehaviour
     }
 
     // 반복 설정
-    public void loop(bool isLoop)
+    public void Loop(bool isLoop)
     {
         Audio.loop = isLoop;
     }
@@ -86,8 +86,6 @@ public class SoundManager : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
-
-        yield break;
     }
 
     // 페이드 인 코루틴
@@ -104,7 +102,5 @@ public class SoundManager : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
-
-        yield break;
     }
 }

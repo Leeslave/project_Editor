@@ -1,7 +1,6 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 
@@ -17,15 +16,16 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     [Header("지역 데이터")]
     [SerializeField]
     private Location[] locationList;    // 지역 오브젝트 리스트
-    public Location CurrentLocation { get { return locationList[(int)GameSystem.Instance.currentLocation.getLocation()]; } }
-    
+
+    public Location CurrentLocation => locationList[(int)GameSystem.Instance.currentLocation.GetLocation()];
 
     public SoundManager worldBGM;  // 지역 내 배경음악
 
-    public bool IsMoving = false;    // 지역 내 이동 버튼 활성화 여부
-
+    public bool isMoving { get; private set; }    // 지역 내 이동 버튼 활성화 여부
+    
     [Header("지역 이동 효과")]
     public float moveDelay;     // 지역 이동 딜레이
+    
     [SerializeField]
     private Image curtain;      // 지역 이동 효과 이미지
 
@@ -36,23 +36,30 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
         base.Awake();
 
         ReloadWorld();
-        CurrentLocation.SetButtonActive(IsMoving);
+        CurrentLocation.SetButtonActive(isMoving);
     }
 
 
     /// <summary>
-    /// 월드 재로딩, 날짜&시간대 재적용
+    /// 월드 재로딩, 날짜, 시간대 재적용
     /// </summary>
     public void ReloadWorld()
     {
         // 모든 지역 리로드
         foreach(var iter in locationList)
         {
-            iter.ReloadLocation();
+            iter.InActiveLocation();
+            iter.SetObjects();
+        }
+
+        // 날짜 변경 시 위치 초기화
+        if (GameSystem.Instance.timeIndex == 0)
+        {
+            GameSystem.Instance.currentLocation = GameSystem.Instance.DayData.startLocation;
         }
 
         // 현재 지역 활성화
-        CurrentLocation.ActiveLocation(true);
+        CurrentLocation.ActiveLocation(GameSystem.Instance.currentLocation.position);
     }
 
 
@@ -61,38 +68,55 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     /// </summary>
     public void SetMoveActive()
     {
-        IsMoving = !IsMoving;
-        CurrentLocation.SetButtonActive(IsMoving);
+        isMoving = !isMoving;
+        CurrentLocation.SetButtonActive(isMoving);
     }
 
+    
     /// <summary>
     /// 지역 변경
     /// </summary>
-    /// <remarks>지역을 변경하고 지역 내 위치 동기화
-    public void MoveLocation(World location)
+    /// <remarks>지역을 변경하고 지역 내 위치 동기화</remarks>
+    public void MoveLocation(World location, int position)
     {
         // 기존 지역 비활성화
-        CurrentLocation.ActiveLocation(false);
+        CurrentLocation.InActiveLocation();
 
-        // TODO: 현재 지역 설정
-        // GameSystem.Instance.SetLocation(location);
+        // 현재 지역 설정
+        GameSystem.Instance.currentLocation = new WorldVector(location, position);
 
         // 새 지역 활성화
-        CurrentLocation.ActiveLocation(true);
+        CurrentLocation.ActiveLocation(position);
         
         // 이동 버튼 비활성화
-        IsMoving = false;
-        CurrentLocation.SetButtonActive(IsMoving);
+        isMoving = false;
+        CurrentLocation.SetButtonActive(isMoving);
+    }
+
+    
+    /// <summary>
+    /// 위치 이동 
+    /// </summary>
+    /// <param name="position">이동할 위치</param>
+    private void MovePosition(int position)
+    {
+        StartCoroutine(FadeInOut());
+        GameSystem.Instance.currentLocation.position = position;
+        CurrentLocation.SetPosition(position);
+    }
+    
+    
+    // 연결된 맵 왼쪽으로 이동
+    public void MoveLeft()
+    {
+        MovePosition(GameSystem.Instance.currentLocation.position - 1);
     }
 
 
-    /// <summary>
-    /// 지역 변경
-    /// </summary>
-    /// <remarks>지역을 변경하고 지역 내 위치 동기화
-    public void MoveLocation(string location)
+    // 연결된 맵 오른쪽으로 이동
+    public void MoveRight()
     {
-        MoveLocation(Enum.Parse<World>(location));
+        MovePosition(GameSystem.Instance.currentLocation.position + 1);
     }
 
 

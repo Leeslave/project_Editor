@@ -3,25 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-
-[Serializable]
-public enum World {
-    /**
-    월드 내 지역 목록
-    */
-    Street,
-    Bar,
-    Cafe,
-    Restaurant,
-    Temple,
-    Hallway,
-    Office,
-    Office2,
-    Interrogate,
-    
-    NullMax
-}
-
 [Serializable]
 public class WorldVector
 {
@@ -29,7 +10,15 @@ public class WorldVector
     public int position;
     public string name = "???";
 
-    public World getLocation()
+
+    public WorldVector(World location, int position)
+    {
+        this.location = location.ToString();
+        this.position = position;
+    }
+    
+    
+    public World GetLocation()
     {
         return Enum.Parse<World>(location);
     }

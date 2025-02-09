@@ -63,7 +63,7 @@ public class DayIntro : MonoBehaviour
         textUI.gameObject.SetActive(true);
 
         // 텍스트 세팅
-        DailyData today = GameSystem.Instance.dayData;
+        DailyData today = GameSystem.Instance.DayData;
         dayText = new string[] { "", "", ""};
         dayText[0] = $"제국력 {today.date.year}년 {today.date.month}월 {today.date.day}일";
         dayText[1] = today.dayTimes[GameSystem.Instance.timeIndex].ToString();

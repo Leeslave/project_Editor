@@ -549,11 +549,11 @@ public class Chat : Singleton<Chat>
         switch(variableName)
         {
             case "year":
-                return GameSystem.Instance.dayData.date.year.ToString();
+                return GameSystem.Instance.DayData.date.year.ToString();
             case "month":
-                return GameSystem.Instance.dayData.date.month.ToString();
+                return GameSystem.Instance.DayData.date.month.ToString();
             case "day":
-                return GameSystem.Instance.dayData.date.day.ToString();
+                return GameSystem.Instance.DayData.date.day.ToString();
         }
         return "";
     }

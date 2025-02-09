@@ -30,11 +30,11 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 DailyData dayData;
                 if (inputArgs.Length < 2) // no additional args : today
                 {
-                    dayData = GameSystem.Instance.dayData;
+                    dayData = GameSystem.Instance.DayData;
                 }
                 else if (int.TryParse(inputArgs[1], out int date)) // with args : certain date
                 {
-                    dayData = GameSystem.Instance.dayData;
+                    dayData = GameSystem.Instance.DayData;
                     if (dayData == null)
                     {
                         output += "<color=#ff0000>Invalid date</color>";
@@ -58,7 +58,7 @@ public class DebugConsole : SingletonObject<DebugConsole>
             case "showData" :
                 output += $"Current Day: {GameSystem.Instance.dateIndex} - {GameSystem.Instance.timeIndex}\n";
                 output += $"Current location: {GameSystem.Instance.currentLocation.location} - {GameSystem.Instance.currentLocation.position}\n";
-                output += $"Current renown: {GameSystem.Instance.player.renown}\n";
+                output += $"Current renown: {GameSystem.Instance.Player.renown}\n";
                 break;
             
             case "setDay":
@@ -106,7 +106,7 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 break;
             
             case "clearTask" :
-                foreach(var work in GameSystem.Instance.dayData.workList)
+                foreach(var work in GameSystem.Instance.DayData.workList)
                 {
                     GameSystem.Instance.ClearTask(work.code);
                     output += $"Clear work : {work.code}";

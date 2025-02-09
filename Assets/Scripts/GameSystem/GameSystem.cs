@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Data;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
@@ -15,40 +13,44 @@ public class GameSystem : SingletonObject<GameSystem>
 
     /// 게임 데이터 (ReadOnly)
     private List<SaveData> saveList = new();    // 저장 데이터
-    public SaveData player => saveList[dateIndex];      // 오늘 세이브 데이터
-    public DailyData dayData { get; private set; }    // 오늘 날짜 데이터
+    public SaveData Player => saveList[dateIndex];      // 오늘 세이브 데이터
+    public DailyData DayData { get; private set; }    // 오늘 날짜 데이터
 
     
     /// 게임 플레이 데이터 (ReadWrite)
-    public int dateIndex = 0;
+    public int dateIndex;
 
-    public int timeIndex = 0;
+    public int timeIndex;
     
     public WorldVector currentLocation;
     
-    public bool isScreenOn = false; 
+    public bool isScreenOn; 
     
-    public bool isTaskClear   // 모든 업무 완료 플래그
+    public bool IsTaskClear   // 모든 업무 완료 플래그
     {
         get { 
             bool workResult = true;
-            foreach(var workStatus in dayData.workList)
+            foreach(var workStatus in DayData.workList)
             {
-                workResult = workResult & workStatus.isClear;
+                workResult &= workStatus.isClear;
             }
             return workResult;
         }
     }
 
 
+    /// <summary>
+    /// 게임 첫 로드 시
+    /// </summary>
+    /// <remarks>세이브/게임 데이터 로드</remarks>
     new void Awake()
     {
         base.Awake();
 
-        saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
+        saveList = DataLoader.LoadPlayerData();     // 세이브 데이터 로드
+        DayData = DataLoader.LoadGameData(dateIndex);     // 게임 데이터 로드  
         
         // TODO: 날짜 선택 기능 구현 (임시로 0일차부터 로드)
-        dayData = DataLoader.LoadGameData(dateIndex);     // 게임 데이터 로드  
         SetDate(0);
     }
     
@@ -56,7 +58,7 @@ public class GameSystem : SingletonObject<GameSystem>
     ///<summary>
     /// 날짜 전환 (게임 저장)
     ///</summary>
-    ///<param name="dateIndex">전환할 날짜 인덱스(없으면 다음 날짜로), 시간은 무조건 아침</param>
+    ///<param name="date">전환할 날짜 인덱스(없으면 다음 날짜로), 시간은 무조건 아침</param>
     public void SetDate(int date = -1)
     {
         // 다음 날짜로 이동시
@@ -68,18 +70,16 @@ public class GameSystem : SingletonObject<GameSystem>
         // TODO: 이전 날짜 저장
         // DataLoader.SavePlayerData(saveList);
 
-        // TODO: 해당 날짜 불러오기
-        /*
-         * 로딩씬 진입,
-         * 날짜 데이터 로드, 
-         * 시간대 로드 SetTime(0)
-         * 날짜 시작 위치 설정
-         */
-        dayData = DataLoader.LoadGameData(date);
-
+        // 해당 날짜 월드 로드
+        // TODO: 로딩씬 진입
+        DayData = DataLoader.LoadGameData(date);
+        dateIndex = date;
+        
+        currentLocation = DayData.startLocation;
+        SetTime(0);
         isScreenOn = false;
-
-        // 로딩씬 끝
+        
+        // TODO: 로딩씬 나오고 월드 활성화
     }
 
     
@@ -100,7 +100,7 @@ public class GameSystem : SingletonObject<GameSystem>
         */
         timeIndex = time;
 
-        // TODO: 월드 리로드 (개선 필요)
+        // TODO: 월드 리로드 (개선 필요: 현재 장소, 현재 위치를 유지하고 월드를 재로드)
         if (SceneManager.GetActiveScene().name == "MainWorld")
         {
             WorldSceneManager.Instance.ReloadWorld();
@@ -115,7 +115,7 @@ public class GameSystem : SingletonObject<GameSystem>
     /// <returns></returns>
     public void AddRenown(int num)
     {
-        player.renown += num;
+        Player.renown += num;
     }
     
 
@@ -126,14 +126,14 @@ public class GameSystem : SingletonObject<GameSystem>
     /// <returns></returns>
     public int GetTask(string workCode)
     {
-        foreach(var work in dayData.workList)
+        foreach(var work in DayData.workList)
         {
             if (work.code == workCode)
             {
                 return work.stage;
             }
         }
-        throw new DataException("Invalid work code");
+        throw new KeyNotFoundException("Invalid work code");
     }
 
 
@@ -146,7 +146,7 @@ public class GameSystem : SingletonObject<GameSystem>
     {
         // 코드에 해당하는 업무 불러오기
         Work currentWork = null;
-        foreach (var work in dayData.workList)
+        foreach (var work in DayData.workList)
         {
             if (work.isClear == true)
                 continue;
@@ -160,7 +160,7 @@ public class GameSystem : SingletonObject<GameSystem>
         // 업무 불일치 오류
         if (currentWork is null)
         {
-            throw new DataException("Invalid work code");
+            throw new KeyNotFoundException("Invalid work code");
         }
 
         currentWork.isClear = true;

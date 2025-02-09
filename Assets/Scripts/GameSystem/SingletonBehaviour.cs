@@ -9,7 +9,7 @@ public class Singleton<T>: MonoBehaviour
     {
         get
         {
-            if (_instance == null)
+            if (_instance is null)
             {
                 _instance = FindObjectOfType<T>();
             }
@@ -27,11 +27,11 @@ public class Singleton<T>: MonoBehaviour
             {
                 Destroy(gameObject);    // 다른 인스턴스일시 생성 취소
             }
-
+    
             // 본인이면 종료
             return;
         }
-
+    
         // 첫 인스턴스 생성
         _instance = GetComponent<T>();
     }

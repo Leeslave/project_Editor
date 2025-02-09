@@ -1,12 +1,15 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Door : MonoBehaviour
 {
-    public World dest = World.NullMax;
-    public int destPos = -1;
+    /**
+     * 클릭시 지정된 Location으로 이동
+     * - 월드 매니저에 이동 호출
+     */
+    
+    public World dest = World.Street;
+    public int destPos;
 
     public virtual void OnClick()
     {
@@ -16,14 +19,6 @@ public class Door : MonoBehaviour
             throw new Exception($"World Manager Missed!! : Door");
         }
 
-        // 지역 이동 실행
-        if (destPos >= 0)
-        {
-            // GameSystem.Instance.gameData.SetPosition(destPos);
-        }
-        if (dest != World.NullMax)
-        {
-            WorldSceneManager.Instance.MoveLocation(dest);
-        }
+        WorldSceneManager.Instance.MoveLocation(dest, destPos);
     }
 }

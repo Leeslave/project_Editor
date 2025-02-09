@@ -7,72 +7,68 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
 
+[Serializable]
+public enum World {
+    /**
+    월드 내 지역 목록
+    */
+    Street,
+    Bar,
+    Cafe,
+    Restaurant,
+    Temple,
+    Hallway,
+    Office,
+    Office2,
+    Interrogate,
+    
+    NullMax
+}
+
 public class Location : MonoBehaviour
 {
-
+    /**
+     지역 데이터
+     - 오브젝트 배치
+     - 지역 활성화/비활성화
+     */
     [SerializeField]
     private World locationName; // 지역명
 
-    private bool isActive;  // 현재 활성화 여부
-
     public int bgmNumber;   // BGM 번호
 
-    [SerializeField]
-    private int connectLen;     // 연결 가능 최대 길이
-
-    [SerializeField] public List<Position> Positions;
+    [SerializeField] public List<Position> Positions;   // 지역 내 위치
     [SerializeField] public List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
 
     private List<List<GameObject>> objList = new();  // WorldObject 리스트
-    public float sizeMultiplier = 1;    // NPC 크기 배율
 
 
     /// <summary>
-    /// 현재 지역을 활성화/비활성화
+    /// 현재 지역을 활성화
     /// </summary>
-    public void ActiveLocation(bool _active)
+    public void ActiveLocation(int position)
     {
-        // 변화 없음 예외
-        if (isActive == _active)
-            return;
-        
-        // 활성화
-        if (_active)
-        {
-            // 음악 활성화
-            SetBGM(bgmNumber);
+        // 음악 활성화
+        SetBGM(bgmNumber);
 
-            // 해당하는 위치 활성화
-            SetPosition(GameSystem.Instance.currentLocation.position);
-        }
-        // 비활성화
-        else
-        {
-            // 위치 전부 비활성화
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                transform.GetChild(i).gameObject.SetActive(false);
-            }
-        }
-
-        isActive = _active;
+        // 해당하는 위치 활성화
+        SetPosition(position);
     }
 
-
+    
     /// <summary>
-    /// 지역 재로딩, 날짜&시간대 재적용
+    /// 현재 지역 비활성화
     /// </summary>
-    [HideInInspector]
-    public void ReloadLocation()
+    public void InActiveLocation()
     {
-        // NPC 새로 생성
-        SetObjects();
-
-        // 기본으로 비활성화
-        ActiveLocation(false);
+        // 위치 전부 비활성화 
+        // TODO: Position의 비활성화 함수로 변경
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(false);
+        }
     }
-
-
+    
 
     /// <summary>
     /// 지역 내 이동
@@ -83,13 +79,15 @@ public class Location : MonoBehaviour
         // 위치값 오류
         if (newPos < 0 || newPos >= Positions.Count)
         {
-            Debug.Log($"WORLD MOVE ERROR : Invalid position {locationName} - {newPos}");
+            #if DEBUG
+            Debug.LogWarning($"WORLD MOVE ERROR : Invalid position {locationName} - {newPos}");
+            #endif
+            
             return;
         }
 
-        // 페이드인아웃 효과 실행
-        StartCoroutine(WorldSceneManager.Instance.FadeInOut());
-
+        
+        // TODO: Position 활성화 함수로 변경(오브젝트 활성화까지)
         // 이동할 장소 활성화
         Positions[newPos].gameObject.SetActive(true);
         // 이동할 장소의 오브젝트 활성화
@@ -105,6 +103,8 @@ public class Location : MonoBehaviour
             //     effect.OnActive();
             // }
         }
+        
+        // TODO: Position 비활성화 함수로 변경(오브젝트 활성화까지)
         // 나머지 장소 비활성화
         for(int i = 0; i < Positions.Count; i++)
         {
@@ -114,34 +114,14 @@ public class Location : MonoBehaviour
             }
             Positions[i].gameObject.SetActive(false);
         }
-        
-        // 장소 데이터 변경
-        // GameSystem.Instance.gameData.SetPosition(newPos);
     }
 
 
+    // TODO: 각 지역별로 별개의 SoundSystem 소유 후 특수 클립만 가져다가 사용하도록 변경
     public void SetBGM(int bgm)
     {
         // 음악 활성화
         WorldSceneManager.Instance.worldBGM.OverlapPlay(bgm);
-    }
-
-
-    // 연결된 맵 왼쪽으로 이동
-    public void MoveLeft()
-    {
-        int newPos = GameSystem.Instance.currentLocation.position - 1;
-
-        SetPosition(newPos);
-    }
-
-
-    // 연결된 맵 오른쪽으로 이동
-    public void MoveRight()
-    {
-        int newPos = GameSystem.Instance.currentLocation.position + 1;
-
-        SetPosition(newPos);
     }
 
 
@@ -167,9 +147,8 @@ public class Location : MonoBehaviour
     /// <param name="time">시간대</param>
     public void SetObjects()
     {
-        // // 오브젝트 리스트 초기화
-        // ClearObjects();
-        //
+        // 오브젝트 리스트 초기화
+        ClearObjects();
         // // 새 오브젝트 정보 불러오기
         // List<WorldObjectData> dataList = ObjectDatabase.ObjectList[(int)locationName];
         //

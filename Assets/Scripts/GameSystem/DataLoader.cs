@@ -18,7 +18,7 @@ public static class DataLoader
 
     private static string GAMEFILE = "dailyData";
     [SerializeField]
-    private static string SAVEPATH = Application.dataPath + "/Resources/Save";    // 세이브 파일 경로
+    private static string SAVEPATH = Application.dataPath + "/Resources/Save/savedata.json";    // 세이브 파일 경로
     [SerializeField]
     private static string CHATPATH = Application.dataPath + "/Resources/Chat/Text";     // 대화 파일 경로
     
@@ -43,14 +43,12 @@ public static class DataLoader
     /// JSON으로부터 게임 데이터를 로드
     public static DailyData LoadGameData(int index)
     {
-        // daily 초기화
-        DailyData result = new();
         string gameFile = $"{GAMEDATAPATH}/{GAMEFILE}{index}.json";
 
         // 파일 읽어오기
         if (!File.Exists(gameFile))
         {
-            throw new Exception($"GAME DATA CANNOT FOUND : ${GAMEFILE}{index}");
+            throw new ArgumentException($"GAME DATA CANNOT FOUND : ${GAMEFILE}{index}");
             // 치명적 오류, 게임 종료시키기
         }
         FileStream fileStream = new FileStream(gameFile, FileMode.Open);
@@ -62,19 +60,17 @@ public static class DataLoader
         string jsonText = Encoding.UTF8.GetString(data);
 
         //Wrapper로 파싱
-        result = JsonConvert.DeserializeObject<DailyData>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-
-        return result;
+        return JsonConvert.DeserializeObject<DailyData>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
     }
 
     
     /// 플레이어 데이터 JSON에서 로드
-    public static List<SaveData> LoadSaveData()
+    public static List<SaveData> LoadPlayerData()
     {
         // 파일 읽어오기
         if (!File.Exists(SAVEPATH))
         {
-            throw new Exception($"SAVE DATA CANNOT FOUND : ${SAVEPATH}");
+            throw new ArgumentException($"SAVE DATA CANNOT FOUND : ${SAVEPATH}");
             // 치명적 오류, 게임 종료시키기
         }
         FileStream fileStream = new FileStream(SAVEPATH, FileMode.Open);
@@ -91,6 +87,7 @@ public static class DataLoader
         return wrapper.list;
     }
 
+    
     /// 플레이어 데이터 JSON 저장
     public static void SavePlayerData(List<SaveData> saveList)
     {
