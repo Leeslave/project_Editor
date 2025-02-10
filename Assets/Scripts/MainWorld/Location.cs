@@ -1,11 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 [Serializable]
 public enum World {
@@ -141,18 +137,22 @@ public class Location : MonoBehaviour
 
 
     /// <summary>
-    /// 시간대에 해당하는 NPC들 생성
+    /// 해당하는 날짜, 시간대에 월드 객체들 생성
     /// </summary>
-    /// <param name="date">날짜</param>
-    /// <param name="time">시간대</param>
-    public void SetObjects()
+    /// <param name="time">해당하는 시간대 (날짜는 해당 날짜 고정)</param>
+    public void SetObjects(int time)
     {
         // 오브젝트 리스트 초기화
         ClearObjects();
+
         // // 새 오브젝트 정보 불러오기
-        // List<WorldObjectData> dataList = ObjectDatabase.ObjectList[(int)locationName];
-        //
+        List<NPCData> npcs = GameSystem.Instance.DayData.dayTimes[time].npcList;
+        
         // // NPC들 생성
+        foreach(NPCData npc in npcs)
+        {
+
+        }
         // foreach(WorldObjectData _data in dataList)
         // {
         //     if (_data.time != GameSystem.Instance.gameData.time)

@@ -46,6 +46,7 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     public void ReloadWorld()
     {
         // 모든 지역 리로드
+        // TODO: 각 지역 로드를 스레드로 처리
         foreach(var iter in locationList)
         {
             iter.InActiveLocation();
