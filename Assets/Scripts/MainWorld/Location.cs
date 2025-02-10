@@ -140,18 +140,18 @@ public class Location : MonoBehaviour
     /// 해당하는 날짜, 시간대에 월드 객체들 생성
     /// </summary>
     /// <param name="time">해당하는 시간대 (날짜는 해당 날짜 고정)</param>
-    public void SetObjects(int time)
+    public void SetObjects()
     {
         // 오브젝트 리스트 초기화
         ClearObjects();
 
         // // 새 오브젝트 정보 불러오기
-        List<NPCData> npcs = GameSystem.Instance.DayData.dayTimes[time].npcList;
+        List<WorldObjectData> npcs = GameSystem.Instance.DayData.dayTimes[GameSystem.Instance.timeIndex].npcList;
         
         // // NPC들 생성
-        foreach(NPCData npc in npcs)
+        foreach(WorldObjectData npc in npcs)
         {
-
+            
         }
         // foreach(WorldObjectData _data in dataList)
         // {

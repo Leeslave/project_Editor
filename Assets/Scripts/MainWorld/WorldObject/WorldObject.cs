@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class WorldObject : MonoBehaviour
 {
@@ -11,54 +12,67 @@ public class WorldObject : MonoBehaviour
     - 버튼 클릭시 해당 파라미터로 상호작용
     */
 
-    public int param = 0;
+    public List<(WorldVector worldVector, Vector2 anchor, float size)> positions;
+    public List<(string chat, bool onAwake)> chatAssets;
+    
+    public int positionParam;
+    public int chatParam;
     
     public ChatTrigger chatTrigger;
-
+    
 
     /// <summary>
     /// NPC 초기화
     /// </summary>
-    public void onAwake()
+    /// <remarks>로딩씬에 포함</remarks>
+    public void OnAwake()
     {
-        chatTrigger = gameObject.AddComponent<ChatTrigger>();
+        gameObject.AddComponent<ChatTrigger>();
         
-        // foreach (var _data in data.chatData)
-        // {
-        //     chatTrigger.chatAssets.Add(_data.chat);
-        // }
-        // TODO: 로딩씬으로 빼기, 
+        foreach (var asset in chatAssets)
+        {
+            chatTrigger.chatAssets.Add(asset.chat);
+        }
         chatTrigger.LoadChatData();
-        SetPosition();
+        
+        SetAnchor();
 
-        param = 0;
+        positionParam = 0;
+        chatParam = 0;
     }
 
     
+    // Awake 대사시, 실행
     public void OnEnable()
     {
-        // if (data.chatData[param].onAwake)
-        // {
-        //     chatTrigger.Init(param);
-        // }
+        if (chatAssets[chatParam].onAwake)
+        {
+            chatTrigger.Init(chatParam);
+        }
     }
 
 
+    // 현재 대사 실행
     public void OnClicked()
     {
-        chatTrigger.Init(param);
+        chatTrigger.Init(chatParam);
     }
 
 
-    private void SetPosition()
+    /// <summary>
+    /// 위치값에 맞춰 앵커 설정
+    /// </summary>
+    private void SetAnchor()
     {
+        var _data = positions[positionParam];
+        
         // 위치 설정
-        // RectTransform rect = GetComponent<RectTransform>();
-        // rect.anchorMin = data.anchor;
-        // rect.anchorMax = data.anchor;
-        //
-        // // 크기 설정
-        // rect.sizeDelta *= data.size;
-        // rect.localScale = new Vector3(1f,1f,1f);
+        RectTransform rect = GetComponent<RectTransform>();
+        rect.anchorMin = _data.anchor;
+        rect.anchorMax = _data.anchor;
+        
+        // 크기 설정
+        rect.sizeDelta *= _data.size;
+        rect.localScale = new Vector3(1f,1f,1f);
     }
 }

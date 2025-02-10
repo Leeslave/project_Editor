@@ -45,7 +45,7 @@ public class TimeData
 
     public bool isNight;
     
-    public List<NPCData> npcList = new();
+    public List<WorldObjectData> npcList = new();
     public List<WorldVector> blockList = new();
     public List<BGMData> bgmList = new();
 }

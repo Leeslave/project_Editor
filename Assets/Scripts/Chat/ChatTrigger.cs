@@ -11,13 +11,8 @@ public class ChatTrigger : MonoBehaviour
      */
     
     public List<string> chatAssets;
-    private List<List<Paragraph>> _chatData;
-
-
-    private void Start()
-    {
-        LoadChatData();
-    }
+    private List<List<Paragraph>> _chatData = new();
+    
 
     /// <summary>
     /// Load All chat Data
