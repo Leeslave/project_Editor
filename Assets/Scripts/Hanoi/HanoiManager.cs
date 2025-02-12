@@ -1,10 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class HanoiManager : MonoBehaviour 
 {
@@ -40,6 +40,33 @@ public class HanoiManager : MonoBehaviour
     private void Awake()
     {
         _Init();
+        SetStage();
+    }
+
+    public List<Box> Boxes;
+    public int stageInt;
+    public int CurBoxNum;
+    public void SetStage()
+    {
+        try
+        {
+            stageInt = GameSystem.Instance.GetTask("Document");
+        }
+        catch
+        {
+        }
+
+        CurBoxNum = 3 + (stageInt + 1) / 2; NextBox = CurBoxNum;
+        int BreakBoxNum = stageInt - 1; if (BreakBoxNum < 0) BreakBoxNum = 0;
+        bool[] Break = Enumerable.Range(0, CurBoxNum).OrderBy(_ => new System.Random().Next()).Select(i => i < BreakBoxNum).ToArray();
+
+        for (int i = 0; i < 5 - CurBoxNum; i++) Boxes[i].gameObject.SetActive(false);
+        for (int i = 5 - CurBoxNum; i < 5; i++)
+        {
+            Containers[0].AddTop(Boxes[i].gameObject);
+            Boxes[i].MaxDurability = (int)Mathf.Pow(2, i - 4 + CurBoxNum) - 1;
+            if (Break[i - 5 + CurBoxNum]) Boxes[i].SetBreak();
+        }
     }
 
     // ���ڸ� ���� ������ ���, ���� ���ڸ� ���콺�� ��ġ�� �̵���Ŵ
@@ -170,7 +197,15 @@ public class HanoiManager : MonoBehaviour
 
     public void ClearEvent()
     {
-
+        try
+        {
+            GameSystem.Instance.ClearTask("Hanoi");
+            GameSystem.LoadScene("Screen");
+        }
+        catch
+        {
+            SceneManager.LoadScene("Screen");
+        }
     }
 
     public void TouchAbleChange()
