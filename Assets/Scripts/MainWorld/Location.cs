@@ -17,8 +17,6 @@ public enum World {
     Office,
     Office2,
     Interrogate,
-    
-    NullMax
 }
 
 public class Location : MonoBehaviour
@@ -35,9 +33,6 @@ public class Location : MonoBehaviour
 
     [SerializeField] public List<Position> Positions;   // 지역 내 위치
     [SerializeField] public List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
-
-    private List<List<GameObject>> objList = new();  // WorldObject 리스트
-
 
     /// <summary>
     /// 현재 지역을 활성화
@@ -58,7 +53,6 @@ public class Location : MonoBehaviour
     public void InActiveLocation()
     {
         // 위치 전부 비활성화 
-        // TODO: Position의 비활성화 함수로 변경
         for (int i = 0; i < transform.childCount; i++)
         {
             transform.GetChild(i).gameObject.SetActive(false);
@@ -81,24 +75,9 @@ public class Location : MonoBehaviour
             
             return;
         }
-
         
-        // TODO: Position 활성화 함수로 변경(오브젝트 활성화까지)
         // 이동할 장소 활성화
         Positions[newPos].gameObject.SetActive(true);
-        // 이동할 장소의 오브젝트 활성화
-        foreach(var obj in objList[newPos])
-        {
-            // if (obj.TryGetComponent(out WorldObject npc))
-            // {
-            //     npc.OnActive();
-            // }
-            // else 
-            // {
-            //     obj.TryGetComponent(out WorldEffect effect);
-            //     effect.OnActive();
-            // }
-        }
         
         // TODO: Position 비활성화 함수로 변경(오브젝트 활성화까지)
         // 나머지 장소 비활성화
@@ -142,77 +121,16 @@ public class Location : MonoBehaviour
     /// <param name="time">해당하는 시간대 (날짜는 해당 날짜 고정)</param>
     public void SetObjects()
     {
-        // 오브젝트 리스트 초기화
-        ClearObjects();
-
-        // // 새 오브젝트 정보 불러오기
-        List<WorldObjectData> npcs = GameSystem.Instance.DayData.dayTimes[GameSystem.Instance.timeIndex].npcList;
+        // 새 오브젝트 정보 불러오기
+        List<WorldObjectData> npcs = GameSystem.Instance.DayData.dayTimes[GameSystem.Instance.timeIndex].npc;
         
-        // // NPC들 생성
+        // NPC들 생성
         foreach(WorldObjectData npc in npcs)
         {
-            
+            WorldObjectFactory.Instance.CreateObject(npc, locationName, Positions[npc.positions[0].position].transform);
         }
-        // foreach(WorldObjectData _data in dataList)
-        // {
-        //     if (_data.time != GameSystem.Instance.gameData.time)
-        //     {
-        //         continue;
-        //     }
-        //     
-        //     GameObject newObj = Instantiate(ObjectDatabase.Instance.prefabs[(int)_data.objType], Positions[_data.position].transform);     // instantiate 
-        //     newObj.name = _data.name;
-        //
-        //     // 타입에 따라 컴포넌트 추가
-        //     if (_data is EffectData)
-        //     {
-        //         var targetObject = newObj.GetComponent<WorldEffect>();
-        //         targetObject.location = this;
-        //         targetObject.data = _data as EffectData;
-        //     }
-        //     if(_data is ObjData)
-        //     {
-        //         var targetObject = newObj.GetComponent<WorldObject>();
-        //         targetObject.location = this;
-        //         targetObject.data = _data as ObjData;
-        //         targetObject.SetPosition();
-        //     }
-        //     
-        //     objList[_data.position].Add(newObj);
-        // }
-    }
-
-
-    /// <summary>
-    /// 특정 오브젝트 삭제
-    /// </summary>
-    /// <param name="position"></param>
-    /// <param name="name"></param>
-    public void RemoveObject(int position, string name)
-    {
-        var obj = objList[position].Find(data => data.name == name);
-        if (obj != null)
-        {
-            objList[position].Remove(obj);
-            Destroy(obj);
-        }
-    }
-
-
-    public void ClearObjects()
-    {
-        foreach(var iter in objList)
-        {
-            foreach(var obj in iter)
-            {
-                Destroy(obj);
-            }
-        }
-
-        objList = new List<List<GameObject>>(transform.childCount);
-        for (int i = 0; i < objList.Capacity; i++)
-        {
-            objList.Add(new());
-        }
+        
+        // 지역 Block 설정
+        // BGM 변경 설정
     }
 }

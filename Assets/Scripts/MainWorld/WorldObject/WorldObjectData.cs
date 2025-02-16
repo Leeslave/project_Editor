@@ -8,8 +8,7 @@ public class WorldObjectData
     public string name;
     public List<WorldVector> positions;
     public List<(string chat, bool onAwake)> chatData;  // 대사 정보
-    public Vector2 anchor;  // 위치
-    public float size;    // 크기
+    public List<Anchor> anchor;  // 위치
 }
 
 [Serializable]
@@ -30,6 +29,19 @@ public class WorldVector
     public World GetLocation()
     {
         return Enum.Parse<World>(location);
+    }
+}
+
+[Serializable]
+public class Anchor
+{
+    public float x;
+    public float y;
+    public float size;
+
+    public Vector2 GetVector()
+    {
+        return new Vector2(x, y);
     }
 }
 

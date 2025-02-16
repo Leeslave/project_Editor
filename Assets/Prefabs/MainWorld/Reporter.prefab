@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7307037406944028265}
   - component: {fileID: 7307037406944028264}
   - component: {fileID: 8155212916840274126}
+  - component: {fileID: 8024454087308801301}
   m_Layer: 5
   m_Name: Reporter
   m_TagString: Player
@@ -146,4 +147,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f98f2f21c687994d8be02df7e06c381, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data: {fileID: 0}
+  positionParam: 0
+  chatParam: 0
+  chatTrigger: {fileID: 8024454087308801301}
+--- !u!114 &8024454087308801301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7307037406944028266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f455c9e073ab42e093aaff578f04cfda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chatAssets: []

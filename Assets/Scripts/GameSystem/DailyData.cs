@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 [Serializable]
 public class DailyData
@@ -16,15 +17,16 @@ public class DailyData
             스테이지 번호
     */
     
-    /// 하루 날짜 정보
+    // 하루 날짜 정보
     public Date date;   // 날짜 
 
-    /// 게임 플레이 정보
+    // 게임 플레이 정보
     public WorldVector startLocation;
 
-    /// 업무 정보
+    // 업무 정보
     public List<Work> workList = new();
 
+    // 날짜 데이터
     public TimeData[] dayTimes = new TimeData[4];
 }
 
@@ -45,9 +47,9 @@ public class TimeData
 
     public bool isNight;
     
-    public List<WorldObjectData> npcList = new();
-    public List<WorldVector> blockList = new();
-    public List<BGMData> bgmList = new();
+    public List<WorldObjectData> npc = new();
+    public List<WorldVector> block = new();
+    public List<BGMData> bgm = new();
 }
 
 

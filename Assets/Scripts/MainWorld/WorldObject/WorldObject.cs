@@ -11,8 +11,7 @@ public class WorldObject : MonoBehaviour
     상호작용 오브젝트
     - 버튼 클릭시 해당 파라미터로 상호작용
     */
-
-    public List<(WorldVector worldVector, Vector2 anchor, float size)> positions;
+    public List<(WorldVector worldVector, Anchor anchor)> positions;
     public List<(string chat, bool onAwake)> chatAssets;
     
     public int positionParam;
@@ -68,11 +67,11 @@ public class WorldObject : MonoBehaviour
         
         // 위치 설정
         RectTransform rect = GetComponent<RectTransform>();
-        rect.anchorMin = _data.anchor;
-        rect.anchorMax = _data.anchor;
+        rect.anchorMin = _data.anchor.GetVector();
+        rect.anchorMax = _data.anchor.GetVector();
         
         // 크기 설정
-        rect.sizeDelta *= _data.size;
+        rect.sizeDelta *= _data.anchor.size;
         rect.localScale = new Vector3(1f,1f,1f);
     }
 }

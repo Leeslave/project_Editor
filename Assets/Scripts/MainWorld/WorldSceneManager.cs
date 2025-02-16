@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 
@@ -46,6 +45,8 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     public void ReloadWorld()
     {
         // 모든 지역 리로드
+        WorldObjectFactory.Instance.Clear();
+        
         // TODO: 각 지역 로드를 스레드로 처리
         foreach(var iter in locationList)
         {

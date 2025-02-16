@@ -152,15 +152,12 @@ public class RemoveAction : Action
     {
         param = param.Replace(" ", "");
         string[] paramList = param.Split(',');
-
-        int position;
-        string name = paramList[1];
-
-        if (!int.TryParse(paramList[0], out position))
+        
+        if (!Enum.TryParse(paramList[1], out World location))
         {
             return -1;
         }
-        WorldSceneManager.Instance.CurrentLocation.RemoveObject(position, name);
+        WorldObjectFactory.Instance.RemoveObject(paramList[0], location);
         return 0;
     }
 }
