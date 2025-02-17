@@ -10,7 +10,7 @@ public class ChatTrigger : MonoBehaviour
      * - index를 통해 대사를 선택하여 출력 가능
      */
     
-    public List<string> chatAssets;
+    public List<string> chatAssets = new();
     private List<List<Paragraph>> _chatData = new();
     
 

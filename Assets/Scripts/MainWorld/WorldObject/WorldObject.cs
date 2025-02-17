@@ -12,7 +12,7 @@ public class WorldObject : MonoBehaviour
     - 버튼 클릭시 해당 파라미터로 상호작용
     */
     public List<(WorldVector worldVector, Anchor anchor)> positions;
-    public List<(string chat, bool onAwake)> chatAssets;
+    public List<(string chat, bool onAwake)> chatAssets = new();
     
     public int positionParam;
     public int chatParam;
@@ -26,8 +26,6 @@ public class WorldObject : MonoBehaviour
     /// <remarks>로딩씬에 포함</remarks>
     public void OnAwake()
     {
-        gameObject.AddComponent<ChatTrigger>();
-        
         foreach (var asset in chatAssets)
         {
             chatTrigger.chatAssets.Add(asset.chat);

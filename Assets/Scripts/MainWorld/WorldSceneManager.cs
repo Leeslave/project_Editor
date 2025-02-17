@@ -34,8 +34,8 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     {
         base.Awake();
 
-        ReloadWorld();
-        CurrentLocation.SetButtonActive(isMoving);
+        // ReloadWorld();
+        // CurrentLocation.SetButtonActive(isMoving);
     }
 
 
