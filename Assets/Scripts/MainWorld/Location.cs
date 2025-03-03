@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -122,7 +123,10 @@ public class Location : MonoBehaviour
     public void SetObjects()
     {
         // 새 오브젝트 정보 불러오기
-        List<WorldObjectData> npcs = GameSystem.Instance.DayData.dayTimes[GameSystem.Instance.timeIndex].npc;
+        List<WorldObjectData> npcs = GameSystem.Instance.DayData
+                                                .dayTimes[GameSystem.Instance.timeIndex].npc
+                                                .Where(npc=> npc.positions[0].location == locationName.ToString())
+                                                .ToList();
         
         // NPC들 생성
         foreach(WorldObjectData npc in npcs)

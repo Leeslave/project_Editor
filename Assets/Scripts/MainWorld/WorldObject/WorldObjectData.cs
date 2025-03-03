@@ -8,7 +8,8 @@ public class WorldObjectData
     public string name;
     public List<WorldVector> positions;
     public List<Anchor> anchor;  // 위치
-    public List<(string chat, bool onAwake)> chat;  // 대사 정보
+    public List<string> chat;  // 대사 정보
+    public List<bool> onAwake;  // 대사 시작 여부
 }
 
 [Serializable]

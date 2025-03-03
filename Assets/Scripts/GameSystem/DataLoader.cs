@@ -14,13 +14,13 @@ public static class DataLoader
         - Json 파싱으로 플레이어 데이터 저장, 로드
     */
     [SerializeField]
-    private static string GAMEDATAPATH = Application.dataPath + "/Resources/GameData/Main";   // 게임 데이터 파일 경로
+    private static string GAMEDATAPATH = Application.dataPath + "/Resources/GameData/Main/";   // 게임 데이터 파일 경로
 
     private static string GAMEFILE = "dailyData";
     [SerializeField]
     private static string SAVEPATH = Application.dataPath + "/Resources/Save/savedata.json";    // 세이브 파일 경로
     [SerializeField]
-    private static string CHATPATH = Application.dataPath + "/Resources/Chat/Text";     // 대화 파일 경로
+    private static string CHATPATH = Application.dataPath + "/Resources/Chat/Text/";     // 대화 파일 경로
     
 
     /// <summary>
@@ -33,6 +33,7 @@ public static class DataLoader
         FileStream fs = new FileStream(CHATPATH + fileName, FileMode.Open);
         byte[] buffer = new byte[fs.Length];
         fs.Read(buffer, 0, (int)fs.Length);
+        fs.Close();
         string jsonText = Encoding.UTF8.GetString(buffer);
         
         Dialogue wrapper = JsonConvert.DeserializeObject<Dialogue>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });

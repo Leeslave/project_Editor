@@ -32,6 +32,16 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
     public List<GameObject> prefabs;
     private readonly List<List<WorldObject>> _objectList = new();
 
+    private new void Awake()
+    {
+        base.Awake();
+        
+        for (int i = 0; i < Enum.GetValues(typeof(World)).Length; i++)
+        {
+            _objectList.Add(new List<WorldObject>());
+        }
+    }
+
 
     /// <summary>
     ///  NPCData를 가지고 NPC 생성
@@ -54,13 +64,13 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         
         // 월드 오브젝트 생성
         GameObject newObject = Instantiate(prefab, position);
+        Debug.Log($"New Object: {newObject.name}");
         
         // 데이터 입력
         WorldObject worldObject = newObject.GetComponent<WorldObject>();
         worldObject.name = objData.name;
         worldObject.positions = objData.positions.Zip(objData.anchor, (wv, anchor) =>  (wv, anchor)).ToList();
-        worldObject.chatAssets = objData.chat;
-        Debug.Log(objData.chat);
+        worldObject.chatAssets = objData.chat.Zip(objData.onAwake, (c, a) => (c, a)).ToList();
         
         // 객체 리스트에 추가
         if (_objectList.Count == 0)

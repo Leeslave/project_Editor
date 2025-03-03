@@ -20,15 +20,9 @@
                 {
                     "name": "none",
                     "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
+                        { "location": "Street", "position": 0 }
                     ],
                     "anchor": [
-                        {
-                            "x": 0,
-                            "y": 0,
-                            "size": 1
-                        },
                         {
                             "x": 0,
                             "y": 0,
@@ -36,27 +30,28 @@
                         }
                     ],
                     "chat": [
-                        "chat1.json",
-                        "chat2.json"
+                        "day 0/intro.json"
                     ],
                     "onAwake": [
-                        true,
-                        false,
-                        false
+                        true
                     ]
                 },
                 {
                     "name": "Rex",
                     "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
+                        { "location": "Office", "position": 0 }
+                    ],
+                    "anchor": [
+                        {
+                            "x": 0,
+                            "y": 0,
+                            "size": 1
+                        }
                     ],
                     "chat": [
-                        "chat1.json",
-                        "chat2.json"
+                        "day 0/Rex0.json"
                     ],
                     "onAwake": [
-                        true,
                         true
                     ]
                 }
@@ -75,49 +70,6 @@
         {
             "time": {"hour": 9, "minute": 0},
             "npc" : [
-                {
-                    "name": "none",
-                    "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
-                    ],
-                    "anchor": [
-                        {
-                            "x": 0,
-                            "y": 0,
-                            "size": 1
-                        },
-                        {
-                            "x": 0,
-                            "y": 0,
-                            "size": 1
-                        }
-                    ],
-                    "chat": [
-                        "chat1.json",
-                        "chat2.json"
-                    ],
-                    "onAwake": [
-                        true,
-                        false,
-                        false
-                    ]
-                },
-                {
-                    "name": "Rex",
-                    "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
-                    ],
-                    "chat": [
-                        "chat1.json",
-                        "chat2.json"
-                    ],
-                    "onAwake": [
-                        true,
-                        true
-                    ]
-                }
             ],
             "block": [
                 { "location": "Street", "position": 2 },
@@ -133,49 +85,6 @@
         {
             "time": {"hour": 17, "minute": 30},
             "npc" : [
-                {
-                    "name": "none",
-                    "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
-                    ],
-                    "anchor": [
-                        {
-                            "x": 0,
-                            "y": 0,
-                            "size": 1
-                        },
-                        {
-                            "x": 0,
-                            "y": 0,
-                            "size": 1
-                        }
-                    ],
-                    "chat": [
-                        "chat1.json",
-                        "chat2.json"
-                    ],
-                    "onAwake": [
-                        true,
-                        false,
-                        false
-                    ]
-                },
-                {
-                    "name": "Rex",
-                    "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
-                    ],
-                    "chat": [
-                        "chat1.json",
-                        "chat2.json"
-                    ],
-                    "onAwake": [
-                        true,
-                        true
-                    ]
-                }
             ],
             "block": [
                 { "location": "Street", "position": 2 },
@@ -192,49 +101,6 @@
             "time": {"hour": 20, "minute": 0},
             "isNight" : true,
             "npc" : [
-                {
-                    "name": "none",
-                    "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
-                    ],
-                    "anchor": [
-                        {
-                            "x": 0,
-                            "y": 0,
-                            "size": 1
-                        },
-                        {
-                            "x": 0,
-                            "y": 0,
-                            "size": 1
-                        }
-                    ],
-                    "chat": [
-                        "chat1.json",
-                        "chat2.json"
-                    ],
-                    "onAwake": [
-                        true,
-                        false,
-                        false
-                    ]
-                },
-                {
-                    "name": "Rex",
-                    "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
-                    ],
-                    "chat": [
-                        "chat1.json",
-                        "chat2.json"
-                    ],
-                    "onAwake": [
-                        true,
-                        true
-                    ]
-                }
             ],
             "block": [
                 { "location": "Street", "position": 2 },
