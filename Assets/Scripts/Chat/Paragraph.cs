@@ -59,7 +59,7 @@ public class TalkParagraph : Paragraph
     public const int SMALLFONTSIZE = 10;
 
     public string fontSize = "normal";   // 글자 크기
-    public float textDelay = 0.4f;      // 텍스트간 딜레이
+    public float textDelay = 0.1f;      // 텍스트간 딜레이 / 기존 0.4ㄹ -> 변경 0.1f
 
 
     public int GetFontSize()

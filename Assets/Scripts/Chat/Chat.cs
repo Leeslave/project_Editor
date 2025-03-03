@@ -467,9 +467,10 @@ public class Chat : Singleton<Chat>
         {
             // 텍스트 추가
             text.text += paragraph.text[i];
-            
+
             // 텍스트 효과음 실행
-            textSFX.Play();
+            if (i % 5 == 0) textSFX.Play(); // 사운드가 겹쳐 뭉개지는 현상 수정
+                                            // textSFX.Play();
 
             yield return new WaitForSeconds(paragraph.textDelay / 10);
         }
