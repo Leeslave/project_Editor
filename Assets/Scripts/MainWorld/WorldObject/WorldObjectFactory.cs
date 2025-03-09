@@ -29,7 +29,9 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         
     }
 
+    public GameObject bgmPrefab;
     public List<GameObject> prefabs;
+    public List<AudioSource> bgms; 
     private readonly List<List<WorldObject>> _objectList = new();
 
     private new void Awake()
@@ -84,6 +86,15 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         
         // 오브젝트 시작
         worldObject.OnAwake();
+    }
+
+
+    public void CreateBGM(BGMData bgmData)
+    {
+        // 프리팹 로드 및 생성
+        
+        
+        // 해당하는 BGM 소스 입력
     }
 
 

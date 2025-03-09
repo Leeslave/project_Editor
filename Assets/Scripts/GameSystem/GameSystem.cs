@@ -141,7 +141,7 @@ public class GameSystem : SingletonObject<GameSystem>
     /// 업무 완료 여부 설정
     /// </summary>
     /// <param name="workCode">설정할 업무의 코드명</param>
-    /// <param name="isClear">업무 완료 여부</param>
+    /// <remarks>해당하는 업무를 완료로 전환</remarks>
     public void ClearTask(string workCode)
     {
         // 코드에 해당하는 업무 불러오기
