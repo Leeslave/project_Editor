@@ -52,6 +52,7 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
         {
             iter.InActiveLocation();
             iter.SetObjects();
+            iter.SetBGMCode();
         }
 
         // 날짜 변경 시 위치 초기화

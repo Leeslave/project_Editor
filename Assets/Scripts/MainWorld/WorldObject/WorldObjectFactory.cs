@@ -7,8 +7,7 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
 {
     /**
      * 월드 오브젝트 생성
-     * - NPCData, BGMData를 가지고 해당하는 객체 생성
-     * - 지역락 데이터로 해당 지역으로 이동하는 객체 삭제
+     * - NPCData를 가지고 해당하는 객체 생성
      */
 
     private enum WorldObjectType
@@ -28,10 +27,8 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         Nametag,
         
     }
-
-    public GameObject bgmPrefab;
+    
     public List<GameObject> prefabs;
-    public List<AudioSource> bgms; 
     private readonly List<List<WorldObject>> _objectList = new();
 
     private new void Awake()
@@ -86,15 +83,6 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         
         // 오브젝트 시작
         worldObject.OnAwake();
-    }
-
-
-    public void CreateBGM(BGMData bgmData)
-    {
-        // 프리팹 로드 및 생성
-        
-        
-        // 해당하는 BGM 소스 입력
     }
 
 

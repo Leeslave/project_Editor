@@ -4,8 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System;
-using System.IO;
-using Newtonsoft.Json;
 
 public class Chat : Singleton<Chat>
 {
