@@ -6,7 +6,7 @@
     },
     "startLocation": {
         "location": "Cafe",
-        "position": 1,
+        "position": 0,
         "name": "시가지 앞 카페"
     },
     "workList": [
@@ -18,17 +18,12 @@
             "time": {"hour": 7, "minute": 0},
             "npc" : [
                 {
-                    "name": "none",
+                    "name" : "TV",
+                    "objectType": "none",
                     "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
+                        { "location": "Cafe", "position": 0 }
                     ],
                     "anchor": [
-                        {
-                            "x": 0,
-                            "y": 0,
-                            "size": 1
-                        },
                         {
                             "x": 0,
                             "y": 0,
@@ -36,215 +31,111 @@
                         }
                     ],
                     "chat": [
-                        "chat1.json",
-                        "chat2.json"
+                        "day 1/TV.json"
                     ],
                     "onAwake": [
-                        true,
-                        false,
-                        false
-                    ]
-                },
-                {
-                    "name": "Rex",
-                    "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
-                    ],
-                    "chat": [
-                        "chat1.json",
-                        "chat2.json"
-                    ],
-                    "onAwake": [
-                        true,
                         true
                     ]
                 }
             ],
             "block": [
                 { "location": "Street", "position": 2 },
-                { "location": "Restaurant", "position": 2 }
+                { "location": "Restaurant", "position": 0 },
+                { "location": "Bar", "position": 0 },
+                { "location": "Hallway", "position": 1 }
             ],
             "bgm": [
-                {
-                    "location": "Street",
-                    "code" : 3
-                }
             ]
         },
         {
             "time": {"hour": 9, "minute": 0},
             "npc" : [
                 {
-                    "name": "none",
+                    "objectType": "Clover",
                     "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
+                        { "location": "Office", "position": 0 }
                     ],
                     "anchor": [
                         {
-                            "x": 0,
-                            "y": 0,
-                            "size": 1
-                        },
-                        {
-                            "x": 0,
-                            "y": 0,
+                            "x": 0.4,
+                            "y": 0.33,
                             "size": 1
                         }
                     ],
                     "chat": [
-                        "chat1.json",
-                        "chat2.json"
+                        "day 1/Clover.json",
+                        "day 1/CloverTouch.json"
                     ],
                     "onAwake": [
                         true,
-                        false,
                         false
                     ]
                 },
                 {
-                    "name": "Rex",
+                    "objectType": "Nametag",
                     "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
+                        { "location": "Office", "position": 3 }
+                    ],
+                    "anchor": [
+                        {
+                            "x": 0.11,
+                            "y": 0.25,
+                            "size": 1
+                        }
                     ],
                     "chat": [
-                        "chat1.json",
-                        "chat2.json"
+                        "day 1/Nametag.json"
                     ],
                     "onAwake": [
-                        true,
-                        true
+                        false
                     ]
                 }
             ],
             "block": [
-                { "location": "Street", "position": 2 },
-                { "location": "Restaurant", "position": 2 }
+                { "location": "Hallway", "position": 0 },
+                { "location": "Office", "position": 2 }
             ],
             "bgm": [
-                {
-                    "location": "Street",
-                    "code" : 3
-                }
             ]
         },
         {
             "time": {"hour": 17, "minute": 30},
             "npc" : [
                 {
-                    "name": "none",
+                    "objectType": "Clover",
                     "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
+                        { "location": "Office", "position": 0 }
                     ],
                     "anchor": [
                         {
-                            "x": 0,
-                            "y": 0,
-                            "size": 1
-                        },
-                        {
-                            "x": 0,
-                            "y": 0,
+                            "x": 0.5,
+                            "y": 0.33,
                             "size": 1
                         }
                     ],
                     "chat": [
-                        "chat1.json",
-                        "chat2.json"
+                        "day 1/Afterwork.json"
                     ],
                     "onAwake": [
-                        true,
-                        false,
-                        false
-                    ]
-                },
-                {
-                    "name": "Rex",
-                    "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
-                    ],
-                    "chat": [
-                        "chat1.json",
-                        "chat2.json"
-                    ],
-                    "onAwake": [
-                        true,
                         true
                     ]
                 }
             ],
             "block": [
-                { "location": "Street", "position": 2 },
-                { "location": "Restaurant", "position": 2 }
+                { "location": "Hallway", "position": 1 }
             ],
             "bgm": [
-                {
-                    "location": "Street",
-                    "code" : 3
-                }
             ]
         },
         {
             "time": {"hour": 20, "minute": 0},
             "isNight" : true,
             "npc" : [
-                {
-                    "name": "none",
-                    "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
-                    ],
-                    "anchor": [
-                        {
-                            "x": 0,
-                            "y": 0,
-                            "size": 1
-                        },
-                        {
-                            "x": 0,
-                            "y": 0,
-                            "size": 1
-                        }
-                    ],
-                    "chat": [
-                        "chat1.json",
-                        "chat2.json"
-                    ],
-                    "onAwake": [
-                        true,
-                        false,
-                        false
-                    ]
-                },
-                {
-                    "name": "Rex",
-                    "positions": [
-                        { "location": "Street", "position": 0 },
-                        { "location": "Street", "position": 1 }
-                    ],
-                    "chat": [
-                        "chat1.json",
-                        "chat2.json"
-                    ],
-                    "onAwake": [
-                        true,
-                        true
-                    ]
-                }
             ],
             "block": [
-                { "location": "Street", "position": 2 },
-                { "location": "Restaurant", "position": 2 }
+                { "location": "Street", "position": 2 }
             ],
             "bgm": [
-                {
-                    "location": "Street",
-                    "code" : 3
-                }
             ]
         }
     ]

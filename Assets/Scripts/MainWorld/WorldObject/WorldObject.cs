@@ -1,11 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public class WorldObject : MonoBehaviour
+public class WorldObject : MonoBehaviour, IChatList
 {
     /**
     상호작용 오브젝트
@@ -17,8 +13,9 @@ public class WorldObject : MonoBehaviour
     public int positionParam;
     public int chatParam;
     
-    public ChatTrigger chatTrigger;
-    
+    private List<ChatTrigger> _chats = new();
+    private IChatList _chatListImplementation;
+
 
     /// <summary>
     /// NPC 초기화
@@ -26,16 +23,36 @@ public class WorldObject : MonoBehaviour
     /// <remarks>로딩씬에 포함</remarks>
     public void OnAwake()
     {
+        // Trigger들 초기화
+        foreach (ChatTrigger chat in _chats)
+        {
+            Destroy(chat);
+        }
+        
         foreach (var asset in chatAssets)
         {
-            chatTrigger.chatAssets.Add(asset.chat);
+            ChatTrigger newTrigger = gameObject.AddComponent<ChatTrigger>();
+            newTrigger.chatAsset = asset.chat;
+            _chats.Add(newTrigger);
+            
+            // TODO: 대사 로드 비동기 처리
+            newTrigger.LoadChatData();
         }
-        chatTrigger.LoadChatData();
         
         SetAnchor();
 
         positionParam = 0;
         chatParam = 0;
+    }
+    
+    public void SwapIndex(int idx)
+    {
+        chatParam = idx;
+    }
+    
+    public void StartChat()
+    {
+        _chats[chatParam].StartChat();
     }
 
     
@@ -44,7 +61,7 @@ public class WorldObject : MonoBehaviour
     {
         if (chatAssets[chatParam].onAwake)
         {
-            chatTrigger.Init(chatParam);
+            StartChat();
         }
     }
 
@@ -52,7 +69,7 @@ public class WorldObject : MonoBehaviour
     // 현재 대사 실행
     public void OnClicked()
     {
-        chatTrigger.Init(chatParam);
+        StartChat();
     }
 
 
@@ -72,4 +89,5 @@ public class WorldObject : MonoBehaviour
         rect.sizeDelta *= _data.anchor.size;
         rect.localScale = new Vector3(1f,1f,1f);
     }
+
 }

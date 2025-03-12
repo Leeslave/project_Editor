@@ -130,6 +130,5 @@ public class MsgManager : Singleton<MsgManager>
     {
         messageDatas.Clear();
 
-        messageDatas = ObjectDatabase.MessageList;
     }
 }

@@ -1,6 +1,12 @@
-using JetBrains.Annotations;
 using System.Collections.Generic;
 using UnityEngine;
+
+
+public interface IChatList
+{
+    public void SwapIndex(int idx);
+    public void StartChat();
+}
 
 public class ChatTrigger : MonoBehaviour
 {
@@ -10,22 +16,30 @@ public class ChatTrigger : MonoBehaviour
      * - index를 통해 대사를 선택하여 출력 가능
      */
     
-    public List<string> chatAssets = new();
-    private List<List<Paragraph>> _chatData = new();
-    
+    public string chatAsset;
 
+    [SerializeField] 
+    private List<TalkParagraph> chatText;
+    private List<Paragraph> chatData = new();
+    
+    
+    public void Awake()
+    {
+        if (chatText is null || chatText.Count == 0)
+        {
+            return;
+        }
+        chatData.AddRange(chatText);
+    }
+    
+    
     /// <summary>
-    /// Load All chat Data
+    /// 대화 파일 읽어오기
     /// </summary>
     public void LoadChatData()
     {
-        _chatData = new();
-        
-        foreach (var asset in chatAssets)
-        {
-            var item = DataLoader.GetChatData(asset);
-            _chatData.Add(item);
-        }
+        chatData = new();
+        chatData = DataLoader.GetChatData(chatAsset);
     }
 
 
@@ -33,20 +47,14 @@ public class ChatTrigger : MonoBehaviour
     /// Start Chat
     /// </summary>
     /// <param name="idx">chat data index</param>
-    public void Init(int idx)
+    public void StartChat()
     {
-        if (idx < 0 || idx >= _chatData.Count )
-        {
-            Debug.LogWarning("Invalid Chat Asset Index");
-            return;
-        }
-
-        if (_chatData[idx] is null)
+        if (chatData is null)
         {
             Debug.LogWarning("Failed to Load Chat Data");
             return;
         }
               
-        Chat.Instance.StartChat(_chatData[idx]);
+        Chat.Instance.StartChat(gameObject, chatData);
     }
 }

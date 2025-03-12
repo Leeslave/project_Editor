@@ -18,7 +18,8 @@
             "time": {"hour": 7, "minute": 0},
             "npc" : [
                 {
-                    "name": "none",
+                    "name": "intro",
+                    "objectType": "none",
                     "positions": [
                         { "location": "Street", "position": 0 }
                     ],
@@ -35,9 +36,27 @@
                     "onAwake": [
                         true
                     ]
-                },
+                }
+            ],
+            "block": [
+                { "location": "Cafe", "position": 0 },
+                { "location": "Restaurant", "position": 0 },
+                { "location": "Street", "position": 2 },
+                { "location": "Bar", "position": 0 },
+                { "location": "Hallway", "position": 1}
+            ],
+            "bgm": [
                 {
-                    "name": "Rex",
+                    "location": "Street",
+                    "code" : 6
+                }
+            ]
+        },
+        {
+            "time": {"hour": 9, "minute": 0},
+            "npc" : [
+                {
+                    "objectType": "Rex",
                     "positions": [
                         { "location": "Office", "position": 0 }
                     ],
@@ -57,28 +76,9 @@
                 }
             ],
             "block": [
-                { "location": "Street", "position": 2 }
+                { "location": "Hallway", "position": 0 }
             ],
             "bgm": [
-                {
-                    "location": "Street",
-                    "code" : 3
-                }
-            ]
-        },
-        {
-            "time": {"hour": 9, "minute": 0},
-            "npc" : [
-            ],
-            "block": [
-                { "location": "Street", "position": 2 },
-                { "location": "Restaurant", "position": 2 }
-            ],
-            "bgm": [
-                {
-                    "location": "Street",
-                    "code" : 3
-                }
             ]
         },
         {
@@ -86,14 +86,8 @@
             "npc" : [
             ],
             "block": [
-                { "location": "Street", "position": 2 },
-                { "location": "Restaurant", "position": 2 }
             ],
             "bgm": [
-                {
-                    "location": "Street",
-                    "code" : 3
-                }
             ]
         },
         {
@@ -102,14 +96,8 @@
             "npc" : [
             ],
             "block": [
-                { "location": "Street", "position": 2 },
-                { "location": "Restaurant", "position": 2 }
             ],
             "bgm": [
-                {
-                    "location": "Street",
-                    "code" : 3
-                }
             ]
         }
     ]

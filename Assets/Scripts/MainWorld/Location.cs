@@ -17,8 +17,10 @@ public enum World {
     Temple,
     Hallway,
     Office,
-    Office2,
+    Office3,
     Interrogate,
+    
+    Max
 }
 
 public class Location : MonoBehaviour
@@ -34,7 +36,8 @@ public class Location : MonoBehaviour
     public int bgmCode;   // BGM 번호
 
     [SerializeField] public List<Position> Positions;   // 지역 내 위치
-    [SerializeField] public List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
+    [SerializeField] public List<Door> buttons;   // 지역 내 위치 이동 버튼들
+
 
     /// <summary>
     /// 현재 지역을 활성화
@@ -92,7 +95,16 @@ public class Location : MonoBehaviour
             Positions[i].gameObject.SetActive(false);
         }
     }
-    
+
+
+    /// <summary>
+    /// 지역 이동 버튼 등록
+    /// </summary>
+    public void SetButtons()
+    {
+        // 버튼 오브젝트 불러오기
+        buttons = GetComponentsInChildren<Door>(true).ToList();
+    }
 
     /// <summary>
     /// 지역 이동 버튼 활성화

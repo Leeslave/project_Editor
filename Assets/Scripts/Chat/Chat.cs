@@ -12,51 +12,38 @@ public class Chat : Singleton<Chat>
     - Paragraph들 출력하기
     - 대사중 버튼을 눌러 다음 대사로 넘어가기
     - 스킵하기를 눌러서 대사 종료 (이벤트 함수 실행, Ending 선택지 제외)
-    - 대사 출력 후 로그 텍스트에 1개씩 추가 
+    - 대사 출력 후 로그 텍스트에 1개씩 추가
     */
+    [SerializeField] private GameObject chatTarget;
     private GameObject ChatUI => transform.GetChild(0).gameObject;
-    [SerializeField]
-    private ChatTutorialManager ChatTutorial;
+    [SerializeField] private ChatTutorialManager ChatTutorial;
 
     [Header("UI 요소")]
-    [SerializeField]
-    private Image background;   // 배경 이미지
-    [SerializeField]
-    private SoundManager bgm;    // 배경 음악
+    [SerializeField] private Image background;   // 배경 이미지
+    [SerializeField] private SoundManager bgm;    // 배경 음악
 
     [Space(20)]
     [Header("대화 패널")]
-    [SerializeField]
-    private Image characterL;    // 왼쪽 캐릭터 CG
-    [SerializeField]
-    private Image characterL2;    // 왼쪽 캐릭터 CG
-    [SerializeField]
-    private Image characterR;    // 오른쪽 캐릭터 CG
-    [SerializeField]
-    private Image characterR2;    // 왼쪽 캐릭터 CG
-    [SerializeField]
-    private GameObject talkPanel;   // 대화 패널
+    [SerializeField] private Image characterL;    // 왼쪽 캐릭터 CG
+    [SerializeField] private Image characterL2;    // 왼쪽 캐릭터 CG
+    [SerializeField] private Image characterR;    // 오른쪽 캐릭터 CG
+    [SerializeField] private Image characterR2;    // 왼쪽 캐릭터 CG
+    [SerializeField] private GameObject talkPanel;   // 대화 패널
     public TMP_Text talkerName;     // 발화자 이름
-    [SerializeField]
-    private TMP_Text talkerInfo;    // 발화자 정보
+    [SerializeField] private TMP_Text talkerInfo;    // 발화자 정보
     public TMP_Text text;           // 대화 내용
     public SoundManager textSFX;    // 대화 효과음
 
     [Space(20)]
     [Header("선택지 패널")]
-    [SerializeField]
-    private GameObject choicePanel;     // 선택지 패널 (선택지 3개)
+    [SerializeField] private GameObject choicePanel;     // 선택지 패널 (선택지 3개)
     
     [Space(20)]
     [Header("옵션 패널")]
-    [SerializeField]
-    private GameObject optionPanel;     // 옵션 패널 (다시보기, 스킵)
-    [SerializeField]
-    private GameObject remindContent;     // 다시보기 패널
-    [SerializeField]
-    private GameObject remindTalkNode;      // 대화 다시보기 노드 프리팹
-    [SerializeField]
-    private GameObject remindChoiceNode;    // 선택지 다시보기 노드 프리팹
+    [SerializeField] private GameObject optionPanel;     // 옵션 패널 (다시보기, 스킵)
+    [SerializeField] private GameObject remindContent;     // 다시보기 패널
+    [SerializeField] private GameObject remindTalkNode;      // 대화 다시보기 노드 프리팹
+    [SerializeField] private GameObject remindChoiceNode;    // 선택지 다시보기 노드 프리팹
 
 
     [Space(30)] 
@@ -84,8 +71,9 @@ public class Chat : Singleton<Chat>
     ///<summary>
     ///대화 시작
     ///</summary>
+    /// <param name="obj">대사를 실행한 오브젝트</param>
     ///<param name="_chatList">대사 리스트</param>
-    public void StartChat(List<Paragraph> _chatList)
+    public void StartChat(GameObject obj, List<Paragraph> _chatList)
     {
         // 대화 리스트 오류
         if (_chatList == null)
@@ -93,6 +81,9 @@ public class Chat : Singleton<Chat>
             Debug.Log($"CHAT DATA CANNOT FOUND");
             return;
         }
+        
+        // 대화 객체 연결
+        chatTarget = obj;
         
         // 대화 리스트 할당
         chatList = new Queue<Paragraph>(_chatList);
@@ -143,8 +134,11 @@ public class Chat : Singleton<Chat>
     private void FinishChat()
     {
         background.sprite = null;   // 배경 초기화
+        
+        bgm.Pause();    // BGM 종료 및 월드 BGM 재개
         WorldSceneManager.Instance.worldBGM.Resume();
-        ClearLog();
+        
+        ClearLog();     //로그 초기화
         ChatUI.SetActive(false);    // UI 종료
     }
 
@@ -217,7 +211,7 @@ public class Chat : Singleton<Chat>
         // 선택지 텍스트에 변수값 적용
         button.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = ParseVariables(choice.text, choice.variables);  // 선택지 텍스트 설정
         // 선택지 반응 설정
-        choiceActions[choiceNum] = GetAction(choice.reaction, choice.reactionParam);        
+        choiceActions[choiceNum] = ActionHandler.GetAction(choice.reaction, choice.reactionParam);        
 
         button.SetActive(true);     // 선택지 활성화
     }
@@ -246,16 +240,16 @@ public class Chat : Singleton<Chat>
             TalkParagraph talk = para as TalkParagraph;
             
             // 캐릭터 CG 활성화
-            if (talk.characterL != null)
+            if (!string.IsNullOrEmpty(talk.characterL?.fileName))
             {
-                if (characterL.sprite == null ||
-                    (characterL.sprite.name != talk.characterL.fileName))
+                if (characterL.sprite is null ||
+                    characterL.sprite.name != talk.characterL.fileName)
                 {
                     characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterL.fileName}", talk.characterL.index);
                 }
                 characterL.gameObject.SetActive(true);
             }
-            if (talk.characterL2 != null)
+            if (!string.IsNullOrEmpty(talk.characterL2?.fileName))
             {
                 if (characterL2.sprite == null ||
                     (characterL2.sprite.name != talk.characterL2.fileName))
@@ -264,7 +258,7 @@ public class Chat : Singleton<Chat>
                 }
                 characterL2.gameObject.SetActive(true);
             }
-            if (talk.characterR != null)
+            if (!string.IsNullOrEmpty(talk.characterR?.fileName))
             {
                 if (characterR.sprite == null ||
                     (characterR.sprite.name != talk.characterR.fileName))
@@ -273,7 +267,7 @@ public class Chat : Singleton<Chat>
                 }
                 characterR.gameObject.SetActive(true);
             }
-            if (talk.characterR2 != null)
+            if (!string.IsNullOrEmpty(talk.characterR2?.fileName))
             {
                 if (characterR2.sprite == null ||
                     (characterR2.sprite.name != talk.characterR2.fileName))
@@ -284,47 +278,47 @@ public class Chat : Singleton<Chat>
             }
             
             // 대화 존재시
-            if (talk.text != null)
+            if (!string.IsNullOrEmpty(talk.text))
             {
+                talkPanel.SetActive(true); // 대화 패널 활성화
 
-                talkPanel.SetActive(true);      // 대화 패널 활성화
-
-                talkerName.text = talk.talker;     // 발화자 이름
+                talkerName.text = talk.talker; // 발화자 이름
                 talkerInfo.text = talk.talkerInfo; // 발화자 설명
 
-                text.fontSize = talk.GetFontSize();   // 대사 크기 설정
+                text.fontSize = talk.GetFontSize(); // 대사 크기 설정
 
-                if(text.fontSize == TalkParagraph.LARGEFONTSIZE)
+                if (talk.GetFontSize() == TalkParagraph.LARGEFONTSIZE)
                     textSFX.SetClip(1);
-                else if(text.fontSize == TalkParagraph.NORMALFONTSIZE)
+                else if (talk.GetFontSize() == TalkParagraph.NORMALFONTSIZE)
                     textSFX.SetClip(0);
                 else
                     textSFX = new();
-
+                
                 StartCoroutine(TextAnimation(talk));
             }
         }
+        
         else if(para is ChoiceParagraph)         /// 일반 선택지
         {
             ChoiceParagraph choicePara = para as ChoiceParagraph;
 
             // 캐릭터 CG 활성화
-            if (choicePara.characterL != null)
+            if (choicePara.characterL is not null)
             {
                 characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterL.fileName}_{choicePara.characterL.index}");
                 characterL.gameObject.SetActive(true);
             }
-            if (choicePara.characterR != null)
+            if (choicePara.characterR is not null)
             {
                 characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterR.fileName}_{choicePara.characterR.index}");
                 characterR.gameObject.SetActive(true);
             }
-            if (choicePara.characterL2 != null)
+            if (choicePara.characterL2 is not null)
             {
                 characterL2.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterL2.fileName}_{choicePara.characterL2.index}");
                 characterL2.gameObject.SetActive(true);
             }
-            if (choicePara.characterR != null)
+            if (choicePara.characterR is not null)
             {
                 characterR2.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterR2.fileName}_{choicePara.characterR2.index}");
                 characterR2.gameObject.SetActive(true);
@@ -364,16 +358,16 @@ public class Chat : Singleton<Chat>
         // 배경 활성화
         if (para.chatType == "CutScene")
         {
-            if (para.background != null)
+            if (para.background is not null)
             {
                 background.sprite = GetSprite(BACKGROUNDFILEPATH + para.background);    // 배경 이미지 설정 
             }
-            if (background.sprite != null)
+            if (background.sprite is not null)
                 background.gameObject.SetActive(true);      // 배경 이미지 활성화
         }
         
         // 배경음악 설정
-        if (para.bgm != null)
+        if (!string.IsNullOrEmpty(para.bgm))
         {
             // 모든 음악 중지
             if (para.bgm == "STOP")
@@ -405,7 +399,7 @@ public class Chat : Singleton<Chat>
         }
 
         // 반응 설정
-        action = GetAction(para.action, para.actionParam);  
+        action = ActionHandler.GetAction(para.action, para.actionParam);  
     }
 
 /************************************UI 이벤트 함수*****************************************/
@@ -499,43 +493,7 @@ public class Chat : Singleton<Chat>
 
 /**************************************데이터값 호출 함수 static****************************************/
 
-    /// <summary>
-    /// 반응 함수 할당
-    /// </summary>
-    /// <param name="func"></param>
-    /// <param name="param"></param>
-    /// <returns></returns>
-    public static Action GetAction(string func, string param)
-    {
-        Action result;
-
-        switch (func)
-        {
-        case "Jump":
-            result = new ChatJumpAction();
-            break;
-        case "DayChange":
-            result = new HardDayChangeAction();
-            break;
-        case "TimeChange":
-            result = new TimeChangeAction();
-            break;
-        case "Tutorial":
-            result = new TutorialAction();
-            break;
-        case "Remove":
-            result = new RemoveAction();
-            break;
-        case "ExitGame":
-            result = new ExitGameAction();
-            break;
-        default:
-            return null;
-        }
-
-        result.param = param;
-        return result;
-    }
+    
 
     /// <summary>
     /// 변수 텍스트 적용

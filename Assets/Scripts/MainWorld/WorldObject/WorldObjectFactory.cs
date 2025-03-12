@@ -52,13 +52,13 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
     {
         // 해당하는 프리팹 로드
         GameObject prefab;
-        if (Enum.TryParse(objData.name, out WorldObjectType npcType))
+        if (Enum.TryParse(objData.objectType, out WorldObjectType npcType))
         {
             prefab = prefabs[(int)npcType];
         }
         else
         {
-            throw new Exception($"Invalid WorldObject Name : {objData.name}");
+            throw new Exception($"Invalid WorldObject Name : {objData.objectType}");
         }
         
         // 월드 오브젝트 생성
@@ -66,8 +66,13 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         Debug.Log($"New Object: {newObject.name}");
         
         // 데이터 입력
+        if (objData.name == null)
+        {
+            objData.name = objData.objectType;
+        }
+        newObject.name = objData.name;
+        Debug.Log($"New Object: {newObject.name} <= {objData.name}");
         WorldObject worldObject = newObject.GetComponent<WorldObject>();
-        worldObject.name = objData.name;
         worldObject.positions = objData.positions.Zip(objData.anchor, (wv, anchor) =>  (wv, anchor)).ToList();
         worldObject.chatAssets = objData.chat.Zip(objData.onAwake, (c, a) => (c, a)).ToList();
         
@@ -87,17 +92,40 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
 
 
     /// <summary>
+    /// 지역 내 특정 오브젝트 반환
+    /// </summary>
+    /// <param name="objName">오브젝트명</param>
+    /// <returns></returns>
+    public WorldObject FindObject(string objName)
+    {
+        foreach (var objList in _objectList)
+        {
+            var obj = objList.Find(x => x.name == objName);
+            if (obj is not null)
+            {
+                return obj;
+            }
+        }
+        return null;
+    }
+
+
+    /// <summary>
     /// 지역 내 특정 오브젝트 삭제
     /// </summary>
     /// <param name="objName">오브젝트명</param>
     /// <param name="location">해당하는 위치</param>
-    public void RemoveObject(string objName, World location)
+    public void RemoveObject(string objName)
     {
-        var obj = _objectList[(int)location].Find(x => x.name == objName);
-        if (obj != null)
+        foreach (var objList in _objectList)
         {
-            _objectList[(int)location].Remove(obj);
-            Destroy(obj);
+            var obj = objList.Find(x => x.name == objName);
+            if (obj is not null)
+            {
+                objList.Remove(obj);
+                Destroy(obj.gameObject);
+                return;
+            }
         }
     }
 
