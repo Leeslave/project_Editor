@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 
 
-// ¹Ú½ºÀÇ Á¤º¸¸¦ ÀúÀå
+// ë°•ìŠ¤ì˜ ì •ë³´ë¥¼ ì €ì¥
 public class Box : MonoBehaviour
 {
     public int MaxDurability;
@@ -15,25 +15,22 @@ public class Box : MonoBehaviour
     TMP_Text Dura;
 
     /// <summary>
-    /// Box Object Awake½Ã ·£´ıÀ¸·Î ³»±¸µµ¸¦ ºÎ¿©ÇÒ °ÍÀÎÁö Á¤ÇÔ
-    /// TODO : ½ºÅ×ÀÌÁö º° Á¤ÇØÁø °³¼öº°·Î ³»±¸µµ ºÎ¿©
+    /// Box Object ë‚´êµ¬ë„ë¥¼ ë¶€ì—¬
     /// </summary>
-    private void Awake()
+
+    public void SetBreak()
     {
-        if (Random.Range(0,2)== 0)
-        {
-            CurDurability = MaxDurability;
-            Dura = transform.GetChild(0).GetComponent<TMP_Text>();
-            Dura.text = CurDurability.ToString();
-            Dura.gameObject.SetActive(true);
-            IsBreakAble = true;
-        }
+        CurDurability = MaxDurability;
+        Dura = transform.GetChild(0).GetComponent<TMP_Text>();
+        Dura.text = CurDurability.ToString();
+        Dura.gameObject.SetActive(true);
+        IsBreakAble = true;
     }
 
     /// <summary>
-    /// ÇöÀç ¹Ú½º¸¦ B¹Ú½º À§¿¡ ³õÀ» ¼ö ÀÖ´Â°¡ ¿©ºÎ ¹İÈ¯.
+    /// í˜„ì¬ ë°•ìŠ¤ë¥¼ Bë°•ìŠ¤ ìœ„ì— ë†“ì„ ìˆ˜ ìˆëŠ”ê°€ ì—¬ë¶€ ë°˜í™˜.
     /// </summary>
-    /// <param name="B">ÇöÀç ³õÀ¸·Á´Â Container ÃÖ»ó´ÜÀÇ Box</param>
+    /// <param name="B">í˜„ì¬ ë†“ìœ¼ë ¤ëŠ” Container ìµœìƒë‹¨ì˜ Box</param>
     /// <returns></returns>
     public bool CanAdd(Box B)
     {
@@ -41,7 +38,7 @@ public class Box : MonoBehaviour
         return true;
     }
     /// <summary>
-    /// ÇöÀç ¹Ú½º¸¦ ÁıÀ» ¼ö ÀÖ´ÂÁö ¿©ºÎ ¹İÈ¯(³»±¸µµ)
+    /// í˜„ì¬ ë°•ìŠ¤ë¥¼ ì§‘ì„ ìˆ˜ ìˆëŠ”ì§€ ì—¬ë¶€ ë°˜í™˜(ë‚´êµ¬ë„)
     /// </summary>
     /// <returns></returns>
     public bool CanPick()
@@ -50,9 +47,9 @@ public class Box : MonoBehaviour
         return true;
     }
     /// <summary>
-    /// ÇöÀç ¹Ú½ºÀÇ ³»±¸µµ¸¦ º¯È¯ÇÔ
+    /// í˜„ì¬ ë°•ìŠ¤ì˜ ë‚´êµ¬ë„ë¥¼ ë³€í™˜í•¨
     /// </summary>
-    /// <param name="change">º¯È­·®</param>
+    /// <param name="change">ë³€í™”ëŸ‰</param>
     public void DuraChange(int change)
     {
         if (IsBreakAble)

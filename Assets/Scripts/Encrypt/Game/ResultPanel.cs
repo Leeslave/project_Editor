@@ -84,7 +84,7 @@ public class ResultPanel : MonoBehaviour
             transposedText = transposedText.Substring(2);
         }
         
-        Debug.Log($"플레이어가 복호화한 결과물: {decryptedText}");
+        //Debug.Log($"플레이어가 복호화한 결과물: {decryptedText}");
 
         if(ADFGVXGameManager.DisplayDecrypted.DecryptedTextBody.StringBuffer != ADFGVXGameManager.Instance.decryptResultText)
         {
@@ -146,7 +146,7 @@ public class ResultPanel : MonoBehaviour
             //튜토리얼 상황이었을 경우
             CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
             CloseButton.OnMouseUpEvent.AddListener(() => {
-                Debug.Log("복호화 튜토리얼 종료!");
+                //Debug.Log("복호화 튜토리얼 종료!");
                 GameSystem.Instance.ClearTask("ADFGVX_DT");
                 GameSystem.LoadScene("Screen"); });
         }
@@ -295,7 +295,7 @@ public class ResultPanel : MonoBehaviour
         for (var i = 0; i < orderedText.Length; i++)
             encryptionResult += orderedText[i];
 
-        Debug.Log($"플레이어가 암호화한 결과물: {encryptionResult}");
+        //Debug.Log($"플레이어가 암호화한 결과물: {encryptionResult}");
         
         if (ADFGVXGameManager.DisplayEncrypted.EncryptedTextBody.StringBuffer.Replace(" ", "") != ADFGVXGameManager.Instance.encryptResultText)
         {
@@ -359,7 +359,7 @@ public class ResultPanel : MonoBehaviour
             CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
             CloseButton.OnMouseUpEvent.AddListener(() =>
             {
-                Debug.Log("암호화 튜토리얼 종료!");
+                //Debug.Log("암호화 튜토리얼 종료!");
                 GameSystem.Instance.ClearTask("ADFGVX_ET");
                 GameSystem.LoadScene("Screen");
             });
