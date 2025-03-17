@@ -1,25 +1,6 @@
 using System;
 using System.Collections.Generic;
-
-[Serializable]
-public class DailyWrapper
-{ 
-    public Date date;
-    public DayTime[] dateTimes = new DayTime[]
-    {
-        new DayTime(6, 30),
-        new DayTime(9, 0),
-        new DayTime(17, 0),
-        new DayTime(19, 30)
-    };
-
-    public string startLocation = "Street";
-    public int startPosition = 0;
-    public uint startTime = 0;
-
-
-    public List<Work> workList = new();
-}
+using UnityEngine.Serialization;
 
 [Serializable]
 public class DailyData
@@ -36,60 +17,39 @@ public class DailyData
             스테이지 번호
     */
     
-    /// 하루 날짜 정보
-    public readonly Date date;   // 날짜 
+    // 하루 날짜 정보
+    public Date date;   // 날짜 
 
-    public readonly DayTime[] dateTimes = new DayTime[4];      // 각 시간대
+    // 게임 플레이 정보
+    public WorldVector startLocation;
+
+    // 업무 정보
+    public List<Work> workList = new();
+
+    // 날짜 데이터
+    public TimeData[] dayTimes = new TimeData[4];
+}
 
 
-    /// 게임 플레이 정보
-    public readonly World startLocation;     // 시작 장소
-
-    public readonly int startPosition;   //시작 위치
-
-    public readonly uint startTime;  // 시작 시간대
-
-
-    /// 업무 정보
-    public Dictionary<Work, bool> workList = new();
-
-    /// Wrapper에서 생성자
-    public DailyData(DailyWrapper wrapper)
-    {
-        // 날짜, 시간대
-        date = wrapper.date;
-        dateTimes = wrapper.dateTimes;
-
-        // 시작 위치
-        try
-        {
-            startPosition = wrapper.startPosition;
-            startLocation = Enum.Parse<World>(wrapper.startLocation);   // string을 World로 할당
-        }
-        catch(ArgumentException)
-        {
-            // 시작 위치값 오류 시 예외처리
-            startLocation = World.Street;
-        }
-        
-        // 시작 시간대
-        if (wrapper.startTime < 0 || wrapper.startTime > 3)
-        {
-            //시작 시간대 오류 시 예외처리
-            startTime = 0;
-        }
-        else
-        {
-            startTime = wrapper.startTime;
-        }
-
-        // 업무
-        foreach(var work in wrapper.workList)
-        {
-            workList.Add(work, false);
-        }
-    }
+[Serializable]
+public class TimeData
+{
+    /**
+    * 1개 시간대 인게임 데이터
+    *   시간대
+    *   인게임 정보
+        - NPC
+        - block
+        - bgm 변경
+    */
     
+    public DayTime daytime;
+
+    public bool isNight;
+    
+    public List<WorldObjectData> npc = new();
+    public List<WorldVector> block = new();
+    public List<BGMData> bgm = new();
 }
 
 
@@ -140,6 +100,7 @@ public class Work
     */
     public string code;     // 업무 코드명
     public int stage;       // 스테이지 번호
+    public bool isClear;
     public Work(string _code, int _stage = 0)
     {
         code = _code;

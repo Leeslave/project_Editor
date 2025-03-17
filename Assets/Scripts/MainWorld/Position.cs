@@ -41,7 +41,7 @@ public class Position : MonoBehaviour
 
     private void OnEnable()
     {
-        if (GameSystem.Instance.gameData.time < nightShiftTime)
+        if (GameSystem.Instance.timeIndex < nightShiftTime)
         {
             SetTime(0);
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using TMPro;
@@ -18,29 +19,39 @@ public class DayIntro : MonoBehaviour
     private string[] dayText;      // 실제 날짜 글자
     public bool isFinished = false;     // 인트로 종료 여부
 
-    void OnEnable()
+    
+    void Awake()
     {
-        StartCoroutine(SceneLoading("MainWorld"));
+        StartCoroutine(LoadScene("MainWorld"));
     }
 
 
-    private IEnumerator SceneLoading(string scene)
+    private IEnumerator LoadScene(string scene)
     {
         // 인트로 실행
+        StopAllCoroutines();
         StartCoroutine(DayCountIntro());
-        yield return new WaitUntil(() => isFinished == true);
-
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scene);
-        asyncLoad.allowSceneActivation = false;
 
+        if (asyncLoad is null)
+        {
+            throw new ArgumentException("Invalid Scene");
+        }
+        asyncLoad.allowSceneActivation = false;
+        
         while (asyncLoad.progress <  0.9f)
         {
             yield return null;
         }   
 
+        // 씬 로드 추가작업
+        // GameSystem.Instance?.SetDate(GameSystem.Instance.dateIndex);
+        // GameSystem.Instance?.SetTime(0);
+        
+        // 씬 로드 완료 및 전환
         Debug.Log($"Scene Loaded : {scene}");
         asyncLoad.allowSceneActivation = true;
-        yield break;    
+        yield return new WaitUntil(() => isFinished);
     }
 
 
@@ -58,11 +69,11 @@ public class DayIntro : MonoBehaviour
         textUI.gameObject.SetActive(true);
 
         // 텍스트 세팅
-        DailyData today = GameSystem.Instance.today;
+        DailyData today = GameSystem.Instance.DayData;
         dayText = new string[] { "", "", ""};
-        dayText[0] = $"제국력 {today.date.year}년 {today.date.month}월 {today.date.day}일";
-        dayText[1] = today.dateTimes[0].ToString();
-        dayText[2] = getLocationName(today.startLocation);
+        dayText[0] = $"무진{today.date.year}년 {today.date.month}월 {today.date.day}일";
+        dayText[1] = today.dayTimes[GameSystem.Instance.timeIndex].ToString();
+        dayText[2] = today.startLocation.name;
 
         // 한 글자씩 애니메이션
         for(int i = 0; i < 3; i++)
@@ -84,25 +95,5 @@ public class DayIntro : MonoBehaviour
 
         //종료 및 flag 설정
         isFinished = true;
-    }
-
-    
-    /**
-    * 장소 문자열 설정 함수
-    */ 
-    string getLocationName(World text)
-    {
-        string result = "???";
-        switch(text)
-        {
-            case World.Street: 
-                result = "신시가지";
-                break;
-            case World.Cafe:
-                result = "신문사 앞 카페";
-                break;
-                
-        }
-        return result;
     }
 }

@@ -11,99 +11,98 @@ public class GameSystem : SingletonObject<GameSystem>
         게임 데이터를 로드, 관리
         날짜, 시간대, 진행상황 적용
     */ 
-
-    /// 플레이 데이터 
-    private List<SaveData> saveList = new();    // 저장 데이터
-    private List<DailyData> dailyList = new();     // 날짜별 데이터
-
-    public SaveData player => saveList[gameData.date];      // 오늘 세이브 데이터
-    public DailyData today => dailyList[gameData.date];    // 오늘 날짜 데이터
-
-    /// 오늘 날짜 데이터
-    public GameData gameData = new();
-
-    // 스크린 활성화 여부
-    public bool isScreenOn = false; 
     
-    // 업무 클리어 여부
-    public bool isTaskClear   // 모든 업무 완료 플래그
+    [Header("게임 씬 정보")]
+    public string loadingSceneName;
+
+    /// 게임 데이터 (ReadOnly)
+    private List<SaveData> _saveList = new();    // 저장 데이터
+    public DailyData DayData { get; private set; }    // 오늘 날짜 데이터
+    
+    /// 게임 플레이 데이터 (ReadWrite)
+    [Header("현재 게임플레이 상태")]
+    public int dateIndex;
+
+    public int timeIndex;
+    
+    public WorldVector currentLocation;
+    
+    public bool isScreenOn; 
+    
+    public SaveData Player => _saveList[dateIndex];      // 오늘 세이브 데이터
+    
+    public bool IsTaskClear   // 모든 업무 완료 플래그
     {
         get { 
             bool workResult = true;
-            foreach(var workStatus in Instance.today.workList.Values)
+            foreach(var workStatus in DayData.workList)
             {
-                workResult = workResult & workStatus;
+                workResult &= workStatus.isClear;
             }
             return workResult;
         }
     }
 
 
+    /// <summary>
+    /// 게임 첫 로드 시
+    /// </summary>
+    /// <remarks>세이브/게임 데이터 로드</remarks>
     new void Awake()
     {
         base.Awake();
 
-        saveList = DataLoader.LoadSaveData();     // 세이브 데이터 로드
-        dailyList = DataLoader.LoadGameData();     // 게임 데이터 로드  
-
-        // 날짜 선택 기능 미구현
-        SetDate(0);
+        _saveList = DataLoader.LoadPlayerData();     // 세이브 데이터 로드
+        
+        // DEBUG: 초기 날짜 설정
+    #if DEBUG
+        if (SceneManager.GetActiveScene().name == "MainWorld")
+            SetDate(0);
+    #endif
     }
     
 
     ///<summary>
     /// 날짜 전환 (게임 저장)
     ///</summary>
-    ///<param name="dateIndex">전환할 날짜 인덱스(없으면 다음 날짜로), 시간은 무조건 아침</param>
+    ///<param name="date">전환할 날짜 인덱스(없으면 다음 날짜로), 시간은 무조건 아침</param>
     public void SetDate(int date = -1)
     {
         // 다음 날짜로 이동시
         if (date == -1)
         {
-            date = gameData.date + 1;
+            date = dateIndex + 1;
         }
+        
+        // TODO: 이전 날짜 저장
+        // DataLoader.SavePlayerData(saveList);
 
-        // 날짜 오류
-        if (date > dailyList.Count || date < 0)
-        {
-            Debug.Log($"Day Out Of Range: {date}");
-            return;
-        }
-
-        // 해당 날짜 불러오기
-        gameData.date = date;
-        gameData.time = 0;
-        gameData.SetLocation(today.startLocation);
-        gameData.SetPosition(today.startPosition);
+        // 해당 날짜 설정
+        DayData = DataLoader.LoadGameData(date);
+        dateIndex = date;
+        currentLocation = DayData.startLocation;
         isScreenOn = false;
-
-        // 게임 저장 (튜토리얼 날짜 제외)
-        if (date > 1)
-        {
-            // DataLoader.SavePlayerData(saveList);
-        }
-
-        ObjectDatabase.Instance.Read();
+        
+        //로딩씬 작업
+        SetTime(0);
+        
+        // LoadScene(loadingSceneName);
     }
 
+    
     ///<summary>
     /// 다음 시간대로 전환
     ///</summary>
-    ///<param name="time">전환할 시간(마지막 시간대면 다음 날짜로)</param>
-    public void SetTime(int _time)
+    ///<param name="time">전환할 시간</param>
+    public void SetTime(int time)
     {
         // 시간대 오류
-        if (_time < 0 || _time >= 4)
+        if (time is < 0 or >= 4)
             return;
         
-        // 시간대 적용
-        gameData.time = _time;
-
-        // 월드 리로드
-        if (SceneManager.GetActiveScene().name == "MainWorld")
-        {
-            WorldSceneManager.Instance.ReloadWorld();
-        }
+        // 시간대 설정 및 로드
+        timeIndex = time;
+        WorldSceneManager.Instance?.ReloadWorld();
     }
 
 
@@ -112,9 +111,9 @@ public class GameSystem : SingletonObject<GameSystem>
     /// </summary>
     /// <param name="num">변경할 만큼의 명성치</param>
     /// <returns></returns>
-    public void SetRenown(int num)
+    public void AddRenown(int num)
     {
-        player.renown += num;
+        Player.renown += num;
     }
     
 
@@ -125,14 +124,14 @@ public class GameSystem : SingletonObject<GameSystem>
     /// <returns></returns>
     public int GetTask(string workCode)
     {
-        foreach(var work in today.workList)
+        foreach(var work in DayData.workList)
         {
-            if (work.Key.code == workCode)
+            if (work.code == workCode)
             {
-                return work.Key.stage;
+                return work.stage;
             }
         }
-        return -1;
+        throw new KeyNotFoundException("Invalid work code");
     }
 
 
@@ -140,31 +139,29 @@ public class GameSystem : SingletonObject<GameSystem>
     /// 업무 완료 여부 설정
     /// </summary>
     /// <param name="workCode">설정할 업무의 코드명</param>
-    /// <param name="isClear">업무 완료 여부</param>
+    /// <remarks>해당하는 업무를 완료로 전환</remarks>
     public void ClearTask(string workCode)
     {
         // 코드에 해당하는 업무 불러오기
         Work currentWork = null;
-        foreach (var work in today.workList)
+        foreach (var work in DayData.workList)
         {
-            if (work.Value == true)
+            if (work.isClear == true)
                 continue;
-            if (work.Key.code == workCode)
+            if (work.code == workCode)
             {
-                currentWork = work.Key;
+                currentWork = work;
                 break;
             }
         }
 
         // 업무 불일치 오류
-        if (currentWork == null)
+        if (currentWork is null)
         {
-            Debug.Log("Work doesn't Match");
-            return;
+            throw new KeyNotFoundException("Invalid work code");
         }
 
-        // 업무 완료로 전환
-        today.workList[currentWork] = true;
+        currentWork.isClear = true;
     }
 
     
@@ -176,19 +173,4 @@ public class GameSystem : SingletonObject<GameSystem>
     {
         SceneManager.LoadScene(sceneName);
     }
-    
-    
-#if DEBUG
-    public DailyData GetDailyData(int num)
-    {
-        if (dailyList.Count <= num || num < 0)
-        {
-            return null;
-        }
-        else
-        {
-            return dailyList[num];
-        }
-    }
-#endif
 }

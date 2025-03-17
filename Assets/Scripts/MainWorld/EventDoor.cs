@@ -7,38 +7,20 @@ public class EventDoor : Door
 {
     public string actionType;
     public string actionParam;
-    private Action action = null;
+    private Action _action = null;
 
     public override void OnClick()
     {
-        // 반응 무시 아니면 지역 이동
         base.OnClick();
         
-        // 반응 획득
-        GetAction();
-        action.Invoke();
-    }
-
-    private void GetAction()
-    {
-        switch(actionType)
+        // 반응 무시 아니면 지역 이동
+        if (Interactable is false)
         {
-            case "HardDayChange" :
-                action = new HardDayChangeAction();
-                action.param = actionParam;
-                break;
-            case "DayChange" :
-                action = new DayChangeAction();
-                action.param = actionParam;
-                break;
-            case "TimeChange" :
-                action = new TimeChangeAction();
-                action.param = actionParam;
-                break;
-
-            default:
-                action = null;
-                break;
+            return;
         }
+        
+        // 반응 획득
+        _action = ActionHandler.GetAction(actionType, actionParam);
+        _action.Invoke();
     }
 }

@@ -30,11 +30,11 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 DailyData dayData;
                 if (inputArgs.Length < 2) // no additional args : today
                 {
-                    dayData = GameSystem.Instance.today;
+                    dayData = GameSystem.Instance.DayData;
                 }
                 else if (int.TryParse(inputArgs[1], out int date)) // with args : certain date
                 {
-                    dayData = GameSystem.Instance.GetDailyData(date);
+                    dayData = GameSystem.Instance.DayData;
                     if (dayData == null)
                     {
                         output += "<color=#ff0000>Invalid date</color>";
@@ -48,19 +48,17 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 }
                 output += $"{dayData.date.year}년 {dayData.date.month}월 {dayData.date.day}일\n";
                 output += $"해당 날짜의 업무\n";
-                foreach(var work in dayData.workList.Keys)
+                foreach(var work in dayData.workList)
                 {
-                    output += $"WORK: {work.code}, Stage: {work.stage} = Done: {dayData.workList[work]}\n";
+                    output += $"WORK: {work.code}, Stage: {work.stage} = Done: {work.isClear}\n";
                 }
                 output += "\n";
                 break;
             
             case "showData" :
-                SaveData player = GameSystem.Instance.player;
-                GameData gameData = GameSystem.Instance.gameData;
-                output += $"Current Day: {gameData.date} - {gameData.time}\n";
-                output += $"Current location: {gameData.location} - {gameData.position}\n";
-                output += $"Current renown: {player.renown}\n";
+                output += $"Current Day: {GameSystem.Instance.dateIndex} - {GameSystem.Instance.timeIndex}\n";
+                output += $"Current location: {GameSystem.Instance.currentLocation.location} - {GameSystem.Instance.currentLocation.position}\n";
+                output += $"Current renown: {GameSystem.Instance.Player.renown}\n";
                 break;
             
             case "setDay":
@@ -84,7 +82,7 @@ public class DebugConsole : SingletonObject<DebugConsole>
             case "setTime":
                 if (inputArgs.Length < 2) // no additional args
                 {
-                    GameSystem.Instance.SetTime(GameSystem.Instance.gameData.time + 1);
+                    GameSystem.Instance.SetTime(GameSystem.Instance.timeIndex + 1);
                     GameSystem.LoadScene("DayLoading");
                     break;
                 }
@@ -101,14 +99,14 @@ public class DebugConsole : SingletonObject<DebugConsole>
                 break;
             
             case "objectList":
-                for(int i = 0; i < ObjectDatabase.ObjectList.Count; i++)
-                {
-                    output += $"{(World)i}지역 Object : {ObjectDatabase.ObjectList[i].Count}개\n";
-                }
+                // for(int i = 0; i < ObjectDatabase.ObjectList.Count; i++)
+                // {
+                //     output += $"{(World)i}지역 Object : {ObjectDatabase.ObjectList[i].Count}개\n";
+                // }
                 break;
             
             case "clearTask" :
-                foreach(var work in GameSystem.Instance.today.workList.Keys)
+                foreach(var work in GameSystem.Instance.DayData.workList)
                 {
                     GameSystem.Instance.ClearTask(work.code);
                     output += $"Clear work : {work.code}";

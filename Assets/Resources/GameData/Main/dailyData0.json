@@ -1,0 +1,104 @@
+{
+    "date": {
+        "year":8,
+        "month":12,
+        "day":20
+    },
+    "startLocation": {
+        "location": "Street",
+        "position": 0,
+        "name": "시가지 앞 카페"
+    },
+    "workList": [
+        {"code": "Document", "stage": 0}
+    ],
+    
+    "dayTimes" : [
+        {
+            "time": {"hour": 7, "minute": 0},
+            "npc" : [
+                {
+                    "name": "intro",
+                    "objectType": "none",
+                    "positions": [
+                        { "location": "Street", "position": 0 }
+                    ],
+                    "anchor": [
+                        {
+                            "x": 0,
+                            "y": 0,
+                            "size": 1
+                        }
+                    ],
+                    "chat": [
+                        "day 0/intro.json"
+                    ],
+                    "onAwake": [
+                        true
+                    ]
+                }
+            ],
+            "block": [
+                { "location": "Cafe", "position": 0 },
+                { "location": "Restaurant", "position": 0 },
+                { "location": "Street", "position": 2 },
+                { "location": "Bar", "position": 0 },
+                { "location": "Hallway", "position": 1}
+            ],
+            "bgm": [
+                {
+                    "location": "Street",
+                    "code" : 6
+                }
+            ]
+        },
+        {
+            "time": {"hour": 9, "minute": 0},
+            "npc" : [
+                {
+                    "objectType": "Rex",
+                    "positions": [
+                        { "location": "Office", "position": 0 }
+                    ],
+                    "anchor": [
+                        {
+                            "x": 0,
+                            "y": 0,
+                            "size": 1
+                        }
+                    ],
+                    "chat": [
+                        "day 0/Rex0.json"
+                    ],
+                    "onAwake": [
+                        true
+                    ]
+                }
+            ],
+            "block": [
+                { "location": "Hallway", "position": 0 }
+            ],
+            "bgm": [
+            ]
+        },
+        {
+            "time": {"hour": 17, "minute": 30},
+            "npc" : [
+            ],
+            "block": [
+            ],
+            "bgm": [
+            ]
+        },
+        {
+            "time": {"hour": 20, "minute": 0},
+            "isNight" : true,
+            "npc" : [
+            ],
+            "block": [
+            ],
+            "bgm": [
+            ]
+        }
+    ]
+}

@@ -1,78 +1,69 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using Newtonsoft.Json;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Serialization;
+
+
+[Serializable]
+public enum World {
+    /**
+    월드 내 지역 목록
+    */
+    Street,
+    Bar,
+    Cafe,
+    Restaurant,
+    Temple,
+    Hallway,
+    Office,
+    Office3,
+    Interrogate,
+    
+    Max
+}
 
 public class Location : MonoBehaviour
 {
-
+    /**
+     지역 데이터
+     - 오브젝트 배치
+     - 지역 활성화/비활성화
+     */
     [SerializeField]
     private World locationName; // 지역명
 
-    private bool isActive;  // 현재 활성화 여부
+    public int bgmCode;   // BGM 번호
 
-    public int bgmNumber;   // BGM 번호
-
-    [SerializeField]
-    private int connectLen;     // 연결 가능 최대 길이
-
-    [SerializeField] public List<Position> Positions;
-    [SerializeField] public List<GameObject> buttons;   // 지역 내 위치 이동 버튼들
-
-    private List<List<GameObject>> objList = new();  // WorldObject 리스트
-    public float sizeMultiplier = 1;    // NPC 크기 배율
+    [SerializeField] public List<Position> Positions;   // 지역 내 위치
+    [SerializeField] public List<Door> buttons;   // 지역 내 위치 이동 버튼들
 
 
     /// <summary>
-    /// 현재 지역을 활성화/비활성화
+    /// 현재 지역을 활성화
     /// </summary>
-    public void ActiveLocation(bool _active)
+    public void ActiveLocation(int position)
     {
-        // 변화 없음 예외
-        if (isActive == _active)
-            return;
-        
-        // 활성화
-        if (_active)
-        {
-            // 음악 활성화
-            SetBGM(bgmNumber);
+        // 음악 활성화
+        WorldSceneManager.Instance.worldBGM.OverlapPlay(bgmCode);
 
-            // 해당하는 위치 활성화
-            SetPosition(GameSystem.Instance.gameData.position);
-        }
-        // 비활성화
-        else
-        {
-            // 위치 전부 비활성화
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                transform.GetChild(i).gameObject.SetActive(false);
-            }
-        }
-
-        isActive = _active;
+        // 해당하는 위치 활성화
+        SetPosition(position);
     }
 
-
+    
     /// <summary>
-    /// 지역 재로딩, 날짜&시간대 재적용
+    /// 현재 지역 비활성화
     /// </summary>
-    [HideInInspector]
-    public void ReloadLocation()
+    public void InActiveLocation()
     {
-        // NPC 새로 생성
-        SetObjects();
-
-        // 기본으로 비활성화
-        ActiveLocation(false);
+        // 위치 전부 비활성화 
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            transform.GetChild(i).gameObject.SetActive(false);
+        }
     }
-
-
+    
 
     /// <summary>
     /// 지역 내 이동
@@ -83,28 +74,17 @@ public class Location : MonoBehaviour
         // 위치값 오류
         if (newPos < 0 || newPos >= Positions.Count)
         {
-            Debug.Log($"WORLD MOVE ERROR : Invalid position {locationName} - {newPos}");
+            #if DEBUG
+            Debug.LogWarning($"WORLD MOVE ERROR : Invalid position {locationName} - {newPos}");
+            #endif
+            
             return;
         }
-
-        // 페이드인아웃 효과 실행
-        StartCoroutine(WorldSceneManager.Instance.FadeInOut());
-
+        
         // 이동할 장소 활성화
         Positions[newPos].gameObject.SetActive(true);
-        // 이동할 장소의 오브젝트 활성화
-        foreach(var obj in objList[newPos])
-        {
-            if (obj.TryGetComponent(out NPC npc))
-            {
-                npc.OnActive();
-            }
-            else 
-            {
-                obj.TryGetComponent(out WorldEffect effect);
-                effect.OnActive();
-            }
-        }
+        
+        // TODO: Position 비활성화 함수로 변경(오브젝트 활성화까지)
         // 나머지 장소 비활성화
         for(int i = 0; i < Positions.Count; i++)
         {
@@ -114,36 +94,17 @@ public class Location : MonoBehaviour
             }
             Positions[i].gameObject.SetActive(false);
         }
-        
-        // 장소 데이터 변경
-        GameSystem.Instance.gameData.SetPosition(newPos);
     }
 
 
-    public void SetBGM(int bgm)
+    /// <summary>
+    /// 지역 이동 버튼 등록
+    /// </summary>
+    public void SetButtons()
     {
-        // 음악 활성화
-        WorldSceneManager.Instance.worldBGM.OverlapPlay(bgm);
+        // 버튼 오브젝트 불러오기
+        buttons = GetComponentsInChildren<Door>(true).ToList();
     }
-
-
-    // 연결된 맵 왼쪽으로 이동
-    public void MoveLeft()
-    {
-        int newPos = GameSystem.Instance.gameData.position - 1;
-
-        SetPosition(newPos);
-    }
-
-
-    // 연결된 맵 오른쪽으로 이동
-    public void MoveRight()
-    {
-        int newPos = GameSystem.Instance.gameData.position + 1;
-
-        SetPosition(newPos);
-    }
-
 
     /// <summary>
     /// 지역 이동 버튼 활성화
@@ -159,81 +120,38 @@ public class Location : MonoBehaviour
         }
     }
 
-
+    
     /// <summary>
-    /// 시간대에 해당하는 NPC들 생성
+    /// 해당하는 날짜 기준 BGM 코드 설정
     /// </summary>
-    /// <param name="date">날짜</param>
-    /// <param name="time">시간대</param>
+    public void SetBGMCode()
+    {
+        BGMData bgmData = GameSystem.Instance.DayData
+            .dayTimes[GameSystem.Instance.timeIndex].bgm
+            .Where(bgm => bgm.location == locationName.ToString())
+            .FirstOrDefault();
+
+        if (bgmData is not null)
+        {
+            bgmCode = bgmData.code;
+        }
+    }
+
+    
+    /// <summary>
+    /// 해당하는 날짜, 시간대에 월드 객체들 생성
+    /// </summary>
+    /// <param name="time">해당하는 시간대 (날짜는 해당 날짜 고정)</param>
     public void SetObjects()
     {
-        // 오브젝트 리스트 초기화
-        ClearObjects();
-
-        // 새 오브젝트 정보 불러오기
-        List<WorldObjectData> dataList = ObjectDatabase.ObjectList[(int)locationName];
-
-        // NPC들 생성
-        foreach(WorldObjectData _data in dataList)
+        // NPC 오브젝트 설정
+        List<WorldObjectData> npcs = GameSystem.Instance.DayData
+                                                .dayTimes[GameSystem.Instance.timeIndex].npc
+                                                .Where(npc=> npc.positions[0].location == locationName.ToString())
+                                                .ToList();
+        foreach(WorldObjectData npc in npcs)
         {
-            if (_data.time != GameSystem.Instance.gameData.time)
-            {
-                continue;
-            }
-            
-            GameObject newObj = Instantiate(ObjectDatabase.Instance.prefabs[(int)_data.objType], Positions[_data.position].transform);     // instantiate 
-            newObj.name = _data.name;
-
-            // 타입에 따라 컴포넌트 추가
-            if (_data is EffectData)
-            {
-                var targetObject = newObj.GetComponent<WorldEffect>();
-                targetObject.location = this;
-                targetObject.data = _data as EffectData;
-            }
-            if(_data is NPCData)
-            {
-                var targetObject = newObj.GetComponent<NPC>();
-                targetObject.location = this;
-                targetObject.data = _data as NPCData;
-                targetObject.SetPosition();
-            }
-            
-            objList[_data.position].Add(newObj);
-        }
-    }
-
-
-    /// <summary>
-    /// 특정 오브젝트 삭제
-    /// </summary>
-    /// <param name="position"></param>
-    /// <param name="name"></param>
-    public void RemoveObject(int position, string name)
-    {
-        var obj = objList[position].Find(data => data.name == name);
-        if (obj != null)
-        {
-            objList[position].Remove(obj);
-            Destroy(obj);
-        }
-    }
-
-
-    public void ClearObjects()
-    {
-        foreach(var iter in objList)
-        {
-            foreach(var obj in iter)
-            {
-                Destroy(obj);
-            }
-        }
-
-        objList = new List<List<GameObject>>(transform.childCount);
-        for (int i = 0; i < objList.Capacity; i++)
-        {
-            objList.Add(new());
+            WorldObjectFactory.Instance.CreateObject(npc, locationName, Positions[npc.positions[0].position].transform);
         }
     }
 }
