@@ -19,7 +19,8 @@ public class DayIntro : MonoBehaviour
     private string[] dayText;      // 실제 날짜 글자
     public bool isFinished = false;     // 인트로 종료 여부
 
-    void OnEnable()
+    
+    void Awake()
     {
         StartCoroutine(LoadScene("MainWorld"));
     }
@@ -43,9 +44,14 @@ public class DayIntro : MonoBehaviour
             yield return null;
         }   
 
+        // 씬 로드 추가작업
+        // GameSystem.Instance?.SetDate(GameSystem.Instance.dateIndex);
+        // GameSystem.Instance?.SetTime(0);
+        
+        // 씬 로드 완료 및 전환
         Debug.Log($"Scene Loaded : {scene}");
         asyncLoad.allowSceneActivation = true;
-        yield return new WaitUntil(() => isFinished == true);
+        yield return new WaitUntil(() => isFinished);
     }
 
 

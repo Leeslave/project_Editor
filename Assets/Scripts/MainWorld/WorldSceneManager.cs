@@ -16,30 +16,18 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     [Header("지역 데이터")]
     [SerializeField]
     private Location[] locationList;    // 지역 오브젝트 리스트
-
-    private List<WorldVector> _blockList;    // 지역 이동 제한 리스트
-
     public Location CurrentLocation => locationList[(int)GameSystem.Instance.currentLocation.GetLocation()];
-
+    private List<WorldVector> _blockList;    // 지역 이동 제한 리스트
+    
+    private bool _moving;    // 지역 내 이동 버튼 활성화 여부
     public SoundManager worldBGM;  // 지역 내 배경음악
 
-    private bool _moving;    // 지역 내 이동 버튼 활성화 여부
     
     [Header("지역 이동 효과")]
-    public float moveDelay;     // 지역 이동 딜레이
-    
     [SerializeField]
     private Image curtain;      // 지역 이동 효과 이미지
-
-
-    /// 씬이 새로 로딩될때마다 월드 재로딩
-    new void Awake()
-    {
-        base.Awake();
-        
-        ReloadWorld();
-    }
-
+    public float moveDelay;     // 지역 이동 딜레이
+    
 
     /// <summary>
     /// 월드 재로딩, 날짜, 시간대 재적용

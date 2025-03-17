@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
@@ -10,14 +11,16 @@ public class GameSystem : SingletonObject<GameSystem>
         게임 데이터를 로드, 관리
         날짜, 시간대, 진행상황 적용
     */ 
+    
+    [Header("게임 씬 정보")]
+    public string loadingSceneName;
 
     /// 게임 데이터 (ReadOnly)
-    private List<SaveData> saveList = new();    // 저장 데이터
-    public SaveData Player => saveList[dateIndex];      // 오늘 세이브 데이터
+    private List<SaveData> _saveList = new();    // 저장 데이터
     public DailyData DayData { get; private set; }    // 오늘 날짜 데이터
-
     
     /// 게임 플레이 데이터 (ReadWrite)
+    [Header("현재 게임플레이 상태")]
     public int dateIndex;
 
     public int timeIndex;
@@ -25,6 +28,8 @@ public class GameSystem : SingletonObject<GameSystem>
     public WorldVector currentLocation;
     
     public bool isScreenOn; 
+    
+    public SaveData Player => _saveList[dateIndex];      // 오늘 세이브 데이터
     
     public bool IsTaskClear   // 모든 업무 완료 플래그
     {
@@ -47,11 +52,13 @@ public class GameSystem : SingletonObject<GameSystem>
     {
         base.Awake();
 
-        saveList = DataLoader.LoadPlayerData();     // 세이브 데이터 로드
-        DayData = DataLoader.LoadGameData(dateIndex);     // 게임 데이터 로드  
+        _saveList = DataLoader.LoadPlayerData();     // 세이브 데이터 로드
         
-        // TODO: 날짜 선택 기능 구현 (임시로 0일차부터 로드)
-        SetDate(0);
+        // DEBUG: 초기 날짜 설정
+    #if DEBUG
+        if (SceneManager.GetActiveScene().name == "MainWorld")
+            SetDate(0);
+    #endif
     }
     
 
@@ -70,16 +77,16 @@ public class GameSystem : SingletonObject<GameSystem>
         // TODO: 이전 날짜 저장
         // DataLoader.SavePlayerData(saveList);
 
-        // 해당 날짜 월드 로드
-        // TODO: 로딩씬 진입
+        // 해당 날짜 설정
         DayData = DataLoader.LoadGameData(date);
         dateIndex = date;
-        
         currentLocation = DayData.startLocation;
-        SetTime(0);
         isScreenOn = false;
         
-        // TODO: 로딩씬 나오고 월드 활성화
+        //로딩씬 작업
+        SetTime(0);
+        
+        // LoadScene(loadingSceneName);
     }
 
     
@@ -93,18 +100,9 @@ public class GameSystem : SingletonObject<GameSystem>
         if (time is < 0 or >= 4)
             return;
         
-        /* 시간대 로드
-        - NPC 생성
-            - 지역 락
-            - BGM 변경
-        */
+        // 시간대 설정 및 로드
         timeIndex = time;
-
-        // TODO: 월드 리로드 (개선 필요: 현재 장소, 현재 위치를 유지하고 월드를 재로드)
-        if (SceneManager.GetActiveScene().name == "MainWorld")
-        {
-            WorldSceneManager.Instance.ReloadWorld();
-        }
+        WorldSceneManager.Instance?.ReloadWorld();
     }
 
 

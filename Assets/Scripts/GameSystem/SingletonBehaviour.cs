@@ -33,7 +33,7 @@ public class SingletonObject<T>: MonoBehaviour
     {
         get
         {
-            if (!_instance)
+            if (_instance is null)
             {
                 _instance = FindObjectOfType<T>();
             }
