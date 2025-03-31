@@ -2,10 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.SocialPlatforms;
 using UnityEngine.Tilemaps;
 
 public class PatrolPathManager : MonoBehaviour
@@ -25,14 +22,17 @@ public class PatrolPathManager : MonoBehaviour
     [Header("가이드 타일 맵")]
     public Tilemap guideTileMap;
 
-    [Header("블로킹 타일 맵")] 
+    [Header("차단 타일 맵")] 
     public Tilemap blockingTileMap;
 
-    [Header("해답 타일 맵")] 
-    public Tilemap answerTileMap;
+    [Header("채우기 타일 맵")] 
+    public Tilemap fillTileMap;
     
     [Header("경로 타일 맵")] 
     public Tilemap[] pathTileMap;
+
+    [Header("체크포인트 타일 맵")] 
+    public Tilemap checkPointTileMap;
     
     private void Awake()
     {
@@ -83,26 +83,35 @@ public class PatrolPathManager : MonoBehaviour
                 throw new ArgumentOutOfRangeException(nameof(color), color, null);            
         }
     }
-    private void IsMapFullFilled()
+    private void IsStageClear()
     {
-        List<Vector3Int> location = new();
-        foreach (Vector3Int pos in answerTileMap.cellBounds.allPositionsWithin)
-            if(answerTileMap.HasTile(pos))
-                location.Add(pos);
-        if(location.All(p => pathTileMap.Any(m => m.HasTile(p)) || blockingTileMap.HasTile(p)))
-            answerTileMap.color = new Color(0f, 0.5f, 0f, 0.2f);
-        else
-            answerTileMap.color = answerTileMap.color = new Color(0f, 0.5f, 0.5f, 0f);
+        //채우기 위치 획득
+        List<Vector3Int> answerLocation = new();
+        foreach (Vector3Int pos in fillTileMap.cellBounds.allPositionsWithin)
+            if(fillTileMap.HasTile(pos))
+                answerLocation.Add(pos);
+        
+        //경로 타일과 차단 타일로 꽉 차있는지 확인
+        bool c1 = answerLocation.All(p => pathTileMap.Any(m => m.HasTile(p)) || blockingTileMap.HasTile(p));
+        
+        //체크포인트 위치 획득
+        List<Vector3Int> checkLocation = new();
+        foreach(Vector3Int pos in checkPointTileMap.cellBounds.allPositionsWithin)
+            if(checkPointTileMap.HasTile(pos))
+                checkLocation.Add(pos);
+        
+        //경로 타일이 체크포인트를 지나가는지 확인
+        bool c2 = checkLocation.All(p => pathTileMap.Any(m => m.HasTile(p)));
+        
+        Debug.Log($"{c1} {c2}");
+        
+        //클리어 여부 표시
+        fillTileMap.color = c1 && c2 ? new Color(0f, 0.5f, 0f, 0.2f) : new Color(0f, 0.5f, 0.5f, 0f);
     }
     
     void Start()
     {
-        answerTileMap.color = new Color(0f, 0.5f, 0f, 0f);
-        InvokeRepeating(nameof(IsMapFullFilled), 0f, 0.1f);        
-    }
-
-    void Update()
-    {
-
+        fillTileMap.color = new Color(0f, 0.5f, 0f, 0f);
+        InvokeRepeating(nameof(IsStageClear), 0f, 0.1f);        
     }
 }
