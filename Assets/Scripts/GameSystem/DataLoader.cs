@@ -42,10 +42,16 @@ public static class DataLoader
     {
         string gameFile = $"{GAMEDATAPATH}/{GAMEFILE}{index}.json";
 
+        return LoadGameData(gameFile);
+    }
+
+
+    public static DailyData LoadGameData(string gameFile)
+    {
         // 파일 읽어오기
         if (!File.Exists(gameFile))
         {
-            throw new ArgumentException($"GAME DATA CANNOT FOUND : ${GAMEFILE}{index}");
+            throw new ArgumentException($"GAME DATA CANNOT FOUND : ${gameFile}");
             // 치명적 오류, 게임 종료시키기
         }
         FileStream fileStream = new FileStream(gameFile, FileMode.Open);
@@ -58,6 +64,7 @@ public static class DataLoader
 
         //Wrapper로 파싱
         return JsonConvert.DeserializeObject<DailyData>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+
     }
 
     
