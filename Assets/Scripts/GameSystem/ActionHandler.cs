@@ -253,7 +253,7 @@ public class TutorialAction : Action
     {
         if(Param is int)
         {
-            ChatTutorialManager.Get().Show((int) Param);
+            MovingMapTutorialManager.Get().Show((int) Param);
             return true;
         }
         return "Error";

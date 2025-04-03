@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System;
+using UnityEngine.Serialization;
 
 public class Chat : Singleton<Chat>
 {
@@ -16,7 +17,7 @@ public class Chat : Singleton<Chat>
     */
     [SerializeField] private GameObject chatTarget;
     private GameObject ChatUI => transform.GetChild(0).gameObject;
-    [SerializeField] private ChatTutorialManager ChatTutorial;
+    [FormerlySerializedAs("ChatTutorial")] [SerializeField] private MovingMapTutorialManager movingMapTutorial;
 
     [Header("UI 요소")]
     [SerializeField] private Image background;   // 배경 이미지
