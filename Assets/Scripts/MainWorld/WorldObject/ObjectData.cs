@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 [Serializable]
-public class WorldObjectData
+public class ChatObjectData
 {
     public string name = null;
     public string objectType;
@@ -12,6 +12,15 @@ public class WorldObjectData
     public List<Anchor> anchor;  // 위치
     public List<string> chat;  // 대사 정보
     public List<bool> onAwake;  // 대사 시작 여부
+}
+
+[Serializable]
+public class ActionObjectData
+{
+    public List<WorldVector> positions;
+    public List<Anchor> anchor;  // 위치
+    public string actionName;  // 액션 정보
+    public string actionParam;  // 대사 시작 여부
 }
 
 [Serializable]
@@ -73,7 +82,7 @@ public class Anchor
 {
     public float x;
     public float y;
-    public float size;
+    public float size = 1.0f;
 
     public Vector2 GetVector()
     {

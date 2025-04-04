@@ -39,6 +39,7 @@ public class TimeData
     *   시간대
     *   인게임 정보
         - NPC
+        - action
         - block
         - bgm 변경
     */
@@ -47,17 +48,17 @@ public class TimeData
 
     public bool isNight;
     
-    public List<WorldObjectData> npc = new();
+    public List<ChatObjectData> npc = new();
+    public List<ActionObjectData> action = new();
     public List<WorldVector> block = new();
     public List<BGMData> bgm = new();
 }
-
 
 [Serializable]
 public class Date
 {
     /**
-    * 날짜 정보  
+    * 날짜 정보   
     */
     public uint year;
     public uint month;
@@ -98,7 +99,7 @@ public class Work
     /**
     * 업무 정보
     */
-    public string code;     // 업무 코드명
+    public string code = "";     // 업무 코드명
     public int stage;       // 스테이지 번호
     public bool isClear;
     public Work(string _code, int _stage = 0)

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7307037406944028262}
   - component: {fileID: 7307037406944028265}
   - component: {fileID: 7307037406944028264}
-  - component: {fileID: 8155212916840274126}
+  - component: {fileID: 4062659254741583338}
   m_Layer: 5
   m_Name: Price
   m_TagString: Player
@@ -122,9 +122,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8155212916840274126}
-        m_TargetAssemblyTypeName: NPC, Assembly-CSharp
-        m_MethodName: OnClicked
+      - m_Target: {fileID: 4062659254741583338}
+        m_TargetAssemblyTypeName: ChatObject, Assembly-CSharp
+        m_MethodName: OnClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -134,7 +134,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8155212916840274126
+--- !u!114 &4062659254741583338
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -143,8 +143,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7307037406944028266}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f98f2f21c687994d8be02df7e06c381, type: 3}
+  m_Script: {fileID: 11500000, guid: aac3b6362a90b1744832eb6dcff703bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   positionParam: 0
-  chatParam: 0

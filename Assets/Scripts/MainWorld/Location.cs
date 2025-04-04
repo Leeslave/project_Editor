@@ -145,13 +145,13 @@ public class Location : MonoBehaviour
     public void SetObjects()
     {
         // NPC 오브젝트 설정
-        List<WorldObjectData> npcs = GameSystem.Instance.DayData
+        List<ChatObjectData> npcs = GameSystem.Instance.DayData
                                                 .dayTimes[GameSystem.Instance.timeIndex].npc
                                                 .Where(npc=> npc.positions[0].location == locationName.ToString())
                                                 .ToList();
-        foreach(WorldObjectData npc in npcs)
+        foreach(ChatObjectData npc in npcs)
         {
-            WorldObjectFactory.Instance.CreateObject(npc, locationName, Positions[npc.positions[0].position].transform);
+            WorldObjectFactory.Instance.CreateNPC(npc, locationName, Positions[npc.positions[0].position].transform);
         }
     }
 }
