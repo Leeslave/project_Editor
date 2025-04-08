@@ -44,9 +44,15 @@ public static class DataLoader
     }
     
     /// 게임 데이터파일 저장하기
-    public static void SaveGameData(string fileName, DailyData data)
+    public static void SaveGameData(string path, DailyData data)
     {
-        
+        // json String으로 파싱
+        string jsonText = JsonConvert.SerializeObject(data, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+
+        FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+        byte[] bytes = Encoding.UTF8.GetBytes(jsonText);
+        fileStream.Write(bytes, 0, bytes.Length);
+        fileStream.Close();
     }
     
     /// 대사 파일 저장하기
@@ -56,30 +62,18 @@ public static class DataLoader
     }
     #endif
     
-    
-    /// 파일명으로 대화 데이터를 로드
-    public static List<Paragraph> GetChatData(string fileName)
-    {
-        FileStream fs = new FileStream(CHATPATH + fileName, FileMode.Open);
-        byte[] buffer = new byte[fs.Length];
-        fs.Read(buffer, 0, (int)fs.Length);
-        fs.Close();
-        string jsonText = Encoding.UTF8.GetString(buffer);
         
-        Dialogue wrapper = JsonConvert.DeserializeObject<Dialogue>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-        return wrapper.chatList;
-    }
-    
     /// index로부터 게임 데이터를 로드
-    public static DailyData LoadGameData(int index)
+    public static DailyData GetDayData(int index)
     {
         string gameFile = $"{GAMEDATAPATH}/{GAMEFILE}{index}.json";
 
-        return LoadGameData(gameFile);
+        return GetDayData(gameFile);
     }
 
+    
     // 파일명으로 게임 데이터를 로드
-    public static DailyData LoadGameData(string gameFile)
+    public static DailyData GetDayData(string gameFile)
     {
         // 파일 읽어오기
         if (!File.Exists(gameFile))
@@ -100,8 +94,23 @@ public static class DataLoader
 
     }
     
+    
+    /// 파일명으로 대화 데이터를 로드
+    public static List<Paragraph> GetChatData(string fileName)
+    {
+        FileStream fs = new FileStream(CHATPATH + fileName, FileMode.Open);
+        byte[] buffer = new byte[fs.Length];
+        fs.Read(buffer, 0, (int)fs.Length);
+        fs.Close();
+        string jsonText = Encoding.UTF8.GetString(buffer);
+        
+        Dialogue wrapper = JsonConvert.DeserializeObject<Dialogue>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+        return wrapper.chatList;
+    }
+
+    
     /// 플레이어 세이브 데이터를 로드
-    public static List<SaveData> LoadPlayerData()
+    public static List<SaveData> GetPlayerData()
     {
         // 파일 읽어오기
         if (!File.Exists(SAVEPATH))

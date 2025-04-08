@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DayBuilder : Singleton<DayBuilder>
@@ -11,16 +12,19 @@ public class DayBuilder : Singleton<DayBuilder>
     
     [Header("파일 수정")]
     public string fileName;
-
-    [Header("게임 파일 정보")] 
-    public string DataPath;
-    public List<string> dataFiles = new();
     public DailyData dailyData;
 
     [Space(20)] 
+    [Header("게임 파일 정보")] 
+    public string dataPath;
+    public List<string> dataFiles = new();
+    
+    [Space(20)] 
+    [Header("에디터 오브젝트")] 
     public GameObject buttonPrefab;
     public RectTransform dataScroll;
     public List<GameObject> dataButtons = new();
+    [FormerlySerializedAs("viewerPanel")] public GameObject dayPanel;
 
 
     /// 데이터파일 리스트 불러오기
@@ -28,7 +32,7 @@ public class DayBuilder : Singleton<DayBuilder>
     {
         // 데이터 목록 불러오기
         dataFiles.Clear();
-        dataFiles = DataLoader.GetFileNames(DataPath);
+        dataFiles = DataLoader.GetFileNames(dataPath);
 
         // 기존 버튼들 삭제
         foreach (var obj in dataButtons)
@@ -48,7 +52,6 @@ public class DayBuilder : Singleton<DayBuilder>
             
             
             button.GetComponent<Button>().onClick.AddListener(() => EditDayData(file));
-            break;
         }
     }
 
@@ -59,7 +62,21 @@ public class DayBuilder : Singleton<DayBuilder>
     /// <remarks>날짜 파일을 불러온 후 </remarks>
     public void EditDayData(string gameFile)
     {
+        dailyData = DataLoader.GetDayData(dataPath + gameFile);
+        fileName = gameFile;
         Debug.Log($"Start Editing {gameFile}");
+    }
+    
+    
+    /// <summary>
+    /// DayData 수정 시작
+    /// </summary>
+    /// <remarks>날짜 파일을 불러온 후 </remarks>
+    public void SaveDayData()
+    {
+        DataLoader.SaveGameData(dataPath + fileName, dailyData);
+        fileName = "";
+        dailyData = null;
     }
     
     /// <summary>
@@ -67,6 +84,6 @@ public class DayBuilder : Singleton<DayBuilder>
     /// </summary>
     private void GetDayData(string gameFile)
     {
-        dailyData = DataLoader.LoadGameData(gameFile);
+        dailyData = DataLoader.GetDayData(gameFile);
     }
 }

@@ -55,16 +55,16 @@ public class TimeData
 }
 
 [Serializable]
-public class Date
+public struct Date
 {
     /**
     * 날짜 정보   
     */
-    public uint year;
-    public uint month;
-    public uint day;
+    public int year;
+    public int month;
+    public int day;
 
-    public Date(uint _year, uint _month, uint _day)
+    public Date(int _year, int _month, int _day)
     {
         year = _year;
         month = _month;
@@ -73,15 +73,15 @@ public class Date
 }
 
 [Serializable]
-public class DayTime
+public struct DayTime
 {
     /**
     * 시간 정보
     */
-    public uint hour;
-    public uint minute;
+    public string hour;
+    public string minute;
 
-    public DayTime(uint _hour = 0, uint _minute = 0)
+    public DayTime(string _hour, string _minute)
     {
         hour = _hour;
         minute = _minute;
@@ -89,7 +89,7 @@ public class DayTime
 
     public override string ToString()
     {
-        return $"{hour:D2}:{minute:D2}";
+        return $"{hour}:{minute}";
     }
 }
 
@@ -99,12 +99,13 @@ public class Work
     /**
     * 업무 정보
     */
-    public string code = "";     // 업무 코드명
+    public string code;     // 업무 코드명
     public int stage;       // 스테이지 번호
     public bool isClear;
     public Work(string _code, int _stage = 0)
     {
         code = _code;
         stage = _stage;
+        isClear = false;
     }
 } 

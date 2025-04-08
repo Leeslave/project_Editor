@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class DayEditor : MonoBehaviour
+public class DayViewer : MonoBehaviour
 {
     /**
      * 날짜 데이터 수정 기능
@@ -16,14 +17,27 @@ public class DayEditor : MonoBehaviour
      *  - 지역 락 정보
      *  - BGM 정보
      */
-    private DailyData dailyData;
+
+    [Header("UI 연결")] 
+    public TMP_InputField yearField;
+    public TMP_InputField monthField;
+    public TMP_InputField dayField;
+    
+    
+    private DailyData data;
 
     public string year {get; set;}
     public string month {get; set;}
     public string day {get; set;}
 
-    public void SetData()
+
+    public void StartEditing()
     {
-        dailyData = DayBuilder.Instance.dailyData;
+        
+    }
+
+    private void SetData()
+    {
+        data = DayBuilder.Instance.dailyData;
     }
 }
