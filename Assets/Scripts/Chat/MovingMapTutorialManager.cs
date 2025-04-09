@@ -43,6 +43,9 @@ public class MovingMapTutorialManager : TutorialManager
         yield return ShowPopUp(openOfficeDoorPanel);
         //페이즈 종료 이벤트 제거
         openOfficeDoorArrow.onClick.RemoveListener(MoveToNextMovingTutorialPhase);
+        
+        //블로커 비활성화
+        blocker.SetActive(false);
     }
     private void MoveToNextMovingTutorialPhase() => MoveToNextTutorialPhase(1f);
 
