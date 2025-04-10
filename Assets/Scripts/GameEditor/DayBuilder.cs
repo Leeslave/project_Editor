@@ -13,6 +13,7 @@ public class DayBuilder : Singleton<DayBuilder>
     [Header("파일 수정")]
     public string fileName;
     public DailyData dailyData;
+    private bool onEdit;
 
     [Space(20)] 
     [Header("게임 파일 정보")] 
@@ -24,7 +25,8 @@ public class DayBuilder : Singleton<DayBuilder>
     public GameObject buttonPrefab;
     public RectTransform dataScroll;
     public List<GameObject> dataButtons = new();
-    [FormerlySerializedAs("viewerPanel")] public GameObject dayPanel;
+    public GameObject dayPanel;
+    public TMP_InputField newFileName;
 
 
     /// 데이터파일 리스트 불러오기
@@ -53,6 +55,7 @@ public class DayBuilder : Singleton<DayBuilder>
             
             button.GetComponent<Button>().onClick.AddListener(() => EditDayData(file));
         }
+        dayPanel.SetActive(false);
     }
 
 
@@ -65,6 +68,22 @@ public class DayBuilder : Singleton<DayBuilder>
         dailyData = DataLoader.GetDayData(dataPath + gameFile);
         fileName = gameFile;
         Debug.Log($"Start Editing {gameFile}");
+        onEdit = true;
+        dayPanel.SetActive(true);
+    }
+    
+    
+    /// <summary>
+    /// DayData 수정 시작
+    /// </summary>
+    /// <remarks>날짜 파일을 불러온 후 </remarks>
+    public void MakeNewDayData()
+    {
+        dailyData = new DailyData();
+        fileName = newFileName.text;
+        Debug.Log($"Create New Editing {fileName}");
+        onEdit = true;
+        dayPanel.SetActive(true);
     }
     
     
@@ -74,9 +93,13 @@ public class DayBuilder : Singleton<DayBuilder>
     /// <remarks>날짜 파일을 불러온 후 </remarks>
     public void SaveDayData()
     {
+        if (!onEdit) return;
+        
         DataLoader.SaveGameData(dataPath + fileName, dailyData);
         fileName = "";
         dailyData = null;
+        onEdit = false;
+        dayPanel.SetActive(false);
     }
     
     /// <summary>

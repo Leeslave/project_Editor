@@ -9,6 +9,7 @@ using UnityEngine.Serialization;
 public enum World {
     /**
     월드 내 지역 목록
+    default : Street
     */
     Street,
     Bar,
@@ -128,8 +129,7 @@ public class Location : MonoBehaviour
     {
         BGMData bgmData = GameSystem.Instance.DayData
             .dayTimes[GameSystem.Instance.timeIndex].bgm
-            .Where(bgm => bgm.location == locationName.ToString())
-            .FirstOrDefault();
+            .FirstOrDefault(bgm => bgm.location == locationName);
 
         if (bgmData is not null)
         {
@@ -145,9 +145,9 @@ public class Location : MonoBehaviour
     public void SetObjects()
     {
         // NPC 오브젝트 설정
-        List<ChatObjectData> npcs = GameSystem.Instance.DayData
+        List<ChatObjectData> npcs = GameSystem.Instance.DayData 
                                                 .dayTimes[GameSystem.Instance.timeIndex].npc
-                                                .Where(npc=> npc.positions[0].location == locationName.ToString())
+                                                .Where(npc=> npc.positions[0].location == locationName)
                                                 .ToList();
         foreach(ChatObjectData npc in npcs)
         {

@@ -26,21 +26,15 @@ public class ActionObjectData
 [Serializable]
 public class WorldVector
 {
-    public string location;
+    public World location = World.Street;
     public int position;
     public string name = "???";
 
 
     public WorldVector(World location, int position)
     {
-        this.location = location.ToString();
+        this.location = location;
         this.position = position;
-    }
-    
-    
-    public World GetLocation()
-    {
-        return Enum.Parse<World>(location);
     }
     
     // == 연산자 오버로딩
@@ -93,6 +87,6 @@ public class Anchor
 [Serializable]
 public class BGMData
 {
-    public string location;
+    public World location;
     public int code;
 }
