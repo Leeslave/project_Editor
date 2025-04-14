@@ -39,6 +39,7 @@ public class TimeData
     *   시간대
     *   인게임 정보
         - NPC
+        - action
         - block
         - bgm 변경
     */
@@ -47,23 +48,23 @@ public class TimeData
 
     public bool isNight;
     
-    public List<WorldObjectData> npc = new();
+    public List<ChatObjectData> npc = new();
+    public List<ActionObjectData> action = new();
     public List<WorldVector> block = new();
     public List<BGMData> bgm = new();
 }
 
-
 [Serializable]
-public class Date
+public struct Date
 {
     /**
-    * 날짜 정보  
+    * 날짜 정보   
     */
-    public uint year;
-    public uint month;
-    public uint day;
+    public int year;
+    public int month;
+    public int day;
 
-    public Date(uint _year, uint _month, uint _day)
+    public Date(int _year, int _month, int _day)
     {
         year = _year;
         month = _month;
@@ -72,15 +73,15 @@ public class Date
 }
 
 [Serializable]
-public class DayTime
+public struct DayTime
 {
     /**
     * 시간 정보
     */
-    public uint hour;
-    public uint minute;
+    public string hour;
+    public string minute;
 
-    public DayTime(uint _hour = 0, uint _minute = 0)
+    public DayTime(string _hour, string _minute)
     {
         hour = _hour;
         minute = _minute;
@@ -88,7 +89,7 @@ public class DayTime
 
     public override string ToString()
     {
-        return $"{hour:D2}:{minute:D2}";
+        return $"{hour}:{minute}";
     }
 }
 
@@ -105,5 +106,6 @@ public class Work
     {
         code = _code;
         stage = _stage;
+        isClear = false;
     }
 } 

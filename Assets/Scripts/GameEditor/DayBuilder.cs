@@ -1,0 +1,112 @@
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
+
+public class DayBuilder : Singleton<DayBuilder>
+{
+    /**
+     * 날짜데이터 빌드 시스템
+     */
+    
+    [Header("파일 수정")]
+    public string fileName;
+    public DailyData dailyData;
+    private bool onEdit;
+
+    [Space(20)] 
+    [Header("게임 파일 정보")] 
+    public string dataPath;
+    public List<string> dataFiles = new();
+    
+    [Space(20)] 
+    [Header("에디터 오브젝트")] 
+    public GameObject buttonPrefab;
+    public RectTransform dataScroll;
+    public List<GameObject> dataButtons = new();
+    public GameObject dayPanel;
+    public TMP_InputField newFileName;
+
+
+    /// 데이터파일 리스트 불러오기
+    public void OnLoadClick()
+    {
+        // 데이터 목록 불러오기
+        dataFiles.Clear();
+        dataFiles = DataLoader.GetFileNames(dataPath);
+
+        // 기존 버튼들 삭제
+        foreach (var obj in dataButtons)
+        {
+            Destroy(obj);
+        }
+        dataButtons.Clear();
+        
+        // 새로 버튼 생성
+        foreach (var file in dataFiles)
+        {
+            GameObject button = Instantiate(buttonPrefab, dataScroll);
+            dataButtons.Add(button);
+            
+            TMP_Text text = button.GetComponentInChildren<TMP_Text>();
+            if (text is not null) text.text = file;
+            
+            
+            button.GetComponent<Button>().onClick.AddListener(() => EditDayData(file));
+        }
+        dayPanel.SetActive(false);
+    }
+
+
+    /// <summary>
+    /// DayData 수정 시작
+    /// </summary>
+    /// <remarks>날짜 파일을 불러온 후 </remarks>
+    public void EditDayData(string gameFile)
+    {
+        dailyData = DataLoader.GetDayData(dataPath + gameFile);
+        fileName = gameFile;
+        Debug.Log($"Start Editing {gameFile}");
+        onEdit = true;
+        dayPanel.SetActive(true);
+    }
+    
+    
+    /// <summary>
+    /// DayData 수정 시작
+    /// </summary>
+    /// <remarks>날짜 파일을 불러온 후 </remarks>
+    public void MakeNewDayData()
+    {
+        dailyData = new DailyData();
+        fileName = newFileName.text;
+        Debug.Log($"Create New Editing {fileName}");
+        onEdit = true;
+        dayPanel.SetActive(true);
+    }
+    
+    
+    /// <summary>
+    /// DayData 수정 시작
+    /// </summary>
+    /// <remarks>날짜 파일을 불러온 후 </remarks>
+    public void SaveDayData()
+    {
+        if (!onEdit) return;
+        
+        DataLoader.SaveGameData(dataPath + fileName, dailyData);
+        fileName = "";
+        dailyData = null;
+        onEdit = false;
+        dayPanel.SetActive(false);
+    }
+    
+    /// <summary>
+    /// 날짜 파일 불러오기
+    /// </summary>
+    private void GetDayData(string gameFile)
+    {
+        dailyData = DataLoader.GetDayData(gameFile);
+    }
+}

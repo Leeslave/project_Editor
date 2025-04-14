@@ -57,7 +57,7 @@ public static class ActionHandler
     /// <typeparam name="T">매개변수 형식</typeparam>
     /// <returns>파싱된 매개변수</returns>
     /// <exception cref="InvalidOperationException">잘못된 매개변수 형식</exception>
-    public static T SetParam<T>(string param)
+    private static T SetParam<T>(string param)
     {
         // 단순 객체일 경우
         if (typeof(T) == typeof(int))

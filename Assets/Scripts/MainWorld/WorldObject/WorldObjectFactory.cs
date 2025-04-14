@@ -25,10 +25,10 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         Monk,
         Reporter,
         Nametag,
-        
     }
-    
+
     public List<GameObject> prefabs;
+    
     private readonly List<List<WorldObject>> _objectList = new();
 
     private new void Awake()
@@ -48,7 +48,7 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
     ///  <param name="objData">월드오브젝트 데이터</param>
     ///  <param name="location">Location 정보</param>
     /// <param name="position">Location 오브젝트의 transform</param>
-    public void CreateObject(WorldObjectData objData, World location, Transform position)
+    public void CreateNPC(ChatObjectData objData, World location, Transform position)
     {
         // 해당하는 프리팹 로드
         GameObject prefab;
@@ -63,7 +63,6 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         
         // 월드 오브젝트 생성
         GameObject newObject = Instantiate(prefab, position);
-        Debug.Log($"New Object: {newObject.name}");
         
         // 데이터 입력
         if (objData.name == null)
@@ -71,10 +70,10 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
             objData.name = objData.objectType;
         }
         newObject.name = objData.name;
-        Debug.Log($"New Object: {newObject.name} <= {objData.name}");
-        WorldObject worldObject = newObject.GetComponent<WorldObject>();
-        worldObject.positions = objData.positions.Zip(objData.anchor, (wv, anchor) =>  (wv, anchor)).ToList();
-        worldObject.chatAssets = objData.chat.Zip(objData.onAwake, (c, a) => (c, a)).ToList();
+        ChatObject obj = newObject.GetComponent<ChatObject>();
+        obj.positions = objData.positions.Zip(objData.anchor, (wv, anchor) =>  (wv, anchor)).ToList();
+        obj.chatAssets = objData.chat.Zip(objData.onAwake, (c, a) => (c, a)).ToList();
+        obj.Triggers = new();
         
         // 객체 리스트에 추가
         if (_objectList.Count == 0)
@@ -84,10 +83,40 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
                 _objectList.Add(new List<WorldObject>());
             }
         }
-        _objectList[(int)location].Add(worldObject);
+        _objectList[(int)location].Add(obj);
         
         // 오브젝트 시작
-        worldObject.OnAwake();
+        obj.OnAwake();
+    }
+    
+    
+    /// <summary>
+    ///  ActionData를 가지고 ActionObject 생성
+    ///  </summary>
+    public void CreateAction(ActionObjectData objData, World location, Transform position)
+    {
+        GameObject newObject = new();
+        Debug.Log($"New Object: {newObject.name}");
+        
+        // 데이터 입력
+        newObject.name = objData.actionName;
+        ActionObject obj = newObject.AddComponent<ActionObject>();
+        obj.positions = objData.positions.Zip(objData.anchor, (wv, anchor) =>  (wv, anchor)).ToList();
+        obj.actionName = objData.actionName;
+        obj.actionParam = objData.actionParam;
+        
+        // 객체 리스트에 추가
+        if (_objectList.Count == 0)
+        {
+            for (int i = 0; i < Enum.GetValues(typeof(World)).Length; i++)
+            {
+                _objectList.Add(new List<WorldObject>());
+            }
+        }
+        _objectList[(int)location].Add(obj);
+        
+        // 오브젝트 시작
+        obj.OnAwake();
     }
 
 
@@ -114,7 +143,6 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
     /// 지역 내 특정 오브젝트 삭제
     /// </summary>
     /// <param name="objName">오브젝트명</param>
-    /// <param name="location">해당하는 위치</param>
     public void RemoveObject(string objName)
     {
         foreach (var objList in _objectList)

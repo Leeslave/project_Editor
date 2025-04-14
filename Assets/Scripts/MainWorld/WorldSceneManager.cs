@@ -16,7 +16,7 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     [Header("지역 데이터")]
     [SerializeField]
     private Location[] locationList;    // 지역 오브젝트 리스트
-    public Location CurrentLocation => locationList[(int)GameSystem.Instance.currentLocation.GetLocation()];
+    public Location CurrentLocation => locationList[(int)GameSystem.Instance.currentLocation.location];
     private List<WorldVector> _blockList;    // 지역 이동 제한 리스트
     
     private bool _moving;    // 지역 내 이동 버튼 활성화 여부

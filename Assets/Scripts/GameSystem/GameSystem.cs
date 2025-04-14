@@ -52,7 +52,7 @@ public class GameSystem : SingletonObject<GameSystem>
     {
         base.Awake();
 
-        _saveList = DataLoader.LoadPlayerData();     // 세이브 데이터 로드
+        _saveList = DataLoader.GetPlayerData();     // 세이브 데이터 로드
         
         // DEBUG: 초기 날짜 설정
     #if DEBUG
@@ -78,7 +78,7 @@ public class GameSystem : SingletonObject<GameSystem>
         // DataLoader.SavePlayerData(saveList);
 
         // 해당 날짜 설정
-        DayData = DataLoader.LoadGameData(date);
+        DayData = DataLoader.GetDayData(date);
         dateIndex = date;
         currentLocation = DayData.startLocation;
         isScreenOn = false;

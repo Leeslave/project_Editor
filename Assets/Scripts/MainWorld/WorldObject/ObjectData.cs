@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 [Serializable]
-public class WorldObjectData
+public class ChatObjectData
 {
     public string name = null;
     public string objectType;
@@ -15,23 +15,26 @@ public class WorldObjectData
 }
 
 [Serializable]
+public class ActionObjectData
+{
+    public List<WorldVector> positions;
+    public List<Anchor> anchor;  // 위치
+    public string actionName;  // 액션 정보
+    public string actionParam;  // 대사 시작 여부
+}
+
+[Serializable]
 public class WorldVector
 {
-    public string location;
+    public World location = World.Street;
     public int position;
     public string name = "???";
 
 
     public WorldVector(World location, int position)
     {
-        this.location = location.ToString();
+        this.location = location;
         this.position = position;
-    }
-    
-    
-    public World GetLocation()
-    {
-        return Enum.Parse<World>(location);
     }
     
     // == 연산자 오버로딩
@@ -73,7 +76,7 @@ public class Anchor
 {
     public float x;
     public float y;
-    public float size;
+    public float size = 1.0f;
 
     public Vector2 GetVector()
     {
@@ -84,6 +87,6 @@ public class Anchor
 [Serializable]
 public class BGMData
 {
-    public string location;
+    public World location;
     public int code;
 }

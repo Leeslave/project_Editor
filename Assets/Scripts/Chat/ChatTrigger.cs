@@ -4,7 +4,14 @@ using UnityEngine;
 
 public interface IChatList
 {
+    public int ChatIndex { get; set; }
+    public List<(string chat, bool onAwake)> chatAssets { get; set; }
+    public List<ChatTrigger> Triggers { get; set; }
+    
+    /// 대사 인덱스 변경
     public void SwapIndex(int idx);
+    
+    /// 대사 시작
     public void StartChat();
 }
 
