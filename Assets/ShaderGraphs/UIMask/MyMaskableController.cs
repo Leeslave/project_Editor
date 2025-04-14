@@ -30,6 +30,9 @@ public class MyMaskableController : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (!image || !mask)
+            return;
+        
         //상대 위치 및 크기 전달
         ImageMatForRendering?.SetVector(MaskRect, GetMaskRect());
         ImageMatForRendering?.SetVector(Color, image.color);
