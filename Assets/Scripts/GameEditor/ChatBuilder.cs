@@ -1,18 +1,18 @@
+using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
-using UnityEngine.Serialization;
+using UnityEngine;
 using UnityEngine.UI;
 
-public class DayBuilder : Singleton<DayBuilder>
+public class ChatBuilder : Singleton<ChatBuilder>
 {
     /**
-     * 날짜데이터 빌드 시스템
+     * 대사 데이터 빌드 시스템
      */
     
     [Header("파일 수정")]
     public string fileName;
-    public DailyData dailyData;
+    public List<Paragraph> chat;
     private bool onEdit;
 
     [Space(20)] 
@@ -25,7 +25,7 @@ public class DayBuilder : Singleton<DayBuilder>
     public GameObject buttonPrefab;
     public RectTransform dataScroll;
     public List<GameObject> dataButtons = new();
-    public GameObject dayPanel;
+    public GameObject chatPanel;
     public TMP_InputField newFileName;
 
 
@@ -53,9 +53,9 @@ public class DayBuilder : Singleton<DayBuilder>
             if (text is not null) text.text = file;
             
             
-            button.GetComponent<Button>().onClick.AddListener(() => EditDayData(file));
+            button.GetComponent<Button>().onClick.AddListener(() => EditChat(file));
         }
-        dayPanel.SetActive(false);
+        chatPanel.SetActive(false);
     }
 
 
@@ -63,13 +63,13 @@ public class DayBuilder : Singleton<DayBuilder>
     /// DayData 수정 시작
     /// </summary>
     /// <remarks>날짜 파일을 불러온 후 </remarks>
-    public void EditDayData(string gameFile)
+    public void EditChat(string gameFile)
     {
-        dailyData = DataLoader.GetDayData(dataPath + gameFile);
+        chat = DataLoader.GetChatData(dataPath + gameFile);
         fileName = gameFile;
         Debug.Log($"Start Editing {gameFile}");
         onEdit = true;
-        dayPanel.SetActive(true);
+        chatPanel.SetActive(true);
     }
     
     
@@ -77,13 +77,13 @@ public class DayBuilder : Singleton<DayBuilder>
     /// DayData 수정 시작
     /// </summary>
     /// <remarks>날짜 파일을 불러온 후 </remarks>
-    public void MakeNewDayData()
+    public void CreateChat()
     {
-        dailyData = new DailyData();
+        chat = new();
         fileName = newFileName.text;
         Debug.Log($"Create New Editing {fileName}");
         onEdit = true;
-        dayPanel.SetActive(true);
+        chatPanel.SetActive(true);
     }
     
     
@@ -91,14 +91,14 @@ public class DayBuilder : Singleton<DayBuilder>
     /// DayData 수정 시작
     /// </summary>
     /// <remarks>날짜 파일을 불러온 후 </remarks>
-    public void SaveDayData()
+    public void SaveChatData()
     {
         if (!onEdit) return;
         
-        DataLoader.SaveGameData(dataPath + fileName, dailyData);
+        DataLoader.SaveChatData(dataPath + fileName, chat);
         fileName = "";
-        dailyData = null;
+        chat = null;
         onEdit = false;
-        dayPanel.SetActive(false);
+        chatPanel.SetActive(false);
     }
 }
