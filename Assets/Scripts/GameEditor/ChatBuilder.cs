@@ -69,6 +69,7 @@ public class ChatBuilder : Singleton<ChatBuilder>
         fileName = gameFile;
         Debug.Log($"Start Editing {gameFile}");
         onEdit = true;
+        dataScroll.gameObject.SetActive(false);
         chatPanel.SetActive(true);
     }
     
@@ -79,10 +80,13 @@ public class ChatBuilder : Singleton<ChatBuilder>
     /// <remarks>날짜 파일을 불러온 후 </remarks>
     public void CreateChat()
     {
+        if (newFileName.text is null or "") return;
+        
         chat = new();
         fileName = newFileName.text;
         Debug.Log($"Create New Editing {fileName}");
         onEdit = true;
+        dataScroll.gameObject.SetActive(false);
         chatPanel.SetActive(true);
     }
     
