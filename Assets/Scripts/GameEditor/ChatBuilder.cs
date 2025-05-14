@@ -24,7 +24,7 @@ public class ChatBuilder : Singleton<ChatBuilder>
     [Header("에디터 오브젝트")] 
     public GameObject buttonPrefab;
     public RectTransform dataScroll;
-    public List<GameObject> dataButtons = new();
+    private List<GameObject> dataButtons = new();
     public GameObject chatPanel;
     public TMP_InputField newFileName;
 
@@ -65,7 +65,9 @@ public class ChatBuilder : Singleton<ChatBuilder>
     /// <remarks>날짜 파일을 불러온 후 </remarks>
     public void EditChat(string gameFile)
     {
-        chat = DataLoader.GetChatData(dataPath + gameFile);
+        chat = DataLoader.GetChatData(gameFile);
+        if (chat is null) return;
+        
         fileName = gameFile;
         Debug.Log($"Start Editing {gameFile}");
         onEdit = true;
