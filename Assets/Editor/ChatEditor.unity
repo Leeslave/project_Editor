@@ -1158,7 +1158,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &524779470
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1231,8 +1231,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf2a44c876383a348b3f8737f44ed846, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  talkPrefab: {fileID: 0}
-  choicePrefab: {fileID: 0}
+  talkPrefab: {fileID: 3571411646196144989, guid: 19ad0e636642e214288e0e8b0acbdb57, type: 3}
+  choicePrefab: {fileID: 1779768411748434686, guid: 12b508917af81a343bb50d6cbbf9494c, type: 3}
+  dataPanel: {fileID: 965712078}
 --- !u!1001 &547601283
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1384,11 +1385,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fileName: 
-  dataPath: Assets\Resources\Chat\Text\
+  dataPath: Assets/Resources/Chat/Text
   dataFiles: []
   buttonPrefab: {fileID: 6144790567554842731, guid: c7d2543290ee1b840b0f7f5a5b50016d, type: 3}
   dataScroll: {fileID: 1354090934}
-  chatPanel: {fileID: 524779469}
+  chatEditPanel: {fileID: 524779473}
   newFileName: {fileID: 0}
 --- !u!1 &594464918
 GameObject:
@@ -1510,9 +1511,9 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -17, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &637284504
 MonoBehaviour:
@@ -2236,7 +2237,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}

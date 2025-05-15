@@ -25,7 +25,7 @@ public class ChatBuilder : Singleton<ChatBuilder>
     public GameObject buttonPrefab;
     public RectTransform dataScroll;
     private List<GameObject> dataButtons = new();
-    public GameObject chatPanel;
+    public ChatEditor chatEditPanel;
     public TMP_InputField newFileName;
 
 
@@ -55,7 +55,7 @@ public class ChatBuilder : Singleton<ChatBuilder>
             
             button.GetComponent<Button>().onClick.AddListener(() => EditChat(file));
         }
-        chatPanel.SetActive(false);
+        chatEditPanel.gameObject.SetActive(false);
     }
 
 
@@ -72,7 +72,8 @@ public class ChatBuilder : Singleton<ChatBuilder>
         Debug.Log($"Start Editing {gameFile}");
         onEdit = true;
         dataScroll.gameObject.SetActive(false);
-        chatPanel.SetActive(true);
+        chatEditPanel.gameObject.SetActive(true);
+        chatEditPanel.RefreshList(chat);
     }
     
     
@@ -89,7 +90,8 @@ public class ChatBuilder : Singleton<ChatBuilder>
         Debug.Log($"Create New Editing {fileName}");
         onEdit = true;
         dataScroll.gameObject.SetActive(false);
-        chatPanel.SetActive(true);
+        chatEditPanel.gameObject.SetActive(true);
+        chatEditPanel.RefreshList(chat);
     }
     
     
@@ -105,6 +107,6 @@ public class ChatBuilder : Singleton<ChatBuilder>
         fileName = "";
         chat = null;
         onEdit = false;
-        chatPanel.SetActive(false);
+        chatEditPanel.gameObject.SetActive(false);
     }
 }
