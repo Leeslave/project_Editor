@@ -135,5 +135,4 @@ public class CharacterCG
     public string position = "Center"; // 왼쪽, 가운데, 오른쪽 CG 위치
 
     public bool isHighlight = true; // 캐릭터 하이라이트
-    public string animation = null; // 캐릭터 모션
 }
