@@ -351,23 +351,22 @@ public class Chat : Singleton<Chat>
         }
         else        // 대사 타입 오류
         {
-            throw new Exception($"Unknown Chat Data : {para.chatType}");
+            throw new Exception("Unknown Chat Data");
         }
 
         // 배경이미지 설정 (컷씬)
         // 배경 활성화
-        if (para.chatType == "CutScene")
+
+        if (para.background is not null)
         {
-            if (para.background is not null)
-            {
-                background.sprite = GetSprite(BACKGROUNDFILEPATH + para.background);    // 배경 이미지 설정 
-            }
-            if (background.sprite is not null)
-                background.gameObject.SetActive(true);      // 배경 이미지 활성화
+            background.sprite = GetSprite(BACKGROUNDFILEPATH + para.background);    // 배경 이미지 설정 
         }
-        
+        if (background.sprite is not null)
+            background.gameObject.SetActive(true);      // 배경 이미지 활성화
+
+    
         // 배경음악 설정
-        if (!string.IsNullOrEmpty(para.bgm))
+        if (para.bgm != "none")
         {
             // 모든 음악 중지
             if (para.bgm == "STOP")
