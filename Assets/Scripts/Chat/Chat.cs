@@ -14,7 +14,7 @@ public class Chat : Singleton<Chat>
     - 스킵하기를 눌러서 대사 종료 (이벤트 함수 실행, Ending 선택지 제외)
     - 대사 출력 후 로그 텍스트에 1개씩 추가
     */
-    [SerializeField] private GameObject chatTarget;
+    private GameObject chatTarget;
     private GameObject ChatUI => transform.GetChild(0).gameObject;
     [SerializeField] private ChatTutorialManager ChatTutorial;
 
@@ -353,17 +353,13 @@ public class Chat : Singleton<Chat>
         {
             throw new Exception("Unknown Chat Data");
         }
-
-        // 배경이미지 설정 (컷씬)
+        
         // 배경 활성화
-
         if (para.background is not null)
         {
             background.sprite = GetSprite(BACKGROUNDFILEPATH + para.background);    // 배경 이미지 설정 
-        }
-        if (background.sprite is not null)
             background.gameObject.SetActive(true);      // 배경 이미지 활성화
-
+        }
     
         // 배경음악 설정
         if (para.bgm != "none")
@@ -371,14 +367,14 @@ public class Chat : Singleton<Chat>
             // 모든 음악 중지
             if (para.bgm == "STOP")
             {
-                WorldSceneManager.Instance.worldBGM.Pause();
+                WorldSceneManager.Instance?.worldBGM.Pause();
                 bgm.Pause();
             }
             // 월드 음악으로 되돌림
             else if (para.bgm == "RETURN")
             {
                 bgm.Stop();
-                WorldSceneManager.Instance.worldBGM.Resume();
+                WorldSceneManager.Instance?.worldBGM.Resume();
             }
             // 대화 음악 재실행
             else if (para.bgm == "RESTART")
@@ -390,7 +386,7 @@ public class Chat : Singleton<Chat>
             {
                 if (int.TryParse(para.bgm, out int result))
                 {
-                    WorldSceneManager.Instance.worldBGM.Pause();
+                    WorldSceneManager.Instance?.worldBGM.Pause();
                     bgm.SetClip(result);
                     bgm.Play();
                 }

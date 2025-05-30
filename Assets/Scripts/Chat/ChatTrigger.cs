@@ -51,6 +51,21 @@ public class ChatTrigger : MonoBehaviour
 
 
     /// <summary>
+    /// 대화 데이터 직접 입력하기
+    /// </summary>
+    /// <param name="data">대화 데이터</param>
+    public void SetChatData(List<Paragraph> data)
+    {
+        if (data is null || data.Count == 0)
+        {
+            return;
+        }
+        
+        chatData = data;
+    }
+
+
+    /// <summary>
     /// Start Chat
     /// </summary>
     /// <param name="idx">chat data index</param>

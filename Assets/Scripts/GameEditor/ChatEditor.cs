@@ -60,20 +60,24 @@ public class ChatEditor : MonoBehaviour
             texts[0].text = dataPanel.childCount.ToString();
             
             // 버튼 설명 및 로드 함수 이벤트 연결
-            if (data is TalkParagraph)
+            if (data is TalkParagraph talk)
             {
-                TalkParagraph talk = data as TalkParagraph;
+                List<Paragraph> newList = new() { talk };
                 texts[1].text = talk.talker;
                 
                 btn.onClick.AddListener(() => LoadParagraph(i, talk));
+                btn.GetComponent<ChatTrigger>()?.SetChatData(newList);
+                btn.onClick.AddListener(() => btn.GetComponent<ChatTrigger>()?.StartChat());
             }
-            else if (data is ChoiceParagraph)
+            else if (data is ChoiceParagraph choice)
             {
-                ChoiceParagraph choice = data as ChoiceParagraph;
+                List<Paragraph> newList = new() { choice };
                 // TODO: 선택지 설명 추가
                 texts[1].text = "선택지";
                 
                 btn.onClick.AddListener(() => LoadParagraph(i, choice));
+                btn.GetComponent<ChatTrigger>()?.SetChatData(newList);
+                btn.onClick.AddListener(() => btn.GetComponent<ChatTrigger>()?.StartChat());
             }
         }
     }
