@@ -141,7 +141,5 @@ public class CharacterCG
     */
     public string fileName;    // 캐릭터 파일명
     public int index = 0;    // 이미지 내 인덱스
-    public string position = "Center"; // 왼쪽, 가운데, 오른쪽 CG 위치
-
     public bool isHighlight = true; // 캐릭터 하이라이트
 }
