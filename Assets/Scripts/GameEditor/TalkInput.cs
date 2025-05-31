@@ -8,12 +8,12 @@ using UnityEngine.UI;
 public class TalkInput : MonoBehaviour
 {
     public ChatEditor editor;
+    [HideInInspector]
     public int index = 0;
     
     public TMP_InputField talker;
     public TMP_InputField talkerInfo;
     public TMP_InputField context;
-
     public TMP_Dropdown fontSize;
     public TMP_InputField textDelay;
     
@@ -37,35 +37,27 @@ public class TalkInput : MonoBehaviour
         data.actionParam = actionParam.text;
         
         // CG 연결
-        //L1
-        TMP_Dropdown cgOption = characters[0].GetChild(0).GetComponent<TMP_Dropdown>();
-        if (cgOption.value != 0)
+        for (int i = 0; i < 4; i++)
         {
-            data.characterL.fileName = cgOption.options[cgOption.value].text; 
-            data.characterL.index = int.Parse(characters[0].GetChild(1).GetComponent<TMP_InputField>().text);
-            data.characterL.isHighlight = characters[0].GetChild(1).GetComponent<Toggle>().isOn;
-        }
-        //L2
-        if (data.characterL2 is not null)
-        {
-            characters[1].GetChild(0).GetComponent<TMP_Dropdown>().value = FindIndex(characters[1].GetChild(0).GetComponent<TMP_Dropdown>(), data.characterL2.fileName);
-            characters[1].GetChild(1).GetComponent<TMP_InputField>().text = data.characterL2.index.ToString();
-        }
-        //R1
-        if (data.characterR is not null)
-        {
-            characters[2].GetChild(0).GetComponent<TMP_Dropdown>().value = FindIndex(characters[2].GetChild(0).GetComponent<TMP_Dropdown>(), data.characterR.fileName);
-            characters[2].GetChild(1).GetComponent<TMP_InputField>().text = data.characterR.index.ToString();
-        }
-        //R2
-        if (data.characterR2 is not null)
-        {
-            characters[3].GetChild(0).GetComponent<TMP_Dropdown>().value =
-                FindIndex(characters[3].GetChild(0).GetComponent<TMP_Dropdown>(), data.characterR2.fileName);
-            characters[3].GetChild(1).GetComponent<TMP_InputField>().text = data.characterR2.index.ToString();
+            var charPanel = characters[i];
+            var charName = charPanel.GetChild(0).GetComponent<TMP_Dropdown>();
+            if (charName.value != 0)
+            {
+                data.characters[i].fileName = charName.options[charName.value].text;
+                if (int.TryParse(charPanel.GetChild(1).GetComponent<TMP_InputField>().text, out int num))
+                {
+                    data.characters[i].index = num;
+                }
+                data.characters[i].isHighlight = charPanel.GetChild(2).GetComponent<Toggle>().isOn;
+            }
+            else
+            {
+                data.characters[i] = null;
+            }
         }
         
-        
+        // 데이터 제출
+        editor.SaveParagraph(index, data);
     }
 
 
@@ -87,33 +79,22 @@ public class TalkInput : MonoBehaviour
         actionParam.text = data.actionParam;
         
         // CG 연결
-        //L1
-        if (data.characterL is not null)
+        for (int i = 0; i < 4; i++)
         {
-            characters[0].gameObject.SetActive(true);
-            characters[0].GetChild(0).GetComponent<TMP_Dropdown>().value = FindIndex(characters[0].GetChild(0).GetComponent<TMP_Dropdown>(), data.characterL.fileName);
-            characters[0].GetChild(1).GetComponent<TMP_InputField>().text = data.characterL.index.ToString();
-        }
-        //L2
-        if (data.characterL2 is not null)
-        {
-            characters[1].gameObject.SetActive(true);
-            characters[1].GetChild(0).GetComponent<TMP_Dropdown>().value = FindIndex(characters[1].GetChild(0).GetComponent<TMP_Dropdown>(), data.characterL2.fileName);
-            characters[1].GetChild(1).GetComponent<TMP_InputField>().text = data.characterL2.index.ToString();
-        }
-        //R1
-        if (data.characterR is not null)
-        {
-            characters[2].gameObject.SetActive(true);
-            characters[2].GetChild(0).GetComponent<TMP_Dropdown>().value = FindIndex(characters[2].GetChild(0).GetComponent<TMP_Dropdown>(), data.characterR.fileName);
-            characters[2].GetChild(1).GetComponent<TMP_InputField>().text = data.characterR.index.ToString();
-        }
-        //R2
-        if (data.characterR2 is not null)
-        {
-            characters[3].gameObject.SetActive(true);
-            characters[3].GetChild(0).GetComponent<TMP_Dropdown>().value = FindIndex(characters[3].GetChild(0).GetComponent<TMP_Dropdown>(), data.characterR2.fileName);
-            characters[3].GetChild(1).GetComponent<TMP_InputField>().text = data.characterR2.index.ToString();
+            var charPanel = characters[i];
+            if (data.characters[i] is null)
+            {
+                charPanel.GetChild(0).GetComponent<TMP_Dropdown>().value = 0;
+                charPanel.GetChild(1).GetComponent<TMP_InputField>().text = "0";
+                charPanel.GetChild(2).GetComponent<Toggle>().isOn = false;
+            }
+            else
+            {
+                TMP_Dropdown dropdown = characters[i].GetChild(0).GetComponent<TMP_Dropdown>();
+                dropdown.value = FindIndex(dropdown, data.characters[i].fileName);
+                charPanel.GetChild(1).GetComponent<TMP_InputField>().text = data.characters[i].index.ToString();
+                charPanel.GetChild(2).GetComponent<Toggle>().isOn = data.characters[i].isHighlight;
+            }
         }
     }
     

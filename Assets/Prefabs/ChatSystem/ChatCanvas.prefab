@@ -290,7 +290,7 @@ GameObject:
   - component: {fileID: 113991355785376302}
   - component: {fileID: 8191129881534259941}
   m_Layer: 5
-  m_Name: Character_R
+  m_Name: Character_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -309,7 +309,7 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6944320552872247340}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.85, y: 0.4}
   m_AnchorMax: {x: 0.85, y: 0.4}
@@ -366,7 +366,7 @@ GameObject:
   - component: {fileID: 8618523494407530104}
   - component: {fileID: 1609085310687060662}
   m_Layer: 5
-  m_Name: Character_L2
+  m_Name: Character_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -577,8 +577,8 @@ RectTransform:
   - {fileID: 6041265554907908347}
   - {fileID: 7843686604425085056}
   - {fileID: 4113048543134350809}
-  - {fileID: 4990328689619575432}
   - {fileID: 5506684646606557867}
+  - {fileID: 4990328689619575432}
   - {fileID: 6041265555247589594}
   - {fileID: 6041265554348142066}
   - {fileID: 6041265555928983656}
@@ -3114,10 +3114,11 @@ MonoBehaviour:
   ChatTutorial: {fileID: 0}
   background: {fileID: 6041265554907908346}
   bgm: {fileID: 5100150346316290942}
-  characterL: {fileID: 6187990949018945927}
-  characterL2: {fileID: 1609085310687060662}
-  characterR: {fileID: 8191129881534259941}
-  characterR2: {fileID: 7450347991978275787}
+  CG:
+  - {fileID: 6187990949018945927}
+  - {fileID: 1609085310687060662}
+  - {fileID: 7450347991978275787}
+  - {fileID: 8191129881534259941}
   talkPanel: {fileID: 6041265555247589595}
   talkerName: {fileID: 6041265556249311942}
   talkerInfo: {fileID: 6041265555308318471}
@@ -4386,7 +4387,7 @@ GameObject:
   - component: {fileID: 6694223314014591463}
   - component: {fileID: 7450347991978275787}
   m_Layer: 5
-  m_Name: Character_R2
+  m_Name: Character_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4405,7 +4406,7 @@ RectTransform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6944320552872247340}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.7, y: 0.4}
   m_AnchorMax: {x: 0.7, y: 0.4}
@@ -4462,7 +4463,7 @@ GameObject:
   - component: {fileID: 8593294724968680435}
   - component: {fileID: 6187990949018945927}
   m_Layer: 5
-  m_Name: Character_L
+  m_Name: Character_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

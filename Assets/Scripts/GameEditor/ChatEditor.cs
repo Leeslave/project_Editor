@@ -8,8 +8,6 @@ using UnityEngine.UI;
 public class ChatEditor : MonoBehaviour
 {
     public List<Paragraph> dataList;
-    private TalkParagraph talkData;
-    private ChoiceParagraph choiceData;
 
     [Header("데이터 수정 프리팹")] public GameObject talkPrefab;
     public GameObject choicePrefab;
@@ -39,7 +37,10 @@ public class ChatEditor : MonoBehaviour
         }
 
         // 데이터에 맞춰 버튼들 생성
-        if (dataList?.Count == 0) return;
+        if (dataList?.Count == 0)
+        {
+            return;
+        }
         for (int i = 0; i < dataList.Count; i++)
         {
             Paragraph data = dataList[i];
@@ -83,7 +84,7 @@ public class ChatEditor : MonoBehaviour
     }
 
 
-    public void LoadParagraph(int index, TalkParagraph data)
+    private void LoadParagraph(int index, TalkParagraph data)
     {
         talkUI.index = index;
         talkUI.LoadInput(data);
@@ -93,7 +94,7 @@ public class ChatEditor : MonoBehaviour
     }
 
 
-    public void LoadParagraph(int index, ChoiceParagraph data)
+    private void LoadParagraph(int index, ChoiceParagraph data)
     {
         choiceUI.index = index;
         choiceUI.LoadInput(data);

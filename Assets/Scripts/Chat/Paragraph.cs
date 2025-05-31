@@ -7,18 +7,9 @@ public abstract class Paragraph
 {
     /**
     상속용 대사 클래스
-    - 대사 타입과 기본 데이터
-        대사타입
-        Normal : 기본 대화
-        Choice : 선택지
-        EndChoice : 엔딩 분기 선택지
-        CutScene : 컷씬
     */
     public string chatType = "Normal";    // 대사 타입
-    public CharacterCG characterL = null;  // 왼쪽 캐릭터 CG
-    public CharacterCG characterR = null;   // 오른쪽 캐릭터 CG
-    public CharacterCG characterL2 = null;  // 왼쪽 캐릭터 CG
-    public CharacterCG characterR2 = null;   // 오른쪽 캐릭터 CG
+    public List<CharacterCG>  characters = new(){null, null, null, null};
     public string bgm = "none";         // 배경음악
     public string background = null;  // 배경 이미지
     public string action = null;    // 대화 후 반응
@@ -49,9 +40,9 @@ public class TalkParagraph : Paragraph
     - 기본적인 대화
     - 컷씬용 배경
     */
-    public string talker = "";  // 발화자
-    public string talkerInfo = "";    // 발화자 설명
-    public string text = "";  // 내용
+    public string talker;  // 발화자
+    public string talkerInfo;    // 발화자 설명
+    public string text;  // 내용
     public List<VariableReplace> variables = new(); // 변수값
 
     // 글자 크기 기본값들
@@ -71,9 +62,8 @@ public class TalkParagraph : Paragraph
                 return LARGEFONTSIZE;
             case "small":
                 return SMALLFONTSIZE;
-            case "normal":default:
+            default:
                 return NORMALFONTSIZE;
-
         }
     }
 
@@ -99,7 +89,7 @@ public class ChoiceParagraph : Paragraph
     선택지 대사 클래스
     - 대화 선택지들
     */
-    public List<Choice> choiceList = null; // 선택지들 리스트
+    public List<Choice> choiceList = new() { null, null, null}; // 선택지들 리스트
 
     public override bool hasAction()
     {

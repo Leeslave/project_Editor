@@ -7,7 +7,10 @@ using UnityEngine;
 public class ChoiceInput : MonoBehaviour
 {
     public ChatEditor editor;
+    [HideInInspector]
     public int index = 0;
+    
+    public List<Transform> choices = new();
     
     public List<TMP_Dropdown> characters;
     public TMP_Dropdown bgm;

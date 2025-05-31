@@ -1,9 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
-using System;
+using TMPro;
+
 
 public class Chat : Singleton<Chat>
 {
@@ -14,7 +14,11 @@ public class Chat : Singleton<Chat>
     - 스킵하기를 눌러서 대사 종료 (이벤트 함수 실행, Ending 선택지 제외)
     - 대사 출력 후 로그 텍스트에 1개씩 추가
     */
-    private GameObject chatTarget;
+    private readonly int CGCOUNT = 4;
+    private readonly int CHOICECOUNT = 3;
+    private readonly string CHARACTERFILEPATH = "Chat/Character/";    // 캐릭터 파일 경로
+    private readonly string BACKGROUNDFILEPATH = "Chat/Background/";   // 배경 CG 파일 경로
+    
     private GameObject ChatUI => transform.GetChild(0).gameObject;
     [SerializeField] private ChatTutorialManager ChatTutorial;
 
@@ -22,12 +26,8 @@ public class Chat : Singleton<Chat>
     [SerializeField] private Image background;   // 배경 이미지
     [SerializeField] private SoundManager bgm;    // 배경 음악
 
-    [Space(20)]
-    [Header("대화 패널")]
-    [SerializeField] private Image characterL;    // 왼쪽 캐릭터 CG
-    [SerializeField] private Image characterL2;    // 왼쪽 캐릭터 CG
-    [SerializeField] private Image characterR;    // 오른쪽 캐릭터 CG
-    [SerializeField] private Image characterR2;    // 왼쪽 캐릭터 CG
+    [Space(20)] [Header("대화 패널")] 
+    [SerializeField] private List<Image> CG;
     [SerializeField] private GameObject talkPanel;   // 대화 패널
     public TMP_Text talkerName;     // 발화자 이름
     [SerializeField] private TMP_Text talkerInfo;    // 발화자 정보
@@ -44,12 +44,6 @@ public class Chat : Singleton<Chat>
     [SerializeField] private GameObject remindContent;     // 다시보기 패널
     [SerializeField] private GameObject remindTalkNode;      // 대화 다시보기 노드 프리팹
     [SerializeField] private GameObject remindChoiceNode;    // 선택지 다시보기 노드 프리팹
-
-
-    [Space(30)] 
-    [Header("파일 경로")]
-    private readonly string CHARACTERFILEPATH = "Chat/Character/";    // 캐릭터 파일 경로
-    private readonly string BACKGROUNDFILEPATH = "Chat/Background/";   // 배경 CG 파일 경로
     
     [Space(10)] 
     [Header("대화 상태")]
@@ -81,9 +75,6 @@ public class Chat : Singleton<Chat>
             Debug.Log($"CHAT DATA CANNOT FOUND");
             return;
         }
-        
-        // 대화 객체 연결
-        chatTarget = obj;
         
         // 대화 리스트 할당
         chatList = new Queue<Paragraph>(_chatList);
@@ -192,7 +183,7 @@ public class Chat : Singleton<Chat>
     /// </summary>
     /// <param name="choiceNum">선택지 번호</param>
     /// <param name="choice">선택지 정보</param>
-    public void SetChoice(int choiceNum, Choice choice = null)
+    public void SetChoice(int choiceNum, Choice choice)
     {
         // 선택지 버튼 오류
         if (choiceNum >= choicePanel.transform.childCount || choiceNum < 0)
@@ -219,65 +210,18 @@ public class Chat : Singleton<Chat>
     /// <summary>
     /// 대사 타입에 맞는 UI 설정
     /// </summary>
-    /// <param name="talkType">대사 타입</param>
-    private void SetChat(Paragraph para)
+    /// <param name="data">대사 데이터</param>
+    private void SetChat(Paragraph data)
     {
-        // CG 초기 설정
-        characterL.gameObject.SetActive(false);
-        characterR.gameObject.SetActive(false);
-        characterL2.gameObject.SetActive(false);
-        characterR2.gameObject.SetActive(false);
-        background.gameObject.SetActive(false);
-
         // 패널들 초기 설정
-        talkPanel.SetActive(false);
+        talkPanel.SetActive(true);
         choicePanel.gameObject.SetActive(false);
         optionPanel.gameObject.SetActive(true);
 
         // 대화 타입에 맞춰 UI들 설정
-        if (para is TalkParagraph)        /// 일반 대사
+        if (data is TalkParagraph talk)        // 일반 대사
         {
-            TalkParagraph talk = para as TalkParagraph;
-            
-            // 캐릭터 CG 활성화
-            if (!string.IsNullOrEmpty(talk.characterL?.fileName))
-            {
-                if (characterL.sprite is null ||
-                    characterL.sprite.name != talk.characterL.fileName)
-                {
-                    characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterL.fileName}", talk.characterL.index);
-                }
-                characterL.gameObject.SetActive(true);
-            }
-            if (!string.IsNullOrEmpty(talk.characterL2?.fileName))
-            {
-                if (characterL2.sprite == null ||
-                    (characterL2.sprite.name != talk.characterL2.fileName))
-                {
-                    characterL2.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterL2.fileName}", talk.characterL2.index);
-                }
-                characterL2.gameObject.SetActive(true);
-            }
-            if (!string.IsNullOrEmpty(talk.characterR?.fileName))
-            {
-                if (characterR.sprite == null ||
-                    (characterR.sprite.name != talk.characterR.fileName))
-                {
-                    characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterR.fileName}", talk.characterR.index);
-                }
-                characterR.gameObject.SetActive(true);
-            }
-            if (!string.IsNullOrEmpty(talk.characterR2?.fileName))
-            {
-                if (characterR2.sprite == null ||
-                    (characterR2.sprite.name != talk.characterR2.fileName))
-                {
-                    characterR2.sprite = GetSprite($"{CHARACTERFILEPATH}{talk.characterR2.fileName}", talk.characterR2.index);
-                }
-                characterR2.gameObject.SetActive(true);
-            }
-            
-            // 대화 존재시
+            // 대사 설정
             if (!string.IsNullOrEmpty(talk.text))
             {
                 talkPanel.SetActive(true); // 대화 패널 활성화
@@ -298,93 +242,80 @@ public class Chat : Singleton<Chat>
             }
         }
         
-        else if(para is ChoiceParagraph)         /// 일반 선택지
+        else if(data is ChoiceParagraph choice)         // 일반 선택지
         {
-            ChoiceParagraph choicePara = para as ChoiceParagraph;
-
-            // 캐릭터 CG 활성화
-            if (choicePara.characterL is not null)
-            {
-                characterL.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterL.fileName}_{choicePara.characterL.index}");
-                characterL.gameObject.SetActive(true);
-            }
-            if (choicePara.characterR is not null)
-            {
-                characterR.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterR.fileName}_{choicePara.characterR.index}");
-                characterR.gameObject.SetActive(true);
-            }
-            if (choicePara.characterL2 is not null)
-            {
-                characterL2.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterL2.fileName}_{choicePara.characterL2.index}");
-                characterL2.gameObject.SetActive(true);
-            }
-            if (choicePara.characterR is not null)
-            {
-                characterR2.sprite = GetSprite($"{CHARACTERFILEPATH}{choicePara.characterR2.fileName}_{choicePara.characterR2.index}");
-                characterR2.gameObject.SetActive(true);
-            }
-
             choicePanel.SetActive(true);    // 선택지 패널 활성화
+            talkPanel.SetActive(false);
             optionPanel.SetActive(false);   // 옵션 패널 비활성화
 
-            switch(choicePara.choiceList.Count)
-            {   
-                // 선택지 1개일때 (가운데 2번 사용)
-                case 1:
-                    SetChoice(0);                               // 1번 선택지 비활성화
-                    SetChoice(1, choicePara.choiceList[0]);   // 2번 선택지 설정
-                    SetChoice(2);                               // 3번 선택지 비활성화
-                    break;
-                // 선택지 2개일때 (위, 아래 1,3번 사용)
-                case 2:
-                    SetChoice(0, choicePara.choiceList[0]);   // 1번 선택지 설정
-                    SetChoice(1);                               // 2번 선택지 비활성화
-                    SetChoice(2, choicePara.choiceList[1]);   // 3번 선택지 설정
-                    break;
-                // 선택지 3개일때
-                case 3:
-                    SetChoice(0, choicePara.choiceList[0]);   // 1번 선택지 설정
-                    SetChoice(1, choicePara.choiceList[1]);   // 2번 선택지 설정
-                    SetChoice(2, choicePara.choiceList[2]);   // 3번 선택지 설정
-                    break;
+            for (int i = 0; i < CHOICECOUNT; i++)
+            {
+                SetChoice(i, choice.choiceList[i]);
             }
         }
         else        // 대사 타입 오류
         {
-            throw new Exception("Unknown Chat Data");
+            return;
         }
         
-        // 배경 활성화
-        if (para.background is not null)
+        // 캐릭터 CG 설정
+        for(int i = 0; i < CGCOUNT; i++)
         {
-            background.sprite = GetSprite(BACKGROUNDFILEPATH + para.background);    // 배경 이미지 설정 
+            CharacterCG character = data.characters[i];
+            // CG 없음
+            if (character is null)
+            {
+                CG[i].sprite = null;
+                CG[i].gameObject.SetActive(false);
+                continue;
+            }
+                
+            //CG 설정
+            if (CG[i].sprite == null || character.fileName != CG[i].sprite.name)
+            {
+                CG[i].sprite = GetSprite(CHARACTERFILEPATH + character.fileName, character.index);
+            }
+            CG[i].gameObject.SetActive(true);
+        }
+        
+        // 배경 설정
+        if (data.background is null)
+        {
+            background.gameObject.SetActive(false);
+        }
+        else
+        {
+            if (background.sprite == null || background.sprite.name != data.background)
+            {
+                background.sprite = GetSprite(BACKGROUNDFILEPATH + data.background); // 배경 이미지 설정 
+            }
             background.gameObject.SetActive(true);      // 배경 이미지 활성화
         }
     
         // 배경음악 설정
-        if (para.bgm != "none")
+        if (data.bgm != "none")
         {
             // 모든 음악 중지
-            if (para.bgm == "STOP")
+            if (data.bgm == "STOP")
             {
                 WorldSceneManager.Instance?.worldBGM.Pause();
                 bgm.Pause();
             }
             // 월드 음악으로 되돌림
-            else if (para.bgm == "RETURN")
+            else if (data.bgm == "RETURN")
             {
                 bgm.Stop();
                 WorldSceneManager.Instance?.worldBGM.Resume();
             }
             // 대화 음악 재실행
-            else if (para.bgm == "RESTART")
+            else if (data.bgm == "RESTART")
             {
                 bgm.Resume();
             }
             // 대화 음악 새로 실행
             else
             {
-                if (int.TryParse(para.bgm, out int result))
+                if (int.TryParse(data.bgm, out int result))
                 {
                     WorldSceneManager.Instance?.worldBGM.Pause();
                     bgm.SetClip(result);
@@ -394,11 +325,11 @@ public class Chat : Singleton<Chat>
         }
 
         // 반응 설정
-        action = ActionHandler.GetAction(para.action, para.actionParam);  
+        action = ActionHandler.GetAction(data.action, data.actionParam);  
     }
 
-/************************************UI 이벤트 함수*****************************************/
-
+    
+    /************************************UI 이벤트 함수*****************************************/
     /// 대화 스킵 버튼
     public void OnSkipPressed()
     {
@@ -434,8 +365,8 @@ public class Chat : Singleton<Chat>
         NextChat();
     }
 
-/***********************************텍스트 출력용 함수***************************************/
-
+    
+    /***********************************텍스트 출력용 함수***************************************/
     /// <summary>
     /// 대사 출력 애니메이션
     /// </summary>
@@ -488,14 +419,13 @@ public class Chat : Singleton<Chat>
 
 /**************************************데이터값 호출 함수 static****************************************/
 
-    
 
     /// <summary>
     /// 변수 텍스트 적용
     /// </summary>
     /// <param name="variableName">적용할 변수명</param>
     /// <returns>변수 실재값 반환</returns>
-    public static string GetVariableValue(string variableName)
+    private static string GetVariableValue(string variableName)
     {
         switch(variableName)
         {
@@ -509,12 +439,13 @@ public class Chat : Singleton<Chat>
         return "";
     }
 
+    
     /// <summary>
     /// 스프라이트 이미지 불러오기
     /// </summary>
     /// <param name="filePath">이미지 경로</param>
     /// <returns></returns>
-    public static Sprite GetSprite(string filePath)
+    private static Sprite GetSprite(string filePath)
     {
         Sprite result = Resources.Load<Sprite>(filePath);
         
@@ -528,16 +459,18 @@ public class Chat : Singleton<Chat>
         return result;
     }
 
+    
     /// <summary>
     /// 멀티 스프라이트 이미지 불러오기
     /// </summary>
     /// <param name="filePath">이미지 경로</param>
     /// <param name="i">멀티 이미지내 인덱스</param>
     /// <returns></returns>
-    public static Sprite GetSprite(string filePath, int i)
+    private static Sprite GetSprite(string filePath, int i)
     {
         Sprite[] result = Resources.LoadAll<Sprite>(filePath);
         
+        // 파일명 오류
         if (result == null)
         {
         #if UNITY_EDITOR
@@ -546,7 +479,15 @@ public class Chat : Singleton<Chat>
 
             return null;
         }
-        
+
+        // 파일 번호 오류
+        if (result.Length < i)
+        {
+        #if UNITY_EDITOR
+            Debug.Log($"Image Load Failed : {filePath} with {i}");
+        #endif
+            i = 0;
+        }
         return result[i];
     }
 }
