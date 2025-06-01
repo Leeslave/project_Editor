@@ -32,7 +32,14 @@ public class TalkInput : MonoBehaviour
         data.textDelay = float.Parse(textDelay.text);
         
         data.bgm = bgm.options[bgm.value].text;
-        data.background = background.options[background.value].text;
+        if (background.options[background.value].image == null)
+        {
+            data.background = "none";
+        }
+        else
+        {
+            data.background = background.options[background.value].image.name;
+        }
         data.action = action.options[action.value].text;
         data.actionParam = actionParam.text;
         
@@ -43,16 +50,19 @@ public class TalkInput : MonoBehaviour
             var charName = charPanel.GetChild(0).GetComponent<TMP_Dropdown>();
             if (charName.value != 0)
             {
-                data.characters[i].fileName = charName.options[charName.value].text;
+                CharacterCG newChar = new();
+                newChar.fileName = charName.options[charName.value].text;
                 if (int.TryParse(charPanel.GetChild(1).GetComponent<TMP_InputField>().text, out int num))
                 {
-                    data.characters[i].index = num;
+                    newChar.index = num;
                 }
-                data.characters[i].isHighlight = charPanel.GetChild(2).GetComponent<Toggle>().isOn;
+                newChar.isHighlight = charPanel.GetChild(2).GetComponent<Toggle>().isOn;
+                
+                data.characters[i] = newChar;
             }
             else
             {
-                data.characters[i] = null;
+                data.characters[i] = new CharacterCG();
             }
         }
         
@@ -82,7 +92,7 @@ public class TalkInput : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             var charPanel = characters[i];
-            if (data.characters[i] is null)
+            if (string.IsNullOrEmpty(data.characters[i].fileName))
             {
                 charPanel.GetChild(0).GetComponent<TMP_Dropdown>().value = 0;
                 charPanel.GetChild(1).GetComponent<TMP_InputField>().text = "0";

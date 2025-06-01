@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class ChatEditor : MonoBehaviour
 {
-    public List<Paragraph> dataList;
+    public List<Paragraph> dataList = new();
 
     [Header("데이터 수정 프리팹")] public GameObject talkPrefab;
     public GameObject choicePrefab;
@@ -16,6 +16,8 @@ public class ChatEditor : MonoBehaviour
     [Header("데이터 UI")] 
     public TalkInput talkUI;
     public ChoiceInput choiceUI;
+    
+    public Button saveButton;
 
 
     /// <summary>
@@ -31,18 +33,15 @@ public class ChatEditor : MonoBehaviour
             Destroy(obj.gameObject);
         }
 
-        if (newData?.Count != 0)
+        if (newData != null && newData.Count != 0)
         {
             dataList = newData;
         }
 
         // 데이터에 맞춰 버튼들 생성
-        if (dataList?.Count == 0)
-        {
-            return;
-        }
         for (int i = 0; i < dataList.Count; i++)
         {
+            int index = i;
             Paragraph data = dataList[i];
             GameObject newObj;
             if (data is TalkParagraph)
@@ -57,16 +56,46 @@ public class ChatEditor : MonoBehaviour
                 return;
             
             Button btn = newObj.GetComponent<Button>();
-            TMP_Text[] texts = newObj.transform.GetComponentsInChildren<TMP_Text>();
-            texts[0].text = dataPanel.childCount.ToString();
+            
+            //버튼 순서 정렬
+            newObj.GetComponentInChildren<TMP_InputField>().text = i.ToString();
+            newObj.GetComponentInChildren<TMP_InputField>().onEndEdit.AddListener((string s) =>
+            {
+                int newIndex = int.Parse(s);
+                if (newIndex < 0 || newIndex >= dataList.Count)
+                {
+                    newObj.GetComponentInChildren<TMP_InputField>().text = index.ToString();
+                    return;
+                }
+                
+                int iter = index;
+                while (iter != newIndex)
+                {
+                    if (iter < newIndex)
+                    {
+                        (dataList[iter + 1], dataList[iter]) = (dataList[iter], dataList[iter + 1]);
+                        iter++;
+                    }
+                    else
+                    {
+                        (dataList[iter - 1], dataList[iter]) = (dataList[iter], dataList[iter - 1]);
+                        iter--;
+                    }
+                }
+                
+                RefreshList();
+            });
+            
+            // 대사 미리보기
+            TMP_Text[] text = newObj.GetComponentsInChildren<TMP_Text>();
             
             // 버튼 설명 및 로드 함수 이벤트 연결
             if (data is TalkParagraph talk)
             {
                 List<Paragraph> newList = new() { talk };
-                texts[1].text = talk.talker;
+                text[1].text = talk.talker;
                 
-                btn.onClick.AddListener(() => LoadParagraph(i, talk));
+                btn.onClick.AddListener(() => LoadParagraph(index, talk));
                 btn.GetComponent<ChatTrigger>()?.SetChatData(newList);
                 btn.onClick.AddListener(() => btn.GetComponent<ChatTrigger>()?.StartChat());
             }
@@ -74,9 +103,9 @@ public class ChatEditor : MonoBehaviour
             {
                 List<Paragraph> newList = new() { choice };
                 // TODO: 선택지 설명 추가
-                texts[1].text = "선택지";
+                text[1].text = "선택지";
                 
-                btn.onClick.AddListener(() => LoadParagraph(i, choice));
+                btn.onClick.AddListener(() => LoadParagraph(index, choice));
                 btn.GetComponent<ChatTrigger>()?.SetChatData(newList);
                 btn.onClick.AddListener(() => btn.GetComponent<ChatTrigger>()?.StartChat());
             }
@@ -91,6 +120,9 @@ public class ChatEditor : MonoBehaviour
         
         talkUI.gameObject.SetActive(true);
         choiceUI.gameObject.SetActive(false);
+        
+        saveButton.onClick.RemoveAllListeners();
+        saveButton.onClick.AddListener(()=> talkUI.SubmitInput());
     }
 
 
@@ -101,6 +133,9 @@ public class ChatEditor : MonoBehaviour
         
         talkUI.gameObject.SetActive(false);
         choiceUI.gameObject.SetActive(true);
+        
+        saveButton.onClick.RemoveAllListeners();
+        saveButton.onClick.AddListener(()=> choiceUI.SubmitInput());
     }
 
 

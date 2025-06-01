@@ -16,8 +16,9 @@ public class GameSystem : SingletonObject<GameSystem>
     public string loadingSceneName;
 
     /// 게임 데이터 (ReadOnly)
-    private List<SaveData> _saveList = new();    // 저장 데이터
-    public DailyData DayData { get; private set; }    // 오늘 날짜 데이터
+    private List<SaveData> _saveList = new() { new SaveData() };    // 저장 데이터
+
+    public DailyData DayData { get; private set; } = new();    // 오늘 날짜 데이터
     
     /// 게임 플레이 데이터 (ReadWrite)
     [Header("현재 게임플레이 상태")]

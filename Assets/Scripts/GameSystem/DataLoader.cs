@@ -57,9 +57,16 @@ public static class DataLoader
     }
     
     /// 대사 파일 저장하기
-    public static void SaveChatData(string fileName, List<Paragraph> data)
+    public static void SaveChatData(string path, List<Paragraph> data)
     {
-        
+        Dialogue dialogue = new(){ chatList = data };
+        // json String으로 파싱
+        string jsonText = JsonConvert.SerializeObject(dialogue, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+
+        FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+        byte[] bytes = Encoding.UTF8.GetBytes(jsonText);
+        fileStream.Write(bytes, 0, bytes.Length);
+        fileStream.Close();
     }
     #endif
     

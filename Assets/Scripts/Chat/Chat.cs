@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -74,6 +75,12 @@ public class Chat : Singleton<Chat>
         {
             Debug.Log($"CHAT DATA CANNOT FOUND");
             return;
+        }
+
+        // 변수키워드 적용
+        for (int i = 0; i < _chatList.Count; i++)
+        {
+            _chatList[i] = ReplaceKeywords(_chatList[i]);
         }
         
         // 대화 리스트 할당
@@ -198,9 +205,7 @@ public class Chat : Singleton<Chat>
             button.SetActive(false);                        
             return;
         }   
-
-        // 선택지 텍스트에 변수값 적용
-        button.transform.GetChild(0).gameObject.GetComponent<TMP_Text>().text = ParseVariables(choice.text, choice.variables);  // 선택지 텍스트 설정
+        
         // 선택지 반응 설정
         choiceActions[choiceNum] = ActionHandler.GetAction(choice.reaction, choice.reactionParam);        
 
@@ -263,7 +268,7 @@ public class Chat : Singleton<Chat>
         {
             CharacterCG character = data.characters[i];
             // CG 없음
-            if (character is null)
+            if (string.IsNullOrEmpty(character.fileName))
             {
                 CG[i].sprite = null;
                 CG[i].gameObject.SetActive(false);
@@ -279,7 +284,7 @@ public class Chat : Singleton<Chat>
         }
         
         // 배경 설정
-        if (data.background is null)
+        if (data.background == "none")
         {
             background.gameObject.SetActive(false);
         }
@@ -377,9 +382,6 @@ public class Chat : Singleton<Chat>
         // 대사 초기화
         text.text = "";
 
-        // 변수값 적용
-        paragraph.text = ParseVariables(paragraph.text, paragraph.variables);
-
         // 한 글자씩 애니메이션
         for (int i = 0; i < paragraph.text.Length; i++)
         {
@@ -393,48 +395,75 @@ public class Chat : Singleton<Chat>
         }
     }
 
+    
+    
+    /**************************************데이터 호출 함수 static****************************************/
     /// <summary>
     /// 대사 내 변수값 전환하기
     /// </summary>
-    /// <param name="text">전환 전 대사</param>
-    /// <param name="varList">대사 내 변수 리스트</param>
+    /// <param name="data"></param>
     /// <returns>전환된 대사</returns>
-    private string ParseVariables(string text, List<Paragraph.VariableReplace> varList)
+    private static Paragraph ReplaceKeywords(Paragraph data)
     {
-        string result = text;
+        StringBuilder sb = new();
+        string[] keywords = { "{{year}}", "{{month}}", "{{day}}", "{{renown}}" };
 
-        foreach(var iter in varList)
+        if (data is TalkParagraph talk)
         {
-            string keyword = iter.keyword;
-            string variableName = iter.variableName;
-            
-            if (result.Contains(keyword))
+            sb.Append(talk.text);
+            ProcessKeywords(sb, keywords);
+            talk.text = sb.ToString();
+            return talk;
+        }
+        if (data is ChoiceParagraph choice)
+        {
+            foreach (var c in choice.choiceList)
             {
-                result = result.Replace(keyword, GetVariableValue(variableName));
+                sb.Clear();
+                sb.Append(c.text);
+                ProcessKeywords(sb, keywords);
+                c.text = sb.ToString();
+            }
+            return choice;
+        }
+        return data; // 다른 타입의 Paragraph는 그대로 반환
+    }
+    
+    /// <summary>
+    /// 키워드 대체 함수
+    /// </summary>
+    /// <param name="sb"></param>
+    /// <param name="keywords"></param>
+    private static void ProcessKeywords(StringBuilder sb, string[] keywords)
+    {
+        foreach (string keyword in keywords)
+        {
+            if (sb.ToString().Contains(keyword))
+            {
+                string value = GetVariableValue(keyword);
+                sb.Replace(keyword, value);
             }
         }
-
-        return result;
     }
 
-/**************************************데이터값 호출 함수 static****************************************/
-
-
+    
     /// <summary>
     /// 변수 텍스트 적용
     /// </summary>
-    /// <param name="variableName">적용할 변수명</param>
+    /// <param name="keyword">적용할 변수명</param>
     /// <returns>변수 실재값 반환</returns>
-    private static string GetVariableValue(string variableName)
+    private static string GetVariableValue(string keyword)
     {
-        switch(variableName)
+        switch(keyword)
         {
-            case "year":
+            case "{{year}}":
                 return GameSystem.Instance.DayData.date.year.ToString();
-            case "month":
+            case "{{month}}":
                 return GameSystem.Instance.DayData.date.month.ToString();
-            case "day":
+            case "{{day}}":
                 return GameSystem.Instance.DayData.date.day.ToString();
+            case "{{renown}}":
+                return GameSystem.Instance.Player.renown.ToString();
         }
         return "";
     }

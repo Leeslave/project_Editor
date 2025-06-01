@@ -9,18 +9,12 @@ public abstract class Paragraph
     상속용 대사 클래스
     */
     public string chatType = "Normal";    // 대사 타입
-    public List<CharacterCG>  characters = new(){null, null, null, null};
+    public List<CharacterCG>  characters = new() { new CharacterCG(), new CharacterCG(), new CharacterCG(), new CharacterCG() };
     public string bgm = "none";         // 배경음악
     public string background = null;  // 배경 이미지
     public string action = null;    // 대화 후 반응
     public string actionParam = null;    // 반응 매개변수
-    
-    [Serializable]
-    public class VariableReplace
-    {
-        public string keyword;      // 텍스트상의 변수 키워드
-        public string variableName; // 해당하는 변수코드명
-    }
+
 
     public virtual bool hasAction()
     {
@@ -43,7 +37,6 @@ public class TalkParagraph : Paragraph
     public string talker;  // 발화자
     public string talkerInfo;    // 발화자 설명
     public string text;  // 내용
-    public List<VariableReplace> variables = new(); // 변수값
 
     // 글자 크기 기본값들
     public const int NORMALFONTSIZE = 16; 
@@ -116,13 +109,12 @@ public class Choice
     */
     public bool isEnding = false;  // 선택지 타입
     public string text;     //선택지 텍스트
-    public List<Paragraph.VariableReplace> variables = new(); // 변수값
     public string reaction = null;      //선택지 반응
     public string reactionParam = null;       // 선택지 반응 매개변수
 }
 
 [Serializable]
-public class CharacterCG
+public struct CharacterCG
 {
     /**
     캐릭터CG
@@ -130,6 +122,13 @@ public class CharacterCG
     - 대사 애니메이션
     */
     public string fileName;    // 캐릭터 파일명
-    public int index = 0;    // 이미지 내 인덱스
-    public bool isHighlight = true; // 캐릭터 하이라이트
+    public int index;    // 이미지 내 인덱스
+    public bool isHighlight; // 캐릭터 하이라이트
+
+    public CharacterCG(string fileName = "", int index = 0, bool isHighlight = false)
+    {
+        this.fileName = fileName;
+        this.index = index;
+        this.isHighlight = isHighlight;
+    }
 }
