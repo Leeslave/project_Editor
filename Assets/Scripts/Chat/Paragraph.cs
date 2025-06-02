@@ -8,22 +8,10 @@ public abstract class Paragraph
     /**
     상속용 대사 클래스
     */
-    public string chatType = "Normal";    // 대사 타입
-    public List<CharacterCG>  characters = new() { new CharacterCG(), new CharacterCG(), new CharacterCG(), new CharacterCG() };
-    public string bgm = "none";         // 배경음악
+    public CharacterCG[]  characters = new CharacterCG[4];
     public string background = null;  // 배경 이미지
-    public string action = null;    // 대화 후 반응
-    public string actionParam = null;    // 반응 매개변수
 
-
-    public virtual bool hasAction()
-    {
-        if (action != null)
-        {
-            return true;
-        }
-        return false;
-    }
+    public abstract bool hasAction();
 }
 
 [Serializable]
@@ -45,6 +33,20 @@ public class TalkParagraph : Paragraph
 
     public string fontSize = "normal";   // 글자 크기
     public float textDelay = 0.4f;      // 텍스트간 딜레이
+    
+    public string bgm = "none";         // 배경음악
+    public string action = null;    // 대화 후 반응
+    public string actionParam = null;    // 반응 매개변수
+    
+    
+    public override bool hasAction()
+    {
+        if (action != null)
+        {
+            return true;
+        }
+        return false;
+    }
 
 
     public int GetFontSize()
@@ -82,7 +84,7 @@ public class ChoiceParagraph : Paragraph
     선택지 대사 클래스
     - 대화 선택지들
     */
-    public List<Choice> choiceList = new() { null, null, null}; // 선택지들 리스트
+    public Choice[] choiceList = new Choice[3]; // 선택지들 리스트
 
     public override bool hasAction()
     {
@@ -95,22 +97,30 @@ public class ChoiceParagraph : Paragraph
                 break;
             }
         }
-        return base.hasAction() || hasChoiceAction;
+        return hasChoiceAction;
     }
 }
 
 [Serializable]
-public class Choice
+public struct Choice
 {
     /**
     선택지
     - 선택지 타입 (엔딩 분기 여부)
     - 선택지별 데이터
     */
-    public bool isEnding = false;  // 선택지 타입
+    public bool isEnding;  // 선택지 타입
     public string text;     //선택지 텍스트
-    public string reaction = null;      //선택지 반응
-    public string reactionParam = null;       // 선택지 반응 매개변수
+    public string reaction;      //선택지 반응
+    public string reactionParam;       // 선택지 반응 매개변수
+
+    public Choice(bool isEnding = false, string text = "", string reaction = null, string reactionParam = null)
+    {
+        this.isEnding = isEnding;
+        this.text = text;
+        this.reaction = reaction;
+        this.reactionParam = reactionParam;
+    }
 }
 
 [Serializable]

@@ -93,7 +93,7 @@ public class ChatEditor : MonoBehaviour
             if (data is TalkParagraph talk)
             {
                 List<Paragraph> newList = new() { talk };
-                text[1].text = talk.talker;
+                text[1].text = talk.text;
                 
                 btn.onClick.AddListener(() => LoadParagraph(index, talk));
                 btn.GetComponent<ChatTrigger>()?.SetChatData(newList);

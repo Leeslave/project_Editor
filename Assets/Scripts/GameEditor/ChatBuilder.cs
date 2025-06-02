@@ -45,6 +45,7 @@ public class ChatBuilder : Singleton<ChatBuilder>
         dataButtons.Clear();
         
         // 새로 버튼 생성
+        Debug.Log($"Create new Buttons {dataFiles.Count}");
         foreach (var file in dataFiles)
         {
             GameObject button = Instantiate(buttonPrefab, dataScroll);
@@ -109,5 +110,6 @@ public class ChatBuilder : Singleton<ChatBuilder>
         chat = null;
         onEdit = false;
         chatEditPanel.gameObject.SetActive(false);
+        dataScroll.gameObject.SetActive(true);
     }
 }
