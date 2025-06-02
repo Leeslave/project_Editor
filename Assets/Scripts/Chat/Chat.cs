@@ -21,7 +21,6 @@ public class Chat : Singleton<Chat>
     private static string BACKGROUND_PATH = "Chat/Background/";   // 배경 CG 파일 경로
     
     private GameObject ChatUI => transform.GetChild(0).gameObject;
-    [SerializeField] private ChatTutorialManager ChatTutorial;
 
     [Header("UI 요소")]
     [SerializeField] private Image background;   // 배경 이미지

@@ -33,7 +33,7 @@ public class ChatEditor : MonoBehaviour
             Destroy(obj.gameObject);
         }
 
-        if (newData != null && newData.Count != 0)
+        if (newData != null)
         {
             dataList = newData;
         }

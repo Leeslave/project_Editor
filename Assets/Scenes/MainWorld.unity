@@ -2785,41 +2785,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chatAsset: 
   chatText:
-  - chatType: 
-    characterL:
-      fileName: 
+  - characters:
+    - fileName: 
       index: 0
-      position: 
       isHighlight: 0
-      animation: 
-    characterR:
-      fileName: 
+    - fileName: 
       index: 0
-      position: 
       isHighlight: 0
-      animation: 
-    characterL2:
-      fileName: 
+    - fileName: 
       index: 0
-      position: 
       isHighlight: 0
-      animation: 
-    characterR2:
-      fileName: 
+    - fileName: 
       index: 0
-      position: 
       isHighlight: 0
-      animation: 
-    bgm: 
-    background: 
-    action: 
-    actionParam: 
+    background: none
     talker: 
     talkerInfo: 
-    text: "\uC9C0\uAE08\uC740 \uAC00\uC9C0\uB9D0\uC790.."
-    variables: []
+    text: "\uC9C0\uAE08\uC740 \uD560 \uC77C\uC774 \uC788\uB2E4."
     fontSize: 
     textDelay: 0
+    bgm: 
+    action: 
+    actionParam: 
 --- !u!1001 &555157764
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10139,7 +10126,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6041265556249311943, guid: 4850614a5a0cd21499eb1c50775672fc, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 59.99993
+      value: 59.99994
       objectReference: {fileID: 0}
     - target: {fileID: 6944320552872247340, guid: 4850614a5a0cd21499eb1c50775672fc, type: 3}
       propertyPath: m_AnchorMax.x

@@ -14,7 +14,7 @@ public class ChatBuilder : Singleton<ChatBuilder>
     [Header("파일 수정")]
     public string fileName;
     public List<Paragraph> chat;
-    private bool onEdit;
+    public bool onEdit;
 
     [Space(20)] 
     [Header("게임 파일 정보")] 
@@ -27,7 +27,6 @@ public class ChatBuilder : Singleton<ChatBuilder>
     public RectTransform dataScroll;
     private List<GameObject> dataButtons = new();
     public ChatEditor chatEditPanel;
-    public TMP_InputField newFileName;
 
 
     /// 데이터파일 리스트 불러오기
@@ -68,28 +67,14 @@ public class ChatBuilder : Singleton<ChatBuilder>
     public void EditChat(string gameFile)
     {
         chat = DataLoader.GetChatData(gameFile);
-        if (chat is null) return;
+        if (chat is null)
+        {
+            Debug.Log("Cannot Find chat to Edit");
+            return;
+        }
         
         fileName = gameFile;
         Debug.Log($"Start Editing {gameFile}");
-        onEdit = true;
-        dataScroll.gameObject.SetActive(false);
-        chatEditPanel.gameObject.SetActive(true);
-        chatEditPanel.RefreshList(chat);
-    }
-    
-    
-    /// <summary>
-    /// DayData 수정 시작
-    /// </summary>
-    /// <remarks>날짜 파일을 불러온 후 </remarks>
-    public void CreateChat()
-    {
-        if (newFileName.text is null or "") return;
-        
-        chat = new();
-        fileName = newFileName.text;
-        Debug.Log($"Create New Editing {fileName}");
         onEdit = true;
         dataScroll.gameObject.SetActive(false);
         chatEditPanel.gameObject.SetActive(true);

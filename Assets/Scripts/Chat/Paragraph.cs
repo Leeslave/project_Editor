@@ -135,7 +135,7 @@ public struct CharacterCG
     public int index;    // 이미지 내 인덱스
     public bool isHighlight; // 캐릭터 하이라이트
 
-    public CharacterCG(string fileName = "", int index = 0, bool isHighlight = false)
+    public CharacterCG(string fileName = "", int index = 0, bool isHighlight = true)
     {
         this.fileName = fileName;
         this.index = index;

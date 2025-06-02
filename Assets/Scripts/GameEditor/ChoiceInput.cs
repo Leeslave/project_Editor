@@ -132,14 +132,4 @@ public class ChoiceInput : MonoBehaviour
         // 일치하는 항목이 없는 경우 처리
         return 0;
     }
-    
-    
-    private string CheckNull(string str)
-    {
-        if (str == "none")
-        {
-            return null;
-        }
-        return str;
-    }
 }

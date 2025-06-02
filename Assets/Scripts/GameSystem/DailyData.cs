@@ -45,7 +45,6 @@ public class TimeData
     */
     
     public DayTime daytime;
-
     public bool isNight;
     
     public List<ChatObjectData> npc = new();
