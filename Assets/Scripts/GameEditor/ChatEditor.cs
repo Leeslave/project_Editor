@@ -153,4 +153,25 @@ public class ChatEditor : MonoBehaviour
         choiceUI.gameObject.SetActive(false);
         RefreshList();
     }
+
+
+    public void AddTalk()
+    {
+        dataList.Add(new TalkParagraph("새 대사"));
+        RefreshList();
+    }
+
+
+    public void AddChoice()
+    {
+        dataList.Add(new ChoiceParagraph());
+        RefreshList();
+    }
+
+
+    public void RemoveLast()
+    {
+        dataList.RemoveAt(dataList.Count - 1);
+        RefreshList();
+    }
 }

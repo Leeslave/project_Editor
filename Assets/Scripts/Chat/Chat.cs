@@ -160,9 +160,8 @@ public class Chat : Singleton<Chat>
             
             for(int i = 0; i < CHOICE_COUNT; i++)        // 선택지들 활성화
             {
-                Debug.Log($"선택지 : with {choice.choiceList[i].text}");
-                // newNode.transform.GetChild(i).GetComponent<TMP_Text>().text = choice.choiceList[i].text;
-                // newNode.transform.GetChild(i).gameObject.SetActive(true);
+                newNode.transform.GetChild(i).GetComponent<TMP_Text>().text = choice.choiceList[i].text;
+                newNode.transform.GetChild(i).gameObject.SetActive(true);
             }
         }
     }
@@ -314,7 +313,7 @@ public class Chat : Singleton<Chat>
         }
         
         // 배경 설정
-        if (data.background == "none")
+        if (data.background == null || data.background == "none")
         {
             background.gameObject.SetActive(false);
         }
