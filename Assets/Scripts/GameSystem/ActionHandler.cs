@@ -16,30 +16,30 @@ public static class ActionHandler
 
         switch (func)
         {
-            case "Jump":
+            case "JUMP":
                 result = new ChatJumpAction();
                 result.Param = SetParam<int>(param);
                 return result;
-            case "DayChange":
+            case "DAYCHANGE":
                 result = new HardDayChangeAction();
                 result.Param = SetParam<int>(param);
                 return result;
-            case "TimeChange":
+            case "TIMECHANGE":
                 result = new TimeChangeAction();
                 result.Param = SetParam<int>(param);
                 return result;
-            case "Tutorial":
+            case "TUTORIAL":
                 result = new TutorialAction();
                 result.Param = SetParam<int>(param);
                 return result;
-            case "Remove":
+            case "REMOVE":
                 result = new RemoveAction();
                 result.Param = SetParam<string>(param);
                 return result;
-            case "ExitGame":
+            case "EXIT":
                 result = new ExitGameAction();
                 return result;
-            case "ChatSwap":
+            case "CHATSWAP":
                 result = new ChatSwapAction();
                 var data = SetParam<(string, string)>(param);
                 result.Param = (WorldObjectFactory.Instance?.FindObject(data.Item1) as IChatList, int.Parse(data.Item2));

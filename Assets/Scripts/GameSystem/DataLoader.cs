@@ -13,13 +13,16 @@ public static class DataLoader
         - Json 파싱으로 게임 데이터 로드
         - Json 파싱으로 플레이어 데이터 저장, 로드
     */
-    private static string GAMEDATAPATH = Application.dataPath + "/Resources/GameData/Main/";   // 게임 데이터 파일 경로
+    private static string CHATPATH = Application.dataPath + "/StreamingAssets/ChatData/";     // 대화 파일 경로
+    private static string GAMEDATAPATH = Application.dataPath + "/StreamingAssets/DayData/";   // 게임 데이터 파일 경로
     private static string GAMEFILE = "dailyData";
-    private static string SAVEPATH = Application.dataPath + "/Resources/Save/savedata.json";    // 세이브 파일 경로
-    private static string CHATPATH = Application.dataPath + "/Resources/Chat/Text/";     // 대화 파일 경로
     
+    #if RELEASE
+    private static string SAVEPATH = Application.persistentDataPath + "/Save/savedata.json";    // 세이브 파일 경로
+    #endif
     
     #if DEBUG
+    private static string SAVEPATH = Application.dataPath + "/StreamingAssets/Save/savedata.json";    // 세이브 파일 경로
     /// 파일 목록 불러오기
     public static List<string> GetFileNames(string path, string type = "*.json")
     {
@@ -56,9 +59,16 @@ public static class DataLoader
     }
     
     /// 대사 파일 저장하기
-    public static void SaveChatData(string fileName, List<Paragraph> data)
+    public static void SaveChatData(string path, List<Paragraph> data)
     {
-        
+        Dialogue dialogue = new(){ chatList = data };
+        // json String으로 파싱
+        string jsonText = JsonConvert.SerializeObject(dialogue, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+
+        FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+        byte[] bytes = Encoding.UTF8.GetBytes(jsonText);
+        fileStream.Write(bytes, 0, bytes.Length);
+        fileStream.Close();
     }
     #endif
     

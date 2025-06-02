@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class DayBuilder : Singleton<DayBuilder>
@@ -32,6 +31,7 @@ public class DayBuilder : Singleton<DayBuilder>
     /// 데이터파일 리스트 불러오기
     public void OnLoadClick()
     {
+        Debug.Log("Start Load");
         // 데이터 목록 불러오기
         dataFiles.Clear();
         dataFiles = DataLoader.GetFileNames(dataPath);
@@ -57,7 +57,7 @@ public class DayBuilder : Singleton<DayBuilder>
         }
         dayPanel.SetActive(false);
     }
-
+    
 
     /// <summary>
     /// DayData 수정 시작
@@ -100,13 +100,5 @@ public class DayBuilder : Singleton<DayBuilder>
         dailyData = null;
         onEdit = false;
         dayPanel.SetActive(false);
-    }
-    
-    /// <summary>
-    /// 날짜 파일 불러오기
-    /// </summary>
-    private void GetDayData(string gameFile)
-    {
-        dailyData = DataLoader.GetDayData(gameFile);
     }
 }

@@ -111,7 +111,6 @@ public class Location : MonoBehaviour
     /// 지역 이동 버튼 활성화
     /// </summary>
     /// <param name="isActive">버튼 활성화 여부</param>
-    [HideInInspector]
     public void SetButtonActive(bool isActive)
     {
         foreach(var button in buttons)
