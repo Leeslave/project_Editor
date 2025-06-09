@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,9 +10,9 @@ public class GlowEffect : MonoBehaviour
     private float originAlpha = 1;
     public float minimumAlpha = 0;
 
-    void Awake()
+    private void Awake()
     {
-        if (TryGetComponent<Image>(out texture))
+        if (TryGetComponent(out texture))
         {
             originAlpha = texture.color.a;
         }
@@ -26,7 +24,7 @@ public class GlowEffect : MonoBehaviour
     }
     
     
-    void OnEnable()
+    private void OnEnable()
     {
         SetAlpha(originAlpha);
         StartCoroutine(GlowAnimationLoop());
@@ -39,7 +37,7 @@ public class GlowEffect : MonoBehaviour
     }
 
 
-    public void SetAlpha(float alpha)
+    private void SetAlpha(float alpha)
     {
         if (!texture)
         {
@@ -53,7 +51,7 @@ public class GlowEffect : MonoBehaviour
     /// <summary>
     /// 깜빡임 효과
     /// </summary>
-    public IEnumerator GlowAnimationLoop()
+    private IEnumerator GlowAnimationLoop()
     {
         yield return StartCoroutine(FadeEffect());
 
@@ -70,7 +68,6 @@ public class GlowEffect : MonoBehaviour
     private IEnumerator FadeEffect()
     {
         float elapsedTime = 0f;
-        Color origin = texture.color;
 
         // 점점 투명해지기
         while (elapsedTime < Delay)
