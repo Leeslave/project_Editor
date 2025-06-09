@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -102,7 +101,6 @@ public class ChatEditor : MonoBehaviour
             else if (data is ChoiceParagraph choice)
             {
                 List<Paragraph> newList = new() { choice };
-                // TODO: 선택지 설명 추가
                 text[1].text = "선택지";
                 
                 btn.onClick.AddListener(() => LoadParagraph(index, choice));
