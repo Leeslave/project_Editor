@@ -56,7 +56,7 @@ public class ChatEditor : MonoBehaviour
             
             Button btn = newObj.GetComponent<Button>();
             
-            //버튼 순서 정렬
+            //대사 순서 정렬
             newObj.GetComponentInChildren<TMP_InputField>().text = i.ToString();
             newObj.GetComponentInChildren<TMP_InputField>().onEndEdit.AddListener((string s) =>
             {
@@ -91,15 +91,25 @@ public class ChatEditor : MonoBehaviour
             // 버튼 설명 및 로드 함수 이벤트 연결
             if (data is TalkParagraph talk)
             {
+                // 대사 선택 및 표시 이벤트
                 List<Paragraph> newList = new() { talk };
                 text[1].text = talk.text;
                 
                 btn.onClick.AddListener(() => LoadParagraph(index, talk));
                 btn.GetComponent<ChatTrigger>()?.SetChatData(newList);
                 btn.onClick.AddListener(() => btn.GetComponent<ChatTrigger>()?.StartChat());
+                
+                // 대사 복사 이벤트
+                Button cpyBtn = newObj.transform.GetChild(2).GetComponent<Button>();
+                cpyBtn.onClick.AddListener(() =>
+                {
+                    dataList.Add(talk);
+                    RefreshList();
+                });
             }
             else if (data is ChoiceParagraph choice)
             {
+                // 대사 선택 및 표시 이벤트
                 List<Paragraph> newList = new() { choice };
                 text[1].text = "선택지";
                 
