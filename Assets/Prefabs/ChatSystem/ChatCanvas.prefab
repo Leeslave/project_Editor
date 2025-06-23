@@ -3140,10 +3140,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a172c43dd8345a3a51aad5b8404d88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Audio: {fileID: 1844966061680032047}
+  audioSource: {fileID: 1844966061680032047}
   clips:
   - {fileID: 8300000, guid: 9fc13e636899a7f418d0f93141fb6c1a, type: 3}
   - {fileID: 8300000, guid: 54cba5d6d81f6fb499757894c5258a20, type: 3}
+  - {fileID: 8300000, guid: 9fc13e636899a7f418d0f93141fb6c1a, type: 3}
   overlapDelay: 0
 --- !u!114 &5100150346316290942
 MonoBehaviour:
@@ -3157,7 +3158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a172c43dd8345a3a51aad5b8404d88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Audio: {fileID: 6041265554391905185}
+  audioSource: {fileID: 6041265554391905185}
   clips:
   - {fileID: 8300000, guid: b5aedc6a5da6b244aa2eb0e29766dbd8, type: 3}
   - {fileID: 8300000, guid: 6e28d088461bb4145a650ba2deccf3b0, type: 3}
@@ -3603,7 +3604,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 21.8
+  m_fontSize: 31.15
   m_fontSizeBase: 25
   m_fontWeight: 400
   m_enableAutoSizing: 1

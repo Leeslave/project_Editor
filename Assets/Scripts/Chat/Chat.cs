@@ -228,12 +228,13 @@ public class Chat : Singleton<Chat>
 
                 text.fontSize = talk.GetFontSize(); // 대사 크기 설정
 
-                if (talk.GetFontSize() == TalkParagraph.LARGEFONTSIZE)
-                    textSFX.SetClip(1);
-                else if (talk.GetFontSize() == TalkParagraph.NORMALFONTSIZE)
+                if (talk.GetFontSize() == TalkParagraph.NORMALFONTSIZE)    // 중간사이즈용
                     textSFX.SetClip(0);
-                else
-                    textSFX = new();
+                else if (talk.GetFontSize() == TalkParagraph.LARGEFONTSIZE)  // 큰 글자용
+                    textSFX.SetClip(1);
+
+                else if (talk.GetFontSize() == TalkParagraph.SMALLFONTSIZE)    // 작은 사이즈용 
+                    textSFX.SetClip(2);
                 
                 StartCoroutine(TextAnimation(talk));
             }
@@ -382,7 +383,7 @@ public class Chat : Singleton<Chat>
             text.text += t;
             
             // 텍스트 효과음 실행
-            textSFX.Play();
+            textSFX.PlayShot();
 
             yield return new WaitForSeconds(paragraph.textDelay / 10);
         }
