@@ -24,9 +24,15 @@ public static class ActionHandler
                 result = new HardDayChangeAction();
                 result.Param = SetParam<int>(param);
                 return result;
+            case "NEXTDAY":
+                result = new DayChangeAction();
+                return result;
             case "TIMECHANGE":
-                result = new TimeChangeAction();
+                result = new HardTimeChangeAction();
                 result.Param = SetParam<int>(param);
+                return result;
+            case "NEXTTIME":
+                result = new TimeChangeAction();
                 return result;
             case "TUTORIAL":
                 result = new TutorialAction();
@@ -41,8 +47,13 @@ public static class ActionHandler
                 return result;
             case "CHATSWAP":
                 result = new ChatSwapAction();
-                var data = SetParam<(string, string)>(param);
-                result.Param = (WorldObjectFactory.Instance?.FindObject(data.Item1) as IChatList, int.Parse(data.Item2));
+                var chatData = SetParam<(string, string)>(param);
+                result.Param = (WorldObjectFactory.Instance?.FindObject(chatData.Item1) as IChatList, int.Parse(chatData.Item2));
+                return result;
+            case "POSCHANGE":
+                result = new PosChangeAction();
+                var posData = SetParam<(string, string)>(param);
+                result.Param = (Enum.Parse(typeof(World), posData.Item1), int.Parse(posData.Item2));
                 return result;
             default:
                 return null;
@@ -144,14 +155,9 @@ public class DayChangeAction : Action
 {
     public override object Invoke()
     {
-        if (Param is not int)
-        {
-            return "Error";
-        }
-        
         if(GameSystem.Instance.timeIndex == 3)
         {
-            GameSystem.Instance.SetDate((int)Param);
+            GameSystem.Instance.SetDate(-1);
             SceneManager.LoadScene("DayLoading");
             return true;
         }
@@ -161,7 +167,7 @@ public class DayChangeAction : Action
 
 
 /// <summary>
-/// 시간대 변경 액션
+/// 시간대 강제 변경 액션
 /// </summary>
 /// <remarks>Param 형식 : int</remarks>
 public class TimeChangeAction : Action
@@ -172,7 +178,6 @@ public class TimeChangeAction : Action
         {
             return "Error";
         }
-
         if (GameSystem.Instance.timeIndex != (int)Param - 1)
         {
             return false;
@@ -183,22 +188,20 @@ public class TimeChangeAction : Action
     }
 }
 
-
 /// <summary>
-/// 시간대 강제 변경 액션
+/// 시간대 변경 액션
 /// </summary>
 /// <remarks>Param 형식 : int</remarks>
 public class HardTimeChangeAction : Action
 {
     public override object Invoke()
     {
-        if (Param is not int)
+        if (Param is int param)
         {
-            return "Error";
+            GameSystem.Instance.SetTime(param);
+            return true;
         }
-        
-        GameSystem.Instance.SetTime((int)Param);
-        return true;
+        return "Error";
     }
 }
 
@@ -254,6 +257,24 @@ public class TutorialAction : Action
         if(Param is int)
         {
             MovingMapTutorialManager.Get().Show((int) Param);
+            return true;
+        }
+        return "Error";
+    }
+}
+
+
+/// <summary>
+/// 위치 이동 액션
+/// </summary>
+/// <remarks></remarks>
+public class PosChangeAction : Action
+{
+    public override object Invoke()
+    {
+        if(Param is (World world, int idx))
+        {
+            WorldSceneManager.Instance.MoveLocation(world, idx);
             return true;
         }
         return "Error";
