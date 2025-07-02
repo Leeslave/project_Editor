@@ -1,9 +1,8 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_TargetAreaPopUpV3 : MonoBehaviour
+public class UI_TargetAreaPopUpWithShaderGraph : MonoBehaviour
 {
     private Image Background { get; set; }
     private TMP_Text[] Instruction { get; set; }

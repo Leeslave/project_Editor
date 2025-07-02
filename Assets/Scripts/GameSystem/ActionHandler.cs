@@ -253,7 +253,7 @@ public class TutorialAction : Action
     {
         if(Param is int)
         {
-            MovingMapTutorialManager.Get().Show((int) Param);
+
             return true;
         }
         return "Error";

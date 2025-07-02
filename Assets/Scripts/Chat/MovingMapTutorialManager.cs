@@ -1,5 +1,5 @@
-using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,11 +20,27 @@ public class MovingMapTutorialManager : TutorialManager
         if (Instance == null)
             Instance = this;
     }
+    private void Start()
+    {
+        //초기화
+        transform.localPosition = Vector3.zero;
+        transform.localScale = Vector3.one;
 
-    public static MovingMapTutorialManager Get() => Instance; 
-    
-    public void Show(float duration) => StartCoroutine(ShowTutorial(duration));
-    private IEnumerator ShowTutorial(float duration)
+        //비활성 버튼까지 포함하여 오브젝트 검색
+        Button[] buttons = FindObjectsOfType<Button>(true);
+        moveLocationActiveButton = buttons.First(x => x.name == "MoveLocationActive");
+        toOfficeStreetArrow = buttons.First(x => x.name == "ToOfficeStreet" && x.transform.parent.name == "BarStreet");
+        openOfficeDoorArrow = buttons.First(x => x.name == "OfficeDoor" && x.transform.parent.name == "OfficeStreet");
+        if(moveLocationActiveButton == null || toOfficeStreetArrow == null || openOfficeDoorArrow == null)
+        {
+            Debug.LogError("맵 이동 튜토리얼 시작 실패! 필요한 버튼을 찾지 못했습니다!");
+            return;
+        }
+        Show();
+    }
+
+    public void Show() => StartCoroutine(nameof(ShowTutorial));
+    private IEnumerator ShowTutorial()
     {
         //페이즈 종료 이벤트 추가
         moveLocationActiveButton.onClick.AddListener(MoveToNextMovingTutorialPhase);
@@ -48,5 +64,4 @@ public class MovingMapTutorialManager : TutorialManager
         blocker.SetActive(false);
     }
     private void MoveToNextMovingTutorialPhase() => MoveToNextTutorialPhase(1f);
-
 }
