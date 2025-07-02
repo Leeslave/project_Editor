@@ -374,17 +374,31 @@ public class Chat : Singleton<Chat>
     {
         // 대사 초기화
         text.text = "";
-
+        Coroutine sfxCoroutine = null;
+        
+        // 효과음 코루틴 시작
+        if (paragraph.sfxDelay > 0f)
+        {
+            sfxCoroutine = StartCoroutine(TextSFX(paragraph.sfxDelay / 10));
+        }
+        
         // 한 글자씩 애니메이션
         foreach (var t in paragraph.text)
         {
             // 텍스트 추가
             text.text += t;
-            
-            // 텍스트 효과음 실행
-            textSFX.Play();
-
             yield return new WaitForSeconds(paragraph.textDelay / 10);
+        }
+        StopCoroutine(sfxCoroutine);
+    }
+
+
+    IEnumerator TextSFX(float delay)
+    {
+        while (true)
+        {
+            textSFX.Play();
+            yield return new WaitForSeconds(delay);
         }
     }
 

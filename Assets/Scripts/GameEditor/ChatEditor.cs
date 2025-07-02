@@ -90,24 +90,31 @@ public class ChatEditor : MonoBehaviour
             TMP_Text[] text = newObj.GetComponentsInChildren<TMP_Text>();
             
             // 버튼 설명 및 로드 함수 이벤트 연결
+            ChatTrigger chatTrigger = GetComponent<ChatTrigger>();
             if (data is TalkParagraph talk)
             {
                 List<Paragraph> newList = new() { talk };
                 text[1].text = talk.text;
                 
                 btn.onClick.AddListener(() => LoadParagraph(index, talk));
-                btn.GetComponent<ChatTrigger>()?.SetChatData(newList);
-                btn.onClick.AddListener(() => btn.GetComponent<ChatTrigger>()?.StartChat());
+                Debug.Log(newList);
+                btn.onClick.AddListener(() =>
+                {
+                    chatTrigger.SetChatData(newList);
+                    chatTrigger.StartChat();
+                });
             }
             else if (data is ChoiceParagraph choice)
             {
                 List<Paragraph> newList = new() { choice };
-                // TODO: 선택지 설명 추가
                 text[1].text = "선택지";
                 
                 btn.onClick.AddListener(() => LoadParagraph(index, choice));
-                btn.GetComponent<ChatTrigger>()?.SetChatData(newList);
-                btn.onClick.AddListener(() => btn.GetComponent<ChatTrigger>()?.StartChat());
+                btn.onClick.AddListener(() =>
+                {
+                    chatTrigger.SetChatData(newList);
+                    chatTrigger.StartChat();
+                });
             }
         }
     }
@@ -142,7 +149,6 @@ public class ChatEditor : MonoBehaviour
     public void SaveParagraph(int index, TalkParagraph data)
     {
         dataList[index] = data;
-        talkUI.gameObject.SetActive(false);
         RefreshList();
     }
     
@@ -150,7 +156,6 @@ public class ChatEditor : MonoBehaviour
     public void SaveParagraph(int index, ChoiceParagraph data)
     {
         dataList[index] = data;
-        choiceUI.gameObject.SetActive(false);
         RefreshList();
     }
 

@@ -16,6 +16,7 @@ public class TalkInput : MonoBehaviour
     public TMP_InputField context;
     public TMP_Dropdown fontSize;
     public TMP_InputField textDelay;
+    public TMP_InputField sfxDelay;
     
     public List<Transform> characters;
     public TMP_Dropdown bgm;
@@ -30,6 +31,7 @@ public class TalkInput : MonoBehaviour
         
         data.fontSize = fontSize.options[fontSize.value].text;
         data.textDelay = float.Parse(textDelay.text);
+        data.sfxDelay = float.Parse(sfxDelay.text);
         
         data.bgm = bgm.options[bgm.value].text;
         if (background.options[background.value].image == null)
@@ -81,6 +83,7 @@ public class TalkInput : MonoBehaviour
         // 대사 추가 정보
         fontSize.value = FindIndex(fontSize, data.fontSize);
         textDelay.text = data.textDelay.ToString();
+        sfxDelay.text = data.sfxDelay.ToString();
         
         // 기타 정보
         bgm.value = FindIndex(bgm, data.bgm);

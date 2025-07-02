@@ -73,6 +73,7 @@ public class ChoiceInput : MonoBehaviour
         
         // 데이터 제출
         editor.SaveParagraph(index, data);
+        
     }
 
 
