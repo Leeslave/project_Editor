@@ -10,6 +10,7 @@ public abstract class Paragraph
     */
     public CharacterCG[]  characters = new CharacterCG[4];
     public string background = null;  // 배경 이미지
+    public bool isFade = false;
 
     public abstract bool hasAction();
 }

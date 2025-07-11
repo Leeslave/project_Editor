@@ -24,6 +24,7 @@ public class Chat : Singleton<Chat>
 
     [Header("UI 요소")]
     [SerializeField] private Image background;   // 배경 이미지
+    [SerializeField] private FadeCurtain curtain;
     [SerializeField] private SoundManager bgm;    // 배경 음악
 
     [Space(20)] [Header("대화 패널")] 
@@ -322,6 +323,12 @@ public class Chat : Singleton<Chat>
             {
                 background.sprite = GetSprite(BACKGROUND_PATH + data.background); // 배경 이미지 설정 
             }
+            
+            if (data.isFade)        // 배경 전환 효과
+            {
+                curtain.Fade();
+            }
+            
             background.gameObject.SetActive(true);      // 배경 이미지 활성화
         }
     }

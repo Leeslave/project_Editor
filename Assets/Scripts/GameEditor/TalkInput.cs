@@ -21,6 +21,7 @@ public class TalkInput : MonoBehaviour
     public List<Transform> characters;
     public TMP_Dropdown bgm;
     public TMP_Dropdown background;
+    public Toggle isFade;
     public TMP_Dropdown action;
     public TMP_InputField actionParam;
 
@@ -41,6 +42,7 @@ public class TalkInput : MonoBehaviour
         else
         {
             data.background = background.options[background.value].image.name;
+            data.isFade = isFade.isOn;
         }
         data.action = action.options[action.value].text;
         data.actionParam = actionParam.text;
@@ -88,6 +90,7 @@ public class TalkInput : MonoBehaviour
         // 기타 정보
         bgm.value = FindIndex(bgm, data.bgm);
         background.value = FindIndex(background, data.background);
+        isFade.isOn = data.isFade;
         action.value = FindIndex(action, data.action);
         actionParam.text = data.actionParam;
         
