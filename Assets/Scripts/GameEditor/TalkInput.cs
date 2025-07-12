@@ -35,7 +35,7 @@ public class TalkInput : MonoBehaviour
         data.sfxDelay = float.Parse(sfxDelay.text);
         
         data.bgm = bgm.options[bgm.value].text;
-        if (background.options[background.value].image == null)
+        if (!background.options[background.value].image)
         {
             data.background = "none";
         }
@@ -71,6 +71,7 @@ public class TalkInput : MonoBehaviour
         }
         
         // 데이터 제출
+        Debug.Log(data.isFade);
         editor.SaveParagraph(index, data);
     }
 
