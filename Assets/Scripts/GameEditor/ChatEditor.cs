@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -56,7 +57,7 @@ public class ChatEditor : MonoBehaviour
             
             Button btn = newObj.GetComponent<Button>();
             
-            //대사 순서 정렬
+            //버튼 순서 정렬
             newObj.GetComponentInChildren<TMP_InputField>().text = i.ToString();
             newObj.GetComponentInChildren<TMP_InputField>().onEndEdit.AddListener((string s) =>
             {
@@ -89,33 +90,31 @@ public class ChatEditor : MonoBehaviour
             TMP_Text[] text = newObj.GetComponentsInChildren<TMP_Text>();
             
             // 버튼 설명 및 로드 함수 이벤트 연결
+            ChatTrigger chatTrigger = GetComponent<ChatTrigger>();
             if (data is TalkParagraph talk)
             {
-                // 대사 선택 및 표시 이벤트
                 List<Paragraph> newList = new() { talk };
                 text[1].text = talk.text;
                 
                 btn.onClick.AddListener(() => LoadParagraph(index, talk));
-                btn.GetComponent<ChatTrigger>()?.SetChatData(newList);
-                btn.onClick.AddListener(() => btn.GetComponent<ChatTrigger>()?.StartChat());
-                
-                // 대사 복사 이벤트
-                Button cpyBtn = newObj.transform.GetChild(2).GetComponent<Button>();
-                cpyBtn.onClick.AddListener(() =>
+                Debug.Log(newList);
+                btn.onClick.AddListener(() =>
                 {
-                    dataList.Add(talk);
-                    RefreshList();
+                    chatTrigger.SetChatData(newList);
+                    chatTrigger.StartChat();
                 });
             }
             else if (data is ChoiceParagraph choice)
             {
-                // 대사 선택 및 표시 이벤트
                 List<Paragraph> newList = new() { choice };
                 text[1].text = "선택지";
                 
                 btn.onClick.AddListener(() => LoadParagraph(index, choice));
-                btn.GetComponent<ChatTrigger>()?.SetChatData(newList);
-                btn.onClick.AddListener(() => btn.GetComponent<ChatTrigger>()?.StartChat());
+                btn.onClick.AddListener(() =>
+                {
+                    chatTrigger.SetChatData(newList);
+                    chatTrigger.StartChat();
+                });
             }
         }
     }
@@ -150,7 +149,6 @@ public class ChatEditor : MonoBehaviour
     public void SaveParagraph(int index, TalkParagraph data)
     {
         dataList[index] = data;
-        talkUI.gameObject.SetActive(false);
         RefreshList();
     }
     
@@ -158,7 +156,6 @@ public class ChatEditor : MonoBehaviour
     public void SaveParagraph(int index, ChoiceParagraph data)
     {
         dataList[index] = data;
-        choiceUI.gameObject.SetActive(false);
         RefreshList();
     }
 

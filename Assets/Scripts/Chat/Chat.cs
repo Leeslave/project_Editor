@@ -24,6 +24,7 @@ public class Chat : Singleton<Chat>
 
     [Header("UI 요소")]
     [SerializeField] private Image background;   // 배경 이미지
+    [SerializeField] private FadeCurtain curtain;
     [SerializeField] private SoundManager bgm;    // 배경 음악
 
     [Space(20)] [Header("대화 패널")] 
@@ -228,13 +229,12 @@ public class Chat : Singleton<Chat>
 
                 text.fontSize = talk.GetFontSize(); // 대사 크기 설정
 
-                if (talk.GetFontSize() == TalkParagraph.NORMALFONTSIZE)    // 중간사이즈용
-                    textSFX.SetClip(0);
-                else if (talk.GetFontSize() == TalkParagraph.LARGEFONTSIZE)  // 큰 글자용
+                if (talk.GetFontSize() == TalkParagraph.LARGEFONTSIZE)
                     textSFX.SetClip(1);
-
-                else if (talk.GetFontSize() == TalkParagraph.SMALLFONTSIZE)    // 작은 사이즈용 
-                    textSFX.SetClip(2);
+                else if (talk.GetFontSize() == TalkParagraph.NORMALFONTSIZE)
+                    textSFX.SetClip(0);
+                else
+                    textSFX = new();
                 
                 StartCoroutine(TextAnimation(talk));
             }
@@ -323,6 +323,12 @@ public class Chat : Singleton<Chat>
             {
                 background.sprite = GetSprite(BACKGROUND_PATH + data.background); // 배경 이미지 설정 
             }
+            
+            if (data.isFade)        // 배경 전환 효과
+            {
+                curtain.Fade();
+            }
+            
             background.gameObject.SetActive(true);      // 배경 이미지 활성화
         }
     }
@@ -375,17 +381,31 @@ public class Chat : Singleton<Chat>
     {
         // 대사 초기화
         text.text = "";
-
+        Coroutine sfxCoroutine = null;
+        
+        // 효과음 코루틴 시작
+        if (paragraph.sfxDelay > 0f)
+        {
+            sfxCoroutine = StartCoroutine(TextSFX(paragraph.sfxDelay / 10));
+        }
+        
         // 한 글자씩 애니메이션
         foreach (var t in paragraph.text)
         {
             // 텍스트 추가
             text.text += t;
-            
-            // 텍스트 효과음 실행
-            textSFX.PlayShot();
-
             yield return new WaitForSeconds(paragraph.textDelay / 10);
+        }
+        StopCoroutine(sfxCoroutine);
+    }
+
+
+    IEnumerator TextSFX(float delay)
+    {
+        while (true)
+        {
+            textSFX.Play();
+            yield return new WaitForSeconds(delay);
         }
     }
 
