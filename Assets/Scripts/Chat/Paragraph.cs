@@ -10,6 +10,7 @@ public abstract class Paragraph
     */
     public CharacterCG[]  characters = new CharacterCG[4];
     public string background = null;  // 배경 이미지
+    public bool isFade = false;
 
     public abstract bool hasAction();
 }
@@ -32,7 +33,8 @@ public class TalkParagraph : Paragraph
     public const int SMALLFONTSIZE = 10;
 
     public string fontSize = "normal";   // 글자 크기
-    public float textDelay = 0.4f;      // 텍스트간 딜레이
+    public float textDelay = 0.3f;      // 텍스트간 딜레이
+    public float sfxDelay = 0.6f;
     
     public string bgm = "none";         // 배경음악
     public string action = null;    // 대화 후 반응

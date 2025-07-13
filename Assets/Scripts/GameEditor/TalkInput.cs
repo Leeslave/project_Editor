@@ -16,32 +16,25 @@ public class TalkInput : MonoBehaviour
     public TMP_InputField context;
     public TMP_Dropdown fontSize;
     public TMP_InputField textDelay;
+    public TMP_InputField sfxDelay;
     
     public List<Transform> characters;
     public TMP_Dropdown bgm;
-    public TMP_InputField bgmCode;
     public TMP_Dropdown background;
+    public Toggle isFade;
     public TMP_Dropdown action;
     public TMP_InputField actionParam;
 
 
     public void SubmitInput()
     {
-        TalkParagraph data = new(talker.text, talkerInfo.text, context.text)
-        {
-            fontSize = fontSize.options[fontSize.value].text, 
-            textDelay = float.Parse(textDelay.text)
-        };
-
-        if (bgm.value == 4)
-        {
-            data.bgm = bgmCode.text;
-        }
-        else
-        {
-            data.bgm = bgm.options[bgm.value].text;
-        }
+        TalkParagraph data = new(talker.text, talkerInfo.text, context.text);
         
+        data.fontSize = fontSize.options[fontSize.value].text;
+        data.textDelay = float.Parse(textDelay.text);
+        data.sfxDelay = float.Parse(sfxDelay.text);
+        
+        data.bgm = bgm.options[bgm.value].text;
         if (!background.options[background.value].image)
         {
             data.background = "none";
@@ -49,6 +42,7 @@ public class TalkInput : MonoBehaviour
         else
         {
             data.background = background.options[background.value].image.name;
+            data.isFade = isFade.isOn;
         }
         data.action = action.options[action.value].text;
         data.actionParam = actionParam.text;
@@ -56,8 +50,8 @@ public class TalkInput : MonoBehaviour
         // CG 연결
         for (int i = 0; i < 4; i++)
         {
-            Transform charPanel = characters[i];
-            TMP_Dropdown charName = charPanel.GetChild(0).GetComponent<TMP_Dropdown>();
+            var charPanel = characters[i];
+            var charName = charPanel.GetChild(0).GetComponent<TMP_Dropdown>();
             if (charName.value != 0)
             {
                 CharacterCG newChar = new();
@@ -77,6 +71,7 @@ public class TalkInput : MonoBehaviour
         }
         
         // 데이터 제출
+        Debug.Log(data.isFade);
         editor.SaveParagraph(index, data);
     }
 
@@ -91,16 +86,12 @@ public class TalkInput : MonoBehaviour
         // 대사 추가 정보
         fontSize.value = FindIndex(fontSize, data.fontSize);
         textDelay.text = data.textDelay.ToString();
+        sfxDelay.text = data.sfxDelay.ToString();
         
         // 기타 정보
         bgm.value = FindIndex(bgm, data.bgm);
-        if (int.TryParse(data.bgm, out int num))
-        {
-            bgm.value = bgm.options.Count - 1;
-            bgmCode.text = num.ToString();
-        }
-        
         background.value = FindIndex(background, data.background);
+        isFade.isOn = data.isFade;
         action.value = FindIndex(action, data.action);
         actionParam.text = data.actionParam;
         
@@ -138,13 +129,12 @@ public class TalkInput : MonoBehaviour
             }
 
             // image가 null이 아닌 경우에만 name 속성에 접근
-            if (!dropdown.options[i].image)
+            if (dropdown.options[i].image != null)
             {
-                continue;
-            }
-            if (dropdown.options[i].image.name == targetString)
-            {
-                return i;
+                if (dropdown.options[i].image.name == targetString)
+                {
+                    return i;
+                }
             }
         }
         // 일치하는 항목이 없는 경우 처리

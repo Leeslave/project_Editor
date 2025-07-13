@@ -14,6 +14,7 @@ public class ChoiceInput : MonoBehaviour
     
     public List<Transform> characters;
     public TMP_Dropdown background;
+    public Toggle isFade;
 
 
     public void SubmitInput()
@@ -27,6 +28,7 @@ public class ChoiceInput : MonoBehaviour
         else
         {
             data.background = background.options[background.value].image.name;
+            data.isFade = isFade.isOn;
         }
         
         // CG 연결
@@ -73,12 +75,14 @@ public class ChoiceInput : MonoBehaviour
         
         // 데이터 제출
         editor.SaveParagraph(index, data);
+        
     }
 
 
     public void LoadInput(ChoiceParagraph data)
     {
         background.value = FindIndex(background, data.background);
+        isFade.isOn = data.isFade;
         
         // CG 연결
         for (int i = 0; i < 4; i++)

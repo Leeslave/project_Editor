@@ -21,12 +21,10 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     
     private bool _moving;    // 지역 내 이동 버튼 활성화 여부
     public SoundManager worldBGM;  // 지역 내 배경음악
-
     
     [Header("지역 이동 효과")]
     [SerializeField]
-    private Image curtain;      // 지역 이동 효과 이미지
-    public float moveDelay;     // 지역 이동 딜레이
+    private FadeCurtain curtain;      // 지역 이동 효과 이미지
     
 
     /// <summary>
@@ -107,25 +105,8 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     /// <param name="position">이동할 위치</param>
     private void MovePosition(int position)
     {
-        StartCoroutine(FadeInOut());
+        curtain.Fade();
         GameSystem.Instance.currentLocation.position = position;
         CurrentLocation.SetPosition(position);
-    }
-
-
-    /// <summary>
-    /// 화면 전환 효과
-    /// </summary>
-    private IEnumerator FadeInOut()
-    {
-        float elapsedTime = 0f;
-        
-        // 점점 밝아지기
-        while (elapsedTime < moveDelay)
-        {
-            curtain.color = Color.Lerp(Color.black, Color.clear, elapsedTime / moveDelay);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
     }
 }
