@@ -65,7 +65,9 @@ public class FocusCircleController : MonoBehaviour, IMaterialInstantiate
     private void OnEnable()
     {
         Image.color = UnityEngine.Color.clear;
-        LJWConverter.Instance.GradientImageColor(false, 1f, 1f, new UnityEngine.Color(0.99f, 0.0f, 0.0f, 0.2f), Image);
+
+        if(LJWConverter.Instance != null)
+            LJWConverter.Instance.GradientImageColor(false, 1f, 1f, new UnityEngine.Color(0.99f, 0.0f, 0.0f, 0.2f), Image);
     }
 
     private void LateUpdate()
