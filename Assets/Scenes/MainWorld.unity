@@ -3440,7 +3440,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &391651403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4131,6 +4131,7 @@ MonoBehaviour:
       index: 0
       isHighlight: 0
     background: none
+    isFade: 0
     talker: 
     talkerInfo: 
     text: "\uC9C0\uAE08\uC740 \uD560 \uC77C\uC774 \uC788\uB2E4."
@@ -14421,7 +14422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64a172c43dd8345a3a51aad5b8404d88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Audio: {fileID: 1912289555}
+  audioSource: {fileID: 1912289555}
   clips:
   - {fileID: 8300000, guid: 9bba2d225425c904da34e669c5daa0fb, type: 3}
   - {fileID: 8300000, guid: c1ba37cb8b43d054990119931850194d, type: 3}
