@@ -33,6 +33,7 @@ public static class ActionHandler
                 return result;
             case "NEXTTIME":
                 result = new TimeChangeAction();
+                result.Param = SetParam<int>(param);
                 return result;
             case "TUTORIAL":
                 result = new TutorialAction();
@@ -94,7 +95,6 @@ public static class ActionHandler
             var parts = param.Split(',', StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length == 2)
             {
-                Debug.Log($"param: {param} - {parts[0].Trim()}, {parts[1].Trim()}");
                 return (T)(object)(parts[0].Trim(), parts[1].Trim());
             }
         }

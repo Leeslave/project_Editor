@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Door : MonoBehaviour
 {
@@ -20,6 +21,11 @@ public class Door : MonoBehaviour
     private void Awake()
     {
         _blockChat = GetComponent<ChatTrigger>();
+
+        if (TryGetComponent(out Button button))
+        {
+            button.onClick.AddListener(OnClick);
+        }
     }
     
     /// <summary>

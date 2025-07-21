@@ -17,7 +17,10 @@ public class WorldObject : MonoBehaviour
     /// <remarks>화면 위치 설정</remarks>
     public virtual void OnAwake()
     {
-        SetAnchor();
+        if (positionParam > 0)
+        {
+            SetAnchor();
+        }
         positionParam = 0;
     }
 

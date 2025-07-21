@@ -1,9 +1,18 @@
 
+using UnityEngine;
+
 public class ActionObject : WorldObject
 {
     public string actionName;
     public string actionParam;
-    private Action action;
+    private Action action = null;
+    public bool loop = false;
+    
+    
+    void Awake()
+    {
+        OnAwake();
+    }
     
     /// <summary>
     /// 초기화 시
@@ -14,6 +23,7 @@ public class ActionObject : WorldObject
         base.OnAwake();
         
         action = ActionHandler.GetAction(actionName, actionParam);
+        Debug.Log(action);
     }
 
     /// <summary>
@@ -24,7 +34,12 @@ public class ActionObject : WorldObject
     {
         base.OnEnable();
         
-        action.Invoke();
-        Destroy(gameObject);
+        action?.Invoke();
+        if (!loop)
+        {
+            Destroy(gameObject);
+        }
+        
+        Debug.Log($"Action Invoke! : {actionName}-{actionParam}");
     }
 }
