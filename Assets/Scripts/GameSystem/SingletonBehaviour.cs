@@ -43,6 +43,14 @@ public class SingletonObject<T>: MonoBehaviour
 
     protected void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        if (_instance is null)
+        {
+            _instance = this as T;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (_instance != this)
+        {
+            Destroy(gameObject);
+        }
     }
 }

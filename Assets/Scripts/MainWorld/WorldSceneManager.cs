@@ -24,7 +24,7 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     
     [Header("지역 이동 효과")]
     [SerializeField]
-    private FadeCurtain curtain;      // 지역 이동 효과 이미지
+    public FadeCurtain curtain;      // 지역 이동 효과 이미지
     
 
     /// <summary>

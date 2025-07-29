@@ -90,31 +90,32 @@ public class ChatEditor : MonoBehaviour
             TMP_Text[] text = newObj.GetComponentsInChildren<TMP_Text>();
             
             // 버튼 설명 및 로드 함수 이벤트 연결
-            ChatTrigger chatTrigger = GetComponent<ChatTrigger>();
             if (data is TalkParagraph talk)
             {
                 List<Paragraph> newList = new() { talk };
                 text[1].text = talk.text;
                 
                 btn.onClick.AddListener(() => LoadParagraph(index, talk));
-                Debug.Log(newList);
-                btn.onClick.AddListener(() =>
+                btn.GetComponent<ChatTrigger>()?.SetChatData(newList);
+                btn.onClick.AddListener(() => btn.GetComponent<ChatTrigger>()?.StartChat());
+                
+                // 대사 복사 이벤트
+                Button cpyBtn = newObj.transform.GetChild(2).GetComponent<Button>();
+                cpyBtn.onClick.AddListener(() =>
                 {
-                    chatTrigger.SetChatData(newList);
-                    chatTrigger.StartChat();
+                    dataList.Add(talk);
+                    RefreshList();
                 });
             }
+            
             else if (data is ChoiceParagraph choice)
             {
                 List<Paragraph> newList = new() { choice };
                 text[1].text = "선택지";
                 
                 btn.onClick.AddListener(() => LoadParagraph(index, choice));
-                btn.onClick.AddListener(() =>
-                {
-                    chatTrigger.SetChatData(newList);
-                    chatTrigger.StartChat();
-                });
+                btn.GetComponent<ChatTrigger>()?.SetChatData(newList);
+                btn.onClick.AddListener(() => btn.GetComponent<ChatTrigger>()?.StartChat());
             }
         }
     }

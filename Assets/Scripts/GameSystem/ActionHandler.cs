@@ -274,6 +274,7 @@ public class PosChangeAction : Action
     {
         if(Param is (World world, int idx))
         {
+            WorldSceneManager.Instance.curtain.Fade();
             WorldSceneManager.Instance.MoveLocation(world, idx);
             return true;
         }
