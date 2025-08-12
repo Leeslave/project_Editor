@@ -108,7 +108,7 @@ public static class ActionHandler
 public abstract class Action
 {
     public object Param;
-    public abstract object Invoke();
+    public abstract bool Invoke();
 }
 
 
@@ -117,7 +117,7 @@ public abstract class Action
 /// </summary>
 public class ExitGameAction : Action
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         GameSystem.LoadScene("Start");
         return true;
@@ -131,11 +131,11 @@ public class ExitGameAction : Action
 /// <remarks>Param 형식 : int</remarks>
 public class HardDayChangeAction : Action
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         if (Param is not int)
         {
-            return "Error";
+            return false;
         }
         
         GameSystem.Instance.SetDate((int)Param);
@@ -153,7 +153,7 @@ public class HardDayChangeAction : Action
 /// <remarks>Param 형식 : int</remarks>
 public class DayChangeAction : Action
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         if(GameSystem.Instance.timeIndex == 3)
         {
@@ -172,11 +172,11 @@ public class DayChangeAction : Action
 /// <remarks>Param 형식 : int</remarks>
 public class TimeChangeAction : Action
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         if (Param is not int)
         {
-            return "Error";
+            return false;
         }
         if (GameSystem.Instance.timeIndex != (int)Param - 1)
         {
@@ -194,14 +194,14 @@ public class TimeChangeAction : Action
 /// <remarks>Param 형식 : int</remarks>
 public class HardTimeChangeAction : Action
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         if (Param is int param)
         {
             GameSystem.Instance.SetTime(param);
             return true;
         }
-        return "Error";
+        return false;
     }
 }
 
@@ -212,11 +212,11 @@ public class HardTimeChangeAction : Action
 /// <remarks>Param 형식 : int</remarks>
 public class ChatJumpAction : Action
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         if (Param is not int)
         {
-            return "Error";
+            return false;
         }
         
         for (int i = 0; i < (int)Param; i++)
@@ -234,14 +234,14 @@ public class ChatJumpAction : Action
 /// <remarks>Param 형식 : IChatList, string</remarks>
 public class ChatSwapAction : Action
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         if(Param is (IChatList trigger, int idx))
         {
             trigger.SwapIndex(idx);
             return true;
         }
-        return "Error";
+        return false;
     }
 }
 
@@ -252,14 +252,14 @@ public class ChatSwapAction : Action
 /// TODO:<remarks>Param 형식 : Tutorial 인터페이스</remarks>
 public class TutorialAction : Action
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         if(Param is int)
         {
 
             return true;
         }
-        return "Error";
+        return false;
     }
 }
 
@@ -270,14 +270,14 @@ public class TutorialAction : Action
 /// <remarks></remarks>
 public class PosChangeAction : Action
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         if(Param is (World world, int idx))
         {
             WorldSceneManager.Instance.MoveLocation(world, idx);
             return true;
         }
-        return "Error";
+        return false;
     }
 }
 
@@ -288,11 +288,11 @@ public class PosChangeAction : Action
 /// <remarks>Param 형식 : string</remarks>
 public class RemoveAction : Action
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         if (Param is not string name)
         {
-            return "Error";
+            return false;
         }
 
         WorldObjectFactory.Instance.RemoveObject(name);

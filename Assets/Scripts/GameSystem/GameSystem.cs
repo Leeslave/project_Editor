@@ -104,7 +104,10 @@ public class GameSystem : SingletonObject<GameSystem>
         // 시간대 설정 및 로드
         timeIndex = time;
         Debug.Log($"Set time to {timeIndex}");
-        WorldSceneManager.Instance?.ReloadWorld();
+        if (WorldSceneManager.Instance is not null)
+        {
+            WorldSceneManager.Instance.ReloadWorld();
+        }
     }
 
 

@@ -5,9 +5,8 @@ public class ActionObject : WorldObject
 {
     public string actionName;
     public string actionParam;
-    private Action action = null;
+    private Action _action;
     public bool loop = false;
-    
     
     void Awake()
     {
@@ -22,8 +21,8 @@ public class ActionObject : WorldObject
     {
         base.OnAwake();
         
-        action = ActionHandler.GetAction(actionName, actionParam);
-        Debug.Log(action);
+        _action = ActionHandler.GetAction(actionName, actionParam);
+        Debug.Log(_action);
     }
 
     /// <summary>
@@ -34,10 +33,12 @@ public class ActionObject : WorldObject
     {
         base.OnEnable();
         
-        action?.Invoke();
-        if (!loop)
+        if(_action?.Invoke() ?? false)
         {
-            Destroy(gameObject);
+            if (!loop)
+            {
+                Destroy(gameObject);
+            }
         }
         
         Debug.Log($"Action Invoke! : {actionName}-{actionParam}");
