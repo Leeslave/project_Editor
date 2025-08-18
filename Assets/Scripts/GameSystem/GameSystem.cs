@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using DataType;
+using GameData;
 
 
-public class GameSystem : SingletonObject<GameSystem>
+public class GameSystem : SingletonObject<GameSystem>, IGameRepo
 {
     /**
     * 게임 내 데이터 관리 시스템
@@ -17,8 +19,8 @@ public class GameSystem : SingletonObject<GameSystem>
 
     /// 게임 데이터 (ReadOnly)
     private List<SaveData> _saveList = new() { new SaveData() };    // 저장 데이터
-
-    public DailyData DayData { get; private set; } = new();    // 오늘 날짜 데이터
+    
+    public DailyData DayData { get; set; }
     
     /// 게임 플레이 데이터 (ReadWrite)
     [Header("현재 게임플레이 상태")]
@@ -178,4 +180,5 @@ public class GameSystem : SingletonObject<GameSystem>
     {
         SceneManager.LoadScene(sceneName);
     }
+
 }

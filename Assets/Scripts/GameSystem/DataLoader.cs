@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
-
+using DataType;
 
 public static class DataLoader
 {
