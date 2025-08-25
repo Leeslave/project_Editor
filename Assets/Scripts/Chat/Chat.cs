@@ -52,15 +52,15 @@ public class Chat : Singleton<Chat>
     private Queue<Paragraph> logList;   // 대화 기록 리스트
 
     /// 이벤트
-    private Action action;    // 대사 반응 함수
-    private Action[] choiceActions = new Action[3];    // 선택지 이벤트
+    private GameAction _gameAction;    // 대사 반응 함수
+    private GameAction[] choiceActions = new GameAction[3];    // 선택지 이벤트
 
     new void Awake()
     {
         base.Awake();
 
         // 이벤트 초기화
-        choiceActions = new Action[3];
+        choiceActions = new GameAction[3];
     }
 
     ///<summary>
@@ -102,7 +102,7 @@ public class Chat : Singleton<Chat>
         // 이전 대사 반응 함수 실행
         if (logList.Count != 0)
         {
-            action?.Invoke();
+            _gameAction?.Invoke();
         }        
 
         // 마지막 대사 이후 or index 오류
@@ -273,7 +273,7 @@ public class Chat : Singleton<Chat>
             
             
             // 반응 설정
-            action = ActionHandler.GetAction(talk.action, talk.actionParam);  
+            _gameAction = ActionHandler.GetAction(talk.action, talk.actionParam);  
         }
         
         else if(data is ChoiceParagraph choice)         // 일반 선택지

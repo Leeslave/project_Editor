@@ -5,7 +5,7 @@ public class ActionObject : WorldObject
 {
     public string actionName;
     public string actionParam;
-    private Action _action;
+    private GameAction _gameAction;
     public bool loop = false;
     
     void Awake()
@@ -21,8 +21,8 @@ public class ActionObject : WorldObject
     {
         base.OnAwake();
         
-        _action = ActionHandler.GetAction(actionName, actionParam);
-        Debug.Log(_action);
+        _gameAction = ActionHandler.GetAction(actionName, actionParam);
+        Debug.Log(_gameAction);
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class ActionObject : WorldObject
     {
         base.OnEnable();
         
-        if(_action?.Invoke() ?? false)
+        if(_gameAction?.Invoke() ?? false)
         {
             if (!loop)
             {

@@ -10,49 +10,49 @@ public static class ActionHandler
     /// <param name="func"></param>
     /// <param name="param"></param>
     /// <returns></returns>
-    public static Action GetAction(string func, string param)
+    public static GameAction GetAction(string func, string param)
     {
-        Action result;
+        GameAction result;
 
         switch (func)
         {
             case "JUMP":
-                result = new ChatJumpAction();
+                result = new ChatJumpGameAction();
                 result.Param = SetParam<int>(param);
                 return result;
             case "DAYCHANGE":
-                result = new HardDayChangeAction();
+                result = new HardDayChangeGameAction();
                 result.Param = SetParam<int>(param);
                 return result;
             case "NEXTDAY":
-                result = new DayChangeAction();
+                result = new DayChangeGameAction();
                 return result;
             case "TIMECHANGE":
-                result = new HardTimeChangeAction();
+                result = new HardTimeChangeGameAction();
                 result.Param = SetParam<int>(param);
                 return result;
             case "NEXTTIME":
-                result = new TimeChangeAction();
+                result = new TimeChangeGameAction();
                 result.Param = SetParam<int>(param);
                 return result;
             case "TUTORIAL":
-                result = new TutorialAction();
+                result = new TutorialGameAction();
                 result.Param = SetParam<int>(param);
                 return result;
             case "REMOVE":
-                result = new RemoveAction();
+                result = new RemoveGameAction();
                 result.Param = SetParam<string>(param);
                 return result;
             case "EXIT":
-                result = new ExitGameAction();
+                result = new ExitGameGameAction();
                 return result;
             case "CHATSWAP":
-                result = new ChatSwapAction();
+                result = new ChatSwapGameAction();
                 var chatData = SetParam<(string, string)>(param);
                 result.Param = (WorldObjectFactory.Instance?.FindObject(chatData.Item1) as IChatList, int.Parse(chatData.Item2));
                 return result;
             case "POSCHANGE":
-                result = new PosChangeAction();
+                result = new PosChangeGameAction();
                 var posData = SetParam<(string, string)>(param);
                 result.Param = (Enum.Parse(typeof(World), posData.Item1), int.Parse(posData.Item2));
                 return result;
@@ -105,7 +105,7 @@ public static class ActionHandler
 
 
 /// 반응 함수
-public abstract class Action
+public abstract class GameAction
 {
     public object Param;
     public abstract bool Invoke();
@@ -115,7 +115,7 @@ public abstract class Action
 /// <summary>
 /// 게임 종료 액션
 /// </summary>
-public class ExitGameAction : Action
+public class ExitGameGameAction : GameAction
 {
     public override bool Invoke()
     {
@@ -129,7 +129,7 @@ public class ExitGameAction : Action
 /// 날짜 강제 변경 액션
 /// </summary>
 /// <remarks>Param 형식 : int</remarks>
-public class HardDayChangeAction : Action
+public class HardDayChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
@@ -151,7 +151,7 @@ public class HardDayChangeAction : Action
 /// 날짜 변경 액션
 /// </summary>
 /// <remarks>Param 형식 : int</remarks>
-public class DayChangeAction : Action
+public class DayChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
@@ -170,7 +170,7 @@ public class DayChangeAction : Action
 /// 시간대 강제 변경 액션
 /// </summary>
 /// <remarks>Param 형식 : int</remarks>
-public class TimeChangeAction : Action
+public class TimeChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
@@ -192,7 +192,7 @@ public class TimeChangeAction : Action
 /// 시간대 변경 액션
 /// </summary>
 /// <remarks>Param 형식 : int</remarks>
-public class HardTimeChangeAction : Action
+public class HardTimeChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
@@ -210,7 +210,7 @@ public class HardTimeChangeAction : Action
 /// 대화 스킵 액션
 /// </summary>
 /// <remarks>Param 형식 : int</remarks>
-public class ChatJumpAction : Action
+public class ChatJumpGameAction : GameAction
 {
     public override bool Invoke()
     {
@@ -232,7 +232,7 @@ public class ChatJumpAction : Action
 /// 대화 스킵 액션
 /// </summary>
 /// <remarks>Param 형식 : IChatList, string</remarks>
-public class ChatSwapAction : Action
+public class ChatSwapGameAction : GameAction
 {
     public override bool Invoke()
     {
@@ -250,7 +250,7 @@ public class ChatSwapAction : Action
 /// 튜토리얼 생성 액션
 /// </summary>
 /// TODO:<remarks>Param 형식 : Tutorial 인터페이스</remarks>
-public class TutorialAction : Action
+public class TutorialGameAction : GameAction
 {
     public override bool Invoke()
     {
@@ -268,7 +268,7 @@ public class TutorialAction : Action
 /// 위치 이동 액션
 /// </summary>
 /// <remarks></remarks>
-public class PosChangeAction : Action
+public class PosChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
@@ -286,7 +286,7 @@ public class PosChangeAction : Action
 /// 오브젝트 삭제 액션
 /// </summary>
 /// <remarks>Param 형식 : string</remarks>
-public class RemoveAction : Action
+public class RemoveGameAction : GameAction
 {
     public override bool Invoke()
     {

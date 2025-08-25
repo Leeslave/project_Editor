@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using TMPro;
+using GameData;
 
 public class DebugConsole : SingletonObject<DebugConsole>
 {

@@ -7,7 +7,7 @@ public class EventDoor : Door
 {
     public string actionType;
     public string actionParam;
-    private Action _action = null;
+    private GameAction _gameAction = null;
 
     public override void OnClick()
     {
@@ -20,7 +20,7 @@ public class EventDoor : Door
         }
         
         // 반응 획득
-        _action = ActionHandler.GetAction(actionType, actionParam);
-        _action.Invoke();
+        _gameAction = ActionHandler.GetAction(actionType, actionParam);
+        _gameAction.Invoke();
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace DataType
+namespace GameData
 {
     [Serializable]
     public class DailyData

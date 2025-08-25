@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using DataType;
 using GameData;
 
 
-public class GameSystem : SingletonObject<GameSystem>, IGameRepo
+public class GameSystem : SingletonObject<GameSystem>
 {
     /**
     * 게임 내 데이터 관리 시스템
