@@ -7,25 +7,39 @@ namespace GameService
 {
     public interface IDayService
     {
-        /** 게임 데이터 제공 인터페이스
-         * 하루의 날짜 정보 제공
-        */
+        /// <summary>
+        /// 날짜 변경 이벤트
+        /// </summary>
+        public event Action<int> OnDateChanged;
 
-        // 날짜 인덱스 반환
-        public int GetDateIndex();
+        /// <summary>
+        /// 시간대 변경 이벤트
+        /// </summary>
+        public event Action<int> OnTimeChanged;
         
-        // 시간대 인덱스 반환
-        public int GetTimeIndex ();
+        /// <summary>
+        /// 날짜 인덱스 확인
+        /// </summary>
+        /// <returns>현재 날짜 인덱스</returns>
+        public int GetIndex();
         
-        // 날짜 정보 반환
+        /// <summary>
+        /// 시간대 확인
+        /// </summary>
+        /// <returns>현재 시간대</returns>
+        public int GetTime();
+        
+        /// <summary>
+        /// 날짜 상세 정보 확인
+        /// </summary>
+        /// <returns>현재 날짜 정보</returns>
         public Date GetDateInfo();
 
-        // 날짜 변경
-        public event Action<int> OnDateChanged;
+        /// <summary>
+        /// 날짜 설정
+        /// </summary>
+        /// <param name="date">변경할 날짜의 인덱스</param>
         public void SetDate(int date);
-        
-        // 시간대 변경
-        public event Action<int> OnTimeChanged;
         public void SetTime(int time);
         
         
