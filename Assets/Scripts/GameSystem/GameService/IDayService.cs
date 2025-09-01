@@ -21,7 +21,7 @@ namespace GameService
         /// 날짜 인덱스 확인
         /// </summary>
         /// <returns>현재 날짜 인덱스</returns>
-        public int GetIndex();
+        public int GetDate();
         
         /// <summary>
         /// 시간대 확인
