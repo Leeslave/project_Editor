@@ -26,14 +26,16 @@ public class CRTEffect : MonoBehaviour
     [Range(0, 1)]
     public float FlipKeep;
 
-    private Material _material;
+    public Material _material;
 
-    private void Start()
+    private void Awake()
     {
         _material = new Material(Shader);
         if (CRTEventSystem.System != null) CRTEventSystem.CRTMat = _material;
         StartCoroutine(RandFlip());
     }
+
+    float time = 0;
 
     private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
@@ -42,6 +44,7 @@ public class CRTEffect : MonoBehaviour
         _material.SetFloat("_Thick", Thick);
         _material.SetFloat("_Speed", Speed);
         _material.SetFloat("_FlipProb", FlipProb);
+        _material.SetFloat("_TimeSet",time); time += Time.unscaledDeltaTime * 0.04f;
         Graphics.Blit(source, destination, _material);
     }
 
