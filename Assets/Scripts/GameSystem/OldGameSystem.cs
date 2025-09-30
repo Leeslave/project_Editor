@@ -51,7 +51,7 @@ public class OldGameSystem : Singleton<OldGameSystem>
     {
         base.Awake();
 
-        _saveList = DataLoader.GetPlayerData();     // 세이브 데이터 로드
+        _saveList = DataLoader.InitData();     // 세이브 데이터 로드
         
         // DEBUG: 초기 날짜 설정
     #if DEBUG

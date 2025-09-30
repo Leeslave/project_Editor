@@ -21,13 +21,13 @@ namespace GameService
         /// 날짜 인덱스 확인
         /// </summary>
         /// <returns>현재 날짜 인덱스</returns>
-        public int GetDate();
+        public uint GetDate();
         
         /// <summary>
         /// 시간대 확인
         /// </summary>
         /// <returns>현재 시간대</returns>
-        public int GetTime();
+        public uint GetTime();
         
         /// <summary>
         /// 날짜 상세 정보 확인
@@ -39,8 +39,8 @@ namespace GameService
         /// 날짜 설정
         /// </summary>
         /// <param name="date">변경할 날짜의 인덱스</param>
-        public void SetDate(int date);
-        public void SetTime(int time);
+        public void SetDate(uint date);
+        public void SetTime(uint time);
         
         
     }

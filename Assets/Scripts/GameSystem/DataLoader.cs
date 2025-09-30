@@ -16,6 +16,8 @@ public static class DataLoader
     private static string CHATPATH = Application.dataPath + "/StreamingAssets/ChatData/";     // 대화 파일 경로
     private static string GAMEDATAPATH = Application.dataPath + "/StreamingAssets/DayData/";   // 게임 데이터 파일 경로
     private static string GAMEFILE = "dailyData";
+
+    private static List<SaveData> saveData;
     
     #if RELEASE
     private static string SAVEPATH = Application.persistentDataPath + "/Save/savedata.json";    // 세이브 파일 경로
@@ -74,7 +76,7 @@ public static class DataLoader
     
         
     /// index로부터 게임 데이터를 로드
-    public static DailyData GetDayData(int index)
+    public static DailyData GetDayData(uint index)
     {
         string gameFile = $"{GAMEDATAPATH}/{GAMEFILE}{index}.json";
 
@@ -89,7 +91,7 @@ public static class DataLoader
         if (!File.Exists(gameFile))
         {
             throw new ArgumentException($"GAME DATA CANNOT FOUND : ${gameFile}");
-            // 치명적 오류, 게임 종료시키기
+            // TODO: 치명적 오류, 게임 종료시키기 (게임데이터 검사 추가)
         }
         FileStream fileStream = new FileStream(gameFile, FileMode.Open);
         byte[] data = new byte[fileStream.Length];
@@ -118,9 +120,18 @@ public static class DataLoader
         return wrapper.chatList;
     }
 
+    public static SaveData GetPlayerData(int index)
+    {
+        if (index < 0 || index >= saveData.Count)
+        {
+            return null;
+        }
+
+        return saveData[index];
+    }
     
     /// 플레이어 세이브 데이터를 로드
-    public static List<SaveData> GetPlayerData()
+    public static List<SaveData> InitData()
     {
         // 파일 읽어오기
         if (!File.Exists(SAVEPATH))
@@ -141,12 +152,17 @@ public static class DataLoader
 
         return wrapper.list;
     }
+
+    public static void PushPlayerData(SaveData save, uint index)
+    {
+        
+    }
     
     /// 플레이어 데이터 JSON 저장
-    public static void SavePlayerData(List<SaveData> saveList)
+    public static void SaveData()
     {
         SaveWrapper wrapper = new();
-        foreach (var iter in saveList)
+        foreach (var iter in saveData)
         {
             wrapper.list.Add(iter);
         }

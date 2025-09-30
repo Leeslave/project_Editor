@@ -34,17 +34,17 @@ namespace GameSystem
         
         //////// 날짜 및 시간 관리 //////// 
 
-        private int _dateIndex;
-        private int _timeIndex;
+        private uint _dateIndex;
+        private uint _timeIndex;
   
         public event Action<int> OnDateChanged;
         public event Action<int> OnTimeChanged;
-        public int GetDate()
+        public uint GetDate()
         {
             return _dateIndex;
         }
 
-        public int GetTime()
+        public uint GetTime()
         {
             return _timeIndex;
         }
@@ -54,7 +54,7 @@ namespace GameSystem
             return _dayData.date;
         }
 
-        public void SetDate(int date)
+        public void SetDate(uint date)
         {
             DailyData newData = LoadDayData(date);
             if (newData == null) return;
@@ -64,26 +64,25 @@ namespace GameSystem
             
             _dateIndex = date;
             
-            OnDateChanged?.Invoke(date);
+            OnDateChanged?.Invoke((int)date);
         }
 
-        public void SetTime(int time)
+        public void SetTime(uint time)
         {
             if (time < 0 || time > 3) return;
 
             _timeIndex = time;
             
-            OnTimeChanged?.Invoke(time);
+            OnTimeChanged?.Invoke((int)time);
         }
 
         /// <summary>
         /// 해당 날짜 데이터 로드
         /// </summary>
         /// <param name="index">로드할 날짜 인덱스</param>
-        public DailyData LoadDayData(int index)
+        private DailyData LoadDayData(uint index)
         {
-            // TODO: 날짜데이터 json으로부터 로드 함수 구현하기
-            throw new NotImplementedException();
+            return DataLoader.GetDayData(index);
         }
 
         /// <summary>
@@ -92,8 +91,7 @@ namespace GameSystem
         /// <exception cref="NotImplementedException"></exception>
         public void SavePlayerData()
         {
-            // TODO: 플레이어 세이브 함수 구현하기
-            throw new NotImplementedException();
+            DataLoader.PushPlayerData(SaveData, _dateIndex);
         }
 
         
