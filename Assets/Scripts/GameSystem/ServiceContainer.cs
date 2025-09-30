@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ServiceContainer : MonoBehaviour
+public class ServiceContainer : SingletonObject<ServiceContainer>
 {
     public List<IDayService> dayService = new();
     public List<ILocationService> locationService = new();
@@ -21,14 +21,52 @@ public class ServiceContainer : MonoBehaviour
     {
         if (service is IDayService day)
         {
-            if (isDefault) dayService[0] = servi
-
-            dayService.Add(day);
+            if (isDefault) dayService[0] = day;
+            else dayService.Add(day);
         }
         else if (service is ILocationService locate)
         {
             if (isDefault) locationService[0] = locate;
             else locationService.Add(locate);
+        }
+        else if (service is IObjectDataService objData)
+        {
+            if (isDefault) objectService[0] = objData;
+            else objectService.Add(objData);
+        }
+        else if (service is ISaveService save)
+        {
+            if (isDefault) saveService[0] = save;
+            else saveService.Add(save);
+        }
+        else if (service is IWorkService work)
+        {
+            if (isDefault) workService[0] = work;
+            else workService.Add(work);
+        }
+        else
+        {
+            Debug.Log("Invalid service type");
+        }
+    }
+    
+    public T Reslove<T>()
+    {
+        if (typeof(T) == typeof(IDayService))
+        {
+            return (T)dayService[^1];
+        }
+        if (typeof(T) == typeof(ILocationService))
+        {
+            return (T)locationService[^1];
+        }
+        if  (typeof(T) == typeof(IObjectDataService))
+        {
+            return (T)objectService[^1];
+        }
+        if (typeof(T) == typeof(ISaveService))
+        {
+            
         }
     }
 }
