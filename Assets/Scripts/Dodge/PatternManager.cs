@@ -101,7 +101,7 @@ public class PatternManager : MonoBehaviour
             StageInt = GameSystem.Instance.GetTask("Dodge");
         }
         catch { }
-        StageInt = 1;
+        //StageInt = 1;
 
         
 
