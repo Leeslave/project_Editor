@@ -2,7 +2,7 @@ using System;
 
 namespace GameService
 {
-    public interface ILocationService
+    public interface ILocationService : IService
     {
         public event Action<Location> OnLocationChanged;
         

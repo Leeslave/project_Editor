@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameOption : Singleton<GameOption>
@@ -89,13 +90,13 @@ public class GameOption : Singleton<GameOption>
     
     public void LoadSaveSelect()
     {
-        GameSystem.LoadScene("SaveSelect");
+        SceneManager.LoadScene("SaveSelect");
     }
 
 
     public void LoadStartMenu()
     {
-        GameSystem.LoadScene("Start");
+        SceneManager.LoadScene("Start");
     }
 
 

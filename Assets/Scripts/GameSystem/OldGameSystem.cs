@@ -77,7 +77,7 @@ public class OldGameSystem : Singleton<OldGameSystem>
         // DataLoader.SavePlayerData(saveList);
 
         // 해당 날짜 설정
-        DayData = DataLoader.GetDayData(date);
+        DayData = DataLoader.GetDayData((uint)date);
         dateIndex = date;
         currentLocation = DayData.startLocation;
         isScreenOn = false;

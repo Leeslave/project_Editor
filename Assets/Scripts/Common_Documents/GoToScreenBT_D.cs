@@ -8,17 +8,11 @@ public class GoToScreenBT_D : Buttons_M
     private void OnEnable()
     {
         if (!OnType) return;
-        if (GameSystem.Instance != null)
-            GameSystem.LoadScene("Screen");
-        else
-            SceneManager.LoadScene("Screen");
+        SceneManager.LoadScene("Screen");
     }
 
     protected override void Click(PointerEventData Data)
     {
-        if (GameSystem.Instance != null)
-            GameSystem.LoadScene("Screen");
-        else
-            SceneManager.LoadScene("Screen");
+        SceneManager.LoadScene("Screen");
     }
 }

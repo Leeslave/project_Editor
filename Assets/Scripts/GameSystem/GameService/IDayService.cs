@@ -1,11 +1,9 @@
-
-using System.Collections.Generic;
 using GameData;
 using System;
 
 namespace GameService
 {
-    public interface IDayService
+    public interface IDayService : IService
     {
         /// <summary>
         /// 날짜 변경 이벤트

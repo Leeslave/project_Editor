@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GameService
 {
-    public interface IWorkService
+    public interface IWorkService : IService
     {
         /// <summary>
         /// 스크린 전원 활성화 상태

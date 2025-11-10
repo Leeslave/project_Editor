@@ -62,7 +62,6 @@ namespace GameData
         * 날짜 정보
         */
         public int year;
-
         public int month;
         public int day;
 

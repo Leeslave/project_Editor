@@ -119,7 +119,7 @@ public class ExitGameGameAction : GameAction
 {
     public override bool Invoke()
     {
-        GameSystem.LoadScene("Start");
+        SceneManager.LoadScene("Start");
         return true;
     }
 }
@@ -138,7 +138,7 @@ public class HardDayChangeGameAction : GameAction
             return false;
         }
         
-        GameSystem.Instance.SetDate((int)Param);
+        GameSystem.Instance.SetDate((uint)Param);
         
         // TODO: 로딩씬 진입
         // SceneManager.LoadScene("DayLoading");
@@ -155,9 +155,9 @@ public class DayChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
-        if(GameSystem.Instance.timeIndex == 3)
+        if(GameSystem.Instance.GetTime() == 3)
         {
-            GameSystem.Instance.SetDate(-1);
+            GameSystem.Instance.SetDate(GameSystem.Instance.GetTime() + 1);
             SceneManager.LoadScene("DayLoading");
             return true;
         }
@@ -178,12 +178,12 @@ public class TimeChangeGameAction : GameAction
         {
             return false;
         }
-        if (GameSystem.Instance.timeIndex != (int)Param - 1)
+        if (GameSystem.Instance.GetTime() != (int)Param - 1)
         {
             return false;
         }
         
-        GameSystem.Instance.SetTime((int)Param);
+        GameSystem.Instance.SetTime((uint)Param);
         return true;
     }
 }
@@ -198,7 +198,7 @@ public class HardTimeChangeGameAction : GameAction
     {
         if (Param is int param)
         {
-            GameSystem.Instance.SetTime(param);
+            GameSystem.Instance.SetTime((uint)param);
             return true;
         }
         return false;

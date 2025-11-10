@@ -474,13 +474,13 @@ public class Chat : Singleton<Chat>
         switch(keyword)
         {
             case "{{year}}":
-                return GameSystem.Instance.DayData.date.year.ToString();
+                return GameSystem.Instance.GetDateInfo().year.ToString();
             case "{{month}}":
-                return GameSystem.Instance.DayData.date.month.ToString();
+                return GameSystem.Instance.GetDateInfo().month.ToString();
             case "{{day}}":
-                return GameSystem.Instance.DayData.date.day.ToString();
+                return GameSystem.Instance.GetDateInfo().day.ToString();
             case "{{renown}}":
-                return GameSystem.Instance.Player.renown.ToString();
+                return GameSystem.Instance.GetRenown();
         }
         return "";
     }

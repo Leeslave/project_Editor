@@ -43,7 +43,7 @@ public class DB_M : MonoBehaviour
     {
 
         try{
-            stageInt = GameSystem.Instance.GetTask("Document");
+            stageInt = GameSystem.Instance.GetStage("Document");
             Debug.Log(stageInt);
             Day += stageInt;
         }

@@ -3,9 +3,15 @@ using System;
 
 namespace GameService
 {
-    public interface ISaveService
+    public interface ISaveService : IService
     {
         public event Action<int> OnRenownChanged;
+
+        /// <summary>
+        /// 명성치 수치 반환
+        /// </summary>
+        /// <returns>명성치 문자열 반환</returns>
+        public string GetRenown();
 
         /// <summary>
         /// 명성치 조건 확인

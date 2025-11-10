@@ -98,7 +98,7 @@ public class PatternManager : MonoBehaviour
 
         try
         {
-            StageInt = GameSystem.Instance.GetTask("Dodge");
+            StageInt = GameSystem.Instance.GetStage("Dodge");
         }
         catch { }
         StageInt = 1;
@@ -269,9 +269,9 @@ public class PatternManager : MonoBehaviour
         yield return TwoSec;
         if (GameSystem.Instance != null)
         {
-            GameSystem.Instance.ClearTask("Dodge");
-            if (StageInt == 0) GameSystem.LoadScene("Screen");
-            else GameSystem.LoadScene("Document");
+            GameSystem.Instance.ClearWork("Dodge");
+            if (StageInt == 0) SceneManager.LoadScene("Screen");
+            else SceneManager.LoadScene("Document");
         }
         else
         {
@@ -415,8 +415,8 @@ public class PatternManager : MonoBehaviour
         player.gameObject.SetActive(false);
         player.EndG.SetActive(true);
         player.EndG.GetComponent<RealEnd>().Ending(true);
-        GameSystem.Instance.ClearTask("Dodge");
-        GameSystem.LoadScene("Screen");
+        GameSystem.Instance.ClearWork("Dodge");
+        SceneManager.LoadScene("Screen");
     }
 
     IEnumerator CamShake(float time, float intensity = 1)      // ????? ???? ????? ??????.

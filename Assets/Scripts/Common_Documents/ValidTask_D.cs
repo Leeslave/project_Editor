@@ -39,8 +39,8 @@ public class ValidTask_D : MonoBehaviour
         {
             try
             {
-                GameSystem.Instance.ClearTask("Document");
-                GameSystem.LoadScene("Screen");
+                GameSystem.Instance.ClearWork("Document");
+                SceneManager.LoadScene("Screen");
             }
             catch
             {
