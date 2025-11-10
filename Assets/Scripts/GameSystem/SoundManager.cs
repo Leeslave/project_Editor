@@ -54,8 +54,12 @@ public class SoundManager : MonoBehaviour
         {
             return;
         }
-
-        bool played = onPlay;
+        if (audioSource.clip == clips[idx])
+        {
+            return;
+        }
+        
+        bool played = onPlay;    
         audioSource.clip = clips[idx];
         if (swap && played)
         {

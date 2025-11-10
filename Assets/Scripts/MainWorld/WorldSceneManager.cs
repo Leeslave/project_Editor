@@ -26,7 +26,7 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     */
     public GameObject mainCamera;
 
-    private List<int> _blockList;    // 지역 이동 제한 리스트
+    private List<int> _blockList = new();    // 지역 이동 제한 리스트
     [SerializeField] private int nightShift;
     [SerializeField] private GameObject buttons;
     
