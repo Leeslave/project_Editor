@@ -53,7 +53,7 @@ public class MakeTile : MonoBehaviour
 
     void Awake()
     {
-        if(GameSystem.Instance != null) Difficulty = GameSystem.Instance.GetTask("Maze");
+        if(GameSystem.Instance != null) Difficulty = GameSystem.Instance.GetStage("Maze");
         if (Difficulty > 0) GetDifficulty();
         else MakeTutorial();
 

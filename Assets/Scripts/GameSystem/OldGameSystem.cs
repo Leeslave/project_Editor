@@ -104,7 +104,7 @@ public class OldGameSystem : Singleton<OldGameSystem>
         Debug.Log($"Set time to {timeIndex}");
         if (WorldSceneManager.Instance is not null)
         {
-            WorldSceneManager.Instance.ReloadWorld();
+            // WorldSceneManager.Instance.ReloadWorld();
         }
     }
 

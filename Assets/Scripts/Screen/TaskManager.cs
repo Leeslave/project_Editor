@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class TaskManager : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class TaskManager : MonoBehaviour
     /// 업무 완료 확인
     void OnEnable()
     {
-        if (GameSystem.Instance.IsTaskClear == true)
+        if (GameSystem.Instance.IsWorkClear() == true)
         {
             GameSystem.Instance.SetTime(2);
         }
@@ -37,7 +38,7 @@ public class TaskManager : MonoBehaviour
             closeButton.SetActive(false);
             consoleInput.gameObject.SetActive(false);   //입력창 비활성화
             // 콘솔 대사 출력
-            if (GameSystem.Instance.IsTaskClear)
+            if (GameSystem.Instance.IsWorkClear())
             {
                 StartCoroutine(TaskConsoleAnimation(1));
             }
@@ -68,13 +69,13 @@ public class TaskManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in GameSystem.Instance.DayData.workList)
+        foreach(var work in GameSystem.Instance.GetList())
         {
             if(work.code == consoleInput.text)
             {
                 Debug.Log($"Work Entered! : {consoleInput.text}");
                 consoleInput.text = "업무 로딩중...\n";
-                GameSystem.LoadScene(work.code);
+                SceneManager.LoadScene(work.code);
                 return;
             }
         }

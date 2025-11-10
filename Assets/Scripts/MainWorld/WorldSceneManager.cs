@@ -1,112 +1,79 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using GameData;
 
+[Serializable]
+public enum World {
+    Street,
+    Bar,
+    Cafe,
+    Restaurant,
+    Temple,
+    Hallway,
+    Office,
+    Office3,
+    Interrogate,
+    
+    Max
+}
 
-public class WorldSceneManager : Singleton<WorldSceneManager> 
+public class WorldSceneManager : Singleton<WorldSceneManager>
 {
     /**
     * MainWorld 씬 매니저
-    *   - 날짜, 시간대 맞춰서 지역 동기화
     *   - 지역 내 위치 이동
     *   - 지역 간 이동
     */
+    public GameObject mainCamera;
 
-    [Header("지역 데이터")]
-    [SerializeField]
-    private Location[] locationList;    // 지역 오브젝트 리스트
-    public Location CurrentLocation => locationList[(int)GameSystem.Instance.currentLocation.location];
-    private List<WorldVector> _blockList;    // 지역 이동 제한 리스트
+    private List<int> _blockList;    // 지역 이동 제한 리스트
+    [SerializeField] private int nightShift;
+    [SerializeField] private GameObject buttons;
     
-    private bool _moving;    // 지역 내 이동 버튼 활성화 여부
+    [Header("지역 효과")]
+    [SerializeField] private FadeCurtain curtain;      // 지역 이동 효과 이미지
     public SoundManager worldBGM;  // 지역 내 배경음악
-    
-    [Header("지역 이동 효과")]
-    [SerializeField]
-    private FadeCurtain curtain;      // 지역 이동 효과 이미지
-    
 
-    /// <summary>
-    /// 월드 재로딩, 날짜, 시간대 재적용
-    /// </summary>
-    public void ReloadWorld()
+    public void Init(List<int> blockList, World startLocation, int startPosition = 0, bool isNight = false)
     {
-        // 모든 지역 리로드
-        WorldObjectFactory.Instance.Clear();
-        
-        // TODO: 각 지역 로드를 스레드로 처리
-        foreach(var iter in locationList)
+        if (isNight)
         {
-            iter.InActiveLocation();
-            iter.SetButtons();
-            iter.SetObjects();
-            iter.SetBGMCode();
+            transform.position = new Vector3(transform.position.x, nightShift, transform.position.z);
         }
-        
-        // 지역 이동 제한 초기화
-        _blockList = GameSystem.Instance.DayData
-            .dayTimes[GameSystem.Instance.timeIndex].block;
-
-        // 날짜 변경 시 위치 초기화
-        if (GameSystem.Instance.timeIndex == 0)
-        {
-            GameSystem.Instance.currentLocation = GameSystem.Instance.DayData.startLocation;
-        }
-
-        // 현재 지역 활성화
-        CurrentLocation.ActiveLocation(GameSystem.Instance.currentLocation.position);
+        _blockList = blockList;
     }
 
-
     /// <summary>
-    /// 지역 이동 버튼 활성화
+    /// 상호작용 활성화/비활성화
     /// </summary>
-    public void SetMoveActive()
+    public void SwitchInteraction()
     {
-        _moving = !_moving;
-        CurrentLocation.SetButtonActive(_moving);
+        buttons.SetActive(!buttons.activeSelf);
     }
-
     
     /// <summary>
     /// 지역 변경
     /// </summary>
-    /// <remarks>지역을 변경하고 지역 내 위치 동기화</remarks>
-    public bool MoveLocation(World location, int position)
+    /// <returns>좌표 기준으로 지역 이동</returns>
+    public bool MoveLocation(int val)
     {
-        WorldVector newVector = new(location, position);
+        // 블럭 확인
+        if (_blockList.Contains(val)) return false;
         
-        // 제한된 지역 이동
-        if (_blockList.Contains(newVector))
-        {
-            return false;
-        }
-        
-        // 기존 지역 비활성화
-        CurrentLocation.InActiveLocation();
-
-        // 현재 지역 설정
-        GameSystem.Instance.currentLocation = newVector;
-        
-        // 이동 버튼 적용
-        CurrentLocation.SetButtonActive(_moving);
-
-        // 새 지역 활성화
-        CurrentLocation.ActiveLocation(position);
-        
+        // 위치 이동
+        mainCamera.transform.position = new Vector3(val, 0, 0);
+        worldBGM.SetClip(val / 1000, true);
         return true;
     }
-
     
     /// <summary>
-    /// 위치 이동 
+    /// 지역 변경
     /// </summary>
-    /// <param name="position">이동할 위치</param>
-    private void MovePosition(int position)
+    /// <remarks>위치 기준으로 지역 이동</remarks>
+    public bool MoveLocation(World location, int position)
     {
-        curtain.Fade();
-        GameSystem.Instance.currentLocation.position = position;
-        CurrentLocation.SetPosition(position);
+        int x = (int)location * 1000 + position * 100;
+        return MoveLocation(x);
     }
+
 }

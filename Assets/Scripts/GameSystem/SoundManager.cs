@@ -48,14 +48,19 @@ public class SoundManager : MonoBehaviour
     }
 
     
-
-    public void SetClip(int _idx)
+    public void SetClip(int idx, bool swap = false)
     {
-        if (_idx < 0 || _idx >= clips.Count)
+        if (idx < 0 || idx >= clips.Count)
         {
             return;
         }
-        audioSource.clip = clips[_idx];
+
+        bool played = onPlay;
+        audioSource.clip = clips[idx];
+        if (swap && played)
+        {
+            Play();
+        }
     }
 
     // 오버랩 재생

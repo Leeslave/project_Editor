@@ -9,13 +9,14 @@ public class DayTutorialManager : TutorialManager
     public float duration;
     private void OnEnable()
     {
-        if (date == GameSystem.Instance.dateIndex)
-        {
-            if (time == GameSystem.Instance.dateIndex)
-            {
-                StartCoroutine(ShowTutorial(duration, 0));
-            }
-        }
+        // TODO
+        // if (date == GameSystem.Instance.dateIndex)
+        // {
+        //     if (time == GameSystem.Instance.dateIndex)
+        //     {
+        //         StartCoroutine(ShowTutorial(duration, 0));
+        //     }
+        // }
     }
     
     public IEnumerator ShowTutorial(float delay, int i)

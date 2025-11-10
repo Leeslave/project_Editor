@@ -142,7 +142,7 @@ public class HardDayChangeGameAction : GameAction
         
         // TODO: 로딩씬 진입
         // SceneManager.LoadScene("DayLoading");
-        WorldSceneManager.Instance.ReloadWorld();
+        // WorldSceneManager.Instance.ReloadWorld();
         return true;
     }
 }

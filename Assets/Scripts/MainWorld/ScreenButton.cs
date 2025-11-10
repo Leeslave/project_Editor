@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ScreenButton : MonoBehaviour
 {
@@ -14,7 +14,7 @@ public class ScreenButton : MonoBehaviour
     /// </summary>
     public void ClickScreen()
     {
-        // 스스크린 활성화
-        GameSystem.LoadScene("Screen");
+        // 스크린 활성화
+        SceneManager.LoadScene("Screen");
     }
 }

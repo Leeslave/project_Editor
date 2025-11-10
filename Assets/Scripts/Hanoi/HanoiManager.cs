@@ -50,7 +50,7 @@ public class HanoiManager : MonoBehaviour
     {
         try
         {
-            stageInt = GameSystem.Instance.GetTask("Document");
+            stageInt = GameSystem.Instance.GetStage("Document");
         }
         catch
         {
@@ -197,15 +197,8 @@ public class HanoiManager : MonoBehaviour
 
     public void ClearEvent()
     {
-        try
-        {
-            GameSystem.Instance.ClearTask("Hanoi");
-            GameSystem.LoadScene("Screen");
-        }
-        catch
-        {
+            GameSystem.Instance.ClearWork("Hanoi");
             SceneManager.LoadScene("Screen");
-        }
     }
 
     public void TouchAbleChange()

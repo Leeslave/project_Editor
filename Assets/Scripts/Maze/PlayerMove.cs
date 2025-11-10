@@ -379,9 +379,9 @@ public class PlayerMove : MonoBehaviour
             {
                 if(GameSystem.Instance != null)
                 {
-                    GameSystem.Instance.ClearTask("Maze");
-                    if (TutorialSetting.instance != null) GameSystem.LoadScene("Screen");
-                    else GameSystem.LoadScene("Dodge");
+                    GameSystem.Instance.ClearWork("Maze");
+                    if (TutorialSetting.instance != null) SceneManager.LoadScene("Screen");
+                    else SceneManager.LoadScene("Dodge");
                 }
                 else
                 {

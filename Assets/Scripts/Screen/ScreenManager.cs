@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ScreenManager : Singleton<ScreenManager>
@@ -142,7 +143,7 @@ public class ScreenManager : Singleton<ScreenManager>
         {
             sceneName = "MainWorld";
         }
-        GameSystem.LoadScene(sceneName);
+        SceneManager.LoadScene(sceneName);
     }
 
     /**

@@ -7,15 +7,14 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService, IDayServic
 {
     void Init()
     {
-        ServiceContainer.Instance.Register<ISaveService>(this, true);
-        ServiceContainer.Instance.Register<IDayService>(this, true);
-        ServiceContainer.Instance.Register<IWorkService>(this, true);
     }
 
-    void Awake()
+    public new void Awake()
     {
         Init();
     }
+    
+    
     
     #region SaveManage
     //////// Save 관리 ////////
