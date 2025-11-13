@@ -10,6 +10,7 @@ Shader "Unlit/CRT"
         _Flip("Flip",Float) = 1
         _FlipProb("FlipProb",Float) = 1
         _Rand("Rand",Float) = 1
+        _TimeSet("Time",Float) = 1
     }
 SubShader{
     Pass {
@@ -31,6 +32,7 @@ SubShader{
             float _Flip;
             float _FlipProb;
             float _Rand;
+            float _TimeSet;
             
             struct v2f {
 			    float4 pos : POSITION;
@@ -48,7 +50,7 @@ SubShader{
 
             float RandomUV(float2 uv)
             {
-                return frac(sin(_Time.x));
+                return frac(sin(_TimeSet));
             }
 
             half4 frag(v2f i) : COLOR
@@ -63,7 +65,7 @@ SubShader{
                 uv += 0.5;
 
                 float4 color = tex2D(_MainTex,uv);
-                float scanline = abs(sin((i.uv.y - 0.5 + frac(_Time.x * _Speed * 2)) * 1000 * _Thick));
+                float scanline = abs(sin((i.uv.y - 0.5 + frac(_TimeSet * _Speed * 2)) * 1000 * _Thick));
 
                 color.rgb *= lerp(_Line,1,scanline);
 

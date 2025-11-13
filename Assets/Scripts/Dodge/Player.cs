@@ -117,8 +117,9 @@ public class Player : MonoBehaviour
         speed = 10;
         rigid.velocity = new Vector2(0, -speed);
 
-        PM.NextPattern(ref HPForPattern, 0);
         PM.ErrorObject.SetActive(false);
+        PM.NextPattern(ref HPForPattern, 0);
+        
 
         
     }
@@ -147,7 +148,7 @@ public class Player : MonoBehaviour
                 gameObject.SetActive(false);
             }
             foreach (Image s in Unzips) s.sprite = Zip;
-            if (HPForPattern > 0) { HPForPattern = InitHP; PM.CurProcess = 0; PM.ExternalStopCor(); foreach (var k in PM.CMDs) k.text = ""; }
+            if (HPForPattern > 0) { HPForPattern = InitHP; PM.ExternalStopCor(); PM.CurProcess = 0; foreach (var k in PM.CMDs) k.text = ""; }
         }
         else if (collision.CompareTag("Trace"))
         {

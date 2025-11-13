@@ -812,7 +812,7 @@ MonoBehaviour:
   Timer: {fileID: 667158858}
   Move_X: 10
   Move_Y: 10
-  Difficulty: 9
+  Difficulty: 0
   Paths: []
   Stages:
   - Col: 10
@@ -7331,8 +7331,8 @@ Canvas:
   m_GameObject: {fileID: 7729226522703797889}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 6515487953478398372}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -8250,6 +8250,7 @@ GameObject:
   - component: {fileID: 8971095506210689875}
   - component: {fileID: 8997953254664965253}
   - component: {fileID: 1526922740690616929}
+  - component: {fileID: 8997953254664965254}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -8298,12 +8299,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Shader: {fileID: 4800000, guid: 708b9ef648b9b24499156b4ff04d7108, type: 3}
   Distortion: 0.3
-  Alpha: 0.75
+  Alpha: 0.7
   Thick: 0.2
   Speed: 1
   FlipRatio: 0
   FlipProb: 0
   FlipKeep: 0
+  _material: {fileID: 0}
 --- !u!114 &8971095506210689875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8348,3 +8350,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
+--- !u!114 &8997953254664965254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8379998304061629853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60d7a16a3f444ab4caf6a7bcfa876e74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -76,7 +76,7 @@ public class PatternManager : MonoBehaviour
     [SerializeField] bool IsTest;
 
     [SerializeField] GameObject TutorialObject;
-    int StageInt = 0;
+    [SerializeField]int StageInt = 0;
 
     private void Awake()
     {
@@ -101,10 +101,7 @@ public class PatternManager : MonoBehaviour
             StageInt = GameSystem.Instance.GetTask("Dodge");
         }
         catch { }
-        //StageInt = 1;
-
-        
-
+      
         if (StageInt == 0) { TutorialObject.SetActive(true); player.InitHP = 2; }
 
         player.Init();
@@ -184,7 +181,6 @@ public class PatternManager : MonoBehaviour
                 for (int x = 0; x < 10; x++) CurPT[x][i] = i % 5 == 0 ? (L.Contains(x) ? 1 : 0) : 0;
             }
         }
-
         if (!ErrorObject.activeSelf) StartCoroutine(AddCMD((2 + BulletInterv * CurPT[0].Length + RepeatInterv) * 2));
 
         yield return OneSec;
