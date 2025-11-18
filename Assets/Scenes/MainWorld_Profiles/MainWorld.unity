@@ -2077,7 +2077,7 @@ Transform:
   - {fileID: 1420746274}
   - {fileID: 834836713}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &484708318
 MonoBehaviour:
@@ -2517,6 +2517,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 934315940}
     m_Modifications:
+    - target: {fileID: 3053777274983640248, guid: 3fd960efab1bdc9439b4df408343cced, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -5.0000076
+      objectReference: {fileID: 0}
     - target: {fileID: 3053777275290176520, guid: 3fd960efab1bdc9439b4df408343cced, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -4433,7 +4437,7 @@ Transform:
   - {fileID: 1604881460}
   - {fileID: 1190010726}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &986440085
 GameObject:
@@ -4468,7 +4472,7 @@ MonoBehaviour:
   forceRatioOnAwake: 1
   listenForWindowChanges: 1
   createCameraForLetterBoxRendering: 1
-  findCamerasAutomatically: 0
+  findCamerasAutomatically: 1
   letterBoxCameraColor: {r: 0, g: 0, b: 0, a: 1}
   cameras:
   - camera: {fileID: 2118814809}
@@ -4488,7 +4492,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1004224797
 PrefabInstance:
@@ -5049,7 +5053,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1122582992
 GameObject:
@@ -5579,9 +5583,9 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: -1096979735
-  m_SortingOrder: 2
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &1191991998
 RectTransform:
@@ -5598,7 +5602,7 @@ RectTransform:
   - {fileID: 2067086509}
   - {fileID: 1720586765}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5696,6 +5700,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 934315940}
     m_Modifications:
+    - target: {fileID: 3053777274983640248, guid: 3fd960efab1bdc9439b4df408343cced, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -5.0000076
+      objectReference: {fileID: 0}
     - target: {fileID: 3053777275290176520, guid: 3fd960efab1bdc9439b4df408343cced, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -6825,7 +6833,7 @@ RectTransform:
   - {fileID: 1517693182}
   - {fileID: 1640677497}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -6881,18 +6889,18 @@ Canvas:
   m_GameObject: {fileID: 1462642114}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 2118814809}
   m_PlaneDistance: 100
-  m_PixelPerfect: 0
+  m_PixelPerfect: 1
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: -900012703
-  m_SortingOrder: 0
+  m_SortingLayerID: -825659879
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!1 &1463980664
 GameObject:
@@ -9226,7 +9234,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6041265555602956330, guid: 4850614a5a0cd21499eb1c50775672fc, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6041265555602956330, guid: 4850614a5a0cd21499eb1c50775672fc, type: 3}
       propertyPath: m_AnchorMax.x
@@ -9322,7 +9330,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6041265556249311943, guid: 4850614a5a0cd21499eb1c50775672fc, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 59.99993
+      value: 59.999947
       objectReference: {fileID: 0}
     - target: {fileID: 6944320552872247340, guid: 4850614a5a0cd21499eb1c50775672fc, type: 3}
       propertyPath: m_AnchorMax.x
