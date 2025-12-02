@@ -2,15 +2,24 @@ using System;
 using System.Collections.Generic;
 using GameData;
 using GameService;
+using UnityEngine;
 
-public sealed class GameSystem : Singleton<GameSystem>, ISaveService, IDayService, IWorkService
+public sealed class GameSystem : Singleton<GameSystem>, ISaveService
 {
-    void Init()
+    /**
+     * 게임 메인 시스템 로직
+     * - 데이터 로드 및 관리
+     * - 세이브 관리
+     * - 메인씬 로드 (게임 진입)
+     */
+    private void Init()
     {
+        
     }
 
     public new void Awake()
     {
+        base.Awake();
         Init();
     }
     
@@ -19,36 +28,44 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService, IDayServic
     #region SaveManage
     //////// Save 관리 ////////
     
-    public SaveData SaveData;
+    [SerializeField] private SaveData _saveData;
+
+    public int Renown
+    {
+        get => _saveData.renown;
+        set
+        {
+            _saveData.renown = value;
+            OnRenownChanged?.Invoke(value);
+        }
+    }
+
     public event Action<int> OnRenownChanged;
 
-    public void LoadSaveData()
+    /// <summary>
+    /// 세이브 데이터 로드
+    /// </summary>
+    /// <param name="index">세이브 번호</param>
+    public void LoadSaveData(int index = 0)
     {
-        SaveData = new SaveData();
+        _saveData = new SaveData();
 
-        DataLoader.GetPlayerData(0);
-    }
-    
-    public string GetRenown()
-    {
-        return SaveData.renown.ToString();
+        DataLoader.GetPlayerData(index);
     }
 
+    /// <summary>
+    /// 명성치 조건 확인
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <returns></returns>
     public bool CheckRenown(int condition)
     {
-        if (SaveData.renown >= condition)
+        if (_saveData.renown >= condition)
         {
             return true;
         }
 
         return false;
-    }
-
-    public void AddRenown(int renown)
-    {
-        SaveData.renown += renown;
-        
-        OnRenownChanged?.Invoke(SaveData.renown);
     }
     
     
@@ -115,7 +132,7 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService, IDayServic
     /// <exception cref="NotImplementedException"></exception>
     public void SavePlayerData()
     {
-        DataLoader.PushPlayerData(SaveData, _dateIndex);
+        DataLoader.PushPlayerData(_saveData, _dateIndex);
     }
 
     #endregion

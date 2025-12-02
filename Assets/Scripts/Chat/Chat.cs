@@ -480,7 +480,7 @@ public class Chat : Singleton<Chat>
             case "{{day}}":
                 return GameSystem.Instance.GetDateInfo().day.ToString();
             case "{{renown}}":
-                return GameSystem.Instance.GetRenown();
+                return GameSystem.Instance.Renown.ToString();
         }
         return "";
     }

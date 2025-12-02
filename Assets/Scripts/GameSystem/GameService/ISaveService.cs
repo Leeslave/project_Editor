@@ -1,17 +1,19 @@
-
 using System;
 
 namespace GameService
 {
     public interface ISaveService : IService
     {
-        public event Action<int> OnRenownChanged;
-
         /// <summary>
-        /// 명성치 수치 반환
+        /// 명성치
         /// </summary>
-        /// <returns>명성치 문자열 반환</returns>
-        public string GetRenown();
+        public int Renown { get; set; }
+        
+        /// <summary>
+        /// 명성치 변화 이벤트
+        /// </summary>
+        /// <remarks>변화된 현재 명성치 전달</remarks>
+        public event Action<int> OnRenownChanged;
 
         /// <summary>
         /// 명성치 조건 확인
@@ -20,10 +22,5 @@ namespace GameService
         /// <returns>조건 달성 여부 반환</returns>
         public bool CheckRenown(int condition);
         
-        /// <summary>
-        /// 명성치 변화 적용
-        /// </summary>
-        /// <param name="renown">변화할 명성치</param>
-        public void AddRenown(int renown);
     }
 }
