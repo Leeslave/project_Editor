@@ -14,7 +14,7 @@ public class ValidTask_D : MonoBehaviour
     [SerializeField] GameObject OffBT;
 
     [SerializeField] GameObject ValdBT;
-
+    
     string[] Test =
     {
         "Gathering Information...\n",
@@ -39,7 +39,8 @@ public class ValidTask_D : MonoBehaviour
         {
             try
             {
-                GameSystem.Instance.ClearTask("Document");
+                GameSystem.Instance.ClearTask("Document"); // GameSystem.Instance.ClearTask(GameSystem.Instance.currentTaskName);
+                // GameSystem.Instance.ClearTask(GameSystem.Instance.currentTaskName);
                 GameSystem.LoadScene("Screen");
             }
             catch
