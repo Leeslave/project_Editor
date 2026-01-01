@@ -1,3 +1,4 @@
+using GameService;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -471,16 +472,20 @@ public class Chat : Singleton<Chat>
     /// <returns>변수 실재값 반환</returns>
     private static string GetVariableValue(string keyword)
     {
+        IDayService dayService = ServiceProvider.Get<IDayService>();
+        GameData.Date date = dayService.GetDateInfo();
+        
         switch(keyword)
         {
             case "{{year}}":
-                return GameSystem.Instance.GetDateInfo().year.ToString();
+                return date.year.ToString();
             case "{{month}}":
-                return GameSystem.Instance.GetDateInfo().month.ToString();
+                return date.month.ToString();
             case "{{day}}":
-                return GameSystem.Instance.GetDateInfo().day.ToString();
+                return date.day.ToString();
             case "{{renown}}":
-                return GameSystem.Instance.Renown.ToString();
+                ISaveService saveService = ServiceProvider.Get<ISaveService>();
+                return saveService.Renown.ToString();
         }
         return "";
     }

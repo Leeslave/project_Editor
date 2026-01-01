@@ -1,3 +1,4 @@
+using GameService;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -133,16 +134,23 @@ public class HardDayChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
-        if (Param is not int)
+        if (Param is not uint param)
         {
             return false;
         }
+
+        IDayService dayService = ServiceProvider.Get<IDayService>();
+
+        try
+        {
+            dayService.Date = param;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
         
-        GameSystem.Instance.SetDate((uint)Param);
-        
-        // TODO: 로딩씬 진입
-        // SceneManager.LoadScene("DayLoading");
-        // WorldSceneManager.Instance.ReloadWorld();
         return true;
     }
 }
@@ -155,10 +163,11 @@ public class DayChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
-        if(GameSystem.Instance.GetTime() == 3)
+        IDayService dayService = ServiceProvider.Get<IDayService>();
+        
+        if(dayService.Time == 3)
         {
-            GameSystem.Instance.SetDate(GameSystem.Instance.GetTime() + 1);
-            SceneManager.LoadScene("DayLoading");
+            dayService.Time += 1;
             return true;
         }
         return false;
@@ -174,16 +183,18 @@ public class TimeChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
-        if (Param is not int)
-        {
-            return false;
-        }
-        if (GameSystem.Instance.GetTime() != (int)Param - 1)
+        if (Param is not uint param)
         {
             return false;
         }
         
-        GameSystem.Instance.SetTime((uint)Param);
+        IDayService dayService = ServiceProvider.Get<IDayService>();
+        if (dayService.Time != param - 1)
+        {
+            return false;
+        }
+        
+        dayService.Time = (uint)param;
         return true;
     }
 }
@@ -196,9 +207,11 @@ public class HardTimeChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
-        if (Param is int param)
+        if (Param is uint param)
         {
-            GameSystem.Instance.SetTime((uint)param);
+            IDayService dayService = ServiceProvider.Get<IDayService>();
+            
+            dayService.Time = param;
             return true;
         }
         return false;

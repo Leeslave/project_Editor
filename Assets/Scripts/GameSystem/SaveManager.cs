@@ -1,3 +1,4 @@
+using GameService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,10 +10,16 @@ public class SaveManager : MonoBehaviour
         - 특정 세이브 선택 및 로딩
         - 세이브 로드 후 씬 전환
     */
+    IDataService dataService;
+
+    void Start()
+    {
+        dataService = ServiceProvider.Get<IDataService>();
+    }
 
     public void LoadDaySave(int day)
     {
-        GameSystem.Instance.SetDate((uint)day);
+        dataService.LoadDay((uint)day);
         SceneManager.LoadScene("DayLoading");
     }
 }

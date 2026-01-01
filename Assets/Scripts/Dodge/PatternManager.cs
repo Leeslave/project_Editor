@@ -1,3 +1,4 @@
+using GameService;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,9 @@ using Random = UnityEngine.Random;
 // Make Pattern / End Pattern
 public class PatternManager : MonoBehaviour
 {
+    // Work Service
+    IWorkService workService;
+    
     [SerializeField] BulletManager BM;
     [SerializeField] Camera MainCam;
     [SerializeField] Player player;
@@ -95,10 +99,12 @@ public class PatternManager : MonoBehaviour
         }
         SP = new Vector2[][] { SPB, SPR, SPL, SPT };
         ReadExternalPattern();
+        
+        workService = ServiceProvider.Get<IWorkService>();
 
         try
         {
-            StageInt = GameSystem.Instance.GetStage("Dodge");
+            StageInt = workService.GetStage("Dodge");
         }
         catch { }
         StageInt = 1;
@@ -267,17 +273,9 @@ public class PatternManager : MonoBehaviour
     {
         CMDs[CurProcess].text = "Access Accept!";
         yield return TwoSec;
-        if (GameSystem.Instance != null)
-        {
-            GameSystem.Instance.ClearWork("Dodge");
-            if (StageInt == 0) SceneManager.LoadScene("Screen");
-            else SceneManager.LoadScene("Document");
-        }
-        else
-        {
-            if (StageInt == 0) SceneManager.LoadScene("Screen");
-            else SceneManager.LoadScene("Document");
-        }
+        workService.ClearWork("Dodge");
+        if (StageInt == 0) SceneManager.LoadScene("Screen");
+        else SceneManager.LoadScene("Document");
     }
 
     // Normal                   N1 -> N2 -> Hard
@@ -415,7 +413,7 @@ public class PatternManager : MonoBehaviour
         player.gameObject.SetActive(false);
         player.EndG.SetActive(true);
         player.EndG.GetComponent<RealEnd>().Ending(true);
-        GameSystem.Instance.ClearWork("Dodge");
+        workService.ClearWork("Dodge");
         SceneManager.LoadScene("Screen");
     }
 

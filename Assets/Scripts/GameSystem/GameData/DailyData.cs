@@ -47,8 +47,6 @@ namespace GameData
 
         public DayTime daytime;
 
-        public bool isNight;
-
         public List<ChatObjectData> npc = new();
         public List<ActionObjectData> action = new();
         public List<WorldVector> block = new();
@@ -70,6 +68,11 @@ namespace GameData
             year = _year;
             month = _month;
             day = _day;
+        }
+
+        public override string ToString()
+        {
+            return $"{year}년 {month}월 {day}일";
         }
     }
 

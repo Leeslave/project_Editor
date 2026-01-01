@@ -1,3 +1,4 @@
+using GameService;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,9 @@ using System.IO;
 
 public class MakeTile : MonoBehaviour
 {
+    // Inject: work Service
+    IWorkService workService;
+    
     [SerializeField] GameObject TutorialObj;
 
     [SerializeField]
@@ -53,7 +57,9 @@ public class MakeTile : MonoBehaviour
 
     void Awake()
     {
-        if(GameSystem.Instance != null) Difficulty = GameSystem.Instance.GetStage("Maze");
+        workService = ServiceProvider.Get<IWorkService>();
+        
+        Difficulty = workService.GetStage("Maze");
         if (Difficulty > 0) GetDifficulty();
         else MakeTutorial();
 

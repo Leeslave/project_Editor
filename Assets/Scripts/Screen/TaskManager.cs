@@ -1,3 +1,5 @@
+using GameService;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,18 +15,28 @@ public class TaskManager : MonoBehaviour
     *   - 업무 결과 돌려받기
     *   - 하루 업무 클리어
     */
+    
+    // Inject: work service, day service
+    IWorkService workService;
+    IDayService dayService;
 
     public GameObject taskWindow;       // 업무 프로그램 창
     public AnimationController taskConsoleAnimation;    //업무 대화 콘솔 애니메이션
     public TMP_InputField consoleInput;     // 업무 입력 창
     public GameObject closeButton;      // 업무창 닫기 버튼
 
+    private void Start()
+    {
+        workService =  ServiceProvider.Get<IWorkService>();
+        dayService = ServiceProvider.Get<IDayService>();
+    }
+
     /// 업무 완료 확인
     void OnEnable()
     {
-        if (GameSystem.Instance.IsWorkClear() == true)
+        if (workService.IsWorkClear() == true)
         {
-            GameSystem.Instance.SetTime(2);
+            dayService.Time = 2;
         }
     }
 
@@ -38,7 +50,7 @@ public class TaskManager : MonoBehaviour
             closeButton.SetActive(false);
             consoleInput.gameObject.SetActive(false);   //입력창 비활성화
             // 콘솔 대사 출력
-            if (GameSystem.Instance.IsWorkClear())
+            if (workService.IsWorkClear())
             {
                 StartCoroutine(TaskConsoleAnimation(1));
             }
@@ -69,7 +81,7 @@ public class TaskManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in GameSystem.Instance.GetList())
+        foreach(var work in workService.GetList())
         {
             if(work.code == consoleInput.text)
             {
