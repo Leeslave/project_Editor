@@ -11,9 +11,13 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
      * - 세이브 관리
      * - 메인씬 로드 (게임 진입)
      */
+    
     public void Init()
     {
+        // 서비스 주입
         ServiceProvider.Register<ISaveService>(this);
+        
+        // TODO: 세이브 파일 무결성 확인
     }
 
     public new void Awake()
@@ -66,8 +70,5 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
 
         return false;
     }
-    
-    
-    private DailyData _dayData;
     #endregion
 }

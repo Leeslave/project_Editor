@@ -9,7 +9,7 @@ namespace GameService
         /// <summary>
         /// 게임 데이터 정보
         /// </summary>
-        DailyData Data
+        DailyData Data 
         {
             get;
         }
