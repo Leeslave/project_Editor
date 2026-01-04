@@ -1,3 +1,4 @@
+using GameService;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,48 +11,49 @@ public static class ActionHandler
     /// <param name="func"></param>
     /// <param name="param"></param>
     /// <returns></returns>
-    public static Action GetAction(string func, string param)
+    public static GameAction GetAction(string func, string param)
     {
-        Action result;
+        GameAction result;
 
         switch (func)
         {
             case "JUMP":
-                result = new ChatJumpAction();
+                result = new ChatJumpGameAction();
                 result.Param = SetParam<int>(param);
                 return result;
             case "DAYCHANGE":
-                result = new HardDayChangeAction();
+                result = new HardDayChangeGameAction();
                 result.Param = SetParam<int>(param);
                 return result;
             case "NEXTDAY":
-                result = new DayChangeAction();
+                result = new DayChangeGameAction();
                 return result;
             case "TIMECHANGE":
-                result = new HardTimeChangeAction();
+                result = new HardTimeChangeGameAction();
                 result.Param = SetParam<int>(param);
                 return result;
             case "NEXTTIME":
-                result = new TimeChangeAction();
+                result = new TimeChangeGameAction();
+                result.Param = SetParam<int>(param);
                 return result;
             case "TUTORIAL":
-                result = new TutorialAction();
+                result = new TutorialGameAction();
                 result.Param = SetParam<int>(param);
                 return result;
             case "REMOVE":
-                result = new RemoveAction();
+                result = new RemoveGameAction();
                 result.Param = SetParam<string>(param);
                 return result;
             case "EXIT":
-                result = new ExitGameAction();
+                result = new ExitGameGameAction();
                 return result;
             case "CHATSWAP":
-                result = new ChatSwapAction();
+                result = new ChatSwapGameAction();
                 var chatData = SetParam<(string, string)>(param);
                 result.Param = (WorldObjectFactory.Instance?.FindObject(chatData.Item1) as IChatList, int.Parse(chatData.Item2));
                 return result;
             case "POSCHANGE":
-                result = new PosChangeAction();
+                result = new PosChangeGameAction();
                 var posData = SetParam<(string, string)>(param);
                 result.Param = (Enum.Parse(typeof(World), posData.Item1), int.Parse(posData.Item2));
                 return result;
@@ -94,7 +96,6 @@ public static class ActionHandler
             var parts = param.Split(',', StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length == 2)
             {
-                Debug.Log($"param: {param} - {parts[0].Trim()}, {parts[1].Trim()}");
                 return (T)(object)(parts[0].Trim(), parts[1].Trim());
             }
         }
@@ -105,21 +106,21 @@ public static class ActionHandler
 
 
 /// 반응 함수
-public abstract class Action
+public abstract class GameAction
 {
     public object Param;
-    public abstract object Invoke();
+    public abstract bool Invoke();
 }
 
 
 /// <summary>
 /// 게임 종료 액션
 /// </summary>
-public class ExitGameAction : Action
+public class ExitGameGameAction : GameAction
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
-        GameSystem.LoadScene("Start");
+        SceneManager.LoadScene("Start");
         return true;
     }
 }
@@ -129,20 +130,27 @@ public class ExitGameAction : Action
 /// 날짜 강제 변경 액션
 /// </summary>
 /// <remarks>Param 형식 : int</remarks>
-public class HardDayChangeAction : Action
+public class HardDayChangeGameAction : GameAction
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
-        if (Param is not int)
+        if (Param is not int param)
         {
-            return "Error";
+            return false;
+        }
+
+        IDayService dayService = ServiceProvider.Get<IDayService>();
+
+        try
+        {
+            dayService.Date = param;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
         }
         
-        GameSystem.Instance.SetDate((int)Param);
-        
-        // TODO: 로딩씬 진입
-        // SceneManager.LoadScene("DayLoading");
-        WorldSceneManager.Instance.ReloadWorld();
         return true;
     }
 }
@@ -151,14 +159,15 @@ public class HardDayChangeAction : Action
 /// 날짜 변경 액션
 /// </summary>
 /// <remarks>Param 형식 : int</remarks>
-public class DayChangeAction : Action
+public class DayChangeGameAction : GameAction
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
-        if(GameSystem.Instance.timeIndex == 3)
+        IDayService dayService = ServiceProvider.Get<IDayService>();
+        
+        if(dayService.Time == 3)
         {
-            GameSystem.Instance.SetDate(-1);
-            SceneManager.LoadScene("DayLoading");
+            dayService.Time += 1;
             return true;
         }
         return false;
@@ -170,20 +179,22 @@ public class DayChangeAction : Action
 /// 시간대 강제 변경 액션
 /// </summary>
 /// <remarks>Param 형식 : int</remarks>
-public class TimeChangeAction : Action
+public class TimeChangeGameAction : GameAction
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
-        if (Param is not int)
-        {
-            return "Error";
-        }
-        if (GameSystem.Instance.timeIndex != (int)Param - 1)
+        if (Param is not int param)
         {
             return false;
         }
         
-        GameSystem.Instance.SetTime((int)Param);
+        IDayService dayService = ServiceProvider.Get<IDayService>();
+        if (dayService.Time != param - 1)
+        {
+            return false;
+        }
+        
+        dayService.Time = param;
         return true;
     }
 }
@@ -192,16 +203,18 @@ public class TimeChangeAction : Action
 /// 시간대 변경 액션
 /// </summary>
 /// <remarks>Param 형식 : int</remarks>
-public class HardTimeChangeAction : Action
+public class HardTimeChangeGameAction : GameAction
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         if (Param is int param)
         {
-            GameSystem.Instance.SetTime(param);
+            IDayService dayService = ServiceProvider.Get<IDayService>();
+            
+            dayService.Time = param;
             return true;
         }
-        return "Error";
+        return false;
     }
 }
 
@@ -210,16 +223,16 @@ public class HardTimeChangeAction : Action
 /// 대화 스킵 액션
 /// </summary>
 /// <remarks>Param 형식 : int</remarks>
-public class ChatJumpAction : Action
+public class ChatJumpGameAction : GameAction
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
-        if (Param is not int)
+        if (Param is not int param)
         {
-            return "Error";
+            return false;
         }
         
-        for (int i = 0; i < (int)Param; i++)
+        for (int i = 0; i < param; i++)
         {
             Chat.Instance.SkipChat();
         }
@@ -232,16 +245,17 @@ public class ChatJumpAction : Action
 /// 대화 스킵 액션
 /// </summary>
 /// <remarks>Param 형식 : IChatList, string</remarks>
-public class ChatSwapAction : Action
+public class ChatSwapGameAction : GameAction
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
-        if(Param is (IChatList trigger, int idx))
+        if (Param is not (IChatList trigger, int idx))
         {
-            trigger.SwapIndex(idx);
-            return true;
+            return false;
         }
-        return "Error";
+
+        trigger.SwapIndex(idx);
+        return true;
     }
 }
 
@@ -250,16 +264,11 @@ public class ChatSwapAction : Action
 /// 튜토리얼 생성 액션
 /// </summary>
 /// TODO:<remarks>Param 형식 : Tutorial 인터페이스</remarks>
-public class TutorialAction : Action
+public class TutorialGameAction : GameAction
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
-        if(Param is int)
-        {
-
-            return true;
-        }
-        return "Error";
+        return Param is int;
     }
 }
 
@@ -268,9 +277,9 @@ public class TutorialAction : Action
 /// 위치 이동 액션
 /// </summary>
 /// <remarks></remarks>
-public class PosChangeAction : Action
+public class PosChangeGameAction : GameAction
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         if(Param is (World world, int idx))
         {
@@ -278,7 +287,7 @@ public class PosChangeAction : Action
             WorldSceneManager.Instance.MoveLocation(world, idx);
             return true;
         }
-        return "Error";
+        return false;
     }
 }
 
@@ -287,13 +296,13 @@ public class PosChangeAction : Action
 /// 오브젝트 삭제 액션
 /// </summary>
 /// <remarks>Param 형식 : string</remarks>
-public class RemoveAction : Action
+public class RemoveGameAction : GameAction
 {
-    public override object Invoke()
+    public override bool Invoke()
     {
         if (Param is not string name)
         {
-            return "Error";
+            return false;
         }
 
         WorldObjectFactory.Instance.RemoveObject(name);

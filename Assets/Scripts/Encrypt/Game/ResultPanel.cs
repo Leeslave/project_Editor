@@ -1,12 +1,17 @@
+using GameService;
 using System;
 using System.Collections;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class ResultPanel : MonoBehaviour
 {
+    // Work Service
+    IWorkService workService;
+    
     private BasicButton CloseButton { get; set; }
     public TextMeshPro Title { get; set; }
     private TextMeshPro Result { get; set; } 
@@ -16,6 +21,8 @@ public class ResultPanel : MonoBehaviour
         CloseButton = transform.GetChild(0).GetComponent<BasicButton>();
         Title = transform.GetChild(1).GetChild(0).GetComponent<TextMeshPro>();
         Result = transform.GetChild(2).GetChild(0).GetComponent<TextMeshPro>();
+
+        workService = ServiceProvider.Get<IWorkService>();
     }
 
     public void ClosePanel()
@@ -147,8 +154,8 @@ public class ResultPanel : MonoBehaviour
             CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
             CloseButton.OnMouseUpEvent.AddListener(() => {
                 //Debug.Log("복호화 튜토리얼 종료!");
-                GameSystem.Instance.ClearTask("ADFGVX_DT");
-                GameSystem.LoadScene("Screen"); });
+                workService.ClearWork("ADFGVX_DT");
+                SceneManager.LoadScene("Screen"); });
         }
         else
         {
@@ -161,8 +168,8 @@ public class ResultPanel : MonoBehaviour
                 //모든 태스크을 완료했으므로 씬에서 나갈 준비
                 CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
                 CloseButton.OnMouseUpEvent.AddListener(() => {            
-                    GameSystem.Instance.ClearTask("ADFGVX");
-                    GameSystem.LoadScene("Screen"); });
+                    workService.ClearWork("ADFGVX");
+                    SceneManager.LoadScene("Screen"); });
             }   
         }
         
@@ -360,8 +367,8 @@ public class ResultPanel : MonoBehaviour
             CloseButton.OnMouseUpEvent.AddListener(() =>
             {
                 //Debug.Log("암호화 튜토리얼 종료!");
-                GameSystem.Instance.ClearTask("ADFGVX_ET");
-                GameSystem.LoadScene("Screen");
+                workService.ClearWork("ADFGVX_ET");
+                SceneManager.LoadScene("Screen");
             });
         }
         else
@@ -375,8 +382,8 @@ public class ResultPanel : MonoBehaviour
                 //모든 태스크을 완료했으므로 씬에서 나갈 준비
                 CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
                 CloseButton.OnMouseUpEvent.AddListener(() => {            
-                    GameSystem.Instance.ClearTask("ADFGVX");
-                    GameSystem.LoadScene("Screen"); });
+                    workService.ClearWork("ADFGVX");
+                    SceneManager.LoadScene("Screen"); });
             }
         }
         

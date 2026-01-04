@@ -1,3 +1,4 @@
+using GameService;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -8,6 +9,9 @@ using UnityEngine.SceneManagement;
 
 public class HanoiManager : MonoBehaviour 
 {
+    // Inject: work Service
+    IWorkService workService;
+    
     // ���� �ڽ��� ���� ��������
     public bool IsPick = false;
     // ���� ���� �ڽ�
@@ -50,7 +54,7 @@ public class HanoiManager : MonoBehaviour
     {
         try
         {
-            stageInt = GameSystem.Instance.GetTask("Document");
+            stageInt = workService.GetStage("Document");
         }
         catch
         {
@@ -83,6 +87,8 @@ public class HanoiManager : MonoBehaviour
     // ���� ����, ���� Container �ʱ�ȭ �� TryȽ�� ����.
     public void _Init()
     {
+        workService = ServiceProvider.Get<IWorkService>();
+        
         PickedBox = null;
         CurCon = -1;
         IsPick = false;
@@ -197,15 +203,8 @@ public class HanoiManager : MonoBehaviour
 
     public void ClearEvent()
     {
-        try
-        {
-            GameSystem.Instance.ClearTask("Hanoi");
-            GameSystem.LoadScene("Screen");
-        }
-        catch
-        {
-            SceneManager.LoadScene("Screen");
-        }
+        workService.ClearWork("Hanoi");
+        SceneManager.LoadScene("Screen");
     }
 
     public void TouchAbleChange()

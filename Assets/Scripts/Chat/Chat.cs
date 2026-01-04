@@ -1,3 +1,4 @@
+using GameService;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -52,15 +53,15 @@ public class Chat : Singleton<Chat>
     private Queue<Paragraph> logList;   // 대화 기록 리스트
 
     /// 이벤트
-    private Action action;    // 대사 반응 함수
-    private Action[] choiceActions = new Action[3];    // 선택지 이벤트
+    private GameAction _gameAction;    // 대사 반응 함수
+    private GameAction[] choiceActions = new GameAction[3];    // 선택지 이벤트
 
     new void Awake()
     {
         base.Awake();
 
         // 이벤트 초기화
-        choiceActions = new Action[3];
+        choiceActions = new GameAction[3];
     }
 
     ///<summary>
@@ -102,7 +103,7 @@ public class Chat : Singleton<Chat>
         // 이전 대사 반응 함수 실행
         if (logList.Count != 0)
         {
-            action?.Invoke();
+            _gameAction?.Invoke();
         }        
 
         // 마지막 대사 이후 or index 오류
@@ -273,7 +274,7 @@ public class Chat : Singleton<Chat>
             
             
             // 반응 설정
-            action = ActionHandler.GetAction(talk.action, talk.actionParam);  
+            _gameAction = ActionHandler.GetAction(talk.action, talk.actionParam);  
         }
         
         else if(data is ChoiceParagraph choice)         // 일반 선택지
@@ -471,16 +472,20 @@ public class Chat : Singleton<Chat>
     /// <returns>변수 실재값 반환</returns>
     private static string GetVariableValue(string keyword)
     {
+        IDayService dayService = ServiceProvider.Get<IDayService>();
+        GameData.Date date = dayService.GetDateInfo();
+        
         switch(keyword)
         {
             case "{{year}}":
-                return GameSystem.Instance.DayData.date.year.ToString();
+                return date.year.ToString();
             case "{{month}}":
-                return GameSystem.Instance.DayData.date.month.ToString();
+                return date.month.ToString();
             case "{{day}}":
-                return GameSystem.Instance.DayData.date.day.ToString();
+                return date.day.ToString();
             case "{{renown}}":
-                return GameSystem.Instance.Player.renown.ToString();
+                ISaveService saveService = ServiceProvider.Get<ISaveService>();
+                return saveService.Renown.ToString();
         }
         return "";
     }

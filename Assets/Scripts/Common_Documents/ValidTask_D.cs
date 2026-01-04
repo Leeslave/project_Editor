@@ -1,3 +1,4 @@
+using GameService;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -15,6 +16,9 @@ public class ValidTask_D : MonoBehaviour
 
     [SerializeField] GameObject ValdBT;
     
+    // 업무 서비스
+    IWorkService workService;
+
     string[] Test =
     {
         "Gathering Information...\n",
@@ -24,6 +28,8 @@ public class ValidTask_D : MonoBehaviour
     };
     private void Start()
     {
+        workService = ServiceProvider.Get<IWorkService>();
+        
         OffBT.SetActive(false);
         gameObject.SetActive(false);
     }
@@ -37,20 +43,10 @@ public class ValidTask_D : MonoBehaviour
         // GameClear
         if (IsEnd)
         {
-            try
-            {
-                GameSystem.Instance.ClearTask("Document"); // GameSystem.Instance.ClearTask(GameSystem.Instance.currentTaskName);
-                // GameSystem.Instance.ClearTask(GameSystem.Instance.currentTaskName);
-                GameSystem.LoadScene("Screen");
-            }
-            catch
-            {
-                SceneManager.LoadScene("Screen");
-            }
-            finally
-            {
-                gameObject.SetActive(false);
-            }
+            workService.ClearWork("Document");
+            SceneManager.LoadScene("Screen", LoadSceneMode.Additive);
+            SceneManager.UnloadSceneAsync("Document");
+            gameObject.SetActive(false);
         }
         else
         {

@@ -1,3 +1,4 @@
+using GameService;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -90,7 +91,10 @@ public class ADFGVXGameManager : MonoBehaviour
         //스테이지 정보 로드
         TextAsset stageText = Resources.Load<TextAsset>("GameData/Encrypt/ADFGVXStageData"); 
         ADFGVXStageData stageData = JsonConvert.DeserializeObject<ADFGVXStageData>(stageText.text);
-        int stageNum = GameSystem.Instance.GetTask("ADFGVX");
+        
+        IWorkService workService = ServiceProvider.Get<IWorkService>();
+        
+        int stageNum = workService.GetStage("ADFGVX");
         if (stageNum == -1)
         {
             //Debug.LogError("스테이지 데이터 로드 실패!");

@@ -1,7 +1,9 @@
+using GameService;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class TaskManager : MonoBehaviour
 {
@@ -12,19 +14,27 @@ public class TaskManager : MonoBehaviour
     *   - 업무 결과 돌려받기
     *   - 하루 업무 클리어
     */
+    
+    // Inject: work service, day service
+    IWorkService workService;
+    IDayService dayService;
 
     public GameObject taskWindow;       // 업무 프로그램 창
     public AnimationController taskConsoleAnimation;    //업무 대화 콘솔 애니메이션
     public TMP_InputField consoleInput;     // 업무 입력 창
     public GameObject closeButton;      // 업무창 닫기 버튼
 
-    /// 업무 완료 확인
-    void OnEnable()
+    private readonly string sceneName = "Screen";
+
+    private void Start()
     {
-        if (GameSystem.Instance.IsTaskClear == true)
+        workService =  ServiceProvider.Get<IWorkService>();
+        dayService = ServiceProvider.Get<IDayService>();
+
+        workService.OnWorkClear += () =>
         {
-            GameSystem.Instance.SetTime(2);
-        }
+            dayService.Time = 3;
+        };
     }
 
     /// 업무창 활성화/비활성화
@@ -37,7 +47,7 @@ public class TaskManager : MonoBehaviour
             closeButton.SetActive(false);
             consoleInput.gameObject.SetActive(false);   //입력창 비활성화
             // 콘솔 대사 출력
-            if (GameSystem.Instance.IsTaskClear)
+            if (workService.IsWorkClear())
             {
                 StartCoroutine(TaskConsoleAnimation(1));
             }
@@ -68,13 +78,14 @@ public class TaskManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in GameSystem.Instance.DayData.workList)
+        foreach(var work in workService.GetList())
         {
             if(work.code == consoleInput.text)
             {
                 Debug.Log($"Work Entered! : {consoleInput.text}");
                 consoleInput.text = "업무 로딩중...\n";
-                GameSystem.LoadScene(work.code);
+                SceneManager.LoadScene(work.code,  LoadSceneMode.Additive);
+                SceneManager.UnloadSceneAsync(sceneName);
                 return;
             }
         }
