@@ -1,5 +1,4 @@
 using GameService;
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -25,19 +24,17 @@ public class TaskManager : MonoBehaviour
     public TMP_InputField consoleInput;     // 업무 입력 창
     public GameObject closeButton;      // 업무창 닫기 버튼
 
+    private readonly string sceneName = "Screen";
+
     private void Start()
     {
         workService =  ServiceProvider.Get<IWorkService>();
         dayService = ServiceProvider.Get<IDayService>();
-    }
 
-    /// 업무 완료 확인
-    void OnEnable()
-    {
-        if (workService.IsWorkClear() == true)
+        workService.OnWorkClear += () =>
         {
-            dayService.Time = 2;
-        }
+            dayService.Time = 3;
+        };
     }
 
     /// 업무창 활성화/비활성화
@@ -87,7 +84,8 @@ public class TaskManager : MonoBehaviour
             {
                 Debug.Log($"Work Entered! : {consoleInput.text}");
                 consoleInput.text = "업무 로딩중...\n";
-                SceneManager.LoadScene(work.code);
+                SceneManager.LoadScene(work.code,  LoadSceneMode.Additive);
+                SceneManager.UnloadSceneAsync(sceneName);
                 return;
             }
         }

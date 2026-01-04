@@ -19,7 +19,7 @@ public class SaveManager : MonoBehaviour
 
     public void LoadDaySave(int day)
     {
-        dataService.LoadDay((uint)day);
+        dataService.LoadDay(day);
         SceneManager.LoadScene("DayLoading");
     }
 }

@@ -134,7 +134,7 @@ public class HardDayChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
-        if (Param is not uint param)
+        if (Param is not int param)
         {
             return false;
         }
@@ -183,7 +183,7 @@ public class TimeChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
-        if (Param is not uint param)
+        if (Param is not int param)
         {
             return false;
         }
@@ -194,7 +194,7 @@ public class TimeChangeGameAction : GameAction
             return false;
         }
         
-        dayService.Time = (uint)param;
+        dayService.Time = param;
         return true;
     }
 }
@@ -207,7 +207,7 @@ public class HardTimeChangeGameAction : GameAction
 {
     public override bool Invoke()
     {
-        if (Param is uint param)
+        if (Param is int param)
         {
             IDayService dayService = ServiceProvider.Get<IDayService>();
             
@@ -227,12 +227,12 @@ public class ChatJumpGameAction : GameAction
 {
     public override bool Invoke()
     {
-        if (Param is not int)
+        if (Param is not int param)
         {
             return false;
         }
         
-        for (int i = 0; i < (int)Param; i++)
+        for (int i = 0; i < param; i++)
         {
             Chat.Instance.SkipChat();
         }
@@ -249,12 +249,13 @@ public class ChatSwapGameAction : GameAction
 {
     public override bool Invoke()
     {
-        if(Param is (IChatList trigger, int idx))
+        if (Param is not (IChatList trigger, int idx))
         {
-            trigger.SwapIndex(idx);
-            return true;
+            return false;
         }
-        return false;
+
+        trigger.SwapIndex(idx);
+        return true;
     }
 }
 
@@ -267,12 +268,7 @@ public class TutorialGameAction : GameAction
 {
     public override bool Invoke()
     {
-        if(Param is int)
-        {
-
-            return true;
-        }
-        return false;
+        return Param is int;
     }
 }
 

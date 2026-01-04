@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
+[Flags]
 public enum World {
-    Street,
+    Street = 0,
     Bar,
     Cafe,
     Restaurant,
@@ -15,7 +16,7 @@ public enum World {
     Interrogate,
     
     Max
-}
+} 
 
 public class WorldSceneManager : Singleton<WorldSceneManager>
 {

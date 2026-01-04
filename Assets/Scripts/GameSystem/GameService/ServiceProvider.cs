@@ -21,13 +21,14 @@ public static class ServiceProvider
             Debug.LogError($"Service already registered: {type.Name}");
         }
         services.Add(type, service);
+        Debug.Log($"Registered service: {type.Name}");
     }
     
     /// <summary>
     /// 서비스 등록 해제
     /// </summary>
     /// <typeparam name="T">서비스 타입</typeparam>
-    public static  void Unregister<T>() where T : IService
+    public static void Unregister<T>() where T : IService
     {
         Type type = typeof(T);
         services.Remove(type);

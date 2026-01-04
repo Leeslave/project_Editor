@@ -25,7 +25,7 @@ public class ActionObjectData
 [Serializable]
 public class WorldVector
 {
-    public World location = World.Street;
+    public World location;
     public int position;
     public string name = "???";
 

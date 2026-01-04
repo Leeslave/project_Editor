@@ -8,17 +8,17 @@ namespace GameService
         /// <summary>
         /// 날짜 변경 이벤트
         /// </summary>
-        event Action<uint> OnDateChanged;
+        event Action<int> OnDateChanged;
 
         /// <summary>
         /// 시간대 변경 이벤트
         /// </summary>
-        event Action<uint> OnTimeChanged;
+        event Action<int> OnTimeChanged;
         
         // 날짜, 시간대 
-        uint Date { get; set; }
+        int Date { get; set; }
 
-        uint Time { get; set; }
+        int Time { get; set; }
 
         /// <summary>
         /// 날짜 상세 정보 확인

@@ -8,8 +8,6 @@ namespace GameService
 
         public List<ActionObjectData> GetActionObject();
 
-        public List<WorldVector> GetBlock();
-
         public List<BGMData> GetBGM();
     }
 }

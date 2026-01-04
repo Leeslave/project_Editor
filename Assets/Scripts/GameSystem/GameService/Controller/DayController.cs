@@ -7,17 +7,18 @@ public class DayController : MonoBehaviour, IDayService
 {
     /**
      * 게임 날짜 컨트롤러
+     * - 데이터를 통해서 관리
      */
-    [SerializeField] private IDataService dataService;
+    private IDataService dataService;
     
     [SerializeField] private Date dateInfo;
-    [SerializeField] private uint date ;
-    [SerializeField] private uint time;
+    [SerializeField] private int date ;
+    [SerializeField] private int time;
         
-    public event Action<uint> OnDateChanged;
-    public event Action<uint> OnTimeChanged;
+    public event Action<int> OnDateChanged;
+    public event Action<int> OnTimeChanged;
     
-    public uint Date
+    public int Date
     {
         get => date;
         set
@@ -25,11 +26,14 @@ public class DayController : MonoBehaviour, IDayService
             if (date == value)
                 return;
             date = value;
+
+            dataService.LoadDay(date);
             OnDateChanged?.Invoke(value);
+            Time = 0;
         }
     }
 
-    public uint Time
+    public int Time
     {
         get => time;
         set
@@ -37,19 +41,30 @@ public class DayController : MonoBehaviour, IDayService
             if (time == value)
                 return;
             time = value;
+            
             OnTimeChanged?.Invoke(value);
         }
     }
 
-    public void Init()
+    private void Awake()
+    {
+        ServiceProvider.Register<IDayService>(this);
+    }
+
+    private void Start()
     {
         dataService = ServiceProvider.Get<IDataService>();
+    }
+
+    public void Init()
+    {
+        dataService?.LoadDay();
     }
 
     /// <summary>
     /// 해당 날짜 정보 불러오기
     /// </summary>
-    /// <returns></returns>
+    /// <returns>날짜 정보</returns>
     public Date GetDateInfo()
     {
         return dateInfo;

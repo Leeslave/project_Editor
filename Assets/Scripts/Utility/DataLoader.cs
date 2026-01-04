@@ -75,8 +75,13 @@ public static class DataLoader
     #endif
     
         
-    /// index로부터 게임 데이터를 로드
-    public static DailyData GetDayData(uint index)
+    /// <summary>
+    /// 날짜 데이터 파일 로드
+    /// </summary>
+    /// <param name="index">해당하는 데이터 인덱스</param>
+    /// <returns>날짜 데이터</returns>
+    /// <exception cref="ArgumentException">해당하는 파일 없을 시 예외 발생</exception>
+    public static DailyData GetDayData(int index)
     {
         string gameFile = $"{GAMEDATAPATH}/{GAMEFILE}{index}.json";
 
@@ -84,7 +89,12 @@ public static class DataLoader
     }
 
     
-    // 파일명으로 게임 데이터를 로드
+    /// <summary>
+    /// 날짜 데이터 파일 로드
+    /// </summary>
+    /// <param name="gameFile">해당하는 데이터 파일명</param>
+    /// <returns>날짜 데이터</returns>
+    /// <exception cref="ArgumentException">해당하는 파일 없을 시 예외 발생</exception>
     public static DailyData GetDayData(string gameFile)
     {
         // 파일 읽어오기
