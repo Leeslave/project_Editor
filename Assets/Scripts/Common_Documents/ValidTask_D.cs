@@ -43,19 +43,10 @@ public class ValidTask_D : MonoBehaviour
         // GameClear
         if (IsEnd)
         {
-            try
-            {
-                workService.ClearWork("Document");
-                SceneManager.LoadScene("Screen");
-            }
-            catch
-            {
-                SceneManager.LoadScene("Screen");
-            }
-            finally
-            {
-                gameObject.SetActive(false);
-            }
+            workService.ClearWork("Document");
+            SceneManager.LoadScene("Screen", LoadSceneMode.Additive);
+            SceneManager.UnloadSceneAsync("Document");
+            gameObject.SetActive(false);
         }
         else
         {

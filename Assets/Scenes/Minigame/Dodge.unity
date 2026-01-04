@@ -1412,12 +1412,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Shader: {fileID: 4800000, guid: 708b9ef648b9b24499156b4ff04d7108, type: 3}
   Distortion: 0.258
-  Alpha: 0.422
-  Thick: 0.585
-  Speed: 1.06
-  FlipRatio: 0.235
-  FlipProb: 0.338
-  FlipKeep: 0.224
+  Alpha: 0.7
+  Thick: 0.2
+  Speed: 1
+  FlipRatio: 0.5
+  FlipProb: 0.1
+  FlipKeep: 0.1
+  _material: {fileID: 0}
 --- !u!1 &560186166
 GameObject:
   m_ObjectHideFlags: 0
@@ -4978,6 +4979,7 @@ MonoBehaviour:
   - {x: 0, y: -1}
   IsTest: 0
   TutorialObject: {fileID: 4427319060733320921}
+  StageInt: 0
   CMDs:
   - {fileID: 904381747}
   - {fileID: 1752991897}
@@ -6307,7 +6309,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d7a16a3f444ab4caf6a7bcfa876e74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnOffType: 1
 --- !u!223 &8676905666647250732
 Canvas:
   m_ObjectHideFlags: 0
@@ -6317,8 +6318,8 @@ Canvas:
   m_GameObject: {fileID: 4427319060733320921}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 519420031}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1

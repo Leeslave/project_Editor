@@ -5,22 +5,18 @@ using UnityEngine.UI;
 
 public class OutLineReinf : MonoBehaviour
 {
-    [SerializeField] bool OnOffType = true;
-    Material Mat;
     RectTransform Rect;
+    Image im;
     private void Awake()
     {
-        Mat = GetComponent<Image>().material;
-        Rect = GetComponent<RectTransform>();
+        TryGetComponent<RectTransform>(out Rect);
+        TryGetComponent<Image>(out im);
     }
 
-    private void FixedUpdate()
+    void OnRectTransformDimensionsChange()
     {
-        if(!OnOffType) Mat.SetFloat("_Ratio", Rect.rect.width / Rect.rect.height);
-    }
-
-    private void OnEnable()
-    {
-        Mat.SetFloat("_Ratio",Rect.rect.width / Rect.rect.height);
+        if (Rect == null) return;
+        float Ratio = Rect.sizeDelta.y / Rect.sizeDelta.x;
+        im.material.SetFloat("_Ratio", Ratio);
     }
 }

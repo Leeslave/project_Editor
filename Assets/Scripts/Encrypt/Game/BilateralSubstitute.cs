@@ -153,7 +153,7 @@ public class BilateralSubstitute : MonoBehaviour
                         LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.2f, 0.2f, 0.5f), TableElements[6 * LastLineRowElements[0] + i].TextFill);
                     for(var i = 0; i < LastLineRowElements[0]; i++)
                         LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1.0f, 0.2f, 0.2f, 0.5f), TableElements[6 * i + LastLineRowElements[1]].TextFill);
-                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(0.2f, 1f, 1f, 1f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
+                    LJWConverter.Instance.GradientSpriteRendererColor(false, 0.0f, 0.2f, new Color(1f, 1f, 1f, 0.5f), TableElements[6 * LastLineRowElements[0] + LastLineRowElements[1]].TextFill);
                 }
         
                 break;

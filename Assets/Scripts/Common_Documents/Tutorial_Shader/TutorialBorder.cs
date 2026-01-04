@@ -35,7 +35,7 @@ public class TutorialBorder : MonoBehaviour
         image = GetComponent<Image>();
         Mat = image.material;
         trigger = GetComponent<EventTrigger>();
-        TextDetail = TextBox.GetChild(0).GetComponent<TMP_Text>();
+        TextDetail = TextBox.GetComponentInChildren<TMP_Text>();
         gameObject.SetActive(false);
         ReverseCamSize = 1 / CamSize;
     }
