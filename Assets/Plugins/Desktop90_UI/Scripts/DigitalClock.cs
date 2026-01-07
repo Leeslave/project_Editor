@@ -30,6 +30,7 @@ namespace float_oat.Desktop90
         {
             while (true)
             {
+                // TODO: 인게임 시간 적용
                 DateTime time = DateTime.Now;
                 string hour = (Use24HourTime ? time.Hour : time.Hour % 12).ToString();
                 string minute = time.Minute.ToString().PadLeft(2, '0');

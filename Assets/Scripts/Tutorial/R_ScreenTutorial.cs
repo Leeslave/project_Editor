@@ -1,3 +1,5 @@
+using GameService;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,18 +18,23 @@ public class R_ScreenTutorial : TutorialManager
     public int time;
     public float duration;
     [SerializeField] private int index;
+    
+    private IDayService dayService;
+
+    private void Awake()
+    {
+        dayService = ServiceProvider.Get<IDayService>();
+    }
 
 
     private void OnEnable()
     {
-        if (GameSystem.Instance.gameData.date == day)
+        if (dayService.Date != day || dayService.Time != time)
         {
-            if (GameSystem.Instance.gameData.time == time)
-            {
-                //StartCoroutine(ShowTutorial(duration));
-                StartTutorial();
-            }
+            return;
         }
+        //StartCoroutine(ShowTutorial(duration));
+        StartTutorial();
     }
 
     public void StartTutorial()
