@@ -17,7 +17,7 @@ public class MailManager : Singleton<MailManager>
     public TMP_Text mailPanel;
     public GameObject mailPrefab;
     public float panelSize = 60;
-
+    
     
     void Start()
     {
@@ -34,7 +34,7 @@ public class MailManager : Singleton<MailManager>
         {
             string fileTitle = Path.GetFileNameWithoutExtension(fileName); // 파일 제목 추출
             string fileContent = File.ReadAllText(fileName); // 파일 내용 읽음
-
+            
             // 읽어온 파일 제목과 내용 저장
             mailData.Add(fileTitle, fileContent);
 
@@ -43,6 +43,7 @@ public class MailManager : Singleton<MailManager>
 
             mailList.GetComponent<RectTransform>().sizeDelta += new Vector2(0, panelSize);
         }
+        
     }
 
 
