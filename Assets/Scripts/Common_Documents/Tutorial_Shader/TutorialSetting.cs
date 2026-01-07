@@ -94,7 +94,7 @@ public class TutorialSetting : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
         BoxBorder = BoxTuto.GetComponent<TutorialBorder>(); CircleBorder = CircleTuto.GetComponent<TutorialBorder>();
         if (AutoStart) Invoke("ActiveTutorial",0.2f);
     }

@@ -16,6 +16,7 @@ public abstract class TutorialManager : MonoBehaviour
     
     private IEnumerator WaitUntilActiveSelf()
     {
+        yield return new WaitForSeconds(1f);
         blocker.gameObject.SetActive(false);
         yield return new WaitUntil(() => !_currentPopUp.activeSelf);
         _currentPopUp = null;

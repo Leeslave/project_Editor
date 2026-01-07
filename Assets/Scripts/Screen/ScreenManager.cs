@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ScreenManager : Singleton<ScreenManager>
@@ -38,29 +39,25 @@ public class ScreenManager : Singleton<ScreenManager>
         TryOff
     }
 
+    public static bool IsScreenOn = false;
+
 
     new void Awake()
     {
         base.Awake();
 
-        // 현재 스크린 상태 설정
-        if(GameSystem.Instance.isScreenOn)
-        {
-            /// 바탕 화면으로 설정
-            SetScreen(ScreenMode.On);
-        }
-        else
-        {
-            /// 부팅 대기 화면으로 설정
-            SetScreen(ScreenMode.Off);
-        }
+        // TODO: 현재 스크린 상태 설정
+        // TODO: 부팅 대기 화면으로 설정
+        
+        // 바탕 화면으로 설정
+        SetScreen(IsScreenOn ? ScreenMode.On : ScreenMode.Off);
     }
 
     /// <summary>
     /// 스크린 현재 모드 설정
     /// </summary>
     /// <remarks> 부팅 전으로 스크린 화면 활성화하기</remarks>
-    /// <param name=screenMode>전환할 스크린 모드</param>
+    /// <param name="screenMode">전환할 스크린 모드</param>
     public void SetScreen(ScreenMode screenMode) 
     {
         if (screenMode == ScreenMode.On)
@@ -142,7 +139,7 @@ public class ScreenManager : Singleton<ScreenManager>
         {
             sceneName = "MainWorld";
         }
-        GameSystem.LoadScene(sceneName);
+        SceneManager.LoadScene(sceneName);
     }
 
     /**
@@ -170,7 +167,7 @@ public class ScreenManager : Singleton<ScreenManager>
 
         // 부팅 완료 (콘솔창 초기화)
         SetScreen(ScreenMode.On);
-        GameSystem.Instance.isScreenOn = true;
+        IsScreenOn = true;
         bootSFX.Stop();
     }
 
@@ -196,7 +193,7 @@ public class ScreenManager : Singleton<ScreenManager>
         if(currentBootStatus == ScreenMode.Off)
         {
             SetScreen(ScreenMode.Off);
-            GameSystem.Instance.isScreenOn = false;
+            IsScreenOn = false;
         }
         // 종료 취소시
         else

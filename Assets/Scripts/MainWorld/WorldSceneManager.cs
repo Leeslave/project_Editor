@@ -1,132 +1,80 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 [Serializable]
+[Flags]
 public enum World {
-    /**
-    월드 내 지역 목록
-    */
-    Street,
+    Street = 0,
     Bar,
     Cafe,
     Restaurant,
     Temple,
     Hallway,
     Office,
-    Office2,
+    Office3,
     Interrogate,
     
-    NullMax
-}
+    Max
+} 
 
-
-public class WorldSceneManager : Singleton<WorldSceneManager> 
+public class WorldSceneManager : Singleton<WorldSceneManager>
 {
     /**
     * MainWorld 씬 매니저
-    *   - 날짜, 시간대 맞춰서 지역 동기화
     *   - 지역 내 위치 이동
     *   - 지역 간 이동
     */
+    public GameObject mainCamera;
 
-    [Header("지역 데이터")]
-    [SerializeField]
-    private Location[] locationList;    // 지역 오브젝트 리스트
-    public Location CurrentLocation { get { return locationList[(int)GameSystem.Instance.gameData.location]; } }
+    private List<int> _blockList = new();    // 지역 이동 제한 리스트
+    [SerializeField] private int nightShift;
+    [SerializeField] private GameObject buttons;
     
-
+    [Header("지역 효과")]
+    [SerializeField] private FadeCurtain curtain;      // 지역 이동 효과 이미지
     public SoundManager worldBGM;  // 지역 내 배경음악
 
-    public bool IsMoving = false;    // 지역 내 이동 버튼 활성화 여부
-
-    [Header("지역 이동 효과")]
-    public float moveDelay;     // 지역 이동 딜레이
-    [SerializeField]
-    private Image curtain;      // 지역 이동 효과 이미지
-
-
-    /// 씬이 새로 로딩될때마다 월드 재로딩
-    new void Awake()
+    public void Init(List<int> blockList, World startLocation, int startPosition = 0, bool isNight = false)
     {
-        base.Awake();
-
-        ReloadWorld();
-        CurrentLocation.SetButtonActive(IsMoving);
-    }
-
-
-    /// <summary>
-    /// 월드 재로딩, 날짜&시간대 재적용
-    /// </summary>
-    public void ReloadWorld()
-    {
-        // 모든 지역 리로드
-        foreach(var iter in locationList)
+        if (isNight)
         {
-            iter.ReloadLocation();
+            transform.position = new Vector3(transform.position.x, nightShift, transform.position.z);
         }
-
-        // 현재 지역 활성화
-        CurrentLocation.ActiveLocation(true);
+        _blockList = blockList;
     }
-
 
     /// <summary>
-    /// 지역 이동 버튼 활성화
+    /// 상호작용 활성화/비활성화
     /// </summary>
-    public void SetMoveActive()
+    public void SwitchInteraction()
     {
-        IsMoving = !IsMoving;
-        CurrentLocation.SetButtonActive(IsMoving);
+        buttons.SetActive(!buttons.activeSelf);
     }
-
+    
     /// <summary>
     /// 지역 변경
     /// </summary>
-    /// <remarks>지역을 변경하고 지역 내 위치 동기화
-    public void MoveLocation(World location)
+    /// <returns>좌표 기준으로 지역 이동</returns>
+    public bool MoveLocation(int val)
     {
-        // 기존 지역 비활성화
-        CurrentLocation.ActiveLocation(false);
-
-        // 현재 지역 설정
-        GameSystem.Instance.gameData.SetLocation(location);
-
-        // 새 지역 활성화
-        CurrentLocation.ActiveLocation(true);
+        // 블럭 확인
+        if (_blockList.Contains(val)) return false;
         
-        // 이동 버튼 비활성화
-        IsMoving = false;
-        CurrentLocation.SetButtonActive(IsMoving);
+        // 위치 이동
+        mainCamera.transform.position = new Vector3(val, 0, 0);
+        worldBGM.SetClip(val / 1000, true);
+        return true;
     }
-
-
+    
     /// <summary>
     /// 지역 변경
     /// </summary>
-    /// <remarks>지역을 변경하고 지역 내 위치 동기화
-    public void MoveLocation(string location)
+    /// <remarks>위치 기준으로 지역 이동</remarks>
+    public bool MoveLocation(World location, int position)
     {
-        MoveLocation(Enum.Parse<World>(location));
+        int x = (int)location * 1000 + position * 100;
+        return MoveLocation(x);
     }
 
-
-    /// <summary>
-    /// 화면 전환 효과
-    /// </summary>
-    public IEnumerator FadeInOut()
-    {
-        float elapsedTime = 0f;
-        
-        // 점점 밝아지기
-        while (elapsedTime < moveDelay)
-        {
-            curtain.color = Color.Lerp(Color.black, Color.clear, elapsedTime / moveDelay);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-    }
 }

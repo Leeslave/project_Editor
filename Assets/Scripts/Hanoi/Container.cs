@@ -6,18 +6,18 @@ using UnityEngine.UI;
 
 public class Container:MonoBehaviour
 {
-    // ÇÏÀÌ¶óÀÌÆ® ‰çÀ» ¶§, µÇÁö ¾Ê¾ÒÀ» ¶§ÀÇ Sprite
+    // í•˜ì´ë¼ì´íŠ¸ ë¬ì„ ë•Œ, ë˜ì§€ ì•Šì•˜ì„ ë•Œì˜ Sprite
     public Sprite NonClicked;
     public Sprite Clicked;
-    // HanoiManager¸¦ ³»ÀåÇÔ¼ö·Î °¡Áö´Â Object
+    // HanoiManagerë¥¼ ë‚´ì¥í•¨ìˆ˜ë¡œ ê°€ì§€ëŠ” Object
     public HanoiManager HM;
-    // ÇöÀç Container¿¡ ½×ÀÎ ¹Ú½ºµéÀÇ ¸®½ºÆ®
+    // í˜„ì¬ Containerì— ìŒ“ì¸ ë°•ìŠ¤ë“¤ì˜ ë¦¬ìŠ¤íŠ¸
     public List<GameObject> Boxes = new List<GameObject>();
     [HideInInspector]
     public int BoxSize = 0;
-    // ÇöÀç Container°¡ °®´Â Index
+    // í˜„ì¬ Containerê°€ ê°–ëŠ” Index
     public int Ind;
-    // Image Component¸¦ ´ã´Âµ¥ »ç¿ëµÉ º¯¼ö
+    // Image Componentë¥¼ ë‹´ëŠ”ë° ì‚¬ìš©ë  ë³€ìˆ˜
     Image sr;
 
     private void Awake()
@@ -29,14 +29,14 @@ public class Container:MonoBehaviour
         AddEvent(ET,EventTriggerType.PointerClick, Click);
     }
 
-    // Æ÷ÀÎÅÍ°¡ Á¢±ÙÇßÀ» ¶§ È£ÃâµÇ´Â ÇÔ¼ö
-    // Input : È£ÃâµÈ »óÅÂ¿¡¼­ PointerÀÇ »óÅÂ¸¦ ´ãÀº Class(ÇØ´ç ÇÔ¼ö¿¡¼­´Â ¹Ì»ç¿ë)
+    // í¬ì¸í„°ê°€ ì ‘ê·¼í–ˆì„ ë•Œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
+    // Input : í˜¸ì¶œëœ ìƒíƒœì—ì„œ Pointerì˜ ìƒíƒœë¥¼ ë‹´ì€ Class(í•´ë‹¹ í•¨ìˆ˜ì—ì„œëŠ” ë¯¸ì‚¬ìš©)
     void OnPoint(PointerEventData data)
     {
         if (!HM.TouchAble) return;
-        // ÇöÀç »óÀÚ¸¦ ÁıÀº »óÅÂ°í, ÇØ´ç »óÀÚ¸¦ ÇöÀç Container·Î ¿Å±æ ¼ö ÀÖ´Ù¸é, ÇÏÀÌ¶óÀÌÆ®ÇÑ´Ù.
+        // í˜„ì¬ ìƒìë¥¼ ì§‘ì€ ìƒíƒœê³ , í•´ë‹¹ ìƒìë¥¼ í˜„ì¬ Containerë¡œ ì˜®ê¸¸ ìˆ˜ ìˆë‹¤ë©´, í•˜ì´ë¼ì´íŠ¸í•œë‹¤.
         if (HM.IsPick) { if (CompareTop(HM.PickedBox)) sr.sprite = Clicked; }
-        // ÇöÀç »óÀÚ¸¦ ÁıÁö ¾ÊÀº »óÅÂ¸é ÇÏÀÌ¶óÀÌÆ®ÇÑ´Ù.
+        // í˜„ì¬ ìƒìë¥¼ ì§‘ì§€ ì•Šì€ ìƒíƒœë©´ í•˜ì´ë¼ì´íŠ¸í•œë‹¤.
         else
         {
             if (Boxes.Count != 0) 
@@ -47,22 +47,22 @@ public class Container:MonoBehaviour
             else sr.sprite = NonClicked;
         }
     }
-    // Æ÷ÀÎÅÍ°¡ ¹ş¾î³µÀ» ¶§ È£ÃâµÇ´Â ÇÔ¼ö
-    // Æ÷ÀÎÅÍ°¡ ¹ş¾î³ª¸é ÇÏÀÌ¶óÀÌÆ®¸¦ ÁßÁöÇÑ´Ù.
-    // Input : È£ÃâµÈ »óÅÂ¿¡¼­ PointerÀÇ »óÅÂ¸¦ ´ãÀº Class(ÇØ´ç ÇÔ¼ö¿¡¼­´Â ¹Ì»ç¿ë)
+    // í¬ì¸í„°ê°€ ë²—ì–´ë‚¬ì„ ë•Œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜
+    // í¬ì¸í„°ê°€ ë²—ì–´ë‚˜ë©´ í•˜ì´ë¼ì´íŠ¸ë¥¼ ì¤‘ì§€í•œë‹¤.
+    // Input : í˜¸ì¶œëœ ìƒíƒœì—ì„œ Pointerì˜ ìƒíƒœë¥¼ ë‹´ì€ Class(í•´ë‹¹ í•¨ìˆ˜ì—ì„œëŠ” ë¯¸ì‚¬ìš©)
     public void OutPoint(PointerEventData data)
     {
         if (!HM.TouchAble) return;
         sr.sprite = NonClicked;
     }
-    // Æ÷ÀÎÅÍ·Î ÇØ´ç Object¸¦ Å¬¸¯ÇßÀ» ¶§ È£ÃâµÇ´Â ÇÔ¼ö.
-    // Container°£ÀÇ BoxÀÇ ¿òÁ÷ÀÓÀ» ´ã´çÇÑ´Ù.
-    // Input : È£ÃâµÈ »óÅÂ¿¡¼­ PointerÀÇ »óÅÂ¸¦ ´ãÀº Class(ÇØ´ç ÇÔ¼ö¿¡¼­´Â ¹Ì»ç¿ë)
+    // í¬ì¸í„°ë¡œ í•´ë‹¹ Objectë¥¼ í´ë¦­í–ˆì„ ë•Œ í˜¸ì¶œë˜ëŠ” í•¨ìˆ˜.
+    // Containerê°„ì˜ Boxì˜ ì›€ì§ì„ì„ ë‹´ë‹¹í•œë‹¤.
+    // Input : í˜¸ì¶œëœ ìƒíƒœì—ì„œ Pointerì˜ ìƒíƒœë¥¼ ë‹´ì€ Class(í•´ë‹¹ í•¨ìˆ˜ì—ì„œëŠ” ë¯¸ì‚¬ìš©)
     void Click(PointerEventData data)
     {
         if (!HM.TouchAble) return;
-        // ÇöÀç »óÀÚ¸¦ ÁıÀº »óÅÂÀÏ °æ¿ì, Container¿Í ÇØ´ç »óÀÚ°£ÀÇ »óÅÂ¸¦ ºñ±³ÇÏ°í Ãß°¡ÇÒ °ÍÀÎÁö Á¤ÇÑ´Ù.
-        // HanoiManager.cs ÂüÁ¶
+        // í˜„ì¬ ìƒìë¥¼ ì§‘ì€ ìƒíƒœì¼ ê²½ìš°, Containerì™€ í•´ë‹¹ ìƒìê°„ì˜ ìƒíƒœë¥¼ ë¹„êµí•˜ê³  ì¶”ê°€í•  ê²ƒì¸ì§€ ì •í•œë‹¤.
+        // HanoiManager.cs ì°¸ì¡°
         if (HM.IsPick)
         {
             HM.AddEvent(Ind);
@@ -70,8 +70,8 @@ public class Container:MonoBehaviour
         }
         else
         {
-            // ÇöÀç »óÀÚ¸¦ ÁıÁö ¾ÊÀº °æ¿ì
-            // ºñ¾îÀÖ´Â Container¸¦ ¼±ÅÃÇÑ °ÍÀÌ ¾Æ´Ï¶ó¸é ContainerÀÇ ÃÖ»ó´Ü »óÀÚ¸¦ °¡Á®¿À¸ç, »óÀÚ¸¦ ÁıÀº »óÅÂ·Î ¹Ù²Û´Ù.
+            // í˜„ì¬ ìƒìë¥¼ ì§‘ì§€ ì•Šì€ ê²½ìš°
+            // ë¹„ì–´ìˆëŠ” Containerë¥¼ ì„ íƒí•œ ê²ƒì´ ì•„ë‹ˆë¼ë©´ Containerì˜ ìµœìƒë‹¨ ìƒìë¥¼ ê°€ì ¸ì˜¤ë©°, ìƒìë¥¼ ì§‘ì€ ìƒíƒœë¡œ ë°”ê¾¼ë‹¤.
             HM.PickedBox = ReturnTop(0);
             if (HM.PickedBox != null)
             {
@@ -83,10 +83,10 @@ public class Container:MonoBehaviour
         OnPoint(null);
     }
 
-    // ¸Å°Ô º¯¼ö·Î µé¾î¿Â »óÀÚ¿Í, ÇöÀç Container°£ÀÇ »óÅÂ¸¦ ºñ±³ÇÑ´Ù.
-    // ºñ¾îÀÖ°Å³ª, ¸Å°³º¯¼ö·Î µé¾î¿Â »óÀÚ°¡ ÇöÀç Container ÃÖ»ó´ÜÀÇ »óÀÚº¸´Ù °¡º±´Ù¸é true¸¦ ¹İÈ¯ÇÏ¸ç ±×·¸Áö ¾ÊÀ¸¸é false¸¦ ¹İÈ¯ÇÑ´Ù.
-    // Input : »óÀÚ Object
-    // Output : InputÀ¸·Î µé¾î¿Â »óÀÚ°¡ ÇØ´ç Container¿¡ Ãß°¡µÉ ¼ö ÀÖ´ÂÁö
+    // ë§¤ê²Œ ë³€ìˆ˜ë¡œ ë“¤ì–´ì˜¨ ìƒìì™€, í˜„ì¬ Containerê°„ì˜ ìƒíƒœë¥¼ ë¹„êµí•œë‹¤.
+    // ë¹„ì–´ìˆê±°ë‚˜, ë§¤ê°œë³€ìˆ˜ë¡œ ë“¤ì–´ì˜¨ ìƒìê°€ í˜„ì¬ Container ìµœìƒë‹¨ì˜ ìƒìë³´ë‹¤ ê°€ë³ë‹¤ë©´ trueë¥¼ ë°˜í™˜í•˜ë©° ê·¸ë ‡ì§€ ì•Šìœ¼ë©´ falseë¥¼ ë°˜í™˜í•œë‹¤.
+    // Input : ìƒì Object
+    // Output : Inputìœ¼ë¡œ ë“¤ì–´ì˜¨ ìƒìê°€ í•´ë‹¹ Containerì— ì¶”ê°€ë  ìˆ˜ ìˆëŠ”ì§€
     public bool CompareTop(GameObject A)
     {
         if (A == null) return true;
@@ -95,9 +95,9 @@ public class Container:MonoBehaviour
         else return false;
     }
 
-    // ÇöÀç ContainerÀÇ ÃÖ»ó´ÜÀÇ »óÀÚ¸¦ ¹İÈ¯ÇÑ´Ù.
-    // ºñ¾îÀÖ´Ù¸é nullÀ» ¹İÈ¯ÇÑ´Ù.
-    // Output : ÇöÀç Container ÃÖ»ó´ÜÀÇ »óÀÚ.(ºñ¾îÀÖ´Ù¸é null)
+    // í˜„ì¬ Containerì˜ ìµœìƒë‹¨ì˜ ìƒìë¥¼ ë°˜í™˜í•œë‹¤.
+    // ë¹„ì–´ìˆë‹¤ë©´ nullì„ ë°˜í™˜í•œë‹¤.
+    // Output : í˜„ì¬ Container ìµœìƒë‹¨ì˜ ìƒì.(ë¹„ì–´ìˆë‹¤ë©´ null)
     public GameObject ReturnTop(int DuraCh)
     {
         if(Boxes.Count == 0) return null;
@@ -112,31 +112,32 @@ public class Container:MonoBehaviour
         }
     }
 
-    // ÇöÀç Container¿¡ ¸Å°³º¯¼ö·Î µé¾î¿Â »óÀÚ Object¸¦ ½×´Â´Ù.
-    // Input : Ãß°¡ÇÒ Box Object
+    // í˜„ì¬ Containerì— ë§¤ê°œë³€ìˆ˜ë¡œ ë“¤ì–´ì˜¨ ìƒì Objectë¥¼ ìŒ“ëŠ”ë‹¤.
+    // Input : ì¶”ê°€í•  Box Object
     public void AddTop(GameObject cnt)
     {
         Vector3 tmp;
-        // ÇöÀç Container°¡ ºñ¾îÀÖÀ¸¸é Æ¯Á¤ À§Ä¡¿¡ Box¸¦ ÀÌµ¿½ÃÅ²´Ù.
+        // í˜„ì¬ Containerê°€ ë¹„ì–´ìˆìœ¼ë©´ íŠ¹ì • ìœ„ì¹˜ì— Boxë¥¼ ì´ë™ì‹œí‚¨ë‹¤.
         if (Boxes.Count == 0)
         {
             tmp = gameObject.transform.position;
             tmp.y = -190;
         }
-        // Container°¡ ºñ¾îÀÖÁö ¾ÊÀ¸¸é, ÃÖ»ó´Ü¿¡ ÀÖ´ø »óÀÚ ¹Ù·Î À§¿¡ À§Ä¡½ÃÅ²´Ù.
+        // Containerê°€ ë¹„ì–´ìˆì§€ ì•Šìœ¼ë©´, ìµœìƒë‹¨ì— ìˆë˜ ìƒì ë°”ë¡œ ìœ„ì— ìœ„ì¹˜ì‹œí‚¨ë‹¤.
         else
         {
             tmp = Boxes[Boxes.Count - 1].transform.position;
             tmp.y += Boxes[Boxes.Count - 1].transform.lossyScale.y;
         }
-        // ContainerÀÇ Box List¿¡ Ãß°¡ÇÑ´Ù.
+        // Containerì˜ Box Listì— ì¶”ê°€í•œë‹¤.
         Boxes.Add(cnt);
         BoxSize++;
         cnt.transform.position = tmp;
+        if (Ind == 2 && Boxes.Count == HM.CurBoxNum) HM.ClearEvent();
     }
 
-    // Æ¯Á¤ EventTriggerType¿¡ Event ÇÔ¼ö¸¦ Á¾¼Ó½ÃÅ²´Ù.
-    // Input : Á¾¼Ó ½ÃÅ³ ObjectÀÇ EventTrigger, EventTriggerÀ» ¹ß»ı½ÃÅ³ EventType, Á¾¼Ó ½ÃÅ³ ÇÔ¼ö
+    // íŠ¹ì • EventTriggerTypeì— Event í•¨ìˆ˜ë¥¼ ì¢…ì†ì‹œí‚¨ë‹¤.
+    // Input : ì¢…ì† ì‹œí‚¬ Objectì˜ EventTrigger, EventTriggerì„ ë°œìƒì‹œí‚¬ EventType, ì¢…ì† ì‹œí‚¬ í•¨ìˆ˜
 
     void AddEvent(EventTrigger eventTrigger, EventTriggerType Type, Action<PointerEventData> Event)
     {

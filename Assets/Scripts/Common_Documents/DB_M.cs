@@ -1,3 +1,4 @@
+using GameService;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,9 +42,10 @@ public class DB_M : MonoBehaviour
     private int stageInt = 0;
     void Awake()
     {
-
+        IWorkService workService = ServiceProvider.Get<IWorkService>();
+        
         try{
-            stageInt = GameSystem.Instance.GetTask("Document");
+            stageInt = workService.GetStage("Document");
             Debug.Log(stageInt);
             Day += stageInt;
         }
@@ -136,7 +138,9 @@ public class DB_M : MonoBehaviour
 
         //Secret.gameObject.SetActive(PlayerPrefs.GetInt("DocumentTest")==1);
 
+#if !UNITY_EDITOR
         StartCoroutine(TutoTest(cnt));
+#endif
     }
 
     IEnumerator TutoTest(GameObject cnt)

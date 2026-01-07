@@ -35,7 +35,7 @@ public class MsgManager : Singleton<MsgManager>
         for(int i = 0; i < messageDatas.Count; i++)
         {
             GameObject newPanel = Instantiate(MsgPrefab, MsgListPanel);
-            newPanel.transform.GetChild(0).GetComponent<TMP_Text>().text = messageDatas[i].name;
+            // newPanel.transform.GetChild(0).GetComponent<TMP_Text>().text = messageDatas[i].name;
             MsgListPanel.sizeDelta += new Vector2(0, panelSize);
             newPanel.GetComponent<MessagePanel>().count = i;
         }
@@ -52,7 +52,7 @@ public class MsgManager : Singleton<MsgManager>
         messageIndex = 0;
         currentMessage = idx;
 
-        msgs = DataLoader.GetChatData(messageDatas[currentMessage].awakeParam);
+        // msgs = DataLoader.GetChatData(messageDatas[currentMessage].awakeParam);
         
         NextMessage();
     }
@@ -84,16 +84,16 @@ public class MsgManager : Singleton<MsgManager>
         {
             newMsg = Instantiate(msgPrefab_L, MsgPanel);
         }
-        MsgPanel.sizeDelta += new Vector2(0, newMsg.GetComponent<RectTransform>().sizeDelta.y);
+        // MsgPanel.sizeDelta += new Vector2(0, newMsg.GetComponent<RectTransform>().sizeDelta.y);
         
         // 메시지 오브젝트 실행
-        MessageBlock newBlock = newMsg.GetComponent<MessageBlock>();
-        newBlock.data = newParagraph;
-        
-        if (newParagraph.talker != currentUser)
-        {
-            newBlock.SetText();
-        }
+        // MessageBlock newBlock = newMsg.GetComponent<MessageBlock>();
+        // newBlock.data = newParagraph;
+        //
+        // if (newParagraph.talker != currentUser)
+        // {
+        //     newBlock.SetText();
+        // }
 
         messageIndex++;
     }
@@ -130,6 +130,5 @@ public class MsgManager : Singleton<MsgManager>
     {
         messageDatas.Clear();
 
-        messageDatas = ObjectDatabase.MessageList;
     }
 }

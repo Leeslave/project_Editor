@@ -48,37 +48,43 @@ public class VoightTutorialManager : TutorialManager
 
     private IEnumerator UpEyeDisplay()
     {
+        Manager.PlayMotor();
         LJWConverter.Instance.PositionTransform(false, 0.5f, 1.5f, new Vector3(0.2f, -5.4f, 0f), Manager.EyeDisplay.transform, Manager.curve);
         yield return new WaitForSeconds(3f);
     }
     private IEnumerator DownEyeDisplay()
     {
+        Manager.PlayMotor();
         LJWConverter.Instance.PositionTransform(false, 0.5f, 1.5f, new Vector3(0.2f, -14.5f, 0f), Manager.EyeDisplay.transform, Manager.curve);
         yield return new WaitForSeconds(3f);
     }
 
     private IEnumerator UpAnswerScreen()
     {
+        Manager.PlayMotor();
         Manager.SpawnArrows(5);
         LJWConverter.Instance.PositionTransform(false, 0.5f, 1.5f, new Vector3(3.4f, -7f, 0f), Manager.AnswerScreen.transform, Manager.curve);
         yield return new WaitForSeconds(3f);
     }
     private IEnumerator DownAnswerScreen()
     {
+        Manager.PlayMotor();
         LJWConverter.Instance.PositionTransform(false, 0.5f, 1.5f, new Vector3(3.4f, -11f, 0f), Manager.AnswerScreen.transform, Manager.curve);
         yield return new WaitForSeconds(3f);
         Manager.DespawnArrows();
     }
 
     private IEnumerator UpAll()
-    {
-        LJWConverter.Instance.PositionTransform(false, 0.5f, 1.5f, new Vector3(0.2f, -5.4f, 0f), Manager.EyeDisplay.transform, Manager.curve);
+    { 
+        Manager.PlayMotor();
         Manager.SpawnArrows(5);
+        LJWConverter.Instance.PositionTransform(false, 0.5f, 1.5f, new Vector3(0.2f, -5.4f, 0f), Manager.EyeDisplay.transform, Manager.curve);
         LJWConverter.Instance.PositionTransform(false, 0.5f, 1.5f, new Vector3(3.4f, -7f, 0f), Manager.AnswerScreen.transform, Manager.curve);
         yield return new WaitForSeconds(3f);
     }
     private IEnumerator DownAll()
     {
+        Manager.PlayMotor();
         LJWConverter.Instance.PositionTransform(false, 0.5f, 1.5f, new Vector3(0.2f, -14.5f, 0f), Manager.EyeDisplay.transform, Manager.curve);
         LJWConverter.Instance.PositionTransform(false, 0.5f, 1.5f, new Vector3(3.4f, -11f, 0f), Manager.AnswerScreen.transform, Manager.curve);
         yield return new WaitForSeconds(3f);

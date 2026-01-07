@@ -1,3 +1,4 @@
+using GameService;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,9 @@ using Random = UnityEngine.Random;
 // Make Pattern / End Pattern
 public class PatternManager : MonoBehaviour
 {
+    // Work Service
+    IWorkService workService;
+    
     [SerializeField] BulletManager BM;
     [SerializeField] Camera MainCam;
     [SerializeField] Player player;
@@ -76,7 +80,7 @@ public class PatternManager : MonoBehaviour
     [SerializeField] bool IsTest;
 
     [SerializeField] GameObject TutorialObject;
-    int StageInt = 0;
+    [SerializeField]int StageInt = 0;
 
     private void Awake()
     {
@@ -95,16 +99,15 @@ public class PatternManager : MonoBehaviour
         }
         SP = new Vector2[][] { SPB, SPR, SPL, SPT };
         ReadExternalPattern();
+        
+        workService = ServiceProvider.Get<IWorkService>();
 
         try
         {
-            StageInt = GameSystem.Instance.GetTask("Dodge");
+            StageInt = workService.GetStage("Dodge");
         }
         catch { }
-        StageInt = 1;
-
-        
-
+      
         if (StageInt == 0) { TutorialObject.SetActive(true); player.InitHP = 2; }
 
         player.Init();
@@ -184,7 +187,6 @@ public class PatternManager : MonoBehaviour
                 for (int x = 0; x < 10; x++) CurPT[x][i] = i % 5 == 0 ? (L.Contains(x) ? 1 : 0) : 0;
             }
         }
-
         if (!ErrorObject.activeSelf) StartCoroutine(AddCMD((2 + BulletInterv * CurPT[0].Length + RepeatInterv) * 2));
 
         yield return OneSec;
@@ -267,17 +269,9 @@ public class PatternManager : MonoBehaviour
     {
         CMDs[CurProcess].text = "Access Accept!";
         yield return TwoSec;
-        if (GameSystem.Instance != null)
-        {
-            GameSystem.Instance.ClearTask("Dodge");
-            if (StageInt == 0) GameSystem.LoadScene("Screen");
-            else GameSystem.LoadScene("Document");
-        }
-        else
-        {
-            if (StageInt == 0) SceneManager.LoadScene("Screen");
-            else SceneManager.LoadScene("Document");
-        }
+        workService.ClearWork("Dodge");
+        if (StageInt == 0) SceneManager.LoadScene("Screen");
+        else SceneManager.LoadScene("Document");
     }
 
     // Normal                   N1 -> N2 -> Hard
@@ -415,8 +409,8 @@ public class PatternManager : MonoBehaviour
         player.gameObject.SetActive(false);
         player.EndG.SetActive(true);
         player.EndG.GetComponent<RealEnd>().Ending(true);
-        GameSystem.Instance.ClearTask("Dodge");
-        GameSystem.LoadScene("Screen");
+        workService.ClearWork("Dodge");
+        SceneManager.LoadScene("Screen");
     }
 
     IEnumerator CamShake(float time, float intensity = 1)      // ????? ???? ????? ??????.

@@ -1,3 +1,4 @@
+using GameService;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
@@ -5,6 +6,9 @@ using UnityEngine;
 
 public class MailManager : Singleton<MailManager>
 {
+    // Inject : dayService
+    IDayService dayService;
+    
     [SerializeField]
     private string folderPath = "/Resources/Chat/Text";
     private Dictionary<string, string> mailData = new();
@@ -15,14 +19,15 @@ public class MailManager : Singleton<MailManager>
     public float panelSize = 60;
     
     
-    new void Awake()
+    void Start()
     {
-        base.Awake();
+        dayService = ServiceProvider.Get<IDayService>();
+        
         // 메일 컨텍스트 초기화
         mailList.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
         
         // 폴더에 있는 모든 .txt 파일
-        string[] fileNames = Directory.GetFiles($"{Application.dataPath}{folderPath}/day {GameSystem.Instance.gameData.date}", "*.txt");
+        string[] fileNames = Directory.GetFiles($"{Application.dataPath}{folderPath}/day {dayService.Date}", "*.txt");
 
         // 각 파일 이름을 순회하며 파일 제목과 내용 읽기
         foreach (string fileName in fileNames)

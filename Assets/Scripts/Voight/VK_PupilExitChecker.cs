@@ -14,7 +14,7 @@ public class VK_PupilExitChecker : MonoBehaviour
     {
         if (other.name == "PupilCollider")
         {
-            Debug.Log("눈동자가 바깥으로 빠져나갔습니다!");
+            //Debug.Log("눈동자가 바깥으로 빠져나갔습니다!");
             PupilExitEvent.Invoke();
         }
     }

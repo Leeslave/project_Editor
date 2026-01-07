@@ -9,22 +9,21 @@ public class Tabs_D : Buttons_M
     public bool IsOpened;
 
     Color Sub = new Color(0.1f, 0.1f, 0.1f);
-    Color OpenColor = new Color(0.254902f, 0.254902f, 0.254902f);
-    Color CloseColor = new Color(0.1215686f, 0.1215686f, 0.1215686f);
+    [SerializeField] Sprite NonSelect;
+    [SerializeField] Sprite Select;
     protected override void Awake()
     {
         base.Awake();
-        BfColor = CloseColor;
     }
     protected override void OnPointer(PointerEventData data)
     {
         if (IsOpened) return;
-        image.color += Sub;
+        image.sprite = Select;
     }
     protected override void OutPointer(PointerEventData data)
     {
         if (IsOpened) return;
-        image.color = BfColor;
+        image.sprite = NonSelect;
     }
     protected override void Click(PointerEventData Data)
     {
@@ -35,7 +34,7 @@ public class Tabs_D : Buttons_M
     public void OpenTab()
     {
         foreach (GameObject s in Subs) s.SetActive(true);
-        image.color = OpenColor;
+        image.sprite = Select;
         DB_M.DB_Docs.GetOption.ChangeTab(MyIndex);
         IsOpened = true;
     }
@@ -43,7 +42,7 @@ public class Tabs_D : Buttons_M
     public void CloseTab()
     {
         IsOpened = false;
-        try { image.color = CloseColor; } catch{ }
+        try { image.sprite = NonSelect; } catch{ }
         foreach (GameObject s in Subs) s.SetActive(false);
     }
 }

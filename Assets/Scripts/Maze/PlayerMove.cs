@@ -1,4 +1,5 @@
 using Cinemachine;
+using GameService;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,9 @@ using UnityEngine.UI;
 
 public class PlayerMove : MonoBehaviour
 {
+    // Inject: work Service
+    IWorkService workService;
+    
     [SerializeField]
     public MakeTile MT;
     // X, Y축 이동 속도
@@ -88,6 +92,8 @@ public class PlayerMove : MonoBehaviour
 
     private void Start()
     {
+        workService = ServiceProvider.Get<IWorkService>();
+        
         CalcFog();
         for (int i = 0; i < MT.KeyNum; i++) Marks[i].gameObject.SetActive(true);
         for (int i = 0; i < MT.KeyNum; i++)
@@ -379,9 +385,9 @@ public class PlayerMove : MonoBehaviour
             {
                 if(GameSystem.Instance != null)
                 {
-                    GameSystem.Instance.ClearTask("Maze");
-                    if (TutorialSetting.instance != null) GameSystem.LoadScene("Screen");
-                    else GameSystem.LoadScene("Dodge");
+                    workService.ClearWork("Maze");
+                    if (TutorialSetting.instance != null) SceneManager.LoadScene("Screen");
+                    else SceneManager.LoadScene("Dodge");
                 }
                 else
                 {

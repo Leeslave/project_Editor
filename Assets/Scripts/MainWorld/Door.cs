@@ -1,29 +1,31 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class Door : MonoBehaviour
+public class Door : MonoBehaviour, IPointerClickHandler
 {
-    public World dest = World.NullMax;
-    public int destPos = -1;
-
-    public virtual void OnClick()
+    [Header("Destination")]
+    public World destination;   //목적지 설정
+    public int position;
+    private ChatTrigger _blockChat;   // Block일시 출력할 대사
+    
+    private void Awake()
     {
-        // 월드 매니저 오류
-        if (WorldSceneManager.Instance == null)
+        _blockChat = GetComponent<ChatTrigger>();
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (!WorldSceneManager.Instance)
         {
             throw new Exception($"World Manager Missed!! : Door");
         }
-
-        // 지역 이동 실행
-        if (destPos >= 0)
+        
+        // 지역이동 제한
+        if (WorldSceneManager.Instance.MoveLocation(destination, position) is false)
         {
-            GameSystem.Instance.gameData.SetPosition(destPos);
-        }
-        if (dest != World.NullMax)
-        {
-            WorldSceneManager.Instance.MoveLocation(dest);
+            // 이동 제한 텍스트 출력
+            _blockChat?.StartChat();
         }
     }
 }
