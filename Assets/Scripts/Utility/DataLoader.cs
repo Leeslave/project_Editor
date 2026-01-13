@@ -4,8 +4,6 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
-using GameData;
-using Utility;
 
 public static class DataLoader
 {
@@ -112,7 +110,6 @@ public static class DataLoader
             ,new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.All,            // 타입 구분
-                SerializationBinder = new NamespaceBinder()         // 커스텀네임스페이스 바인딩
             });
     }
     
@@ -148,7 +145,6 @@ public static class DataLoader
             new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.All,            // 타입 구분
-                SerializationBinder = new NamespaceBinder()         // 커스텀네임스페이스 바인딩
             });
         return wrapper.chatList;
     }
@@ -189,7 +185,6 @@ public static class DataLoader
             ,new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.All,            // 타입 구분
-                SerializationBinder = new NamespaceBinder()         // 커스텀네임스페이스 바인딩
             });
         return wrapper.list;
     }

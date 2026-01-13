@@ -473,7 +473,7 @@ public class Chat : Singleton<Chat>
     private static string GetVariableValue(string keyword)
     {
         IDayService dayService = ServiceProvider.Get<IDayService>();
-        GameData.Date date = dayService.GetDateInfo();
+        Date date = dayService.GetDateInfo();
         
         switch(keyword)
         {

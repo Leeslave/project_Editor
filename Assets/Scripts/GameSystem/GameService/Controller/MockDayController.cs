@@ -1,6 +1,5 @@
 using GameService;
 using UnityEngine;
-using GameData;
 using System;
 
 public class MockDayController : MonoBehaviour, IDayService
