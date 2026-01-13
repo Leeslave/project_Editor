@@ -12,10 +12,17 @@ public class TestGame : MonoBehaviour
     {
         workService = ServiceProvider.Get<IWorkService>();
     }
-    
+
     public void Clear()
     {
         workService.ClearWork("TestGame");
-        SceneManager.LoadScene("Screen");
+        StartCoroutine(LoadScreen());
+    }
+
+    private IEnumerator LoadScreen()
+    {
+        var loadScene = SceneManager.LoadSceneAsync("Screen", LoadSceneMode.Additive);
+        yield return new WaitUntil(() => loadScene.isDone);
+        SceneManager.UnloadSceneAsync("TestGame");
     }
 }

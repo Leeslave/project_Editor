@@ -152,7 +152,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &41247211
 MonoBehaviour:
@@ -203,7 +203,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2011681327
 MonoBehaviour:
@@ -214,99 +214,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2011681325}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb215947b67944e5ea1b34e159f917bb, type: 3}
+  m_Script: {fileID: 11500000, guid: 4cf65307258e4f9689f326a8bff08986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   dateInfo:
     year: 0
     month: 0
     day: 0
---- !u!1 &2091313239
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2091313240}
-  - component: {fileID: 2091313241}
-  m_Layer: 0
-  m_Name: TestDataControl
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2091313240
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2091313239}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2091313241
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2091313239}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8813ce60180342e9b899912fca13beae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  testData:
-    date:
-      year: 0
-      month: 0
-      day: 0
-    startLocation:
-      location: 0
-      position: 0
-      name: 
-    workList:
-    - code: Dodge
-      stage: 0
-      isClear: 0
-    - code: Document
-      stage: 0
-      isClear: 0
-    dayTimes:
-    - daytime:
-        hour: 
-        minute: 
-      npc: []
-      action: []
-      block: []
-      bgm: []
-    - daytime:
-        hour: 
-        minute: 
-      npc: []
-      action: []
-      block: []
-      bgm: []
-    - daytime:
-        hour: 
-        minute: 
-      npc: []
-      action: []
-      block: []
-      bgm: []
-    - daytime:
-        hour: 
-        minute: 
-      npc: []
-      action: []
-      block: []
-      bgm: []
+  date: 7
+  time: 0
