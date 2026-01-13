@@ -21,7 +21,7 @@ public class R_ScreenTutorial : TutorialManager
     
     private IDayService dayService;
 
-    private void Awake()
+    private void Start()
     {
         dayService = ServiceProvider.Get<IDayService>();
     }
@@ -29,6 +29,11 @@ public class R_ScreenTutorial : TutorialManager
 
     private void OnEnable()
     {
+        if (dayService == null)
+        {
+            dayService = ServiceProvider.Get<IDayService>();
+        }
+        
         if (dayService.Date != day || dayService.Time != time)
         {
             return;
