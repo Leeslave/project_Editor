@@ -82,6 +82,7 @@ public class PatternManager : MonoBehaviour
     [SerializeField] GameObject TutorialObject;
     [SerializeField]int StageInt = 0;
 
+    public int ReadStageInt() { return StageInt; }
     private void Awake()
     {
         AD = GetComponent<Audio_DG>();

@@ -387,12 +387,12 @@ public class PlayerMove : MonoBehaviour
                 {
                     workService.ClearWork("Maze");
                     if (TutorialSetting.instance != null) SceneManager.LoadScene("Screen");
-                    else SceneManager.LoadScene("Dodge");
+                    else SceneManager.LoadScene("Document");
                 }
                 else
                 {
                     if (TutorialSetting.instance != null) SceneManager.LoadScene("Screen");
-                    else SceneManager.LoadScene("Dodge");
+                    else SceneManager.LoadScene("Document");
                 }
             }
         }
