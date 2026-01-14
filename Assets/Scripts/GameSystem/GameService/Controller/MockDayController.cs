@@ -1,14 +1,13 @@
 using GameService;
-using System;
 using UnityEngine;
+using System;
 
-public class DayController : MonoBehaviour, IDayService
+public class MockDayController : MonoBehaviour, IDayService
 {
     /**
      * 게임 날짜 컨트롤러
      * - 데이터를 통해서 관리
      */
-    private IDataService dataService;
     
     [SerializeField] private Date dateInfo;
     [SerializeField] private int date ;
@@ -26,7 +25,6 @@ public class DayController : MonoBehaviour, IDayService
                 return;
             date = value;
 
-            dataService.LoadDay(date);
             OnDateChanged?.Invoke(value);
             Time = 0;
         }
@@ -52,12 +50,11 @@ public class DayController : MonoBehaviour, IDayService
 
     private void Start()
     {
-        dataService = ServiceProvider.Get<IDataService>();
     }
 
     public void Init()
     {
-        dataService?.LoadDay();
+        
     }
 
     /// <summary>

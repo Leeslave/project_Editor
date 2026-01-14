@@ -1,66 +1,152 @@
 using GameService;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks; // Task 사용을 위해 추가
 using TMPro;
 using UnityEngine;
 
+[Serializable]
+public struct MailInfo
+{
+    public string Title;
+    public string Content;
+
+    public MailInfo(string title, string content)
+    {
+        Title = title;
+        Content = content;  
+    }
+}
+
 public class MailManager : Singleton<MailManager>
 {
-    // Inject : dayService
-    IDayService dayService;
+    /**
+     * 메일 파일 관리
+     * - 메일 파일 로드
+     * - 날짜에 따라 해당 메일 추가
+     */
+    private IDayService _dayService;
     
-    [SerializeField]
-    private string folderPath = "/Resources/Chat/Text";
-    private Dictionary<string, string> mailData = new();
+    [SerializeField] private string mailDataFolderName = "MailData";
+    [SerializeField] private List<MailInfo> mailData = new();
 
     public Transform mailList;
     public TMP_Text mailPanel;
     public GameObject mailPrefab;
     public float panelSize = 60;
-    
-    
-    void Start()
+
+    async void Start()
     {
-        dayService = ServiceProvider.Get<IDayService>();
-        
-        // 메일 컨텍스트 초기화
-        mailList.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 0);
-        
-        // 폴더에 있는 모든 .txt 파일
-        string[] fileNames = Directory.GetFiles($"{Application.dataPath}{folderPath}/day {dayService.Date}", "*.txt");
-
-        // 각 파일 이름을 순회하며 파일 제목과 내용 읽기
-        foreach (string fileName in fileNames)
+        _dayService = ServiceProvider.Get<IDayService>();
+    
+        // UI 초기화
+        if (mailList)
         {
-            string fileTitle = Path.GetFileNameWithoutExtension(fileName); // 파일 제목 추출
-            string fileContent = File.ReadAllText(fileName); // 파일 내용 읽음
-            
-            // 읽어온 파일 제목과 내용 저장
-            mailData.Add(fileTitle, fileContent);
-
-            GameObject newObject = Instantiate(mailPrefab, mailList);
-            newObject.GetComponent<MailPanel>().Set(fileTitle);
-
-            mailList.GetComponent<RectTransform>().sizeDelta += new Vector2(0, panelSize);
+            mailList.GetComponent<RectTransform>().sizeDelta = Vector2.zero;
         }
-        
+        await LoadMailAsync();
     }
 
+    private async Task LoadMailAsync()
+    {
+        // StreamingAssets/MailData/Day 1
+        string targetFolderPath = Path.Combine(Application.streamingAssetsPath, mailDataFolderName, $"Day {_dayService.Date}");
 
-    /// <summary>
-    /// 메일 보기 (활성화)
-    /// </summary>
-    /// <param name="title">보여줄 메일 제목</param>
+        if (!Directory.Exists(targetFolderPath))
+        {
+            return;
+        }
+
+        try 
+        {
+            string[] fileNames = await Task.Run(() => Directory.GetFiles(targetFolderPath, "*.txt"));
+
+            foreach (string fileName in fileNames)
+            {
+                string fileTitle = Path.GetFileNameWithoutExtension(fileName);
+                
+                // 파일 내용 비동기 읽기
+                string fileContent = await File.ReadAllTextAsync(fileName);
+                
+                // 데이터 저장
+                MailInfo newMail = new(fileTitle, fileContent);
+                mailData.Add(newMail);
+
+                // 4. UI 생성
+                CreateMailUI(fileTitle);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"메일 로드 중 오류 발생: {e.Message}");
+        }
+    }
+
+    private async Task LoadAllMailAsync()
+    {
+        // day 0일차부터 순회
+        for (int i = 0; i <= _dayService.Date; i++)
+        {
+            // PATH: StreamingAssets/MailData/Day ?
+            string targetFolderPath = Path.Combine(Application.streamingAssetsPath, mailDataFolderName, $"Day {i}");
+
+            // No Mail in Day
+            if (!Directory.Exists(targetFolderPath))
+            {
+                continue; 
+            }
+
+            try 
+            {
+                // 해당 날짜 폴더 안의 모든 파일 로드
+                string[] fileNames = await Task.Run(() => Directory.GetFiles(targetFolderPath, "*.txt"));
+
+                foreach (string fileName in fileNames)
+                {
+                    string fileTitle = Path.GetFileNameWithoutExtension(fileName);
+                
+                    // 비동기로 텍스트 로드
+                    string fileContent = await File.ReadAllTextAsync(fileName);
+                
+                    // 데이터 저장
+                    MailInfo newMail = new(fileTitle, fileContent);
+                    mailData.Add(newMail);
+
+                    // 4. UI 생성
+                    CreateMailUI(fileTitle);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"{i}일차 메일을 읽는 중 오류 발생: {e.Message}");
+            }
+        }
+    }
+
+    private void CreateMailUI(string title)
+    {
+        GameObject newObject = Instantiate(mailPrefab, mailList);
+        
+        if (newObject.TryGetComponent<MailPanel>(out var panel))
+        {
+            panel.Set(title);
+        }
+
+        // 레이아웃 크기 조정 (VerticalLayoutGroup 미사용 시 유지)
+        mailList.GetComponent<RectTransform>().sizeDelta += new Vector2(0, panelSize);
+    }
+
     public void ActiveMail(string title)
     {
-        mailPanel.text = mailData[title];
+        // Find 사용 시 데이터가 없으면 예외가 날 수 있으므로 체크
+        var target = mailData.Find(x => x.Title == title);
+        if (string.IsNullOrEmpty(target.Title)) return;
+
+        mailPanel.text = target.Content;
         mailPanel.gameObject.SetActive(true);
     }
 
-
-    /// <summary>
-    /// 메일 비활성화
-    /// </summary>
     public void OffMail()
     {
         mailPanel.text = "";

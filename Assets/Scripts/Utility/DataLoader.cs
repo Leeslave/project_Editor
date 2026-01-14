@@ -4,7 +4,6 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
-using GameData;
 
 public static class DataLoader
 {
@@ -13,18 +12,23 @@ public static class DataLoader
         - Json 파싱으로 게임 데이터 로드
         - Json 파싱으로 플레이어 데이터 저장, 로드
     */
-    private static string CHATPATH = Application.dataPath + "/StreamingAssets/ChatData/";     // 대화 파일 경로
-    private static string GAMEDATAPATH = Application.dataPath + "/StreamingAssets/DayData/";   // 게임 데이터 파일 경로
-    private static string GAMEFILE = "dailyData";
+    private static readonly string CHATPATH = Path.Combine(Application.streamingAssetsPath, "ChatData");
+    private static readonly string GAMEDATAPATH = Path.Combine(Application.streamingAssetsPath, "DayData");   // 게임 데이터 파일 경로
+    private static readonly string GAMEFILE = "dailyData";
 
     private static List<SaveData> saveData;
     
+    // 세이브 파일 구분
     #if RELEASE
     private static string SAVEPATH = Application.persistentDataPath + "/Save/savedata.json";    // 세이브 파일 경로
     #endif
-    
     #if DEBUG
-    private static string SAVEPATH = Application.dataPath + "/StreamingAssets/Save/savedata.json";    // 세이브 파일 경로
+    private static string SAVEPATH = Path.Combine(Application.streamingAssetsPath, "Save", "SaveData.json");    // 세이브 파일 경로
+    #endif
+    
+    
+    #region FileManage
+    
     /// 파일 목록 불러오기
     public static List<string> GetFileNames(string path, string type = "*.json")
     {
@@ -48,33 +52,24 @@ public static class DataLoader
         return fileNames;
     }
     
-    /// 게임 데이터파일 저장하기
+    #endregion
+    
+    #region DailyData
+    
+    #if DEBUG
+    /// 게임 데이터파일 저장하기 : DEBUG
     public static void SaveGameData(string path, DailyData data)
     {
         // json String으로 파싱
         string jsonText = JsonConvert.SerializeObject(data, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 
-        FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
-        byte[] bytes = Encoding.UTF8.GetBytes(jsonText);
-        fileStream.Write(bytes, 0, bytes.Length);
-        fileStream.Close();
-    }
-    
-    /// 대사 파일 저장하기
-    public static void SaveChatData(string path, List<Paragraph> data)
-    {
-        Dialogue dialogue = new(){ chatList = data };
-        // json String으로 파싱
-        string jsonText = JsonConvert.SerializeObject(dialogue, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-
-        FileStream fileStream = new FileStream(path, FileMode.Create, FileAccess.Write);
+        FileStream fileStream = new(path, FileMode.Create, FileAccess.Write);
         byte[] bytes = Encoding.UTF8.GetBytes(jsonText);
         fileStream.Write(bytes, 0, bytes.Length);
         fileStream.Close();
     }
     #endif
     
-        
     /// <summary>
     /// 날짜 데이터 파일 로드
     /// </summary>
@@ -87,7 +82,6 @@ public static class DataLoader
 
         return GetDayData(gameFile);
     }
-
     
     /// <summary>
     /// 날짜 데이터 파일 로드
@@ -103,7 +97,7 @@ public static class DataLoader
             throw new ArgumentException($"GAME DATA CANNOT FOUND : ${gameFile}");
             // TODO: 치명적 오류, 게임 종료시키기 (게임데이터 검사 추가)
         }
-        FileStream fileStream = new FileStream(gameFile, FileMode.Open);
+        FileStream fileStream = new(gameFile, FileMode.Open);
         byte[] data = new byte[fileStream.Length];
         fileStream.Read(data, 0, data.Length);
         fileStream.Close();
@@ -112,10 +106,31 @@ public static class DataLoader
         string jsonText = Encoding.UTF8.GetString(data);
 
         //Wrapper로 파싱
-        return JsonConvert.DeserializeObject<DailyData>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-
+        return JsonConvert.DeserializeObject<DailyData>(jsonText
+            ,new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All,            // 타입 구분
+            });
     }
     
+    #endregion
+    
+    #region ChatData
+    
+    #if DEBUG
+    /// 대사 파일 저장하기
+    public static void SaveChatData(string path, List<Paragraph> data)
+    {
+        Dialogue dialogue = new(){ chatList = data };
+        // json String으로 파싱
+        string jsonText = JsonConvert.SerializeObject(dialogue, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+
+        FileStream fileStream = new(path, FileMode.Create, FileAccess.Write);
+        byte[] bytes = Encoding.UTF8.GetBytes(jsonText);
+        fileStream.Write(bytes, 0, bytes.Length);
+        fileStream.Close();
+    }
+    #endif
     
     /// 파일명으로 대화 데이터를 로드
     public static List<Paragraph> GetChatData(string fileName)
@@ -126,10 +141,18 @@ public static class DataLoader
         fs.Close();
         string jsonText = Encoding.UTF8.GetString(buffer);
         
-        Dialogue wrapper = JsonConvert.DeserializeObject<Dialogue>(jsonText, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+        Dialogue wrapper = JsonConvert.DeserializeObject<Dialogue>(jsonText,
+            new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All,            // 타입 구분
+            });
         return wrapper.chatList;
     }
+    
+    #endregion
 
+    #region PlayerData  
+    
     public static SaveData GetPlayerData(int index)
     {
         if (index < 0 || index >= saveData.Count)
@@ -158,8 +181,11 @@ public static class DataLoader
         string jsonText = Encoding.UTF8.GetString(data);
 
         // Wrapper로 파싱
-        SaveWrapper wrapper = JsonConvert.DeserializeObject<SaveWrapper>(jsonText,  new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
-
+        SaveWrapper wrapper = JsonConvert.DeserializeObject<SaveWrapper>(jsonText
+            ,new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All,            // 타입 구분
+            });
         return wrapper.list;
     }
 
@@ -180,9 +206,11 @@ public static class DataLoader
         // json String으로 파싱
         string jsonText = JsonConvert.SerializeObject(wrapper,   new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 
-        FileStream fileStream = new FileStream(SAVEPATH, FileMode.Create);
+        FileStream fileStream = new(SAVEPATH, FileMode.Create);
         byte[] data = Encoding.UTF8.GetBytes(jsonText);
         fileStream.Write(data, 0, data.Length);
         fileStream.Close();
     }
+    
+    #endregion
 }
