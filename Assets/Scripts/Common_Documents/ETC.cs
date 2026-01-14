@@ -130,7 +130,7 @@ public class Docs
 public class Instruction
 {
     public string test;
-    public int Month, date;
+    public int Month, date; // public int index;
     [JsonProperty("Info")]
     public info[] InfoInst;
     [JsonProperty("News")]
