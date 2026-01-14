@@ -117,6 +117,9 @@ public class ADFGVXGameManager : MonoBehaviour
         {
             //Debug.Log($"이번 날짜의 Encrypt Task[targetText:{encryptData["targetText"]}, encryptKey:{encryptData["encryptKey"]}, resultText:{encryptData["resultText"]}");
             encryptTargetText = encryptData["targetText"];
+            encryptTransposeKey = encryptData["encryptKey"];
+            encryptTransposeText = encryptData["encryptTransposeText"];
+            encryptTransposeTable = encryptData["encryptTable"];
             encryptResultText = encryptData["resultText"];
         }
         else
