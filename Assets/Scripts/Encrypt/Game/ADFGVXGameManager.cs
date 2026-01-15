@@ -104,7 +104,11 @@ public class ADFGVXGameManager : MonoBehaviour
         if (stageData.Decrypt.TryGetValue(stageNum.ToString(), out var decryptData))
         {
             //Debug.Log($"이번 날짜의 Decrypt Task[targetText:{decryptData["targetText"]}, decryptKey:{decryptData["decryptKey"]}, resultText:{decryptData["resultText"]}");
-            decryptTargetTitle = decryptData["targetText"];
+            decryptTargetTitle = decryptData["title"];
+            decryptTargetText = decryptData["targetText"];
+            decryptTransposeKey = decryptData["decryptKey"];
+            decryptTransposeTable = decryptData["decryptTable"];
+            decryptTransposeText = decryptData["decryptTransposeText"];
             decryptResultText = decryptData["resultText"];
         }
         else
