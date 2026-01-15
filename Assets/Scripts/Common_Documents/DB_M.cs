@@ -40,6 +40,9 @@ public class DB_M : MonoBehaviour
 
     public Docs[] DocsList;
     private int stageInt = 0;
+
+    // private string clearGameName = "Document";
+    // 땃쥐에서 넘어왔다면 , Document 가 아니라 "SecureD"
     void Awake()
     {
         IWorkService workService = ServiceProvider.Get<IWorkService>();
@@ -47,7 +50,7 @@ public class DB_M : MonoBehaviour
         try{
             stageInt = workService.GetStage("Document");
             Debug.Log(stageInt);
-            Day += stageInt;
+            Day += stageInt; // 오늘 날짜가 예를들어 
         }
         catch
         {
