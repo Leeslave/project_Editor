@@ -186,7 +186,7 @@ public class TutorialSetting : MonoBehaviour
     {
         EventTriggerType Type;
         List<EventTrigger.TriggerEvent> Actions = new List<EventTrigger.TriggerEvent>();
-        public EventActions(EventTrigger TargetTrigger, EventTrigger trigger, EventData Data, bool AddExtra, Func<bool> act)
+        public EventActions(EventTrigger TargetTrigger, EventTrigger trigger, TutoList.EventData Data, bool AddExtra, Func<bool> act)
         {
             try {
                 Type = Data.TriggerType;
