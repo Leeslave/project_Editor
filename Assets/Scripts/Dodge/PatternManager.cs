@@ -82,6 +82,7 @@ public class PatternManager : MonoBehaviour
     [SerializeField] GameObject TutorialObject;
     [SerializeField]int StageInt = 0;
 
+    public int ReadStageInt() { return StageInt; }
     private void Awake()
     {
         AD = GetComponent<Audio_DG>();
@@ -270,8 +271,13 @@ public class PatternManager : MonoBehaviour
         CMDs[CurProcess].text = "Access Accept!";
         yield return TwoSec;
         workService.ClearWork("Dodge");
-        if (StageInt == 0) SceneManager.LoadScene("Screen");
-        else SceneManager.LoadScene("Document");
+
+        var loadScene = SceneManager.LoadSceneAsync("Screen", LoadSceneMode.Additive);
+        yield return new WaitUntil(() => loadScene.isDone);
+        SceneManager.UnloadSceneAsync("Dodge");
+
+        //if (StageInt == 0) SceneManager.LoadScene("Screen");
+        //else SceneManager.LoadScene("Document");
     }
 
     // Normal                   N1 -> N2 -> Hard
@@ -300,16 +306,16 @@ public class PatternManager : MonoBehaviour
         int dk = -1;                        // K?? ?????
         int k = 7;                          // ?? ??? ????? ???????? ???
         bool jk = true;                     // ?????? ??? ??????? ???? ???
-        for (int i = 0; i < 190; i++)       // ?? 110???? ???? ??????
+        for (int i = 0; i < 150; i++)       // ?? 110???? ???? ??????
         {
             /*
              ?? 30???? ????????? ??, ?????? ?????? ????? ??????
              7???? ???? ??????? ????? ????????? ????? ????? ???, ??????? ????? ??????
             */
-            if (i == 30) for (int y = 7; y <= 11; y++) BM.MakeSmallBul(DF[2 / j], Vector2.zero).transform.position = SP[2 / j][y];
+            if (i == 45) for (int y = 7; y <= 11; y++) BM.MakeSmallBul(DF[2 / j], Vector2.zero).transform.position = SP[2 / j][y];
             for (int y = 5; y <= 14; y++)
             {
-                if (!(y >= k && y <= k + 3)) BM.MakeSmallBul(DF[j] * 12, Vector2.zero).transform.position = SP[j][y];
+                if (!(y >= k && y <= k + 3)) BM.MakeSmallBul(DF[j] * 6, Vector2.zero).transform.position = SP[j][y];
             }
             // K?? ?????? ????, ???? ????.
             if (k == 7 || k == 10)
@@ -318,7 +324,7 @@ public class PatternManager : MonoBehaviour
                 PlatL.Add(cnt);
                 if (k == 7) cnt.transform.position = SP[j][k];
                 else cnt.transform.position = SP[j][k + 3];
-                cnt.GetComponent<Rigidbody2D>().AddForce(DF[j] * 12, ForceMode2D.Impulse);
+                cnt.GetComponent<Rigidbody2D>().AddForce(DF[j] * 6, ForceMode2D.Impulse);
                 if (jk) dk *= -1;
                 jk = !jk;
             }
