@@ -386,8 +386,9 @@ public class PlayerMove : MonoBehaviour
                 if(GameSystem.Instance != null)
                 {
                     workService.ClearWork("Maze");
-                    if (TutorialSetting.instance != null) SceneManager.LoadScene("Screen");
-                    else SceneManager.LoadScene("Document");
+                    StartCoroutine(GameClear());
+                    // if (TutorialSetting.instance != null) SceneManager.LoadScene("Screen");
+                    // else SceneManager.LoadScene("Document");
                 }
                 else
                 {
@@ -398,6 +399,12 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    private IEnumerator GameClear()
+    {
+        var loadScene = SceneManager.LoadSceneAsync("Screen", LoadSceneMode.Additive);
+        yield return new WaitUntil(() => loadScene.isDone);
+        SceneManager.UnloadSceneAsync("Maze");
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

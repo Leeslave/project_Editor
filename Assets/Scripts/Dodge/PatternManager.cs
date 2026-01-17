@@ -271,8 +271,13 @@ public class PatternManager : MonoBehaviour
         CMDs[CurProcess].text = "Access Accept!";
         yield return TwoSec;
         workService.ClearWork("Dodge");
-        if (StageInt == 0) SceneManager.LoadScene("Screen");
-        else SceneManager.LoadScene("Document");
+
+        var loadScene = SceneManager.LoadSceneAsync("Screen", LoadSceneMode.Additive);
+        yield return new WaitUntil(() => loadScene.isDone);
+        SceneManager.UnloadSceneAsync("Dodge");
+
+        //if (StageInt == 0) SceneManager.LoadScene("Screen");
+        //else SceneManager.LoadScene("Document");
     }
 
     // Normal                   N1 -> N2 -> Hard
