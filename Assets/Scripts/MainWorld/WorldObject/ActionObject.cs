@@ -1,38 +1,36 @@
 
 using UnityEngine;
+using GameAction;
 
 public class ActionObject : WorldObject
 {
     public string actionName;
     public string actionParam;
     private IGameAction _gameAction;
-    public bool loop = false;
+    public bool loop;
     
     void Awake()
     {
-        OnAwake();
+        Init();
     }
     
     /// <summary>
     /// 초기화 시
     /// </summary>
     /// <remarks>Action 초기화</remarks>
-    public override void OnAwake()
+    public override void Init()
     {
-        base.OnAwake();
+        base.Init();
         
-        _gameAction = ActionHandler.GetAction(actionName, actionParam);
-        Debug.Log(_gameAction);
+        _gameAction = ActionHandler.Create(actionName, actionParam);
     }
 
     /// <summary>
     /// 활성화 시
     /// </summary>
     /// <remarks>액션 실행 및 삭제</remarks>
-    public override void OnEnable()
+    public override void OnBecameVisible()
     {
-        base.OnEnable();
-        
         if(_gameAction?.Invoke() ?? false)
         {
             if (!loop)
@@ -40,7 +38,5 @@ public class ActionObject : WorldObject
                 Destroy(gameObject);
             }
         }
-        
-        Debug.Log($"Action Invoke! : {actionName}-{actionParam}");
     }
 }

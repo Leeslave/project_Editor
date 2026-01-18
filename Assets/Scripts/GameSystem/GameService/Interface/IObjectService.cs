@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace GameService
 {
-    public interface IObjectDataService : IService
+    public interface IObjectService : IService
     {
         public List<ChatObjectData> GetNPC();
 

@@ -2,8 +2,6 @@
 using GameService;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 public sealed class DataController : IDataService
 {
@@ -40,7 +38,7 @@ public sealed class DataController : IDataService
     /// 날짜 로드
     /// </summary>
     /// <param name="dateIndex">해당하는 날짜 인덱스 (default -1 : 현재 날짜)</param>
-    public Date LoadDay(int dateIndex = -1)
+    public DailyData LoadDay(int dateIndex = -1)
     {
         if (dateIndex >= 0)
         {
@@ -51,36 +49,9 @@ public sealed class DataController : IDataService
         
         OnDataChanged?.Invoke(_index);
         
-        return GetDateInfo();
+        return Data;
     }
-
-    /// <summary>
-    /// 오늘 날짜 상세 정보 반환
-    /// </summary>
-    /// <returns>날짜 상세 정보</returns>
-    public Date GetDateInfo()
-    {
-        return Data.date;
-    }
-
-    /// <summary>
-    /// 오늘 시작 위치 반환
-    /// </summary>
-    /// <returns>시작 좌표 enum</returns>
-    public WorldVector GetStartLocation()
-    {
-        return Data.startLocation;
-    }
-
-    /// <summary>
-    /// 오늘 날짜 시간대별 데이터 리스트 반환
-    /// </summary>
-    /// <returns>시간대별 데이터 리스트 반환 (List[4])</returns>
-    public List<TimeData> GetTimeData()
-    {
-        return Data.dayTimes.ToList();
-    }
-
+    
     /// <summary>
     /// 오늘 날짜 업무 정보 반환
     /// </summary>

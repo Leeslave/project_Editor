@@ -1,6 +1,9 @@
 using System;
 using GameService;
+using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public sealed class GameSystem : Singleton<GameSystem>, ISaveService
 {
@@ -10,6 +13,9 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
      * - 세이브 관리
      * - 메인씬 로드 (게임 진입)
      */
+
+    private GameObject loadUI => transform.GetChild(0).gameObject;
+    private Action<IService> loadHandler;
     
     public void Init()
     {
@@ -17,6 +23,40 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
         ServiceProvider.Register<ISaveService>(this);
         
         // TODO: 세이브 파일 무결성 확인
+        
+        // NOTE: GameSystem 생성 즉시 메인 월드 진입 (방식 개선 필요)
+        // 게임 시작
+        StartCoroutine(LoadNextScene());
+    }
+
+    public IEnumerator LoadNextScene()
+    {
+        // 로딩씬 시작
+        bool completeLoad = false;
+        if (!loadUI)
+        {
+            loadUI.SetActive(true);
+        }
+        
+        // 메인 씬 로드 시작
+        yield return SceneManager.LoadSceneAsync("MainWorld", LoadSceneMode.Additive);
+        loadHandler = (service =>
+        {
+            if (service is IDayService)
+            {
+                completeLoad = true;
+                ServiceProvider.OnServiceRegistered -= loadHandler;
+            }
+        });
+        ServiceProvider.OnServiceRegistered += loadHandler;
+        
+        // Day 시스템 로드까지 대기
+        yield return new WaitUntil(() => completeLoad || ServiceProvider.Get<IDayService>() != null);
+        var dayService = ServiceProvider.Get<IDayService>();
+
+        // TODO: Load UI 텍스트 액션 추가
+        dayService.Init();
+        loadUI.SetActive(false);
     }
 
     public new void Awake()
@@ -24,7 +64,6 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
         base.Awake();
         Init();
     }
-    
     
     
     #region SaveManage

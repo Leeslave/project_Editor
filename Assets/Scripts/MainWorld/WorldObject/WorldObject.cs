@@ -1,13 +1,14 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WorldObject : MonoBehaviour
+public abstract class WorldObject : MonoBehaviour
 {
     /**
     상호작용 오브젝트
     - 버튼 클릭시 해당 파라미터로 상호작용
     */
-    public List<(WorldVector worldVector, Anchor anchor)> positions;
+    public List<(WorldVector worldVector, Anchor anchor)> positions = new();
     public int positionParam;
     
 
@@ -15,25 +16,17 @@ public class WorldObject : MonoBehaviour
     /// 초기화 시
     /// </summary>
     /// <remarks>화면 위치 설정</remarks>
-    public virtual void OnAwake()
+    public virtual void Init()
     {
-        if (positionParam > 0)
+        if (positions.Count > 0)
         {
             SetAnchor();
         }
         positionParam = 0;
     }
 
+    public abstract void OnBecameVisible();
 
-    /// <summary>
-    /// 활성화 시
-    /// </summary>
-    public virtual void OnEnable()
-    {
-        
-    }
-    
-    
     /// <summary>
     /// 클릭 시
     /// </summary>
@@ -48,15 +41,14 @@ public class WorldObject : MonoBehaviour
     /// </summary>
     private void SetAnchor()
     {
-        var _data = positions[positionParam];
+        var (vector, anchor) = positions[positionParam];
         
         // 위치 설정
-        RectTransform rect = GetComponent<RectTransform>();
-        rect.anchorMin = _data.anchor.GetVector();
-        rect.anchorMax = _data.anchor.GetVector();
+        int x = (int)vector.location * 1000 + vector.position * 100;
+        transform.position = new Vector3(x, 0, 0);
+        transform.position += new Vector3(anchor.x * 50, anchor.y * 50, 0);
         
         // 크기 설정
-        rect.sizeDelta *= _data.anchor.size;
-        rect.localScale = new Vector3(1f,1f,1f);
+        transform.localScale *= anchor.size;
     }
 }

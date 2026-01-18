@@ -20,6 +20,6 @@ public class SaveManager : MonoBehaviour
     public void LoadDaySave(int day)
     {
         dataService.LoadDay(day);
-        SceneManager.LoadScene("DayLoading");
+        SceneManager.LoadScene("MainController");
     }
 }

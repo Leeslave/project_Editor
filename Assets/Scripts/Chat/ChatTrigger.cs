@@ -6,7 +6,7 @@ public interface IChatList
 {
     public int ChatIndex { get; set; }
     public List<(string chat, bool onAwake)> chatAssets { get; set; }
-    public List<ChatTrigger> Triggers { get; set; }
+    public ChatTrigger Trigger { get; }
     
     /// 대사 인덱스 변경
     public void SwapIndex(int idx);
@@ -68,7 +68,6 @@ public class ChatTrigger : MonoBehaviour
     /// <summary>
     /// Start Chat
     /// </summary>
-    /// <param name="idx">chat data index</param>
     public void StartChat()
     {
         if (chatData is null)
@@ -76,7 +75,7 @@ public class ChatTrigger : MonoBehaviour
             Debug.LogWarning("Failed to Load Chat Data");
             return;
         }
-              
-        Chat.Instance.StartChat(gameObject, chatData);
+        
+        Chat.Instance.StartChat(chatData);
     }
 }
