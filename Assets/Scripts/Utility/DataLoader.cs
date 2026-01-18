@@ -78,7 +78,7 @@ public static class DataLoader
     /// <exception cref="ArgumentException">해당하는 파일 없을 시 예외 발생</exception>
     public static DailyData GetDayData(int index)
     {
-        string gameFile = $"{GAMEDATAPATH}/{GAMEFILE}{index}.json";
+        var gameFile = Path.Combine(GAMEDATAPATH, $"{GAMEFILE}{index}.json");
 
         return GetDayData(gameFile);
     }
@@ -135,7 +135,8 @@ public static class DataLoader
     /// 파일명으로 대화 데이터를 로드
     public static List<Paragraph> GetChatData(string fileName)
     {
-        FileStream fs = new FileStream(CHATPATH + fileName, FileMode.Open);
+        var path = Path.Combine(CHATPATH, fileName);
+        FileStream fs = new(path, FileMode.Open);
         byte[] buffer = new byte[fs.Length];
         fs.Read(buffer, 0, (int)fs.Length);
         fs.Close();

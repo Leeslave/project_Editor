@@ -1,52 +1,76 @@
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class ChatObject : WorldObject, IChatList
+public class ChatObject : WorldObject, IChatList, IPointerClickHandler
 {
     // 현재 대사 인덱스
     public int ChatIndex { get; set; }
     // 각 대사들 모음
     public List<(string chat, bool onAwake)> chatAssets { get; set; }
+    
     // 대사 트리거들
-    public List<ChatTrigger> Triggers { get; set; }
+    private readonly List<ChatTrigger> _triggers = new();
+    
+    public ChatTrigger Trigger {
+        get
+        {
+            if (ChatIndex < 0 || ChatIndex > _triggers.Count)
+            {
+                return null;
+            }
+            return _triggers[ChatIndex];
+        }
+    }
+    
     
     
     /// <summary>
     /// 초기화 시
     /// </summary>
     /// <remarks>각 트리거들 초기화, 초기 index 설정</remarks>
-    public override void OnAwake()
+    public override void Init()
     {
-        base.OnAwake();
+        base.Init();
         
         // Trigger들 초기화
-        foreach (ChatTrigger chat in Triggers)
+        foreach (ChatTrigger chat in _triggers)
         {
             Destroy(chat);
         }
-        
-        foreach (var asset in chatAssets)
+
+        // 대사 생성
+        ChatIndex = -1;
+        if (chatAssets.Count > 0)
         {
-            ChatTrigger newTrigger = gameObject.AddComponent<ChatTrigger>();
-            newTrigger.chatAsset = asset.chat;
-            Triggers.Add(newTrigger);
+            foreach (var asset in chatAssets)
+            {
+                ChatTrigger newTrigger = gameObject.AddComponent<ChatTrigger>();
+                newTrigger.chatAsset = asset.chat;
+                _triggers.Add(newTrigger);
             
-            // TODO: 대사 로드 비동기 처리
-            newTrigger.LoadChatData();
+                // TODO: 대사 로드 비동기 처리
+                newTrigger.LoadChatData();
+            }
+            
+            ChatIndex = 0;
         }
-        
-        ChatIndex = 0;
     }
     
     /// <summary>
     /// 활성화 시
     /// </summary>
     /// <remarks>현재 대사가 onAwake일시 실행</remarks>
-    public override void OnEnable()
+    public override void OnBecameVisible()
     {
-        if (chatAssets[ChatIndex].onAwake)
+        if (ChatIndex >= 0)
         {
-            StartChat();
+            if (chatAssets[ChatIndex].onAwake)
+            {
+                StartChat();
+            }
         }
+        
     }
 
 
@@ -54,7 +78,7 @@ public class ChatObject : WorldObject, IChatList
     /// 클릭 시
     /// </summary>
     /// <remarks>현재 대사 실행</remarks>
-    public override void OnClick()
+    public void OnPointerClick(PointerEventData eventData)
     {
         StartChat();
     }
@@ -66,6 +90,12 @@ public class ChatObject : WorldObject, IChatList
     
     public void StartChat()
     {
-        Triggers[ChatIndex].StartChat();
+        if (!Trigger)
+        {
+            Debug.Log("No Trigger");
+            return;
+        }
+        
+        Trigger.StartChat();
     }
 }

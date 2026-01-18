@@ -1,3 +1,4 @@
+using GameService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,11 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
     public List<GameObject> prefabs;
     
     private readonly List<List<WorldObject>> _objectList = new();
+    
+    private IDayService _dayService;
 
+    
+    #region routine
     private new void Awake()
     {
         base.Awake();
@@ -41,15 +46,62 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         }
     }
 
+    private void Start()
+    {
+        ServiceProvider.Get<IDayService>(service =>
+        {
+            _dayService = service;
+            _dayService.OnTimeChanged += _ => Init();
+            
+            if (_dayService.Data != null)
+            {
+                Init();
+            }
+        });
+    }
 
+    public void Init()
+    {
+        var data = _dayService.TimeData;
+
+        Clear();
+        
+        // Chat Object 생성
+        Debug.Log("Start Create NPC");
+        foreach (var item in data.npc)
+        {
+            CreateNPC(item);
+        }
+    }
+    
+    /// <summary>
+    /// 모든 오브젝트 삭제
+    /// </summary>
+    public void Clear()
+    {
+        foreach (var list in _objectList)
+        {
+            foreach (var obj in list)
+            {
+                Destroy(obj);
+            }
+            list.Clear();
+        }
+    }
+
+    #endregion
+
+    #region Create
     /// <summary>
     ///  NPCData를 가지고 NPC 생성
     ///  </summary>
     ///  <param name="objData">월드오브젝트 데이터</param>
     ///  <param name="location">Location 정보</param>
     /// <param name="position">Location 오브젝트의 transform</param>
-    public void CreateNPC(ChatObjectData objData, World location, Transform position)
+    public void CreateNPC(ChatObjectData objData, int pos = 0)
     {
+        WorldVector targetPos = objData.positions[pos];
+        
         // 해당하는 프리팹 로드
         GameObject prefab;
         if (Enum.TryParse(objData.objectType, out WorldObjectType npcType))
@@ -62,18 +114,19 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         }
         
         // 월드 오브젝트 생성
-        GameObject newObject = Instantiate(prefab, position);
+        GameObject newObject = Instantiate(prefab, transform);
         
-        // 데이터 입력
-        if (objData.name == null)
+        // 객체 데이터 설정
+        if (string.IsNullOrEmpty(objData.name))
         {
             objData.name = objData.objectType;
         }
         newObject.name = objData.name;
+        
+        // Chat 데이터 입력
         ChatObject obj = newObject.GetComponent<ChatObject>();
         obj.positions = objData.positions.Zip(objData.anchor, (wv, anchor) =>  (wv, anchor)).ToList();
         obj.chatAssets = objData.chat.Zip(objData.onAwake, (c, a) => (c, a)).ToList();
-        obj.Triggers = new();
         
         // 객체 리스트에 추가
         if (_objectList.Count == 0)
@@ -83,18 +136,20 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
                 _objectList.Add(new List<WorldObject>());
             }
         }
-        _objectList[(int)location].Add(obj);
+        _objectList[(int)targetPos.location].Add(obj);
         
         // 오브젝트 시작
-        obj.OnAwake();
+        obj.Init();
     }
     
     
     /// <summary>
     ///  ActionData를 가지고 ActionObject 생성
     ///  </summary>
-    public void CreateAction(ActionObjectData objData, World location, Transform position)
+    public void CreateAction(ActionObjectData objData, int pos = 0)
     {
+        //위치 지정
+        WorldVector targetPos = objData.positions[pos];
         GameObject newObject = new();
         Debug.Log($"New Object: {newObject.name}");
         
@@ -113,13 +168,16 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
                 _objectList.Add(new List<WorldObject>());
             }
         }
-        _objectList[(int)location].Add(obj);
+        _objectList[(int)targetPos.location].Add(obj);
         
         // 오브젝트 시작
-        obj.OnAwake();
+        obj.Init();
     }
+    
+    #endregion
 
-
+    #region Manage
+    
     /// <summary>
     /// 지역 내 특정 오브젝트 반환
     /// </summary>
@@ -156,20 +214,5 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
             }
         }
     }
-
-
-    /// <summary>
-    /// 모든 오브젝트 삭제
-    /// </summary>
-    public void Clear()
-    {
-        foreach (var list in _objectList)
-        {
-            foreach (var obj in list)
-            {
-                Destroy(obj);
-            }
-            list.Clear();
-        }
-    }
+    #endregion
 }

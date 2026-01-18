@@ -12,7 +12,10 @@ public class MockDayController : MonoBehaviour, IDayService
     [SerializeField] private Date dateInfo;
     [SerializeField] private int date ;
     [SerializeField] private int time;
-        
+    [SerializeField] private DailyData data;
+
+    public DailyData Data => data;
+    public TimeData TimeData => data.dayTimes[time];
     public event Action<int> OnDateChanged;
     public event Action<int> OnTimeChanged;
     
@@ -24,7 +27,6 @@ public class MockDayController : MonoBehaviour, IDayService
             if (date == value)
                 return;
             date = value;
-
             OnDateChanged?.Invoke(value);
             Time = 0;
         }
@@ -35,10 +37,7 @@ public class MockDayController : MonoBehaviour, IDayService
         get => time;
         set
         {
-            if (time == value)
-                return;
             time = value;
-            
             OnTimeChanged?.Invoke(value);
         }
     }
@@ -48,13 +47,10 @@ public class MockDayController : MonoBehaviour, IDayService
         ServiceProvider.Register<IDayService>(this);
     }
 
-    private void Start()
-    {
-    }
-
     public void Init()
     {
-        
+        OnDateChanged?.Invoke(date);
+        Time = 0;
     }
 
     /// <summary>
@@ -64,5 +60,10 @@ public class MockDayController : MonoBehaviour, IDayService
     public Date GetDateInfo()
     {
         return dateInfo;
+    }
+
+    public WorldVector GetStartLocation()
+    {
+        return data.startLocation;
     }
 }

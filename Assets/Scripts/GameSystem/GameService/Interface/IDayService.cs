@@ -4,6 +4,9 @@ namespace GameService
 {
     public interface IDayService : IService
     {
+        public DailyData Data { get; }
+        public TimeData TimeData { get; }
+        
         /// <summary>
         /// 날짜 변경 이벤트
         /// </summary>
@@ -23,6 +26,12 @@ namespace GameService
         /// 날짜 상세 정보 확인
         /// </summary>
         /// <returns>현재 날짜 정보</returns>
-        Date GetDateInfo();
+        public Date GetDateInfo();
+        
+        /// <summary>
+        /// 현재 날짜 시작지점 확인
+        /// </summary>
+        /// <returns>시작 위치 벡터</returns>
+        public WorldVector GetStartLocation();
     }
 }

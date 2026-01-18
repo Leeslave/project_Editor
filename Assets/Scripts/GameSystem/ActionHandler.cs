@@ -1,310 +1,290 @@
 using GameService;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public static class ActionHandler
+namespace GameAction
 {
-    /// <summary>
-    /// 반응 함수 할당
-    /// </summary>
-    /// <param name="func"></param>
-    /// <param name="param"></param>
-    /// <returns></returns>
-    public static GameAction GetAction(string func, string param)
+
+    public static class ActionHandler
     {
-        GameAction result;
+        // Action 생성 Delegate 관리
+        private static readonly Dictionary<string, Func<string, IGameAction>> Factory = new();
 
-        switch (func)
+        static ActionHandler()
         {
-            case "JUMP":
-                result = new ChatJumpGameAction();
-                result.Param = SetParam<int>(param);
-                return result;
-            case "DAYCHANGE":
-                result = new HardDayChangeGameAction();
-                result.Param = SetParam<int>(param);
-                return result;
-            case "NEXTDAY":
-                result = new DayChangeGameAction();
-                return result;
-            case "TIMECHANGE":
-                result = new HardTimeChangeGameAction();
-                result.Param = SetParam<int>(param);
-                return result;
-            case "NEXTTIME":
-                result = new TimeChangeGameAction();
-                result.Param = SetParam<int>(param);
-                return result;
-            case "TUTORIAL":
-                result = new TutorialGameAction();
-                result.Param = SetParam<int>(param);
-                return result;
-            case "REMOVE":
-                result = new RemoveGameAction();
-                result.Param = SetParam<string>(param);
-                return result;
-            case "EXIT":
-                result = new ExitGameGameAction();
-                return result;
-            case "CHATSWAP":
-                result = new ChatSwapGameAction();
-                var chatData = SetParam<(string, string)>(param);
-                result.Param = (WorldObjectFactory.Instance?.FindObject(chatData.Item1) as IChatList, int.Parse(chatData.Item2));
-                return result;
-            case "POSCHANGE":
-                result = new PosChangeGameAction();
-                var posData = SetParam<(string, string)>(param);
-                result.Param = (Enum.Parse(typeof(World), posData.Item1), int.Parse(posData.Item2));
-                return result;
-            default:
-                return null;
-        }
-    }
-
-
-    /// <summary>
-    /// 액션 매개변수 형식 파싱
-    /// </summary>
-    /// <param name="param">문자열 형식의 매개변수</param>
-    /// <typeparam name="T">매개변수 형식</typeparam>
-    /// <returns>파싱된 매개변수</returns>
-    /// <exception cref="InvalidOperationException">잘못된 매개변수 형식</exception>
-    private static T SetParam<T>(string param)
-    {
-        // 단순 객체일 경우
-        if (typeof(T) == typeof(int))
-        {
-            return (T)(object)int.Parse(param);
-        }
-        else if (typeof(T) == typeof(string))
-        {
-            return (T)(object)param;
-        }
-        else if (typeof(T).IsInterface) // 특정 인터페이스인 경우
-        {
-            // 튜토리얼 타입 지원
-            // if (typeof(T) == typeof(ITutorial))
-            // {
-            //     return (T)(object)Convert.ChangeType(param, typeof(T));
-            // }
-        }
-        
-        // 튜플인 경우
-        else if (typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(ValueTuple<,>))
-        {
-            var parts = param.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length == 2)
+            // JUMP
+            Register("JUMP", s =>
             {
-                return (T)(object)(parts[0].Trim(), parts[1].Trim());
+                int param = int.TryParse(s, out int num) ? num : 0;
+                return new ChatJumpAction(param);
+            });
+
+            // DaySwitch : Force switch Day
+            Register("DAYCHANGE", s =>
+            {
+                int param = int.TryParse(s, out int num) ? num : -1;
+                return new DaySwitchAction(param);
+            });
+
+            // NEXTDAY
+            Register("NEXTDAY", _ => new NextDayAction());
+
+            // TimeSwitch
+            Register("TIMECHANGE", s =>
+            {
+                int param = int.TryParse(s, out int num) ? num : -1;
+                return new SwitchTimeAction(param);
+            });
+
+            // NEXTTIME
+            Register("NEXTTIME", s =>
+            {
+                int param = int.TryParse(s, out int num) ? num : -1;
+                return new NextTimeAction(param);
+            });
+
+            // REMOVE : Remove Object Action
+            Register("REMOVE", s => new RemoveObjectAction(s));
+
+            // CHATSWAP
+            Register("CHATSWAP", s =>
+            {
+                // NOTE: 월드 객체 탐색 관리 필요 (ObjectService에서 static으로 관리하는 방식
+                var str = s.Split(new[] { ' ', ',', '.' }, StringSplitOptions.RemoveEmptyEntries);
+                IChatList obj = WorldObjectFactory.Instance?.FindObject(str[0]) as IChatList;
+                int index = int.Parse(str[1]);
+                return new ChatSwapAction(obj, index);
+            });
+
+            // POSCHANGE
+            Register("POSCHANGE", s =>
+            {
+                var str = s.Split(new[] { ' ', ',', '.' }, StringSplitOptions.RemoveEmptyEntries);
+                World world = Enum.Parse<World>(str[0]);
+                int index = int.Parse(str[1]);
+                return new MovePositionAction(world, index);
+            });
+
+            // TUTORIAL
+            Register("TUTORIAL", s =>
+            {
+                int param = int.TryParse(s, out int num) ? num : -1;
+                return new TutorialAction(param);
+            });
+
+            // EXIT
+            Register("EXIT", _ => new ExitGameAction());
+        }
+
+        private static void Register(string key, Func<string, IGameAction> factory)
+            => Factory.Add(key, factory);
+
+        /// <summary>
+        /// 액션 레코드 생성
+        /// </summary>
+        /// <param name="func">생성할 레코드 타입</param>
+        /// <param name="param">레코드 매개변수</param>
+        /// <returns>실행 가능한 액션 서비스</returns>
+        public static IGameAction Create(string func, string param)
+        {
+            // 빈 문자열, none 예외 처리
+            if (string.IsNullOrEmpty(func) || func.Equals("none", StringComparison.OrdinalIgnoreCase))
+            {
+                return new NotImpletedAction();
             }
+
+            if (Factory.TryGetValue(func, out var factory))
+            {
+                return factory(param);
+            }
+
+            Debug.LogError($"Unknown function: {func}");
+            return null;
         }
-    
-        throw new InvalidOperationException("Unsupported type");
     }
-}
 
-
-/// 반응 함수
-public abstract class GameAction
-{
-    public object Param;
-    public abstract bool Invoke();
-}
-
-
-/// <summary>
-/// 게임 종료 액션
-/// </summary>
-public class ExitGameGameAction : GameAction
-{
-    public override bool Invoke()
+    /// 반응 함수
+    public interface IGameAction
     {
-        SceneManager.LoadScene("Start");
-        return true;
+        public bool Invoke();
     }
-}
 
-
-/// <summary>
-/// 날짜 강제 변경 액션
-/// </summary>
-/// <remarks>Param 형식 : int</remarks>
-public class HardDayChangeGameAction : GameAction
-{
-    public override bool Invoke()
+    /// <summary>
+    /// 미구현 Null 대리 객체
+    /// </summary>
+    public record NotImpletedAction : IGameAction
     {
-        if (Param is not int param)
-        {
-            return false;
-        }
-
-        IDayService dayService = ServiceProvider.Get<IDayService>();
-
-        try
-        {
-            dayService.Date = param;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return false;
-        }
-        
-        return true;
+        public bool Invoke() => false;
     }
-}
 
-/// <summary>
-/// 날짜 변경 액션
-/// </summary>
-/// <remarks>Param 형식 : int</remarks>
-public class DayChangeGameAction : GameAction
-{
-    public override bool Invoke()
+
+    /// <summary>
+    /// 게임 종료 액션
+    /// </summary>
+    public record ExitGameAction : IGameAction
     {
-        IDayService dayService = ServiceProvider.Get<IDayService>();
-        
-        if(dayService.Time == 3)
+        public bool Invoke()
         {
-            dayService.Time += 1;
+            SceneManager.LoadScene("Start");
             return true;
         }
-        return false;
     }
-}
 
 
-/// <summary>
-/// 시간대 강제 변경 액션
-/// </summary>
-/// <remarks>Param 형식 : int</remarks>
-public class TimeChangeGameAction : GameAction
-{
-    public override bool Invoke()
+    /// <summary>
+    /// 날짜 강제 변경 액션
+    /// </summary>
+    /// <remarks>Param 형식 : int</remarks>
+    public record DaySwitchAction(int Day) : IGameAction
     {
-        if (Param is not int param)
+        public bool Invoke()
         {
-            return false;
+            // input Exception
+            if (Day < 0) return false;
+            
+            IDayService dayService = ServiceProvider.Get<IDayService>();
+            dayService.Date = Day;
+            return true;
         }
-        
-        IDayService dayService = ServiceProvider.Get<IDayService>();
-        if (dayService.Time != param - 1)
-        {
-            return false;
-        }
-        
-        dayService.Time = param;
-        return true;
     }
-}
 
-/// <summary>
-/// 시간대 변경 액션
-/// </summary>
-/// <remarks>Param 형식 : int</remarks>
-public class HardTimeChangeGameAction : GameAction
-{
-    public override bool Invoke()
+    /// <summary>
+    /// 날짜 변경 액션
+    /// </summary>
+    public record NextDayAction : IGameAction
     {
-        if (Param is int param)
+        public bool Invoke()
         {
             IDayService dayService = ServiceProvider.Get<IDayService>();
+
+            if (dayService.Time != 3)
+            {
+                return false;
+            }
+
+            dayService.Date += 1;
+            return true;
+        }
+    }
+
+
+    /// <summary>
+    /// 시간대 강제 변경 액션
+    /// </summary>
+    /// <remarks>Param 형식 : int</remarks>
+    public record NextTimeAction(int Time) : IGameAction
+    {
+        public bool Invoke()
+        {
+            IDayService dayService = ServiceProvider.Get<IDayService>();
+            if (dayService.Time != Time - 1)
+            {
+                return false;
+            }
+
+            dayService.Time = Time;
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// 시간대 변경 액션
+    /// </summary>
+    /// <remarks>Param 형식 : int</remarks>
+    public record SwitchTimeAction(int Time) : IGameAction
+    {
+        public bool Invoke()
+        {
+            if (Time < 0) return false;
             
-            dayService.Time = param;
+            IDayService dayService = ServiceProvider.Get<IDayService>();
+            dayService.Time = Time;
             return true;
         }
-        return false;
     }
-}
 
 
-/// <summary>
-/// 대화 스킵 액션
-/// </summary>
-/// <remarks>Param 형식 : int</remarks>
-public class ChatJumpGameAction : GameAction
-{
-    public override bool Invoke()
+    /// <summary>
+    /// 대화 스킵 액션
+    /// </summary>
+    /// <remarks>Param 형식 : int</remarks>
+    public record ChatJumpAction(int Count) : IGameAction
     {
-        if (Param is not int param)
+        public bool Invoke()
         {
-            return false;
-        }
-        
-        for (int i = 0; i < param; i++)
-        {
-            Chat.Instance.SkipChat();
-        }
-        return true;
-    }
-}
+            if (Count <= 0) return false;
+            
+            for (int i = 0; i < Count; i++)
+            {
+                Chat.Instance.SkipChat();
+            }
 
-
-/// <summary>
-/// 대화 스킵 액션
-/// </summary>
-/// <remarks>Param 형식 : IChatList, string</remarks>
-public class ChatSwapGameAction : GameAction
-{
-    public override bool Invoke()
-    {
-        if (Param is not (IChatList trigger, int idx))
-        {
-            return false;
-        }
-
-        trigger.SwapIndex(idx);
-        return true;
-    }
-}
-
-
-/// <summary>
-/// 튜토리얼 생성 액션
-/// </summary>
-/// TODO:<remarks>Param 형식 : Tutorial 인터페이스</remarks>
-public class TutorialGameAction : GameAction
-{
-    public override bool Invoke()
-    {
-        return Param is int;
-    }
-}
-
-
-/// <summary>
-/// 위치 이동 액션
-/// </summary>
-/// <remarks></remarks>
-public class PosChangeGameAction : GameAction
-{
-    public override bool Invoke()
-    {
-        if(Param is (World world, int idx))
-        {
-            WorldSceneManager.Instance.MoveLocation(world, idx);
             return true;
         }
-        return false;
     }
-}
 
 
-/// <summary>
-/// 오브젝트 삭제 액션
-/// </summary>
-/// <remarks>Param 형식 : string</remarks>
-public class RemoveGameAction : GameAction
-{
-    public override bool Invoke()
+    /// <summary>
+    /// 대화 스킵 액션
+    /// </summary>
+    /// <remarks>Param 형식 : IChatList, string</remarks>
+    public record ChatSwapAction(IChatList ChatObj, int Index) : IGameAction
     {
-        if (Param is not string name)
+        public bool Invoke()
         {
-            return false;
+            ChatObj.SwapIndex(Index);
+            return true;
         }
+    }
 
-        WorldObjectFactory.Instance.RemoveObject(name);
-        return true;
+
+    /// <summary>
+    /// 튜토리얼 생성 액션
+    /// </summary>
+    /// TODO:<remarks>Param 형식 : Tutorial 인터페이스</remarks>
+    public record TutorialAction( /*ITutorial*/int Tutorial) : IGameAction
+    {
+        public bool Invoke()
+        {
+            if (Tutorial < 0) return false;
+            Debug.Log($"TUTORIAL: {Tutorial}");
+            return true;
+        }
+    }
+
+
+    /// <summary>
+    /// 위치 이동 액션
+    /// </summary>
+    /// <param name="World">이동할 위치</param>
+    /// <param name="Index">이동할 위치 내 좌표</param>
+    public record MovePositionAction(World World, int Index) : IGameAction
+    {
+        public bool Invoke()
+        {
+            if (!WorldSceneManager.Instance)
+            {
+                return false;
+            }
+
+            WorldSceneManager.Instance.MoveLocation(World, Index);
+            return true;
+        }
+    }
+
+
+    /// <summary>
+    /// 오브젝트 삭제 액션
+    /// </summary>
+    /// <remarks>Param 형식 : string</remarks>
+    public record RemoveObjectAction(string Name) : IGameAction
+    {
+        public bool Invoke()
+        {
+            WorldObjectFactory.Instance.RemoveObject(Name);
+            return true;
+        }
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using GameAction;
 
 
 public class Chat : Singleton<Chat>
@@ -16,8 +17,8 @@ public class Chat : Singleton<Chat>
     - 스킵하기를 눌러서 대사 종료 (이벤트 함수 실행, Ending 선택지 제외)
     - 대사 출력 후 로그 텍스트에 1개씩 추가
     */
-    private static int CG_COUNT = 4;
-    private static int CHOICE_COUNT = 3;
+    private static readonly int CG_COUNT = 4;
+    private static readonly int CHOICE_COUNT = 3;
     private static string CHARACTER_PATH = "Chat/Character/";    // 캐릭터 파일 경로
     private static string BACKGROUND_PATH = "Chat/Background/";   // 배경 CG 파일 경로
     
@@ -53,39 +54,38 @@ public class Chat : Singleton<Chat>
     private Queue<Paragraph> logList;   // 대화 기록 리스트
 
     /// 이벤트
-    private GameAction _gameAction;    // 대사 반응 함수
-    private GameAction[] choiceActions = new GameAction[3];    // 선택지 이벤트
+    private IGameAction _gameAction = new NotImpletedAction();    // 대사 반응 함수
+    private IGameAction[] choiceActions = new IGameAction[3];    // 선택지 이벤트
 
-    new void Awake()
+    private new void Awake()
     {
         base.Awake();
 
         // 이벤트 초기화
-        choiceActions = new GameAction[3];
+        choiceActions = new IGameAction[3];
     }
 
     ///<summary>
     ///대화 시작
     ///</summary>
-    /// <param name="obj">대사를 실행한 오브젝트</param>
-    ///<param name="_chatList">대사 리스트</param>
-    public void StartChat(GameObject obj, List<Paragraph> _chatList)
+    ///<param name="chatList">대사 리스트</param>
+    public void StartChat(List<Paragraph> chatList)
     {
         // 대화 리스트 오류
-        if (_chatList == null)
+        if (chatList == null)
         {
             Debug.Log($"CHAT DATA CANNOT FOUND");
             return;
         }
 
         // 변수키워드 적용
-        for (int i = 0; i < _chatList.Count; i++)
+        for (int i = 0; i < chatList.Count; i++)
         {
-            _chatList[i] = ReplaceKeywords(_chatList[i]);
+            chatList[i] = ReplaceKeywords(chatList[i]);
         }
         
         // 대화 리스트 할당
-        chatList = new Queue<Paragraph>(_chatList);
+        this.chatList = new Queue<Paragraph>(chatList);
         logList = new Queue<Paragraph>();   
 
         ChatUI.SetActive(true);
@@ -202,7 +202,7 @@ public class Chat : Singleton<Chat>
         button.transform.GetChild(0).GetComponent<TMP_Text>().text = choice.text;
         
         // 선택지 반응 설정
-        choiceActions[choiceNum] = ActionHandler.GetAction(choice.reaction, choice.reactionParam);        
+        choiceActions[choiceNum] = ActionHandler.Create(choice.reaction, choice.reactionParam);        
         button.SetActive(true);     // 선택지 활성화
     }
 
@@ -274,7 +274,7 @@ public class Chat : Singleton<Chat>
             
             
             // 반응 설정
-            _gameAction = ActionHandler.GetAction(talk.action, talk.actionParam);  
+            _gameAction = ActionHandler.Create(talk.action, talk.actionParam);  
         }
         
         else if(data is ChoiceParagraph choice)         // 일반 선택지

@@ -14,7 +14,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
     }
 
     /// <summary>
-    /// 싱글턴 인스턴스를 가져옵니다. 씬에 인스턴스가 없으면 자동으로 생성합니다.
+    /// 싱글턴 인스턴스를 가져옵니다.
     /// </summary>
     public static T Instance
     {

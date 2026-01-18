@@ -8,12 +8,14 @@ public class DayController : MonoBehaviour, IDayService
      * 게임 날짜 컨트롤러
      * - 데이터를 통해서 관리
      */
-    private IDataService dataService;
+    private IDataService _dataService;
     
-    [SerializeField] private Date dateInfo;
-    [SerializeField] private int date ;
+    [SerializeField] private int date;
     [SerializeField] private int time;
-        
+
+    [SerializeField] private DailyData data;
+    public DailyData Data => data;
+    public TimeData TimeData => data.dayTimes[time];
     public event Action<int> OnDateChanged;
     public event Action<int> OnTimeChanged;
     
@@ -26,7 +28,9 @@ public class DayController : MonoBehaviour, IDayService
                 return;
             date = value;
 
-            dataService.LoadDay(date);
+            // Data 갱신
+            data = _dataService.LoadDay(date);
+            
             OnDateChanged?.Invoke(value);
             Time = 0;
         }
@@ -37,10 +41,8 @@ public class DayController : MonoBehaviour, IDayService
         get => time;
         set
         {
-            if (time == value)
-                return;
             time = value;
-            
+            Debug.Log($"Day Changed {time}");
             OnTimeChanged?.Invoke(value);
         }
     }
@@ -52,12 +54,16 @@ public class DayController : MonoBehaviour, IDayService
 
     private void Start()
     {
-        dataService = ServiceProvider.Get<IDataService>();
+        _dataService = ServiceProvider.Get<IDataService>();
+        // NOTE: Debug용 날짜 즉시 로드
+        #if UNITY_EDITOR
+        Init();
+        #endif
     }
 
     public void Init()
     {
-        dataService?.LoadDay();
+        Date = 0;
     }
 
     /// <summary>
@@ -66,6 +72,11 @@ public class DayController : MonoBehaviour, IDayService
     /// <returns>날짜 정보</returns>
     public Date GetDateInfo()
     {
-        return dateInfo;
+        return data.date;
+    }
+
+    public WorldVector GetStartLocation()
+    {
+        return data.startLocation;
     }
 }

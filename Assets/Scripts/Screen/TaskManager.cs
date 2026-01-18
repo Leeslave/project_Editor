@@ -33,7 +33,7 @@ public class TaskManager : MonoBehaviour
 
         workService.OnWorkClear += () =>
         {
-            dayService.Time = 3;
+            dayService.Time = 2;
         };
     }
 

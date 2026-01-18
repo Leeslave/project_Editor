@@ -3,7 +3,7 @@ using GameService;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectController : MonoBehaviour, IObjectDataService
+public class ObjectController : MonoBehaviour, IObjectService
 {
     /**
      * 데이터 기반 월드 오브젝트 컨트롤러
