@@ -44,6 +44,9 @@ public class VoightTutorialManager : TutorialManager
         //튜토리얼 종료
         blocker.SetActive(false);
         _playingVoight = false;
+
+        // QA Hotfix
+        Manager.ForQARandom();
     }
 
     private IEnumerator UpEyeDisplay()

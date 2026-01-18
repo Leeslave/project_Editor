@@ -1,3 +1,4 @@
+using GameService;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
+using UnityEngine.SceneManagement;
 
 public class VK_ManagerScript : MonoBehaviour
 {
@@ -69,10 +71,19 @@ public class VK_ManagerScript : MonoBehaviour
     [SerializeField] private bool startTutorial;
 
     public event Action<bool> TurnOverEvent;
-    
+
+    // ForQA
+    IWorkService workService;
+    private int StageInt;
+    private bool clearFlag = false;
+
     private void Awake()
     {
         TutorialManager = FindObjectOfType<VoightTutorialManager>();
+        workService = ServiceProvider.Get<IWorkService>();
+        StageInt = workService.GetStage("VoightKampff");
+
+        if (StageInt == 0) { startTutorial = true; }
 
         PupilBone = GameObject.Find("bone_5").GetComponent<Rigidbody2D>();
         ArrowSpawnPos = GameObject.Find("ArrowSpawnPos");
@@ -96,6 +107,12 @@ public class VK_ManagerScript : MonoBehaviour
             TutorialManager.StartVoightTutorial();
         BGMCoroutine = StartCoroutine(BGM());
         StereoCoroutine = StartCoroutine(Stereo());
+    }
+
+    // 긴급 투입 함수
+    public void ForQARandom()
+    {
+        StartComplexTurn(2f, 10f, 8, 7);
     }
     private void OnDestroy()
     {
@@ -350,6 +367,12 @@ public class VK_ManagerScript : MonoBehaviour
         {
             EyeDisplayResult.text = "FEEDBACK CHECK";
             AnswerScreenResult.text = "FOCUS CHECK";
+            workService.ClearWork("VoightKampff");
+
+            yield return new WaitForSeconds(5f);
+            var loadScene = SceneManager.LoadSceneAsync("Screen", LoadSceneMode.Additive);
+            yield return new WaitUntil(() => loadScene.isDone);
+            SceneManager.UnloadSceneAsync("VoightKampff");
         }
         else
         {
@@ -386,6 +409,12 @@ public class VK_ManagerScript : MonoBehaviour
 
         EyeDisplayResult.text = "";
         AnswerScreenResult.text = "";
+
+        if (!success)
+        {
+            yield return new WaitForSeconds(2f);
+            ForQARandom();
+        }
     }
 
     #endregion
