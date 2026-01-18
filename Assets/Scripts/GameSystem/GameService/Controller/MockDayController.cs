@@ -24,7 +24,6 @@ public class MockDayController : MonoBehaviour, IDayService
             if (date == value)
                 return;
             date = value;
-
             OnDateChanged?.Invoke(value);
             Time = 0;
         }
@@ -46,10 +45,6 @@ public class MockDayController : MonoBehaviour, IDayService
     private void Awake()
     {
         ServiceProvider.Register<IDayService>(this);
-    }
-
-    private void Start()
-    {
     }
 
     public void Init()

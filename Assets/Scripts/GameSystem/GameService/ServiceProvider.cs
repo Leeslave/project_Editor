@@ -43,9 +43,17 @@ public static class ServiceProvider
     public static T Get<T>() where T : IService
     {
         Type type = typeof(T);
+        
         if (services.TryGetValue(type, out var service))
         {
             return (T)service;
+        }
+        
+        // DataService에 한해 Lazy Init 적용 (단순 POCO)
+        if (typeof(T) == typeof(IDataService))
+        {
+            var newInstance = new DataController();
+            return (T)(object)newInstance;              // T 캐스팅을 위해서 
         }
         
         throw new Exception($"Service not registered: {type.Name}");

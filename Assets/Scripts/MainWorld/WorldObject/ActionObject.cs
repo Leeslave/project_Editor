@@ -5,7 +5,7 @@ public class ActionObject : WorldObject
 {
     public string actionName;
     public string actionParam;
-    private GameAction _gameAction;
+    private IGameAction _gameAction;
     public bool loop = false;
     
     void Awake()

@@ -53,15 +53,15 @@ public class Chat : Singleton<Chat>
     private Queue<Paragraph> logList;   // 대화 기록 리스트
 
     /// 이벤트
-    private GameAction _gameAction;    // 대사 반응 함수
-    private GameAction[] choiceActions = new GameAction[3];    // 선택지 이벤트
+    private IGameAction _gameAction;    // 대사 반응 함수
+    private IGameAction[] choiceActions = new IGameAction[3];    // 선택지 이벤트
 
     new void Awake()
     {
         base.Awake();
 
         // 이벤트 초기화
-        choiceActions = new GameAction[3];
+        choiceActions = new IGameAction[3];
     }
 
     ///<summary>

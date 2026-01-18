@@ -5,20 +5,23 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public sealed class DataController : MonoBehaviour, IDataService
+public sealed class DataController : IDataService
 {
     /**
      * 데이터파일 기반 Date 정보 로더
      * - 해당 index에 따라 데이터 로드 및 제공
      */
-
-    public int index = -1;
+    private int _index;
+    
     public DailyData Data { get; private set; }
+    
     public event Action<int> OnDataChanged;
 
-    public void Awake()
+    public DataController()
     {
-        ServiceProvider.Register(this);
+        ServiceProvider.Register(this as IDataService);
+        
+        Init();
     }
     
     /// <summary>
@@ -27,9 +30,9 @@ public sealed class DataController : MonoBehaviour, IDataService
     /// <remarks>index 값에 해당하는 데이터 로드</remarks>
     public void Init()
     {
-        if (index >= 0)
+        if (_index >= 0)
         {
-            LoadDay(index);
+            LoadDay(_index);
         }
     }
 
@@ -37,16 +40,18 @@ public sealed class DataController : MonoBehaviour, IDataService
     /// 날짜 로드
     /// </summary>
     /// <param name="dateIndex">해당하는 날짜 인덱스 (default -1 : 현재 날짜)</param>
-    public void LoadDay(int dateIndex = -1)
+    public Date LoadDay(int dateIndex = -1)
     {
         if (dateIndex >= 0)
         {
-            index = dateIndex;
+            _index = dateIndex;
         }
 
-        Data = DataLoader.GetDayData(index);    // Exception 주의
+        Data = DataLoader.GetDayData(_index);    // Exception 주의
         
-        OnDataChanged?.Invoke(index);
+        OnDataChanged?.Invoke(_index);
+        
+        return GetDateInfo();
     }
 
     /// <summary>

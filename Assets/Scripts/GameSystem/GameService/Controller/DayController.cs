@@ -8,10 +8,10 @@ public class DayController : MonoBehaviour, IDayService
      * 게임 날짜 컨트롤러
      * - 데이터를 통해서 관리
      */
-    private IDataService dataService;
+    private IDataService _dataService;
     
     [SerializeField] private Date dateInfo;
-    [SerializeField] private int date ;
+    [SerializeField] private int date;
     [SerializeField] private int time;
         
     public event Action<int> OnDateChanged;
@@ -26,7 +26,7 @@ public class DayController : MonoBehaviour, IDayService
                 return;
             date = value;
 
-            dataService.LoadDay(date);
+            dateInfo = _dataService.LoadDay(date);
             OnDateChanged?.Invoke(value);
             Time = 0;
         }
@@ -52,12 +52,18 @@ public class DayController : MonoBehaviour, IDayService
 
     private void Start()
     {
-        dataService = ServiceProvider.Get<IDataService>();
+        _dataService = ServiceProvider.Get<IDataService>();
+        
+        // NOTE: Debug용 날짜 즉시 로드
+        #if UNITY_EDITOR
+        Init();
+        #endif
     }
 
     public void Init()
     {
-        dataService?.LoadDay();
+        Date = 0;
+        Time = 0;
     }
 
     /// <summary>
