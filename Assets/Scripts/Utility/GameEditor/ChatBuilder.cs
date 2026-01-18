@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -88,7 +89,8 @@ public class ChatBuilder : Singleton<ChatBuilder>
     {
         if (!onEdit) return;
         
-        DataLoader.SaveChatData(dataPath + fileName, chat);
+        var path = Path.Combine(dataPath, fileName);
+        DataLoader.SaveChatData(path, chat);
         fileName = "";
         chat = null;
         onEdit = false;

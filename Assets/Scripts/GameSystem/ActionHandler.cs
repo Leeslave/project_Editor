@@ -264,12 +264,10 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            if (!WorldSceneManager.Instance)
-            {
-                return false;
-            }
+            var location = ServiceProvider.Get<ILocationService>();
+            if (location == null) return false;
 
-            WorldSceneManager.Instance.MoveLocation(World, Index);
+            location.MoveLocation(new WorldVector(World, Index));
             return true;
         }
     }

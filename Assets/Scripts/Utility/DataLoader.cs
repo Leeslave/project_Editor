@@ -125,7 +125,7 @@ public static class DataLoader
         // json String으로 파싱
         string jsonText = JsonConvert.SerializeObject(dialogue, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 
-        FileStream fileStream = new(path, FileMode.Create, FileAccess.Write);
+        FileStream fileStream = new(CHATPATH + path, FileMode.Create, FileAccess.Write);
         byte[] bytes = Encoding.UTF8.GetBytes(jsonText);
         fileStream.Write(bytes, 0, bytes.Length);
         fileStream.Close();
@@ -135,8 +135,7 @@ public static class DataLoader
     /// 파일명으로 대화 데이터를 로드
     public static List<Paragraph> GetChatData(string fileName)
     {
-        var path = Path.Combine(CHATPATH, fileName);
-        FileStream fs = new(path, FileMode.Open);
+        FileStream fs = new(CHATPATH + fileName, FileMode.Open);
         byte[] buffer = new byte[fs.Length];
         fs.Read(buffer, 0, (int)fs.Length);
         fs.Close();

@@ -26,10 +26,10 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
         
         // NOTE: GameSystem 생성 즉시 메인 월드 진입 (방식 개선 필요)
         // 게임 시작
-        StartCoroutine(LoadNextScene());
+        StartCoroutine(LoadNextScene("MainWorld"));
     }
 
-    public IEnumerator LoadNextScene()
+    public IEnumerator LoadNextScene(string sceneName)
     {
         // 로딩씬 시작
         bool completeLoad = false;
@@ -39,7 +39,8 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
         }
         
         // 메인 씬 로드 시작
-        yield return SceneManager.LoadSceneAsync("MainWorld", LoadSceneMode.Additive);
+        yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        
         loadHandler = (service =>
         {
             if (service is IDayService)

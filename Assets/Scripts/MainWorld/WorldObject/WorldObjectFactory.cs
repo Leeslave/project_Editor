@@ -51,7 +51,7 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         ServiceProvider.Get<IDayService>(service =>
         {
             _dayService = service;
-            _dayService.OnTimeChanged += _ => Init();
+            _dayService.OnTimeChanged += Init;
             
             if (_dayService.Data != null)
             {
@@ -60,14 +60,22 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         });
     }
 
+    private void OnDestroy()
+    {
+        _dayService.OnTimeChanged -= Init;
+    }
+
+    private void Init(int data)
+    {
+        Init();
+    }
+
     public void Init()
     {
         var data = _dayService.TimeData;
-
         Clear();
         
         // Chat Object 생성
-        Debug.Log("Start Create NPC");
         foreach (var item in data.npc)
         {
             CreateNPC(item);
@@ -83,7 +91,7 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         {
             foreach (var obj in list)
             {
-                Destroy(obj);
+                Destroy(obj.gameObject);
             }
             list.Clear();
         }

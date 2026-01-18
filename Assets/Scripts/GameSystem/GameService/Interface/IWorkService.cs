@@ -32,7 +32,7 @@ namespace GameService
         /// 업무 완료 처리하기
         /// </summary>
         /// <param name="workCode">업무의 코드</param>
-        public void ClearWork(string workCode);
+        public bool ClearWork(string workCode);
 
         /// <summary>
         /// 모든 업무 완료 여부 확인

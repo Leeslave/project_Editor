@@ -1,3 +1,4 @@
+using GameAction;
 using GameService;
 using System.Collections;
 using UnityEngine;
@@ -17,7 +18,6 @@ public class TaskManager : MonoBehaviour
     
     // Inject: work service, day service
     IWorkService workService;
-    IDayService dayService;
 
     public GameObject taskWindow;       // 업무 프로그램 창
     public AnimationController taskConsoleAnimation;    //업무 대화 콘솔 애니메이션
@@ -28,13 +28,19 @@ public class TaskManager : MonoBehaviour
 
     private void Start()
     {
-        workService =  ServiceProvider.Get<IWorkService>();
-        dayService = ServiceProvider.Get<IDayService>();
+        workService = ServiceProvider.Get<IWorkService>();
 
-        workService.OnWorkClear += () =>
-        {
-            dayService.Time = 2;
-        };
+        workService.OnWorkClear += FinishWork;
+    }
+
+    private void OnDestroy()
+    {
+        workService.OnWorkClear -= FinishWork;
+    }
+
+    private void FinishWork()
+    {
+        new NextTimeAction(2).Invoke();
     }
 
     /// 업무창 활성화/비활성화
@@ -47,14 +53,7 @@ public class TaskManager : MonoBehaviour
             //closeButton.SetActive(false);
             consoleInput.gameObject.SetActive(false);   //입력창 비활성화
             // 콘솔 대사 출력
-            if (workService.IsWorkClear())
-            {
-                StartCoroutine(TaskConsoleAnimation(1));
-            }
-            else
-            {
-                StartCoroutine(TaskConsoleAnimation(0));
-            }
+            StartCoroutine(workService.IsWorkClear() ? TaskConsoleAnimation(1) : TaskConsoleAnimation(0));
         }
     }
 

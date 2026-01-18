@@ -71,7 +71,6 @@ public class TalkInput : MonoBehaviour
         }
         
         // 데이터 제출
-        Debug.Log(data.isFade);
         editor.SaveParagraph(index, data);
     }
 

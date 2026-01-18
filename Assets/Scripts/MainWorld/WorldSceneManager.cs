@@ -28,11 +28,10 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     *   - 지역 간 이동
     */
     public GameObject mainCamera;
-    private IDayService dayService;
+    private ILocationService locationService;
     
-    private List<WorldVector> _blockList = new();    // 지역 이동 제한 리스트
-    private Dictionary<World, int> _bgmCode = new(); 
-    private bool isNight => (dayService.Time > 1);
+    private int[] _bgmCode = new int[(int)World.Max]; 
+    private bool isNight;
 
     [Header("지역 효과")]
     [SerializeField] private int nightShift;
@@ -40,53 +39,39 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     [SerializeField] private FadeCurtain curtain;      // 지역 이동 효과 이미지
     public SoundManager worldBGM;  // 지역 내 배경음악
 
+    public override void Awake()
+    {
+        base.Awake();
+        for (int i = 0; i < _bgmCode.Length; i++)
+        {
+            _bgmCode[i] = i;
+        }
+    }
+
     public void Start()
     {
-        dayService = ServiceProvider.Get<IDayService>(service =>
+        ServiceProvider.Get<IDayService>(service =>
         {
-            dayService = ServiceProvider.Get<IDayService>();
-            dayService.OnDateChanged += _ => Init();
-            dayService.OnTimeChanged += _ =>
-            {
-                GetTimeData();
-                SetNight();
-            };
+            service.OnTimeChanged += SetTime;
         });
-        
-        // BGM Init
-        InitBGM();
+        ServiceProvider.Get<ILocationService>(service =>
+        {
+            locationService = service;
+            service.OnPosChanged += MoveLocation;
+            MoveLocation(locationService.currentVector);
+        });
     }
     
-    public void Init()
+    private void SetTime(int time)
     {
-        GetTimeData();
-        SetNight();
-        SetStartPos();
-    }
-
-    private void SetStartPos()
-    {
-        // 시작 지점 설정
-        var start = dayService.GetStartLocation();
-        MoveLocation(start.location, start.position);
-    }
-
-    private void GetTimeData()
-    {
-        // 지역 설정
-        var timeData = dayService.TimeData;
-        _blockList = timeData.block;
-        // BGM 매칭
-        InitBGM(timeData.bgm);
-    }
-
-    private void SetNight()
-    {
+        isNight = time > 1;
         // 시간대 외형 설정
         if (isNight)
         {
             transform.position = new Vector3(transform.position.x, nightShift, transform.position.z);
         }
+        
+        InitBGM(ServiceProvider.Get<IDayService>().TimeData.bgm);
     }
 
     #region Move
@@ -102,22 +87,16 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     /// 지역 변경
     /// </summary>
     /// <remarks>위치 기준으로 지역 이동</remarks>
-    public bool MoveLocation(World location, int position)
+    public void MoveLocation(WorldVector vector)
     {
-        // 블록 확인
-        if (_blockList.Any(p => p.location == location && p.position == position))
-        {
-            Debug.Log($"Move Blocked : {location} : {position}");
-            return false;
-        }
+        if (vector == null) return;
         
         // 위치 이동
-        int x = (int)location * 1000 + position * 100;
+        int x = (int)vector.location * 1000 + vector.position * 100;
         mainCamera.transform.position = new Vector3(x, 0, 0);
-        
+    
         // BGM 설정
-        worldBGM.SetClip(_bgmCode[location], true);
-        return true;
+        worldBGM.SetClip(_bgmCode[(int)vector.location], true);
     }
     
     #endregion
@@ -126,19 +105,30 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     private void InitBGM(List<BGMData> data = null)
     {
         // BGM 기본값 적용
-        foreach (World code in Enum.GetValues(typeof(World)))
+        for (int i = 0; i < _bgmCode.Length; i++)
         {
-            _bgmCode[code] = (int)code;
-        }
-        if (data == null)
-        {
-            return;
+            _bgmCode[i] = i;
         }
         
-        // 변경사항 적용
-        foreach (var iter in data)
+        if (data != null)
         {
-            _bgmCode[iter.location] = iter.code;
+            // 변경사항 적용
+            foreach (var iter in data)
+            {
+                _bgmCode[(int)iter.location] = iter.code;
+            }
         }
+    }
+
+    private void OnDestroy()
+    {
+        ServiceProvider.Get<IDayService>(service =>
+        {
+            service.OnTimeChanged -= SetTime;
+        });
+        ServiceProvider.Get<ILocationService>(service =>
+        {
+            service.OnPosChanged -= MoveLocation;
+        });
     }
 }

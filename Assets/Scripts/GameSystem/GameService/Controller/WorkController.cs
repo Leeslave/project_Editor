@@ -63,13 +63,13 @@ public class WorkController : MonoBehaviour, IWorkService
     /// </summary>
     /// <param name="workCode">완료할 업무 코드</param>
     /// <remarks>모든 업무 완료 시 이벤트 실행</remarks>
-    public void ClearWork(string workCode)
+    public bool ClearWork(string workCode)
     {
         var target = works.Find(work => work.code == workCode);
 
         if (target != null) target.isClear = true;
         
-        if (IsWorkClear()) OnWorkClear?.Invoke();
+        return IsWorkClear();
     }
 
     /// <summary>
@@ -78,6 +78,8 @@ public class WorkController : MonoBehaviour, IWorkService
     /// <returns>업무 완료 여부</returns>
     public bool IsWorkClear()
     {
-        return works.All(work => work.isClear);
+        bool isClear = works.All(work => work.isClear);
+        if (isClear) OnWorkClear?.Invoke();
+        return isClear;
     }
 }

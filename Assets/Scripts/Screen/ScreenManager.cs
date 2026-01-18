@@ -139,7 +139,14 @@ public class ScreenManager : Singleton<ScreenManager>
         {
             sceneName = "MainWorld";
         }
-        SceneManager.LoadScene(sceneName);
+
+        StartCoroutine(LoadWorldScene(sceneName));
+    }
+
+    private IEnumerator LoadWorldScene(string sceneName)
+    {
+        yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        SceneManager.UnloadSceneAsync("Screen");
     }
 
     /**
