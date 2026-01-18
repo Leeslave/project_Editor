@@ -4,20 +4,26 @@
         "5":
         {
             "targetText": "SCREEN-DEPLOYED",
+            "encryptTable": "0",
             "encryptKey": "HUGIN",
+            "encryptTransposeText":"DDXDAGAFAFXVFGDFAFVVFFVGAXAFDF",
             "resultText": "XFFFVFDGXFFXDAGVGDAFDVAFDAVAFA"
         },
         "8":
         {
             "targetText": "TOP-SECRET-EXPOSED",
             "encryptKey": "DEFCON",
+            "encryptTable": "2",
+            "encryptTransposeText":"FGGFDAFVRDFDAGDDFDFGFVFDAFDAGFADFDGA",
             "resultText": "FDDVADFFAFAAGVGGFDGADFDFADDDFADFFFGG"
         },
         "9":
         {
             "targetText": "THE-SUSPECT-IS-REPUBLICA",
+            "encryptTable": "3",
             "encryptKey": "FRAKTIYA",
-            "resultText": "XXXDVXGGGAAFGDFXGVAXFGGXXGFGGFFXAFAXGVGGXDGVGFXD"
+            "encryptTransposeText":"GFXXGAGGDGXGDGVGGADXGFGGXFDGGGFAGAVGXGXAVXXFDXDF",
+            "resultText": "XXDDVXGGGAAFGDGXGVAGFGGXXGXGGFFGAFAXGDGGXDGVGFXD"
         }
 
     },
@@ -25,14 +31,20 @@
     {
         "6":
         {
-            "targetText": "NEW-ERA",
+            "title": "NEW-ERA",
+            "targetText": "AXGXFXGXFGGGAAFAVGVADGDADXAAFX",
+            "decryptTable":"1",
             "decryptKey": "MUNIN",
+            "decryptTransposeText":"GDAAVXXAXAFAFGDGAAXGGFVFDGXGXA",
             "resultText": "SCREEN-ACTIVATE"
         },
-        "9":
+        "12":
         {
-            "targetText": "SOLUTION",
+            "title": "SOLUTION",
+            "targetText": "FVGVAGDAFADVDVVVGXFVFGADDAVVDGXVVDGFVFVFVAGFFVDVAD",
+            "decryptTable":"4",
             "decryptKey": "HOUND",
+            "decryptTransposeText":"DXVFFVVAGVDVGAGVDFDVVGFDAVFVAGGVDVDXFVVAFVADFVFDGA",
             "resultText": "DRIVE-NEW-POLICE-DIVISION"
         }
         

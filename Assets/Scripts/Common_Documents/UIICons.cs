@@ -35,7 +35,7 @@ public class UIICons : UIDragger
     // 0 : Folder, 1 : DB_M.DB_Docs, 2 : Text, 3 : 몰라
     public int type;
     // WindowsManager.cs
-    [NonSerialized] public Windows_M Window;
+    [SerializeField] public Windows_M Window;
     // Window상에서 배치되어 있는 LayOut의 위치 정보 저장에 사용.
     protected Tuple<int, int> CurLay = null;
     // Pooling용.

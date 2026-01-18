@@ -153,6 +153,8 @@ public class Player : MonoBehaviour
         else if (collision.CompareTag("Trace"))
         {
             if (PM.CurPattern == 2) GameClear();
+            //else if (PM.ReadStageInt() == 1 && PM.CurPattern == 0) GameClear();
+            else if (PM.ReadStageInt() == 2 && PM.CurPattern == 1) GameClear();
             else
             {
                 collision.gameObject.SetActive(false);
