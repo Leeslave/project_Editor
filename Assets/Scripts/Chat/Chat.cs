@@ -125,7 +125,20 @@ public class Chat : Singleton<Chat>
     /// </summary>
     public void SkipChat()
     {
-        NextChat();
+        // 모든 대화 이벤트 실행
+        foreach (Paragraph paragraph in chatList)
+        {
+            if (paragraph is not TalkParagraph talk)
+            {
+                continue;
+            }
+
+            if (talk.hasAction())
+            {
+                ActionHandler.Create(talk.action, talk.actionParam).Invoke();
+            }
+        }
+        FinishChat();
     }
 
     /// 대사 종료
@@ -339,24 +352,7 @@ public class Chat : Singleton<Chat>
     /// 대화 스킵 버튼
     public void OnSkipPressed()
     {
-    #if DEBUG
-        Debug.Log("Skip Pressed");
-    #endif
-        while(true)
-        {
-            // 대사 종료까지 반복
-            if (chatList.Count == 0)
-            {
-                return;
-            }
-            // 도중 선택지까지 반복
-            if (chatList.Peek().hasAction())
-            {
-                NextChat();
-                return;
-            }
-            NextChat();            
-        }
+        SkipChat();
     }
 
     /// 선택지 버튼 입력 함수
