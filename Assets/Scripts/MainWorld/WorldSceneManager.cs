@@ -5,7 +5,6 @@ using System.Linq;
 using UnityEngine;
 
 [Serializable]
-[Flags]
 public enum World {
     Street = 0,
     Bar,
