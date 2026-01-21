@@ -318,7 +318,7 @@ public class Chat : Singleton<Chat>
         {
             return;
         }
-        
+        Debug.Log(CG_COUNT);
         // 캐릭터 CG 설정
         for(int i = 0; i < CG_COUNT; i++)
         {

@@ -21,8 +21,8 @@ public class ADFGVXGameManager : MonoBehaviour
     public static ADFGVXTutorialManager ADFGVXTutorialManager;
 
     public enum SystemMode { Encryption, Decryption }
-    public static SystemMode CurrentSystemMode { get; private set; } = SystemMode.Decryption;
-
+    [SerializeField] public static SystemMode CurrentSystemMode { get; private set; } = SystemMode.Decryption;
+    [SerializeField] SystemMode _CurrentSystemMode;
     [SerializeField] public string encryptTargetText;
     [SerializeField] public string encryptTransposeKey;
     [SerializeField] public string encryptTransposeTable;
@@ -91,6 +91,7 @@ public class ADFGVXGameManager : MonoBehaviour
 
     private void Start()
     {
+        CurrentSystemMode = SystemMode.Decryption;
         if (startTutorial)
         {
             if (tutorialMode == SystemMode.Decryption)
