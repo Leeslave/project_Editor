@@ -17,7 +17,7 @@ public class TaskManager : MonoBehaviour
     */
     
     // Inject: work service, day service
-    IWorkService workService;
+    private IWorkService _workService;
 
     public GameObject taskWindow;       // 업무 프로그램 창
     public AnimationController taskConsoleAnimation;    //업무 대화 콘솔 애니메이션
@@ -28,14 +28,17 @@ public class TaskManager : MonoBehaviour
 
     private void Start()
     {
-        workService = ServiceProvider.Get<IWorkService>();
-
-        workService.OnWorkClear += FinishWork;
+        ServiceProvider.Get<IWorkService>(service =>
+        {
+            _workService = service;
+            _workService.OnWorkClear += FinishWork;
+            _workService.IsWorkClear();
+        });
     }
 
     private void OnDestroy()
     {
-        workService.OnWorkClear -= FinishWork;
+        _workService.OnWorkClear -= FinishWork;
     }
 
     private void FinishWork()
@@ -53,7 +56,7 @@ public class TaskManager : MonoBehaviour
             //closeButton.SetActive(false);
             consoleInput.gameObject.SetActive(false);   //입력창 비활성화
             // 콘솔 대사 출력
-            StartCoroutine(workService.IsWorkClear() ? TaskConsoleAnimation(1) : TaskConsoleAnimation(0));
+            StartCoroutine(_workService.IsWorkClear() ? TaskConsoleAnimation(1) : TaskConsoleAnimation(0));
         }
     }
 
@@ -77,7 +80,7 @@ public class TaskManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in workService.GetList())
+        foreach(var work in _workService.GetList())
         {
             if(work.code == consoleInput.text)
             {
