@@ -19,17 +19,17 @@ public class ADFGVXGameManager : MonoBehaviour
     public static ResultPanel ResultPanel;
     public static CurrentModePanel CurrentModePanel;
     public static ADFGVXTutorialManager ADFGVXTutorialManager;
-    
+
     public enum SystemMode { Encryption, Decryption }
     public static SystemMode CurrentSystemMode { get; private set; } = SystemMode.Decryption;
-    
+
     [SerializeField] public string encryptTargetText;
     [SerializeField] public string encryptTransposeKey;
     [SerializeField] public string encryptTransposeTable;
     [SerializeField] public string encryptTransposeText;
     [SerializeField] public string encryptResultText;
     [SerializeField] public string encryptSaveTitle;
-    
+
     [SerializeField] public string decryptTargetTitle;
     [SerializeField] public string decryptTargetText;
     [SerializeField] public string decryptTransposeKey;
@@ -37,16 +37,17 @@ public class ADFGVXGameManager : MonoBehaviour
     [SerializeField] public string decryptTransposeText;
     [SerializeField] public string decryptResultText;
     [SerializeField] public string decryptSaveTitle;
-    
+
     [SerializeField] public bool encryptClear;
     [SerializeField] public bool decryptClear;
-    
+
     [SerializeField] private bool startTutorial;
     [SerializeField] private SystemMode tutorialMode = SystemMode.Decryption;
-    
+
     private void Awake()
     {
         Instance = this;
+        ApplyAspect(Camera.main, 4f/3f);
         LoadEncrypted = FindObjectOfType<LoadEncrypted>();
         KeyPriorityTranspose = FindObjectOfType<KeyPriorityTranspose>();
         BilateralSubstitute = FindObjectOfType<BilateralSubstitute>();
@@ -57,6 +58,37 @@ public class ADFGVXGameManager : MonoBehaviour
         CurrentModePanel = FindObjectOfType<CurrentModePanel>();
         ADFGVXTutorialManager = FindObjectOfType<ADFGVXTutorialManager>();
     }
+
+    private static void ApplyAspect(Camera cam, float targetAspect)
+    {
+        if (cam == null) return;
+
+        float windowAspect = (float)Screen.width / Screen.height;
+        float scaleHeight = windowAspect / targetAspect;
+
+        Rect rect = cam.rect;
+
+        if (scaleHeight < 1.0f)
+        {
+            // 화면이 더 "가로로 넓음" -> 위/아래 레터박스
+            rect.width = 1.0f;
+            rect.height = scaleHeight;
+            rect.x = 0;
+            rect.y = (1.0f - scaleHeight) / 2.0f;
+        }
+        else
+        {
+            // 화면이 더 "세로로 김" -> 좌/우 필러박스
+            float scaleWidth = 1.0f / scaleHeight;
+            rect.width = scaleWidth;
+            rect.height = 1.0f;
+            rect.x = (1.0f - scaleWidth) / 2.0f;
+            rect.y = 0;
+        }
+
+        cam.rect = rect;
+    }
+
     private void Start()
     {
         if (startTutorial)
@@ -69,7 +101,7 @@ public class ADFGVXGameManager : MonoBehaviour
             else
             {
                 SetSystemMode(SystemMode.Encryption);
-                ADFGVXTutorialManager.StartEncryptTutorial();   
+                ADFGVXTutorialManager.StartEncryptTutorial();
             }
         }
         else
@@ -81,26 +113,26 @@ public class ADFGVXGameManager : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Alpha7))
+        if (Input.GetKeyDown(KeyCode.Alpha7))
             EncryptCheck();
-        if(Input.GetKeyDown(KeyCode.Alpha8))
+        if (Input.GetKeyDown(KeyCode.Alpha8))
             DecryptCheck();
     }
     private void TryGetStageData()
     {
         //스테이지 정보 로드
-        TextAsset stageText = Resources.Load<TextAsset>("GameData/Encrypt/ADFGVXStageData"); 
+        TextAsset stageText = Resources.Load<TextAsset>("GameData/Encrypt/ADFGVXStageData");
         ADFGVXStageData stageData = JsonConvert.DeserializeObject<ADFGVXStageData>(stageText.text);
-        
+
         IWorkService workService = ServiceProvider.Get<IWorkService>();
-        
+
         int stageNum = workService.GetStage("ADFGVX");
         if (stageNum == -1)
         {
             //Debug.LogError("스테이지 데이터 로드 실패!");
             return;
         }
-        
+
         if (stageData.Decrypt.TryGetValue(stageNum.ToString(), out var decryptData))
         {
             //Debug.Log($"이번 날짜의 Decrypt Task[targetText:{decryptData["targetText"]}, decryptKey:{decryptData["decryptKey"]}, resultText:{decryptData["resultText"]}");
@@ -116,7 +148,7 @@ public class ADFGVXGameManager : MonoBehaviour
             //Debug.Log("이번 날짜의 Decrypt Task는 없음!");
             decryptClear = true;
         }
-        
+
         if (stageData.Encrypt.TryGetValue(stageNum.ToString(), out var encryptData))
         {
             //Debug.Log($"이번 날짜의 Encrypt Task[targetText:{encryptData["targetText"]}, encryptKey:{encryptData["encryptKey"]}, resultText:{encryptData["resultText"]}");
@@ -135,7 +167,7 @@ public class ADFGVXGameManager : MonoBehaviour
 
     public static void ToggleSystemMode()
     {
-        switch(CurrentSystemMode)
+        switch (CurrentSystemMode)
         {
             case SystemMode.Decryption:
                 CurrentSystemMode = SystemMode.Encryption;
@@ -150,12 +182,12 @@ public class ADFGVXGameManager : MonoBehaviour
                 LJWConverter.Instance.PositionTransform(false, 0.5f, 0.5f, new Vector3(-15f, 50f, 5f), DisplayDecrypted.transform);
                 LJWConverter.Instance.PositionTransform(false, 0.0f, 0.5f, new Vector3(-15f, 100f, 5f), WritePlain.transform);
                 LJWConverter.Instance.PositionTransform(false, 1.0f, 0.5f, new Vector3(-15f, 0f, 5f), LoadEncrypted.transform);
-                LJWConverter.Instance.PositionTransform(false, 0.5f, 0.5f, new Vector3(-15f, -62f, 5f),DisplayEncrypted.transform);
+                LJWConverter.Instance.PositionTransform(false, 0.5f, 0.5f, new Vector3(-15f, -62f, 5f), DisplayEncrypted.transform);
                 CutAvailabilityInputForWhile(0f, 1.5f);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
-        }    
+        }
     }
     private static void SetSystemMode(SystemMode target)
     {
@@ -183,13 +215,13 @@ public class ADFGVXGameManager : MonoBehaviour
     public static void CutAvailabilityInputForWhile(float wait, float duration)
     {
         LoadEncrypted.CutAvailabilityInputForWhile(wait, duration);
-        
+
         KeyPriorityTranspose.KeyInputField.CutAvailabilityForWhile(wait, duration);
-        if(CurrentSystemMode != SystemMode.Decryption)
+        if (CurrentSystemMode != SystemMode.Decryption)
             KeyPriorityTranspose.ReverseTransposeLines.CutAvailabilityForWhile(wait, duration);
         else
             KeyPriorityTranspose.ReverseTransposeLines.SetAvailability(false);
-        
+
         DisplayDecrypted.CutAvailabilityInputForWhile(wait, duration);
         BilateralSubstitute.CutAvailabilityInputForWhile(wait, duration);
         WritePlain.CutAvailabilityInputForWhile(wait, duration);
@@ -212,15 +244,15 @@ public class ADFGVXGameManager : MonoBehaviour
         //기초 데이터
         string targetText = encryptTargetText;
         string transposeKey = encryptTransposeKey;
-        
+
         //키 순위 결정
-        int[] keyPriority = new int[transposeKey.Length]; 
-        for(int i = 0; i < transposeKey.Length; i++)
+        int[] keyPriority = new int[transposeKey.Length];
+        for (int i = 0; i < transposeKey.Length; i++)
             keyPriority[i] = 1;
         for (int i = 0; i < transposeKey.Length; i++)
             for (int j = 0; j < transposeKey.Length; j++)
             {
-                if (i == j) 
+                if (i == j)
                     continue;
                 if (transposeKey[i] > transposeKey[j])
                     keyPriority[i]++;
@@ -242,7 +274,7 @@ public class ADFGVXGameManager : MonoBehaviour
             for (int j = 0; j < substitutionTable.Length; j++)
                 if (targetText[i] == substitutionTable[j])
                     transposeText += adfgvx[j / 6] + adfgvx[j % 6];
- 
+
         //키 순위 전치
         string[] orderedText = new string[keyPriority.Length];
         for (int i = 0; i < orderedText.Length; i++)
@@ -253,8 +285,8 @@ public class ADFGVXGameManager : MonoBehaviour
         string resultText = "";
         for (int i = 0; i < orderedText.Length; i++)
             resultText += orderedText[i];
-        
-        
+
+
         //Debug.Log($"전치 결과: {transposeText.Aggregate("", (current, i) => current + i + " ")}");
         //Debug.Log($"암호화 결과: {resultText.Aggregate("", (current, i) => current + i + " ")}");
     }
@@ -262,22 +294,22 @@ public class ADFGVXGameManager : MonoBehaviour
     {
         //기초 데이터
         string targetText = decryptTargetText;
-        string transposeKey = decryptTransposeKey; 
-        
+        string transposeKey = decryptTransposeKey;
+
         //키 순위 결정
-        int[] keyPriority = new int[transposeKey.Length]; 
-        for(int i = 0; i < transposeKey.Length; i++)
+        int[] keyPriority = new int[transposeKey.Length];
+        for (int i = 0; i < transposeKey.Length; i++)
             keyPriority[i] = 1;
         for (int i = 0; i < transposeKey.Length; i++)
-        for (int j = 0; j < transposeKey.Length; j++)
-        {
-            if (i == j) 
-                continue;
-            if (transposeKey[i] > transposeKey[j])
-                keyPriority[i]++;
-            if (transposeKey[i] == transposeKey[j] && i < j)
-                keyPriority[j]++;
-        }
+            for (int j = 0; j < transposeKey.Length; j++)
+            {
+                if (i == j)
+                    continue;
+                if (transposeKey[i] > transposeKey[j])
+                    keyPriority[i]++;
+                if (transposeKey[i] == transposeKey[j] && i < j)
+                    keyPriority[j]++;
+            }
 
         //키 순위 전치
         string[] orderedText = new string[keyPriority.Length];
@@ -288,14 +320,14 @@ public class ADFGVXGameManager : MonoBehaviour
         for (int i = 0; i < targetText.Length / keyPriority.Length; i++)
             for (int j = 0; j < keyPriority.Length; j++)
                 transposedText += orderedText[j][i];
-        
+
         //치환 테이블 로드
         string filePath = Application.dataPath + "/Resources/GameData/Encrypt/Tables/Table_" + decryptTransposeTable + ".txt";
         FileInfo txtFile = new(filePath);
         StreamReader reader = new(filePath);
         string substitutionTable = reader.ReadToEnd();
         reader.Close();
-        
+
         //이중 문자 치환
         Dictionary<char, int> dic = BilateralSubstitute.LineRowDecode;
         string resultText = "";
@@ -306,7 +338,7 @@ public class ADFGVXGameManager : MonoBehaviour
             resultText += substitutionTable[row + line * 6];
             transposedText = transposedText[2..];
         }
-        
+
         //Debug.Log($"전치 결과: {transposedText}");
         //Debug.Log($"복호화 결과: {resultText}");
     }

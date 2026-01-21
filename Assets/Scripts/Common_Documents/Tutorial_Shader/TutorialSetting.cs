@@ -33,8 +33,8 @@ public class TutorialSetting : MonoBehaviour
         public GameObject TargetObj;
         // 조명할 Object가 Instantiate등의 이유로 사전에 넣을 수 없을 경우
         // 부모 Object를 대신 넣어 지정함
-        public List<int> ChildInd = new List<int>();   
-        
+        public List<int> ChildInd = new List<int>();
+
         [Header("---- 설명 문구 ----")]
         [Multiline(3)]
         public string Text;
@@ -93,17 +93,22 @@ public class TutorialSetting : MonoBehaviour
 
     private void Awake()
     {
+
+    }
+
+    void Start()
+    {
         instance = this;
         //gameObject.SetActive(false);
         BoxBorder = BoxTuto.GetComponent<TutorialBorder>(); CircleBorder = CircleTuto.GetComponent<TutorialBorder>();
-        if (AutoStart) Invoke("ActiveTutorial",0.2f);
+        if (AutoStart) Invoke("ActiveTutorial", 0.2f);
     }
 
     public bool GoNextTutorial()
     {
-        var cnt = TutorialList[0]; if(cnt.IsRemove) TutorialList.RemoveAt(0);
+        var cnt = TutorialList[0]; if (cnt.IsRemove) TutorialList.RemoveAt(0);
         foreach (var k in cnt.EndEvent) k.Invoke(null);
-        if ((cnt.GoNextTuto || !gameObject.activeSelf) && TutorialList.Count!=0) ActiveTutorial();
+        if ((cnt.GoNextTuto || !gameObject.activeSelf) && TutorialList.Count != 0) ActiveTutorial();
         else gameObject.SetActive(false);
 
         return true;
@@ -123,7 +128,7 @@ public class TutorialSetting : MonoBehaviour
         CircleTuto.SetActive(false);
         TextBox.parent.gameObject.SetActive(false);
         yield return new WaitForSeconds(TutorialList[0].StartGap);
-        
+
         Time.timeScale = TutorialList[0].TimeScale;
 
         foreach (var k in TutorialList[0].DisableObjects) k.SetActive(false);
@@ -133,7 +138,12 @@ public class TutorialSetting : MonoBehaviour
             TutorialList[0].TargetObj = TutorialList[0].TargetObj.transform.GetChild(k).gameObject;
 
 
-        if (TutorialList[0].TargetObj != null) { Vector2 Pos = Camera.main.WorldToScreenPoint(TutorialList[0].TargetObj.transform.position); TargetPos = Pos; }
+        if (TutorialList[0].TargetObj != null)
+        {
+            //Vector2 Pos = Camera.main.WorldToScreenPoint(TutorialList[0].TargetObj.transform.position); TargetPos = Pos; 
+            var cam = Camera.main;
+            TargetPos = WorldToScreenInCameraRect(cam, TutorialList[0].TargetObj.transform.position);
+        }
 
         if (TutorialList[0].ActiveTarget)
         {
@@ -168,10 +178,10 @@ public class TutorialSetting : MonoBehaviour
     public void ResetTarget()
     {
         CurActive.ChangeTarget(TutorialList[0].TargetObj);
-        ReNewTargetPos(TutorialList[0].TargetObj.transform);
+        //ReNewTargetPos(TutorialList[0].TargetObj.transform);
     }
 
-    
+
     public void OnPointer()
     {
         CurActive.InActiveRay();
@@ -188,12 +198,13 @@ public class TutorialSetting : MonoBehaviour
         List<EventTrigger.TriggerEvent> Actions = new List<EventTrigger.TriggerEvent>();
         public EventActions(EventTrigger TargetTrigger, EventTrigger trigger, TutoList.EventData Data, bool AddExtra, Func<bool> act)
         {
-            try {
+            try
+            {
                 Type = Data.TriggerType;
                 if (TargetTrigger != null && AddExtra) foreach (var k in TargetTrigger.triggers)
-                    {
-                        if (k.eventID == Type) Actions.Add(k.callback);
-                    }
+                {
+                    if (k.eventID == Type) Actions.Add(k.callback);
+                }
 
                 EventTrigger.Entry entry = new EventTrigger.Entry();
                 entry.eventID = Type;
@@ -213,7 +224,7 @@ public class TutorialSetting : MonoBehaviour
                 });
                 trigger.triggers.Add(entry);
             }
-            catch(System.Exception e)
+            catch (System.Exception e)
             {
                 print($"{e} At Add");
             }
@@ -222,16 +233,32 @@ public class TutorialSetting : MonoBehaviour
 
     public void ReNewTargetPos(Transform NewPos)
     {
-        TargetPos = Camera.main.WorldToScreenPoint(NewPos.position);
+        //TargetPos = Camera.main.WorldToScreenPoint(NewPos.position);
+        var cam = Camera.main;
+        TargetPos = WorldToScreenInCameraRect(Camera.main, NewPos.position);
     }
-    
+
+    public static Vector2 WorldToScreenInCameraRect(Camera cam, Vector3 worldPos)
+    {
+        if (cam == null) return Vector2.zero;
+
+        // 0~1 viewport 좌표
+        Vector3 vp = cam.WorldToViewportPoint(worldPos);
+
+        // cam.rect(0~1) 반영해서 Screen 픽셀 좌표로
+        float x = (cam.rect.x + vp.x * cam.rect.width) * Screen.width;
+        float y = (cam.rect.y + vp.y * cam.rect.height) * Screen.height;
+
+        return new Vector2(x, y);
+    }
+
     public void SetEvent(EventTrigger trigger)
     {
         if (TutorialList[0].TargetObj == null) return;
         EventTrigger cnt = TutorialList[0].TargetObj.GetComponent<EventTrigger>();
         foreach (var i in TutorialList[0].Events)
         {
-             new EventActions(cnt,trigger,i,i.AddTargetAction,GoNextTutorial);
+            new EventActions(cnt, trigger, i, i.AddTargetAction, GoNextTutorial);
         }
     }
 
