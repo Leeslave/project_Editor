@@ -85,6 +85,8 @@ public class PatternManager : MonoBehaviour
     public int ReadStageInt() { return StageInt; }
     private void Awake()
     {
+        player.Init();
+        ApplyAspect(MainCam, 4f/3f);
         AD = GetComponent<Audio_DG>();
         for (int i = 0; i < 26; i++)            // SPCNT?? x?? ???????? x?? 1?? ???????? ??? ????? SPT(??), SPB(??)?? ??????. ?? ?? ??? ?? ?????? y?? ?????? 18
         {
@@ -110,8 +112,36 @@ public class PatternManager : MonoBehaviour
         catch { }
       
         if (StageInt == 0) { TutorialObject.SetActive(true); player.InitHP = 2; }
+    }
 
-        player.Init();
+    private static void ApplyAspect(Camera cam, float targetAspect)
+    {
+        if (cam == null) return;
+
+        float windowAspect = (float)Screen.width / Screen.height;
+        float scaleHeight = windowAspect / targetAspect;
+
+        Rect rect = cam.rect;
+
+        if (scaleHeight < 1.0f)
+        {
+            // 화면이 더 "가로로 넓음" -> 위/아래 레터박스
+            rect.width = 1.0f;
+            rect.height = scaleHeight;
+            rect.x = 0;
+            rect.y = (1.0f - scaleHeight) / 2.0f;
+        }
+        else
+        {
+            // 화면이 더 "세로로 김" -> 좌/우 필러박스
+            float scaleWidth = 1.0f / scaleHeight;
+            rect.width = scaleWidth;
+            rect.height = 1.0f;
+            rect.x = (1.0f - scaleWidth) / 2.0f;
+            rect.y = 0;
+        }
+
+        cam.rect = rect;
     }
 
     private void Start()

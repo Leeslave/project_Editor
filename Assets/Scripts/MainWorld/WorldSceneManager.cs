@@ -69,6 +69,10 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
         {
             transform.position = new Vector3(transform.position.x, nightShift, transform.position.z);
         }
+        else
+        {
+            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+        }
         
         InitBGM(ServiceProvider.Get<IDayService>().TimeData.bgm);
     }

@@ -167,11 +167,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   works:
-  - code: VoightKampff
-    stage: 0
+  - code: ADFGVX
+    stage: 6
     isClear: 0
-  - code: ADFGVX_ET
-    stage: 12
+  - code: Maze
+    stage: 0
     isClear: 0
 --- !u!1 &350339641
 GameObject:
@@ -258,13 +258,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2011681327}
-        m_TargetAssemblyTypeName: MockDayController, Assembly-CSharp
-        m_MethodName: Init
-        m_Mode: 1
+        m_TargetAssemblyTypeName: DayController, Assembly-CSharp
+        m_MethodName: set_Date
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 5
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -664,14 +664,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 2011681325}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cf65307258e4f9689f326a8bff08986, type: 3}
+  m_Script: {fileID: 11500000, guid: bb215947b67944e5ea1b34e159f917bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dateInfo:
-    year: 0
-    month: 0
-    day: 0
-  date: 7
+  date: 0
   time: 0
   data:
     date:
@@ -679,7 +675,7 @@ MonoBehaviour:
       month: 0
       day: 0
     startLocation:
-      location: 2
+      location: 0
       position: 0
       name: 
     workList: []
@@ -687,34 +683,9 @@ MonoBehaviour:
     - daytime:
         hour: 
         minute: 
-      npc:
-      - name: "\uD074\uB85C\uBC84\uC9C0\uB871"
-        objectType: Nametag
-        positions:
-        - location: 6
-          position: 3
-          name: clover
-        anchor:
-        - x: 0.3
-          y: -0.2
-          size: 1
-        chat: []
-        onAwake: 
-      action:
-      - positions:
-        - location: 1
-          position: 0
-          name: 
-        anchor:
-        - x: 0
-          y: 0
-          size: 1
-        actionName: NEXTDAY
-        actionParam: 0
-      block:
-      - location: 0
-        position: 2
-        name: 
+      npc: []
+      action: []
+      block: []
       bgm: []
     - daytime:
         hour: 
@@ -737,3 +708,47 @@ MonoBehaviour:
       action: []
       block: []
       bgm: []
+--- !u!1 &2022580290
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2022580292}
+  - component: {fileID: 2022580291}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2022580291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022580290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b31e6adb1d4a412db9fc5b9fac201dcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2022580292
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022580290}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 32.09531, y: 3.7567449, z: -0.5155175}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

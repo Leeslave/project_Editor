@@ -383,18 +383,8 @@ public class PlayerMove : MonoBehaviour
             }
             else           // 클리어
             {
-                if(GameSystem.Instance != null)
-                {
-                    workService.ClearWork("Maze");
-                    StartCoroutine(GameClear());
-                    // if (TutorialSetting.instance != null) SceneManager.LoadScene("Screen");
-                    // else SceneManager.LoadScene("Document");
-                }
-                else
-                {
-                    if (TutorialSetting.instance != null) SceneManager.LoadScene("Screen");
-                    else SceneManager.LoadScene("Document");
-                }
+                workService.ClearWork("Maze");
+                StartCoroutine(GameClear());
             }
         }
     }

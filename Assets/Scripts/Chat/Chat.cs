@@ -50,8 +50,10 @@ public class Chat : Singleton<Chat>
     
     [Space(10)] 
     [Header("대화 상태")]
+    private Paragraph currentParagraph;
     private Queue<Paragraph> chatList;   // 대화 리스트
     private Queue<Paragraph> logList;   // 대화 기록 리스트
+    private bool OnTalkAnimate;
 
     /// 이벤트
     private IGameAction _gameAction = new NotImpletedAction();    // 대사 반응 함수
@@ -68,24 +70,24 @@ public class Chat : Singleton<Chat>
     ///<summary>
     ///대화 시작
     ///</summary>
-    ///<param name="chatList">대사 리스트</param>
-    public void StartChat(List<Paragraph> chatList)
+    ///<param name="chats">대사 리스트</param>
+    public void StartChat(List<Paragraph> chats)
     {
         // 대화 리스트 오류
-        if (chatList == null)
+        if (chats == null)
         {
             Debug.Log($"CHAT DATA CANNOT FOUND");
             return;
         }
 
         // 변수키워드 적용
-        for (int i = 0; i < chatList.Count; i++)
+        for (int i = 0; i < chats.Count; i++)
         {
-            chatList[i] = ReplaceKeywords(chatList[i]);
+            chats[i] = ReplaceKeywords(chats[i]);
         }
         
         // 대화 리스트 할당
-        this.chatList = new Queue<Paragraph>(chatList);
+        this.chatList = new Queue<Paragraph>(chats);
         logList = new Queue<Paragraph>();   
 
         ChatUI.SetActive(true);
@@ -98,7 +100,18 @@ public class Chat : Singleton<Chat>
     public void NextChat()
     {      
         // 대사 진행중이면 종료
-        StopAllCoroutines();  
+        if (OnTalkAnimate)
+        {
+            StopAllCoroutines(); 
+            OnTalkAnimate = false;
+            
+            // 대사 즉시 표시
+            if (currentParagraph is TalkParagraph talk)
+            {
+                text.text = talk.text;
+                return;
+            }
+        } 
 
         // 이전 대사 반응 함수 실행
         if (logList.Count != 0)
@@ -113,10 +126,10 @@ public class Chat : Singleton<Chat>
             return;
         }
 
-        Paragraph paragraph = chatList.Dequeue(); // 현재 대사 불러오기
-        AddLog(paragraph);
+        currentParagraph = chatList.Dequeue(); // 현재 대사 불러오기
+        AddLog(currentParagraph);
 
-        SetChat(paragraph);  // 대사 타입에 따라 설정
+        SetChat(currentParagraph);  // 대사 타입에 따라 설정
     }
 
 
@@ -305,7 +318,7 @@ public class Chat : Singleton<Chat>
         {
             return;
         }
-        
+        Debug.Log(CG_COUNT);
         // 캐릭터 CG 설정
         for(int i = 0; i < CG_COUNT; i++)
         {
@@ -319,7 +332,7 @@ public class Chat : Singleton<Chat>
             }
                 
             //CG 설정
-            if (CG[i].sprite == null || character.fileName != CG[i].sprite.name)
+            if (!CG[i].sprite || character.fileName != CG[i].sprite.name)
             {
                 CG[i].sprite = GetSprite(CHARACTER_PATH + character.fileName, character.index);
             }
@@ -327,13 +340,13 @@ public class Chat : Singleton<Chat>
         }
         
         // 배경 설정
-        if (data.background == null || data.background == "none")
+        if (data.background is null or "none")
         {
             background.gameObject.SetActive(false);
         }
         else
         {
-            if (background.sprite == null || background.sprite.name != data.background)
+            if (!background.sprite || background.sprite.name != data.background)
             {
                 background.sprite = GetSprite(BACKGROUND_PATH + data.background); // 배경 이미지 설정 
             }
@@ -376,6 +389,8 @@ public class Chat : Singleton<Chat>
     /// <remarks>대사 delay, 변수값, SFX 적용</remarks>
     IEnumerator TextAnimation(TalkParagraph paragraph)
     {
+        OnTalkAnimate = true;
+        
         // 대사 초기화
         text.text = "";
         Coroutine sfxCoroutine = null;
@@ -387,17 +402,27 @@ public class Chat : Singleton<Chat>
         }
         
         // 한 글자씩 애니메이션
-        foreach (var t in paragraph.text)
+        try
         {
-            // 텍스트 추가
-            text.text += t;
-            yield return new WaitForSeconds(paragraph.textDelay / 10);
+            foreach (char t in paragraph.text)
+            {
+                // 텍스트 추가
+                text.text += t;
+                yield return new WaitForSeconds(paragraph.textDelay / 10);
+            }
         }
-        StopCoroutine(sfxCoroutine);
+        finally
+        {
+            if (sfxCoroutine != null)
+            {
+                StopCoroutine(sfxCoroutine);
+            }
+            OnTalkAnimate = false;
+        }
     }
 
 
-    IEnumerator TextSFX(float delay)
+    private IEnumerator TextSFX(float delay)
     {
         while (true)
         {
@@ -419,28 +444,28 @@ public class Chat : Singleton<Chat>
         StringBuilder sb = new();
         string[] keywords = { "{{year}}", "{{month}}", "{{day}}", "{{renown}}" };
 
-        if (data is TalkParagraph talk)
+        switch (data)
         {
-            sb.Append(talk.text);
-            ProcessKeywords(sb, keywords);
-            talk.text = sb.ToString();
-            return talk;
-        }
-        if (data is ChoiceParagraph choice)
-        {
-            for(int i = 0; i < CHOICE_COUNT; i++)
-            {
-                Choice newChoice = choice.choiceList[i];
-                sb.Clear();
-                sb.Append(newChoice.text);
+            case TalkParagraph talk:
+                sb.Append(talk.text);
                 ProcessKeywords(sb, keywords);
-                newChoice.text = sb.ToString();
-                
-                choice.choiceList[i] = newChoice;
-            }
-            return choice;
+                talk.text = sb.ToString();
+                return talk;
+            case ChoiceParagraph choice:
+                for(int i = 0; i < CHOICE_COUNT; i++)
+                {
+                    Choice newChoice = choice.choiceList[i];
+                    sb.Clear();
+                    sb.Append(newChoice.text);
+                    ProcessKeywords(sb, keywords);
+                    newChoice.text = sb.ToString();
+            
+                    choice.choiceList[i] = newChoice;
+                }
+                return choice;
+            default:
+                return data; // 다른 타입의 Paragraph는 그대로 반환
         }
-        return data; // 다른 타입의 Paragraph는 그대로 반환
     }
     
     /// <summary>
@@ -452,11 +477,13 @@ public class Chat : Singleton<Chat>
     {
         foreach (string keyword in keywords)
         {
-            if (sb.ToString().Contains(keyword))
+            if (!sb.ToString().Contains(keyword))
             {
-                string value = GetVariableValue(keyword);
-                sb.Replace(keyword, value);
+                continue;
             }
+
+            string value = GetVariableValue(keyword);
+            sb.Replace(keyword, value);
         }
     }
 
@@ -497,7 +524,7 @@ public class Chat : Singleton<Chat>
         Sprite result = Resources.Load<Sprite>(filePath);
         
     #if UNITY_EDITOR
-        if (result == null)
+        if (!result)
         {
             Debug.Log($"Image Load Failed : {filePath}");
         }
@@ -528,13 +555,13 @@ public class Chat : Singleton<Chat>
         }
 
         // 파일 번호 오류
-        if (result.Length < i)
+        if (result.Length >= i)
         {
-        #if UNITY_EDITOR
-            Debug.Log($"Image Load Failed : {filePath} with {i}");
-        #endif
-            i = 0;
+            return result[i];
         }
+        
+        Debug.Log($"Image Load Failed : {filePath} with {i}");
+        i = 0;
         return result[i];
     }
 }

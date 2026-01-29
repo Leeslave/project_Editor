@@ -57,13 +57,44 @@ public class MakeTile : MonoBehaviour
 
     void Awake()
     {
+        ApplyAspect(Camera.main, 4f/3f);
         workService = ServiceProvider.Get<IWorkService>();
         
         Difficulty = workService.GetStage("Maze");
         if (Difficulty > 0) GetDifficulty();
         else MakeTutorial();
-
+        
         Player.transform.position = new Vector3(Maze_Inf.Player_X * Move_X + 5, Maze_Inf.Player_Y * Move_Y + 5f, 0);        
+    }
+
+    private static void ApplyAspect(Camera cam, float targetAspect)
+    {
+        if (cam == null) return;
+
+        float windowAspect = (float)Screen.width / Screen.height;
+        float scaleHeight = windowAspect / targetAspect;
+
+        Rect rect = cam.rect;
+
+        if (scaleHeight < 1.0f)
+        {
+            // 화면이 더 "가로로 넓음" -> 위/아래 레터박스
+            rect.width = 1.0f;
+            rect.height = scaleHeight;
+            rect.x = 0;
+            rect.y = (1.0f - scaleHeight) / 2.0f;
+        }
+        else
+        {
+            // 화면이 더 "세로로 김" -> 좌/우 필러박스
+            float scaleWidth = 1.0f / scaleHeight;
+            rect.width = scaleWidth;
+            rect.height = 1.0f;
+            rect.x = (1.0f - scaleWidth) / 2.0f;
+            rect.y = 0;
+        }
+
+        cam.rect = rect;
     }
 
     void MakeTutorial()
