@@ -2,29 +2,26 @@ Shader "UI/TutorialDimShader"
 {
     Properties
     {
-        // UI Sprite 기본 텍스처(안 써도 되지만 UI Image 요구사항 때문에 둠)
-        [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
+        _DimColor ("Dim Color (RGBA)", Color) = (0,0,0,0.75)
+        _OutlineColor ("Outline Color (RGBA)", Color) = (1,1,1,1)
 
-        // 딤 컬러(일반적으로 검정) + 알파는 _DimAlpha로 제어
-        _Color ("Tint", Color) = (0,0,0,1)
+        // 0 = Circle, 1 = Rect
+        _ShapeType ("Shape Type (0 Circle, 1 Rect)", Float) = 1
 
-        // 구멍 중심 (0~1, Screen UV)
-        _Center ("Center (UV)", Vector) = (0.5, 0.5, 0, 0)
+        // UV(0~1)
+        _HoleCenter ("Hole Center (UV)", Vector) = (0.5, 0.5, 0, 0)
 
-        // 원형 반지름 (UV 스케일)
-        _Radius ("Radius (UV)", Float) = 0.2
+        // Rect: (widthUV, heightUV), Circle: (radiusUV, unused)
+        _HoleSize ("Hole Size (Rect wh UV / Circle r UV)", Vector) = (0.2, 0.2, 0, 0)
 
-        // 사각형 half size (UV 스케일)
-        _RectHalfSize ("Rect Half Size (UV)", Vector) = (0.2, 0.1, 0, 0)
+        // Rect only (UV). 0이면 직각
+        _CornerRadius ("Corner Radius (UV)", Float) = 0.0
 
-        // 0 = Circle, 1 = Square
-        _Shape ("Shape", Float) = 0
+        // UV 두께 (픽셀 고정으로 쓰고 싶으면 C#에서 px->uv 변환해서 넣기)
+        _OutlineThickness ("Outline Thickness (UV)", Float) = 0.005
 
-        // 경계 부드러움 (UV 스케일)
-        _Feather ("Feather (UV)", Float) = 0.01
-
-        // 딤 강도 (0~1). 1이면 완전 검정
-        _DimAlpha ("Dim Alpha", Range(0,1)) = 0.75
+        // UV feather (부드러운 가장자리). C#에서 px->uv 변환 가능
+        _Feather ("Feather (UV)", Float) = 0.002
     }
 
     SubShader
@@ -38,12 +35,10 @@ Shader "UI/TutorialDimShader"
             "CanUseSpriteAtlas"="True"
         }
 
-        // UI는 알파 블렌딩
-        Blend SrcAlpha OneMinusSrcAlpha
         Cull Off
-        Lighting Off
         ZWrite Off
         ZTest [unity_GUIZTestMode]
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
@@ -55,79 +50,99 @@ Shader "UI/TutorialDimShader"
             struct appdata_t
             {
                 float4 vertex   : POSITION;
-                float4 color    : COLOR;
                 float2 texcoord : TEXCOORD0;
+                float4 color    : COLOR;
             };
 
             struct v2f
             {
-                float4 vertex   : SV_POSITION;
-                fixed4 color    : COLOR;
-                float2 uv       : TEXCOORD0;
-                float4 screenPos : TEXCOORD1;
+                float4 vertex : SV_POSITION;
+                float2 uv     : TEXCOORD0;
+                float4 color  : COLOR;
             };
 
-            sampler2D _MainTex;
-            fixed4 _Color;
+            fixed4 _DimColor;
+            fixed4 _OutlineColor;
 
-            float2 _Center;
-            float _Radius;
-            float2 _RectHalfSize;
-            float _Shape;
+            float _ShapeType;
+            float4 _HoleCenter;
+            float4 _HoleSize;
+            float _CornerRadius;
+            float _OutlineThickness;
             float _Feather;
-            float _DimAlpha;
 
             v2f vert(appdata_t v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.texcoord;
-                o.color = v.color * _Color;
-
-                // ScreenPos: 화면 UV 계산에 사용
-                o.screenPos = ComputeScreenPos(o.vertex);
+                o.color = v.color;
                 return o;
             }
 
-            // 사각형 SDF (axis-aligned)
-            float sdBox(float2 p, float2 b)
+            // Signed Distance: Rounded Rect (centered at origin)
+            float sdRoundBox(float2 p, float2 halfSize, float r)
             {
-                // p: 중심 기준 좌표, b: half-size
-                float2 d = abs(p) - b;
-                return length(max(d, 0.0)) + min(max(d.x, d.y), 0.0);
+                float2 q = abs(p) - halfSize + r;
+                return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
             }
 
             fixed4 frag(v2f i) : SV_Target
             {
-                // 화면 UV(0~1). Overlay UI Image가 화면 전체를 덮는다는 전제
-                float2 suv = (i.screenPos.xy / i.screenPos.w);
+                float2 uv = i.uv;
 
-                // p: 구멍 중심 기준 좌표(uv 단위)
-                float2 p = suv - _Center;
+                float2 center = _HoleCenter.xy; // UV
+                float2 p = uv - center;
 
-                // 거리(SDF): 내부면 음수/0, 외부면 양수
-                float d;
-                if (_Shape < 0.5)
+                // === Circle Aspect Correction ===
+                // 원이 화면 종횡비 때문에 타원으로 보이는 걸 방지
+                // x축을 (width/height)만큼 스케일
+                float aspect = _ScreenParams.x / max(1.0, _ScreenParams.y);
+                float2 pCircle = float2(p.x * aspect, p.y);
+
+                float feather = max(_Feather, 1e-6);
+                float thick   = max(_OutlineThickness, 0.0);
+
+                float dist;
+
+                // 0 = Circle, 1 = Rect
+                if (_ShapeType < 0.5)
                 {
-                    // Circle: 길이 - 반지름
-                    d = length(p) - _Radius;
+                    // Circle: _HoleSize.x = radius (UV 기준)
+                    float radius = max(_HoleSize.x, 0.0);
+                    dist = length(pCircle) - radius;
                 }
                 else
                 {
-                    // Square: 박스 SDF
-                    d = sdBox(p, _RectHalfSize);
+                    // Rect: _HoleSize.xy = width/height (UV 기준)
+                    float2 halfSize = max(_HoleSize.xy * 0.5, 0.0);
+
+                    // corner radius는 halfSize보다 클 수 없게 clamp
+                    float r = clamp(_CornerRadius, 0.0, min(halfSize.x, halfSize.y));
+                    dist = sdRoundBox(p, halfSize, r);
                 }
 
-                // feather로 경계 부드럽게:
-                // d <= 0 : 구멍 내부(투명)
-                // d > 0  : 딤 영역(불투명)
-                // 경계 근처는 smoothstep로 그라데이션
-                float feather = max(_Feather, 1e-6);
-                float mask = smoothstep(0.0, feather, d); // 0(내부) -> 1(외부)
+                // inside: dist < 0
+                float inside = 1.0 - smoothstep(0.0, feather, dist);
 
-                fixed4 col = i.color;
-                // 딤 알파 적용: 내부는 0, 외부는 _DimAlpha
-                col.a *= (mask * _DimAlpha);
+                // outline: 경계(dist=0) 주변 띠
+                float outline = 1.0 - smoothstep(thick, thick + feather, abs(dist));
+
+                // Dim: 기본 딤, 구멍(inside)은 투명
+                fixed4 dimCol = _DimColor;
+                dimCol.a *= (1.0 - inside);
+
+                // Outline
+                fixed4 outCol = _OutlineColor;
+                outCol.a *= outline;
+
+                // Composite (dim + outline)
+                fixed4 col = dimCol;
+                col.rgb = lerp(col.rgb, outCol.rgb, outCol.a);
+                col.a = saturate(col.a + outCol.a);
+
+                // UI Vertex Color 곱(필요 없으면 제거해도 됨)
+                col *= i.color;
 
                 return col;
             }

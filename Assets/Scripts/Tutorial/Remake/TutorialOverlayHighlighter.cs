@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class TutorialOverlayHighlighter : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class TutorialOverlayHighlighter : MonoBehaviour
     [Header("Modules")]
     [SerializeField] private TutorialHighlightConfig config;
     [SerializeField] private TutorialDimHoleController dimHole;
-    [SerializeField] private TutorialRingController ring;
+    //[SerializeField] private TutorialRingController ring;
 
     private Transform targetTf;
     private bool active;
@@ -18,8 +19,11 @@ public class TutorialOverlayHighlighter : MonoBehaviour
         targetTf = target;
         active = true;
 
-        dimHole.Begin(target, config);
-        gameObject.SetActive(true);
+        Vector2 screenPos = TutorialCoordUtil.WorldToScreenInCameraRect(worldCam,targetTf.position);
+
+
+        if (config.isCircle) { dimHole.ShowCirclePx(screenPos, config.cRadius, playPop:true); }
+        if (config.isSquare) { dimHole.ShowRectPx(screenPos, new Vector2(config.sWidth, config.sHeight), cornerRadiusPx:0f, playPop:true); }
     }
 
     public void End()
@@ -27,20 +31,15 @@ public class TutorialOverlayHighlighter : MonoBehaviour
         active = false;
         targetTf = null;
 
-        dimHole.End();
-        gameObject.SetActive(false);
+
+        dimHole.Hide();
     }
 
     private void LateUpdate()
     {
         if (!active || targetTf == null || worldCam == null || canvasRect == null || config == null)
             return;
-
-        // 링은 anchoredPosition이 필요하니까: 월드 -> Overlay Canvas local
-        if (TutorialCoordUtil.WorldToOverlayCanvasLocal(worldCam, canvasRect, targetTf.position, out Vector2 canvasPos, true))
-        {
-            HighlightShape shape = config.GetShape();
-            ring.Apply(shape, canvasPos, config);
-        }
+        Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(worldCam, targetTf.position);
+        dimHole.SetCenterPx(screenPos);
     }
 }

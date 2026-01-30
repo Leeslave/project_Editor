@@ -74,7 +74,7 @@ public class ADFGVXGameManager : MonoBehaviour
         }
         else
         {
-            ADFGVXTutorialManager.blocker.gameObject.SetActive(false);
+            //ADFGVXTutorialManager.blocker.gameObject.SetActive(false);
             TryGetStageData();
         }
     }

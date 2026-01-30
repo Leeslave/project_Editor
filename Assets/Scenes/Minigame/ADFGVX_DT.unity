@@ -6539,6 +6539,7 @@ GameObject:
   - component: {fileID: 259822553}
   - component: {fileID: 259822552}
   - component: {fileID: 259822551}
+  - component: {fileID: 259822554}
   m_Layer: 5
   m_Name: Dim
   m_TagString: Untagged
@@ -6559,7 +6560,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 82efb358d123aaf4daa43720cfc0ea21, type: 2}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6604,6 +6605,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &259822554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 259822550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39e277cdd9fe7984d8e38c972b4d0718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  overlayImage: {fileID: 259822551}
+  outlineThicknessPx: 2
+  featherPx: 0
+  popDuration: 1
+  popOvershootRatio: 1
 --- !u!1 &261975572
 GameObject:
   m_ObjectHideFlags: 0
@@ -25895,7 +25913,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1069177788
 RectTransform:
   m_ObjectHideFlags: 0
@@ -33153,7 +33171,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1413609388
 RectTransform:
   m_ObjectHideFlags: 0
@@ -47274,8 +47292,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1970480954}
   - component: {fileID: 1970480953}
-  - component: {fileID: 1970480952}
-  - component: {fileID: 1970480951}
   - component: {fileID: 1970480950}
   m_Layer: 0
   m_Name: TutorialHighlighterRoot
@@ -47299,39 +47315,7 @@ MonoBehaviour:
   worldCam: {fileID: 1336155543}
   canvasRect: {fileID: 410635684}
   config: {fileID: 1970480953}
-  dimHole: {fileID: 1970480952}
-  ring: {fileID: 1970480951}
---- !u!114 &1970480951
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1970480949}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bff1823e42ceff444a7fc24f4126106d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ringCircle: {fileID: 1413609388}
-  ringSquare: {fileID: 1069177788}
---- !u!114 &1970480952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1970480949}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 39e277cdd9fe7984d8e38c972b4d0718, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  worldCam: {fileID: 1336155543}
-  canvasRect: {fileID: 410635684}
-  dimImage: {fileID: 259822551}
-  featherPx: 10
-  dimAlpha: 0.75
+  dimHole: {fileID: 259822554}
 --- !u!114 &1970480953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47344,11 +47328,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 797f7a24e1e6cf34aa30c2a39639e152, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isSquare: 1
-  isCircle: 0
-  sWidth: 500
-  sHeight: 300
-  cRadius: 200
+  isSquare: 0
+  isCircle: 1
+  sWidth: 100
+  sHeight: 50
+  cRadius: 50
 --- !u!4 &1970480954
 Transform:
   m_ObjectHideFlags: 0
@@ -47357,7 +47341,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1970480949}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 383.44913, y: 236.20586, z: -0.85452056}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

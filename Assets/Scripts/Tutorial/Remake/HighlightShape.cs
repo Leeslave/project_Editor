@@ -1,6 +1,6 @@
 public enum HighlightShape
 {
     None,
-    Circle,
-    Spuare
+    Circle = 0,
+    Spuare = 1
 }
