@@ -92,7 +92,7 @@ public class PlayerMove : MonoBehaviour
 
     private void Start()
     {
-        workService = ServiceProvider.Get<IWorkService>();
+        //workService = ServiceProvider.Get<IWorkService>();
         
         CalcFog();
         for (int i = 0; i < MT.KeyNum; i++) Marks[i].gameObject.SetActive(true);
@@ -103,7 +103,7 @@ public class PlayerMove : MonoBehaviour
             Marks[i].transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(VCnt.y, VCnt.x) * Mathf.Rad2Deg);
         }
         KeyText.text = $"{0}/{MT.KeyNum}";
-        RaySub_Dist = 3 / (float)Num_Ray;
+        RaySub_Dist = 1.5f / (float)Num_Ray;
         RaySub_Coord = 1 / (float)Num_Ray;
     }
     int GetKeyCount = 0;
@@ -151,8 +151,8 @@ public class PlayerMove : MonoBehaviour
                 if(NextVec.x > 0)
                 for (i = -Num_Ray + 1; i < Num_Ray; i++)
                 {
-                    Vector2 Origin = new Vector2(rigid.position.x, rigid.position.y + 3 * i * RaySub_Coord);
-                    float Length = Mathf.Sqrt(9 - Mathf.Pow(i * RaySub_Dist, 2)) + RayGap;
+                    Vector2 Origin = new Vector2(rigid.position.x, rigid.position.y + 1.5f * i * RaySub_Coord);
+                    float Length = Mathf.Sqrt(2.25f - Mathf.Pow(i * RaySub_Dist, 2)) + RayGap;
                     rayHit = Physics2D.Raycast(Origin, Vector2.right, Length, LayerMask.GetMask("Water"));
                     if (rayHit.collider != null) { NextVec.x = 0; break; }
                 }
@@ -160,8 +160,8 @@ public class PlayerMove : MonoBehaviour
                 if(NextVec.x < 0)
                 for (i = -Num_Ray + 1; i < Num_Ray; i++)
                 {
-                    Vector2 Origin = new Vector2(rigid.position.x, rigid.position.y + 3 * i * RaySub_Coord);
-                    float Length = Mathf.Sqrt(9 - Mathf.Pow(i * RaySub_Dist, 2)) + RayGap;
+                    Vector2 Origin = new Vector2(rigid.position.x, rigid.position.y + 1.5f * i * RaySub_Coord);
+                    float Length = Mathf.Sqrt(2.25f - Mathf.Pow(i * RaySub_Dist, 2)) + RayGap;
                     rayHit = Physics2D.Raycast(Origin, Vector2.left, Length, LayerMask.GetMask("Water"));
                     if (rayHit.collider != null) { NextVec.x = 0; break; }
                 }
@@ -169,8 +169,8 @@ public class PlayerMove : MonoBehaviour
                 if(NextVec.y > 0)
                 for (i = -Num_Ray+1; i < Num_Ray; i++)
                 {
-                    Vector2 Origin = new Vector2(rigid.position.x + 3 * i * RaySub_Coord, rigid.position.y);
-                    float Length = Mathf.Sqrt(9 - Mathf.Pow(i * RaySub_Dist, 2)) + RayGap;
+                    Vector2 Origin = new Vector2(rigid.position.x + 1.5f * i * RaySub_Coord, rigid.position.y);
+                    float Length = Mathf.Sqrt(2.25f - Mathf.Pow(i * RaySub_Dist, 2)) + RayGap;
                     rayHit = Physics2D.Raycast(Origin, Vector2.up, Length, LayerMask.GetMask("Water"));
                     if (rayHit.collider != null) { NextVec.y = 0; break; }
                 }
@@ -178,13 +178,15 @@ public class PlayerMove : MonoBehaviour
                 if(NextVec.y < 0)
                 for (i = -Num_Ray+1; i < Num_Ray; i++)
                 {
-                    Vector2 Origin = new Vector2(rigid.position.x + 3 * i * RaySub_Coord, rigid.position.y);
-                    float Length = Mathf.Sqrt(9 - Mathf.Pow(i * RaySub_Dist, 2)) + RayGap;
+                    Vector2 Origin = new Vector2(rigid.position.x + 1.5f * i * RaySub_Coord, rigid.position.y);
+                    float Length = Mathf.Sqrt(2.25f - Mathf.Pow(i * RaySub_Dist, 2)) + RayGap;
                     rayHit = Physics2D.Raycast(Origin, Vector2.down, Length, LayerMask.GetMask("Water"));
                     if (rayHit.collider != null) { NextVec.y = 0; break; }
                 }
 
                 if (NextVec.x == 0 && NextVec.y == 0) return;
+
+                
 
                 AS.clip = Clips[0];
                 AS.Play();
@@ -193,6 +195,13 @@ public class PlayerMove : MonoBehaviour
                 Bf_Y = transform.position.y;
 
                 rigid.MovePosition(rigid.position + NextVec);
+
+                var subVec = new Vector2Int(Mathf.FloorToInt(transform.position.x * 0.1f), MT.Col - 1 - Mathf.FloorToInt(transform.position.y * 0.1f));
+
+                var s = MakeTile.ExMaze.Maze[subVec.x,subVec.y];
+
+                if (MT.CurPlayerPos != subVec){ MT.CurPlayerPos = subVec; Noise?.Invoke(subVec); }
+
                 DirCommand.Add(NextVec);
                 if (DirCommand.Count > KeyMoveGap * GetKeyCount) DirCommand.RemoveAt(0);
                 if (KeyMoveSub < KeySubSub[GetKeyCount]) KeyMoveSub++;
@@ -225,6 +234,7 @@ public class PlayerMove : MonoBehaviour
             }
         }
     }
+    public static event Action<Vector2Int> Noise;
 
     // 게임 클리어 연출.
     // 맨 뒤의 Key부터 0.5초동안 y축으로 5만큼 이동시키고 그 후 해당 위치에서 문으로 이동시킴(이 시간은 Key의 위치에 따라 다름)

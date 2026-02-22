@@ -5,6 +5,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using System.IO;
 
+[DefaultExecutionOrder(-100)]
 public class MakeTile : MonoBehaviour
 {
     // Inject: work Service
@@ -18,6 +19,8 @@ public class MakeTile : MonoBehaviour
     public GameObject Player;
     public GameObject Key;
     public MazeMap Maze_Inf;
+    public static ref readonly MazeMap ExMaze => ref ins.Maze_Inf;
+
     public GameObject Clear;
     public GameObject Fog;
     public MazeTimer Timer;
@@ -42,6 +45,8 @@ public class MakeTile : MonoBehaviour
     [SerializeField] Transform Objects;
     [SerializeField] Transform FogP;
 
+    [SerializeField] List<GameObject> Pacs;
+
     [System.Serializable]
     public class StageData
     {
@@ -55,16 +60,25 @@ public class MakeTile : MonoBehaviour
         public int Time;
     }
 
+    [SerializeField] public Vector2Int CurPlayerPos;
+
+
+    public static MakeTile ins;
+
     void Awake()
     {
-        ApplyAspect(Camera.main, 4f/3f);
-        workService = ServiceProvider.Get<IWorkService>();
+        if (ins == null) ins = this;
+        else Destroy(gameObject);
         
-        Difficulty = workService.GetStage("Maze");
+        ApplyAspect(Camera.main, 4f / 3f);
+        //workService = ServiceProvider.Get<IWorkService>();
+        
+        //Difficulty = workService.GetStage("Maze");
         if (Difficulty > 0) GetDifficulty();
         else MakeTutorial();
         
-        Player.transform.position = new Vector3(Maze_Inf.Player_X * Move_X + 5, Maze_Inf.Player_Y * Move_Y + 5f, 0);        
+        Player.transform.position = new Vector3(Maze_Inf.Player_X * Move_X + 5, Maze_Inf.Player_Y * Move_Y + 5f, 0);
+        CurPlayerPos = new Vector2Int(Maze_Inf.Player_X, Maze_Inf.Player_Y);
     }
 
     private static void ApplyAspect(Camera cam, float targetAspect)
@@ -221,8 +235,11 @@ public class MakeTile : MonoBehaviour
             for (int i = 0; i < KeyNum; i++)
             {
                 GameObject cnt = Instantiate(Key,Objects);
+                if (i != 0) Pacs.Add(Instantiate(Pacs[0]));
+                
                 Player.GetComponent<PlayerMove>().KeysTrans.Add(cnt.transform);
-                cnt.transform.position = new Vector3(Cnt[i].Item1 * Move_X + 5, Cnt[i].Item2 * Move_Y + 5, 0);
+                Pacs[i].transform.position =  cnt.transform.position = new Vector3(Cnt[i].Item1 * Move_X + 5, Cnt[i].Item2 * Move_Y + 5, 0);
+                Pacs[i].SetActive(true);
                 SpriteRenderer s = cnt.GetComponent<SpriteRenderer>();
                 if (i == 0) s.color = Color.green;
                 else if (i == 1) s.color = Color.blue;

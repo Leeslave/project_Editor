@@ -4,13 +4,73 @@ using System.Numerics;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 using Random = UnityEngine.Random;
-using Unity.VisualScripting.FullSerializer;
 
 
-// Âü°íÇÑ ¾Ë°í¸®Áò : ¿¤·¯ÀÇ ¾Ë°í¸®Áò
+// A*
+public struct ARoute
+{
+    public int x, y;
+    public int cost;
+    public int sum;
+    public ARoute(int x,int y, int c, int h) { this.x = x; this.y = y; cost = c; sum = h; }
+    public ARoute(Vector2Int grd, int c, int h) { this.x = grd.x; this.y = grd.y; cost = c; sum = h; }
+    public static bool operator <(ARoute a, ARoute b) => a.sum < b.sum;
+    public static bool operator >(ARoute a, ARoute b) => a.sum > b.sum;
+    public static bool operator <=(ARoute a, ARoute b) => a.sum <= b.sum;
+    public static bool operator >=(ARoute a, ARoute b) => a.sum >= b.sum;
+}
+
+public class PriorityQueue
+{
+    List<ARoute> ele = new List<ARoute>();
+    public int Count => ele.Count;
+    public bool isEmpty => ele.Count == 0;
+    public void Clear() => ele.Clear();
+    public ARoute top()
+    {
+        if (ele.Count == 0) throw new InvalidOperationException("empty");
+        return ele[0];
+    }
+
+    public void push(ARoute x)
+    {
+        ele.Add(x);
+        int i = ele.Count - 1;
+        while (true)
+        {
+            int p = (i - 1) >> 1;
+            if (i <= 0 || ele[i] > ele[p]) break;
+            (ele[i], ele[p]) = (ele[p], ele[i]);
+            i = p;
+        }
+    }
+    public ARoute pop()
+    {
+        if (ele.Count == 0) throw new InvalidOperationException("empty");
+        ARoute top = ele[0];
+        int lr = ele.Count - 1;
+        ele[0] = ele[lr]; ele.RemoveAt(lr);
+        if (ele.Count > 0)
+        {
+            int i = 0;
+            while (true)
+            {
+                int l = i * 2 + 1, r = l + 1, m = i;
+                if (l < ele.Count && ele[l] < ele[m]) m = l;
+                if (r < ele.Count && ele[r] < ele[m]) m = r;
+                if (m == i) break;
+                (ele[i], ele[m]) = (ele[m], ele[i]); i = m;
+            }
+        }
+        return top;
+    }
+}
+
+
+// ì°¸ê³ í•œ ì•Œê³ ë¦¬ì¦˜ : ì—˜ëŸ¬ì˜ ì•Œê³ ë¦¬ì¦˜
 public class MazeMap
 {
-    // Map ¹è¿­ »ı¼º ºÎºĞ
+    // Map ë°°ì—´ ìƒì„± ë¶€ë¶„
     public class Cell
     {
         public int col, row;
@@ -26,7 +86,7 @@ public class MazeMap
     {
         public int Group_Num;
         public List<Tuple<int, int>> Cells = new List<Tuple<int, int>>();
-        public List<int> Last_Rows = new List<int>();   // Group ³» ¿¬»ê¿¡ »ç¿ë µÉ Cellµé.
+        public List<int> Last_Rows = new List<int>();   // Group ë‚´ ì—°ì‚°ì— ì‚¬ìš© ë  Cellë“¤.
     };
 
     public void MazeMaking(int C, int R, bool IsTu = false)
@@ -48,10 +108,10 @@ public class MazeMap
         {
             Init_Row();
             Union();
-            if (Cur_Col != Col - 1) Cell_Down();     // ¸¶Áö¸· Col¿¡¼± ³»¸± ÇÊ¿ä°¡ ¾ø´Ù.
+            if (Cur_Col != Col - 1) Cell_Down();     // ë§ˆì§€ë§‰ Colì—ì„  ë‚´ë¦´ í•„ìš”ê°€ ì—†ë‹¤.
         }
         TrimMaze();
-        if (Random.Range(0, 2) == 0)      // ¿ŞÂÊ or ¿À¸¥ÂÊ ¶ÕÀ½(Ãâ±¸ ¶Õ±â)
+        if (Random.Range(0, 2) == 0)      // ì™¼ìª½ or ì˜¤ë¥¸ìª½ ëš«ìŒ(ì¶œêµ¬ ëš«ê¸°)
         {
             int cnt = Player_Y <= Col / 2 ? Random.Range(0, Col / 2) : Random.Range(Col / 2, Col);
             if (Player_X > Row / 2)
@@ -63,7 +123,7 @@ public class MazeMap
                 Maze[Row - 1, cnt].Exit = Vector3.right;
             }
         }
-        else                            // ¾Æ·¡ or À§ ¶ÕÀ½
+        else                            // ì•„ë˜ or ìœ„ ëš«ìŒ
         {
             int cnt = Player_X > Row / 2 ? Random.Range(0, Row / 2) : Random.Range(Row / 2, Row);
             if (Player_Y > Col / 2)
@@ -84,28 +144,28 @@ public class MazeMap
             }
         }
     }
-    public Cell[,] Maze;   // MazeÀÇ CellµéÀÇ ¸ğÀ½
+    public Cell[,] Maze;   // Mazeì˜ Cellë“¤ì˜ ëª¨ìŒ
     public int Player_X;
     public int Player_Y;
 
-    //¿ÜºÎ ÂüÁ¶ ÇÊ¿ä X
+    //ì™¸ë¶€ ì°¸ì¡° í•„ìš” X
     int Col;// Y
     int Row;// X
-    int Group_Count = 0; // ÇöÀç »ç¿ëµÇ°í ÀÖ´Â GroupÀÇ °¹¼ö
-    int Cur_Col = 0;     // ÇöÀç ¿¬»ê¿¡ »ç¿ëµÇ´Â MazeÀÇ Row;
-    List<Group> Groups = new List<Group>();  // GroupÀÇ List
+    int Group_Count = 0; // í˜„ì¬ ì‚¬ìš©ë˜ê³  ìˆëŠ” Groupì˜ ê°¯ìˆ˜
+    int Cur_Col = 0;     // í˜„ì¬ ì—°ì‚°ì— ì‚¬ìš©ë˜ëŠ” Mazeì˜ Row;
+    List<Group> Groups = new List<Group>();  // Groupì˜ List
     void Init_Maze()
     {
         Maze = new Cell[Row, Col];
-        for (int y = 0; y < Col; y++) for (int x = 0; x < Row; x++) Maze[x, y] = new Cell();   // Maze ¹è¿­ ÃÊ±âÈ­;
-        Groups.Add(new Group()); // ÆíÀÇ¸¦ À§ÇØ Groups[0]°ª ÃÊ±âÈ­. -> Group_NumÀº 1ºÎÅÍ ½ÃÀÛÀÌ±â ¶§¹®.
+        for (int y = 0; y < Col; y++) for (int x = 0; x < Row; x++) Maze[x, y] = new Cell();   // Maze ë°°ì—´ ì´ˆê¸°í™”;
+        Groups.Add(new Group()); // í¸ì˜ë¥¼ ìœ„í•´ Groups[0]ê°’ ì´ˆê¸°í™”. -> Group_Numì€ 1ë¶€í„° ì‹œì‘ì´ê¸° ë•Œë¬¸.
     }
 
     void Init_Row()
     {
         for (int i = 0; i < Row; i++)
         {
-            // Cell¿¡ ¾ÆÁ÷ GroupÀÌ ¹èÁ¤µÇÁö ¾Ê¾ÒÀ» °æ¿ì »õ·Î GroupÀ» ÇÒ´ç.
+            // Cellì— ì•„ì§ Groupì´ ë°°ì •ë˜ì§€ ì•Šì•˜ì„ ê²½ìš° ìƒˆë¡œ Groupì„ í• ë‹¹.
             if (Maze[i, Cur_Col].Group == 0)
             {
                 Maze[i, Cur_Col].Group = ++Group_Count;
@@ -123,7 +183,7 @@ public class MazeMap
 
     int UnionVal = 2;
 
-    void Union()     // °¢ CellµéÀ» ÇÕÄ¡´Â °úÁ¤
+    void Union()     // ê° Cellë“¤ì„ í•©ì¹˜ëŠ” ê³¼ì •
     {
         for (int i = 0; i < Row - 1; i++)
         {
@@ -132,10 +192,10 @@ public class MazeMap
             int Group_Right = Maze[i + 1, Cur_Col].Group;
             switch (cnt)
             {
-                case 0: // ¿À¸¥ÂÊ CellÀÇ GroupÀ» ¿ŞÂÊ CellÀÇ Group¿¡ ÇÕÄ§.
-                    Maze[i, Cur_Col].Right = true;    // ¿À¸¥ÂÊ ÀÌµ¿ °¡´É
-                    Maze[i + 1, Cur_Col].Left = true;  // ¿ŞÂÊ ÀÌµ¿ °¡´É
-                    if (Group_Left == Group_Right) break; // °°Àº ±×·ìÀÏ °æ¿ì ´Ù½Ã ±×·ì ¾È¿¡ ³Ö¾î ÁÙ ÇÊ¿ä´Â ¾ø´Ù.
+                case 0: // ì˜¤ë¥¸ìª½ Cellì˜ Groupì„ ì™¼ìª½ Cellì˜ Groupì— í•©ì¹¨.
+                    Maze[i, Cur_Col].Right = true;    // ì˜¤ë¥¸ìª½ ì´ë™ ê°€ëŠ¥
+                    Maze[i + 1, Cur_Col].Left = true;  // ì™¼ìª½ ì´ë™ ê°€ëŠ¥
+                    if (Group_Left == Group_Right) break; // ê°™ì€ ê·¸ë£¹ì¼ ê²½ìš° ë‹¤ì‹œ ê·¸ë£¹ ì•ˆì— ë„£ì–´ ì¤„ í•„ìš”ëŠ” ì—†ë‹¤.
                     Maze[i + 1, Cur_Col].Group = Group_Left;
                     Groups[Group_Left].Cells.AddRange(Groups[Group_Right].Cells);
                     Groups[Group_Left].Last_Rows.AddRange(Groups[Group_Right].Last_Rows);
@@ -149,30 +209,30 @@ public class MazeMap
             }
         }
     }
-    void Cell_Down()     // Group¿¡¼­ ¹ØÀ¸·Î ³»¸².
+    void Cell_Down()     // Groupì—ì„œ ë°‘ìœ¼ë¡œ ë‚´ë¦¼.
     {
         for (int i = 1; i < Groups.Count; i++)
         {
-            if (Groups[i].Last_Rows.Count == 0) continue; // ³»¸± CellÀÌ ¾øÀ¸¸é(Last_Rows°¡ ºñ¾îÀÖÀ¸¸é) ¹«½ÃÇÔ.
-            int del_count = Groups[i].Last_Rows.Count; // ³ªÁß¿¡ ÀÌ¸¸Å­ »èÁ¦ ¿¹Á¤.
-            int cnt = Random.Range(1, 1 << (Groups[i].Last_Rows.Count - 1));  // ÇØ´ç GroupÀÇ ¾î¶² Cell¿¡¼­ ³»¸± °ÍÀÎÁö ºñÆ®·Î Á¤ÇÔ.
+            if (Groups[i].Last_Rows.Count == 0) continue; // ë‚´ë¦´ Cellì´ ì—†ìœ¼ë©´(Last_Rowsê°€ ë¹„ì–´ìˆìœ¼ë©´) ë¬´ì‹œí•¨.
+            int del_count = Groups[i].Last_Rows.Count; // ë‚˜ì¤‘ì— ì´ë§Œí¼ ì‚­ì œ ì˜ˆì •.
+            int cnt = Random.Range(1, 1 << (Groups[i].Last_Rows.Count - 1));  // í•´ë‹¹ Groupì˜ ì–´ë–¤ Cellì—ì„œ ë‚´ë¦´ ê²ƒì¸ì§€ ë¹„íŠ¸ë¡œ ì •í•¨.
             int To = Groups[i].Last_Rows.Count;
             for (int l = 0; l < To; l++)
             {
-                int cur_row = Groups[i].Last_Rows[l];   // ¿¬»êÀ» ÇÏ°í ÀÖ´Â Row
-                if (((1 << l) & cnt) != 0)     // ÇØ´ç Row¿¡¼­ ³»¸± °æ¿ì
+                int cur_row = Groups[i].Last_Rows[l];   // ì—°ì‚°ì„ í•˜ê³  ìˆëŠ” Row
+                if (((1 << l) & cnt) != 0)     // í•´ë‹¹ Rowì—ì„œ ë‚´ë¦´ ê²½ìš°
                 {
-                    Maze[cur_row, Cur_Col].Down = true;      // ¾Æ·¡ ÀÌµ¿ °¡´É
-                    Maze[cur_row, Cur_Col + 1].Up = true;    // À§ ÀÌµ¿ °¡´É
+                    Maze[cur_row, Cur_Col].Down = true;      // ì•„ë˜ ì´ë™ ê°€ëŠ¥
+                    Maze[cur_row, Cur_Col + 1].Up = true;    // ìœ„ ì´ë™ ê°€ëŠ¥
                     Maze[cur_row, Cur_Col + 1].Group = Groups[i].Group_Num;
                     Groups[i].Last_Rows.Add(cur_row);
                     Groups[i].Cells.Add(new Tuple<int, int>(cur_row, Cur_Col + 1));
                 }
             }
-            Groups[i].Last_Rows.RemoveRange(0, del_count);   // Group ³»¿¡¼­ ÀÌÀü Col¿¡ ÀÖ´ø CellµéÀÇ Á¤º¸ »èÁ¦.
+            Groups[i].Last_Rows.RemoveRange(0, del_count);   // Group ë‚´ì—ì„œ ì´ì „ Colì— ìˆë˜ Cellë“¤ì˜ ì •ë³´ ì‚­ì œ.
         }
     }
-    void TrimMaze() // ¸¶Áö¸· ¸ğµç CellÀ» ÇÏ³ªÀÇ GroupÀ¸·Î ÇÕ(Union°ú µ¿ÀÏ °úÁ¤)
+    void TrimMaze() // ë§ˆì§€ë§‰ ëª¨ë“  Cellì„ í•˜ë‚˜ì˜ Groupìœ¼ë¡œ í•©(Unionê³¼ ë™ì¼ ê³¼ì •)
     {
         for(int Y = 0; Y < Col; Y++)
         {
