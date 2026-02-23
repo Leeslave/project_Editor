@@ -102,8 +102,8 @@ public class PatternManager : MonoBehaviour
         }
         SP = new Vector2[][] { SPB, SPR, SPL, SPT };
         ReadExternalPattern();
-        
-        workService = ServiceProvider.Get<IWorkService>();
+
+        try { workService = ServiceProvider.Get<IWorkService>(); } catch { }
 
         try
         {

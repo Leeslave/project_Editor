@@ -216,6 +216,7 @@ public class PlayerMove : MonoBehaviour
 
                 for (i = 0; i < MT.KeyNum; i++)
                 {
+                    if (!Marks[i].gameObject.activeSelf) continue;
                     VCnt = KeysTrans[i].position - transform.position;
                     float j = Vector3.Magnitude(VCnt);
                     if (j <= 10 || KeysTrans[i].CompareTag("Untagged")) Marks[i].gameObject.SetActive(false);

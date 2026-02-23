@@ -57,13 +57,12 @@ public class Player : MonoBehaviour
         if (!MoveAble) return;
         PingPong();
     }
-
     // 위 아래로 튕기면서 이동하는 상태
     void PingPong()
     {
         // 좌, 우 이동을 입력받을 경우, Speed값에 기반해 플레이어의 위치를 이동시킴.
         float x = Input.GetAxisRaw("Horizontal"); transform.position += new Vector3(x, 0, 0) * speed * Time.deltaTime;
-        Vector2 RayCnt = Vector2.zero;
+        /*Vector2 RayCnt = Vector2.zero;
         // 아래로 이동중에는 아래로 레이캐스트를, 위로 이동중에는 위로 레이캐스트를 날림
         if (rigid.velocity.y < 0) RayCnt = Vector2.down;
         else RayCnt = Vector2.up;
@@ -79,7 +78,7 @@ public class Player : MonoBehaviour
             RayAble = false;
             AS.Play();
             Invoke("CanRay", 0.2f);
-        }
+        }*/
     }
     IEnumerator ChangeColor(GameObject a)
     {
@@ -129,6 +128,7 @@ public class Player : MonoBehaviour
     // PM과 DB_M.DB_Docs.NewsManager관련은 PatternManager 및 Timer 참조
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        print(collision.tag);
         if (collision.CompareTag("Bullet"))
         {
             PM.AD.MusicOff(true);
@@ -162,6 +162,13 @@ public class Player : MonoBehaviour
                 else if (HPForPattern > 1) Unzips[3 - HPForPattern].sprite = Unzip;
                 PM.NextPattern(ref HPForPattern);
             }
+        }
+        else if (collision.CompareTag("Plat"))
+        {
+            print("!");
+            rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y * (-1));
+            AS.Play();
+            StartCoroutine(ChangeColor(collision.gameObject));
         }
     }
 

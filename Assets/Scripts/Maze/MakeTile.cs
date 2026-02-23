@@ -178,22 +178,22 @@ public class MakeTile : MonoBehaviour
                 if (!Maze_Inf.Maze[x, Y].Left)     // ���� �� ���� ����
                 {
                     GameObject cnt = Instantiate(CWall,new Vector3(x * 10,y * 10 + 5,0),transform.rotation,Walls);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.left) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; cnt.layer = 7; }
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.left) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; /*cnt.layer = 7;*/ }
                 }
                 if (!Maze_Inf.Maze[x, Y].Right)     // ������ �� ���� ����
                 {
                     GameObject cnt = Instantiate(CWall, new Vector3(x * 10 +10, y* 10 + 5, 0), new Quaternion(0,0,90,0), Walls);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.right) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; cnt.layer = 7; }
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.right) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; /*cnt.layer = 7;*/ }
                 }
                 if (!Maze_Inf.Maze[x, Y].Down)     // �Ʒ��� �� ���� ����
                 {
                     GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10, 0), transform.rotation, Walls);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.down) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; cnt.layer = 7; }
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.down) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; /*cnt.layer = 7;*/ }
                 }
                 if (!Maze_Inf.Maze[x, Y].Up)     // ���� �� ���� ����
                 {
                     GameObject cnt = Instantiate(RWall, new Vector3(x * 10 + 5, y * 10+10, 0), transform.rotation, Walls);
-                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.up) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; cnt.layer = 7; }
+                    if (Maze_Inf.Maze[x, Y].Exit == Vector3.up) { Clear = cnt; cnt.GetComponent<SpriteRenderer>().color = new Color(1, 0, 0, 1f); cnt.tag = "ExitWall"; /*cnt.layer = 7;*/ }
                 }
                 if (Maze_Inf.Maze[x,y].Test)
                     Instantiate(Key).transform.position = new Vector3(x * Move_X + 5, y * Move_Y + 5, 0);
