@@ -22,8 +22,8 @@ public class TutorialOverlayHighlighter : MonoBehaviour
         Vector2 screenPos = TutorialCoordUtil.WorldToScreenInCameraRect(worldCam,targetTf.position);
 
 
-        if (config.isCircle) { dimHole.ShowCirclePx(screenPos, config.cRadius, playPop:true); }
-        if (config.isSquare) { dimHole.ShowRectPx(screenPos, new Vector2(config.sWidth, config.sHeight), cornerRadiusPx:0f, playPop:true); }
+        if (config.isCircle) { dimHole.ShowCirclePx(targetTf.position, config.cRadius, playPop:true); }
+        if (config.isSquare) { dimHole.ShowRectPx(targetTf.position, new Vector2(config.sWidth, config.sHeight), cornerRadiusPx:0f, playPop:true); }
     }
 
     public void End()
@@ -40,6 +40,6 @@ public class TutorialOverlayHighlighter : MonoBehaviour
         if (!active || targetTf == null || worldCam == null || canvasRect == null || config == null)
             return;
         Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(worldCam, targetTf.position);
-        dimHole.SetCenterPx(screenPos);
+        //dimHole.SetCenterPx(targetTf.position);
     }
 }

@@ -64,7 +64,7 @@ public class TutorialDimHoleController : MonoBehaviour
         // 코너 반경도 UV로 변환: y 기준(픽셀->uv)
         float cornerUv = PxToUvY(cornerRadiusPx);
 
-        ShowRectUv(centerUv, sizeUv, cornerUv, playPop);
+        ShowRectUv(centerPx, sizePx, cornerRadiusPx, playPop);
     }
 
     public void ShowCirclePx(Vector2 centerPx, float radiusPx, bool playPop = true)
@@ -72,11 +72,12 @@ public class TutorialDimHoleController : MonoBehaviour
         Vector2 centerUv = ScreenPxToUv(centerPx);
         float radiusUv = PxToUvY(radiusPx); // y기준으로 통일(원 비율은 쉐이더에서 보정)
 
-        ShowCircleUv(centerUv, radiusUv, playPop);
+        ShowCircleUv(centerPx, radiusPx, playPop);
     }
 
     public void ShowRectUv(Vector2 centerUv, Vector2 sizeUv, float cornerRadiusUv = 0f, bool playPop = true)
     {
+        Debug.Log(centerUv);
         ApplyCommon(HighlightShape.Spuare, centerUv);
 
         runtimeMat.SetFloat(CornerRadiusId, Mathf.Max(0f, cornerRadiusUv));
@@ -126,6 +127,7 @@ public class TutorialDimHoleController : MonoBehaviour
     private void ApplyCommon(HighlightShape type, Vector2 centerUv)
     {
         runtimeMat.SetFloat(ShapeTypeId, (type == HighlightShape.Circle) ? 0f : 1f);
+        Debug.Log(centerUv);
         runtimeMat.SetVector(HoleCenterId, new Vector4(centerUv.x, centerUv.y, 0, 0));
 
         // px -> uv 변환해서 넣기 (두께/페더 픽셀 고정)
@@ -222,7 +224,7 @@ public class TutorialDimHoleController : MonoBehaviour
     private static float PxToUvY(float px)
     {
         float h = Mathf.Max(1f, Screen.height);
-        return px / h;
+        return px;
     }
 
     public void SetCenterPx(Vector2 centerPx)

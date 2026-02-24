@@ -59,6 +59,7 @@ Shader "UI/TutorialDimShader"
                 float4 vertex : SV_POSITION;
                 float2 uv     : TEXCOORD0;
                 float4 color  : COLOR;
+                float3 positionWS : TEXCOORD1;
             };
 
             fixed4 _DimColor;
@@ -77,6 +78,9 @@ Shader "UI/TutorialDimShader"
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.texcoord;
                 o.color = v.color;
+
+                o.positionWS = mul(unity_ObjectToWorld, v.vertex);
+
                 return o;
             }
 
@@ -89,16 +93,16 @@ Shader "UI/TutorialDimShader"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                float2 uv = i.uv;
+                // float2 uv = i.uv;
 
                 float2 center = _HoleCenter.xy; // UV
-                float2 p = uv - center;
+                float2 p = i.positionWS.xy - center;
 
                 // === Circle Aspect Correction ===
                 // 원이 화면 종횡비 때문에 타원으로 보이는 걸 방지
                 // x축을 (width/height)만큼 스케일
-                float aspect = _ScreenParams.x / max(1.0, _ScreenParams.y);
-                float2 pCircle = float2(p.x * aspect, p.y);
+                // float aspect = _ScreenParams.x / max(1.0, _ScreenParams.y);
+                // float2 pCircle = float2(p.x * 1, p.y);
 
                 float feather = max(_Feather, 1e-6);
                 float thick   = max(_OutlineThickness, 0.0);
@@ -110,7 +114,7 @@ Shader "UI/TutorialDimShader"
                 {
                     // Circle: _HoleSize.x = radius (UV 기준)
                     float radius = max(_HoleSize.x, 0.0);
-                    dist = length(pCircle) - radius;
+                    dist = length(p) - radius;
                 }
                 else
                 {
