@@ -6,15 +6,23 @@ public class TutorialExecuteTest : MonoBehaviour
 {
     [SerializeField] private TutorialOverlayHighlighter highlighter;
     [SerializeField] private Transform target;
+    [SerializeField] private GameObject dim;
 
     void StartTutorial()
     {
-        highlighter.Begin(target);
+        dim.SetActive(true);
+        highlighter.Begin();
     }
 
     void EndTutorial()
     {
+        dim.SetActive(false);
         highlighter.End();
+    }
+
+    void Start()
+    {
+        dim.SetActive(false);
     }
 
     void Update()
