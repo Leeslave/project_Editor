@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Utility;
 
 public class ChatObject : WorldObject, IChatList, IPointerClickHandler
 {
@@ -92,7 +93,7 @@ public class ChatObject : WorldObject, IChatList, IPointerClickHandler
     {
         if (!Trigger)
         {
-            Debug.Log("No Trigger");
+            EditorLogger.Log("No Trigger");
             return;
         }
         

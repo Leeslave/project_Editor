@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Utility;
 
 
 public interface IChatList
@@ -72,7 +73,7 @@ public class ChatTrigger : MonoBehaviour
     {
         if (chatData is null)
         {
-            Debug.LogWarning("Failed to Load Chat Data");
+            EditorLogger.LogWarning("Failed to Load Chat Data");
             return;
         }
         

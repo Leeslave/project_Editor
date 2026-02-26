@@ -5,15 +5,15 @@ using UnityEngine.UI;
 
 public class GoBack : MonoBehaviour
 {
-    // ÇöÀç ¹öÆ°ÀÇ È°¼ºÈ­ ¿©ºÎ
+    // í˜„ì¬ ë²„íŠ¼ì˜ í™œì„±í™” ì—¬ë¶€
     public bool IsActive = false;
     public HanoiManager HM;
-    // ÇÏÀÌ¶óÀÌÆ® ‰çÀ» ‹š, µÇÁö ¾Ê¾ÒÀ» ‹šÀÇ »ö
+    // í•˜ì´ë¼ì´íŠ¸ ë¬ì„ ë–„, ë˜ì§€ ì•Šì•˜ì„ ë–„ì˜ ìƒ‰
     public Color Af;
     public Color Bf;
-    // Image Component¸¦ ÀúÀåÇÒ º¯¼ö
+    // Image Componentë¥¼ ì €ì¥í•  ë³€ìˆ˜
     Image sr;
-    // EventTrigger Component¸¦ ÀúÀåÇÒ º¯¼ö
+    // EventTrigger Componentë¥¼ ì €ì¥í•  ë³€ìˆ˜
     EventTrigger ET;
 
     private void Awake()
@@ -35,8 +35,8 @@ public class GoBack : MonoBehaviour
         if (IsActive) sr.color = Bf;
     }
 
-    // µÇµ¹¸®±â ¹öÆ°ÀÌ¸é HanoiManagerÀÇ BackEvent¸¦
-    // ´Ù½Ã½ÇÇà ¹öÆ°ÀÌ¸é HanoiManagerÀÇ GoEvent¸¦ ½ÇÇàÇÑ´Ù.
+    // ë˜ëŒë¦¬ê¸° ë²„íŠ¼ì´ë©´ HanoiManagerì˜ BackEventë¥¼
+    // ë‹¤ì‹œì‹¤í–‰ ë²„íŠ¼ì´ë©´ HanoiManagerì˜ GoEventë¥¼ ì‹¤í–‰í•œë‹¤.
     void Click(PointerEventData A)
     {
         if (!HM.TouchAble || HM.IsPick) return;

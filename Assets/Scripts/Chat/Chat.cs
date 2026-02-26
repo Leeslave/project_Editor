@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using GameAction;
+using Utility;
 
 
 public class Chat : Singleton<Chat>
@@ -76,7 +77,7 @@ public class Chat : Singleton<Chat>
         // 대화 리스트 오류
         if (chats == null)
         {
-            Debug.Log($"CHAT DATA CANNOT FOUND");
+            EditorLogger.Log($"CHAT DATA CANNOT FOUND");
             return;
         }
 
@@ -318,7 +319,7 @@ public class Chat : Singleton<Chat>
         {
             return;
         }
-        Debug.Log(CG_COUNT);
+        EditorLogger.Log(CG_COUNT);
         // 캐릭터 CG 설정
         for(int i = 0; i < CG_COUNT; i++)
         {
@@ -526,7 +527,7 @@ public class Chat : Singleton<Chat>
     #if UNITY_EDITOR
         if (!result)
         {
-            Debug.Log($"Image Load Failed : {filePath}");
+            EditorLogger.Log($"Image Load Failed : {filePath}");
         }
     #endif
         
@@ -548,7 +549,7 @@ public class Chat : Singleton<Chat>
         if (result == null)
         {
         #if UNITY_EDITOR
-            Debug.Log($"Image Load Failed : {filePath}");
+            EditorLogger.Log($"Image Load Failed : {filePath}");
         #endif
 
             return null;
@@ -560,7 +561,7 @@ public class Chat : Singleton<Chat>
             return result[i];
         }
         
-        Debug.Log($"Image Load Failed : {filePath} with {i}");
+        EditorLogger.Log($"Image Load Failed : {filePath} with {i}");
         i = 0;
         return result[i];
     }

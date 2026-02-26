@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using UnityEngine;
+using Utility;
 
 public static class DataLoader
 {
@@ -35,7 +36,7 @@ public static class DataLoader
         // 폴더 상의 게임 데이터 로드
         if (!Directory.Exists(path))
         {
-            Debug.Log($"폴더 경로 오류 : {path}");
+            EditorLogger.Log($"폴더 경로 오류 : {path}");
         }
         
         List<string> fileNames = new();

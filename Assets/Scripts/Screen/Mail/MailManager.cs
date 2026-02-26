@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks; // Task 사용을 위해 추가
 using TMPro;
 using UnityEngine;
+using Utility;
 
 [Serializable]
 public struct MailInfo
@@ -79,7 +80,7 @@ public class MailManager : Singleton<MailManager>
         }
         catch (Exception e)
         {
-            Debug.LogError($"메일 로드 중 오류 발생: {e.Message}");
+            EditorLogger.LogError($"메일 로드 중 오류 발생: {e.Message}");
         }
     }
 
@@ -119,7 +120,7 @@ public class MailManager : Singleton<MailManager>
             }
             catch (Exception e)
             {
-                Debug.LogError($"{i}일차 메일을 읽는 중 오류 발생: {e.Message}");
+                EditorLogger.LogError($"{i}일차 메일을 읽는 중 오류 발생: {e.Message}");
             }
         }
     }

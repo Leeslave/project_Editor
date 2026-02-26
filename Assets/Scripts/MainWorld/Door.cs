@@ -2,6 +2,7 @@ using GameService;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Utility;
 
 public class Door : MonoBehaviour, IPointerClickHandler
 {
@@ -26,11 +27,11 @@ public class Door : MonoBehaviour, IPointerClickHandler
     {
         if (_locationService == null)
         {
-            throw new Exception($"World Manager Missed!! : Door");
+            EditorLogger.LogWarning($"World Manager Missed!! : Door");
         }
         
         // 지역이동 제한
-        if (_locationService.MoveLocation(new WorldVector(destination, position)) == null)
+        if (_locationService != null && _locationService.MoveLocation(new WorldVector(destination, position)) == null)
         {
             // 이동 제한 텍스트 출력
             _blockChat?.StartChat();

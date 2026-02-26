@@ -4,6 +4,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Utility;
 
 public class PatrolPathManager : MonoBehaviour
 {
@@ -103,7 +104,7 @@ public class PatrolPathManager : MonoBehaviour
         //경로 타일이 체크포인트를 지나가는지 확인
         bool c2 = checkLocation.All(p => pathTileMap.Any(m => m.HasTile(p)));
         
-        Debug.Log($"{c1} {c2}");
+        EditorLogger.Log($"{c1} {c2}");
         
         //클리어 여부 표시
         fillTileMap.color = c1 && c2 ? new Color(0f, 0.5f, 0f, 0.2f) : new Color(0f, 0.5f, 0.5f, 0f);

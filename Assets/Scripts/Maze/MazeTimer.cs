@@ -1,12 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-
 /// <summary>
-/// MazeÀÇ Timer¸¦ ´ã´çÇÏ´Â Script
+/// Mazeì˜ Timerë¥¼ ë‹´ë‹¹í•˜ëŠ” Script
 /// </summary>
 public class MazeTimer : MonoBehaviour
 {
@@ -31,7 +29,7 @@ public class MazeTimer : MonoBehaviour
 
 
     /// <summary>
-    /// ÇöÀç ³²Àº ½Ã°£ÀÌ 10ÃÊ ¹Ì¸¸ÀÏ °æ¿ì, È­¸éÀÌ Á¡Á¡ ¾îµÎ¿öÁö´Â ¿¬ÃâÀ» ÅëÇØ °ÔÀÓ ¿À¹ö¸¦ ¿¬Ãâ
+    /// í˜„ì¬ ë‚¨ì€ ì‹œê°„ì´ 10ì´ˆ ë¯¸ë§Œì¼ ê²½ìš°, í™”ë©´ì´ ì ì  ì–´ë‘ì›Œì§€ëŠ” ì—°ì¶œì„ í†µí•´ ê²Œì„ ì˜¤ë²„ë¥¼ ì—°ì¶œ
     /// </summary>
     private void Update()
     {
@@ -50,7 +48,7 @@ public class MazeTimer : MonoBehaviour
     }
 
     /// <summary>
-    /// ½ÇÁ¦ È­¸éÀÌ ¾îµÎ¿öÁö´Â ÄÚµå¸¦ ´ãÀº ÇÔ¼ö. ÄÚ·çÆ¾À¸·Î ½ÇÇà µÊ.
+    /// ì‹¤ì œ í™”ë©´ì´ ì–´ë‘ì›Œì§€ëŠ” ì½”ë“œë¥¼ ë‹´ì€ í•¨ìˆ˜. ì½”ë£¨í‹´ìœ¼ë¡œ ì‹¤í–‰ ë¨.
     /// </summary>
     /// <returns>None</returns>
     IEnumerator EAE()

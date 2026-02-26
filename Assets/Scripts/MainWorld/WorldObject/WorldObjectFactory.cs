@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Utility;
 
 public class WorldObjectFactory : Singleton<WorldObjectFactory>
 {
@@ -104,8 +105,7 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
     ///  NPCData를 가지고 NPC 생성
     ///  </summary>
     ///  <param name="objData">월드오브젝트 데이터</param>
-    ///  <param name="location">Location 정보</param>
-    /// <param name="position">Location 오브젝트의 transform</param>
+    /// <param name="pos">Location 오브젝트의 transform</param>
     public void CreateNPC(ChatObjectData objData, int pos = 0)
     {
         WorldVector targetPos = objData.positions[pos];
@@ -159,7 +159,7 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
         //위치 지정
         WorldVector targetPos = objData.positions[pos];
         GameObject newObject = new();
-        Debug.Log($"New Object: {newObject.name}");
+        EditorLogger.Log($"New Object: {newObject.name}");
         
         // 데이터 입력
         newObject.name = objData.actionName;

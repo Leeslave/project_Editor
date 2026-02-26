@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class MsgManager : Singleton<MsgManager>
 {
@@ -11,7 +8,7 @@ public class MsgManager : Singleton<MsgManager>
 
     private string currentUser = "클레이튼";
     [Header("메시지 리스트")]
-    private List<MessageData> messageDatas = new();
+    private List<MessageData> messageData = new();
 
     public int panelSize;
     public RectTransform MsgListPanel;
@@ -32,10 +29,10 @@ public class MsgManager : Singleton<MsgManager>
         GetMessages();
 
         // 메시지 패널 생성
-        for(int i = 0; i < messageDatas.Count; i++)
+        for(int i = 0; i < messageData.Count; i++)
         {
             GameObject newPanel = Instantiate(MsgPrefab, MsgListPanel);
-            // newPanel.transform.GetChild(0).GetComponent<TMP_Text>().text = messageDatas[i].name;
+            // newPanel.transform.GetChild(0).GetComponent<TMP_Text>().text = messageData[i].name;
             MsgListPanel.sizeDelta += new Vector2(0, panelSize);
             newPanel.GetComponent<MessagePanel>().count = i;
         }
@@ -52,7 +49,7 @@ public class MsgManager : Singleton<MsgManager>
         messageIndex = 0;
         currentMessage = idx;
 
-        // msgs = DataLoader.GetChatData(messageDatas[currentMessage].awakeParam);
+        // msgs = DataLoader.GetChatData(messageData[currentMessage].awakeParam);
         
         NextMessage();
     }
@@ -128,7 +125,7 @@ public class MsgManager : Singleton<MsgManager>
     /// </summary>
     public void GetMessages()
     {
-        messageDatas.Clear();
+        messageData.Clear();
 
     }
 }

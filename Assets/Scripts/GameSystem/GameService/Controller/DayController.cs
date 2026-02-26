@@ -1,6 +1,7 @@
 using GameService;
 using System;
 using UnityEngine;
+using Utility;
 
 public class DayController : MonoBehaviour, IDayService
 {
@@ -42,7 +43,7 @@ public class DayController : MonoBehaviour, IDayService
         set
         {
             time = value;
-            Debug.Log($"Day Changed {time}");
+            EditorLogger.Log($"Day Changed {time}");
             OnTimeChanged?.Invoke(value);
         }
     }
@@ -55,8 +56,8 @@ public class DayController : MonoBehaviour, IDayService
     private void Start()
     {
         _dataService = ServiceProvider.Get<IDataService>();
-        // NOTE: Debug용 날짜 즉시 로드
         #if UNITY_EDITOR
+        // NOTE: 디버그용 날짜 즉시 로드
         Init();
         #endif
     }
