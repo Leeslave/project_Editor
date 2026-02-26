@@ -9,7 +9,6 @@ using UnityEngine.SceneManagement;
 
 public class HanoiManager : MonoBehaviour 
 {
-    // Inject: work Service
     IWorkService workService;
     
     // ���� �ڽ��� ���� ��������

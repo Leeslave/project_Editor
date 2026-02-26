@@ -1,8 +1,8 @@
 using GameService;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.SceneManagement;
+using Utility;
 
 namespace GameAction
 {
@@ -100,7 +100,7 @@ namespace GameAction
                 return factory(param);
             }
 
-            Debug.LogError($"Unknown function: {func}");
+            EditorLogger.LogError($"Unknown function: {func}");
             return null;
         }
     }
@@ -249,7 +249,7 @@ namespace GameAction
         public bool Invoke()
         {
             if (Tutorial < 0) return false;
-            Debug.Log($"TUTORIAL: {Tutorial}");
+            EditorLogger.Log($"TUTORIAL: {Tutorial}");
             return true;
         }
     }

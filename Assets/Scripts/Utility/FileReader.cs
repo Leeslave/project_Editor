@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using Utility;
 
 public static class FileReader
 {
@@ -21,7 +22,7 @@ public static class FileReader
         TextAsset data = Resources.Load(file) as TextAsset;
         if (data == null)
         {
-            Debug.Log("ERROR: CSV FILE CANNOT FOUND");
+            EditorLogger.Log("CSV FILE CANNOT FOUND");
             return null;
         }
 
@@ -30,7 +31,7 @@ public static class FileReader
 
         if (lines.Length <= 1)
         {
-            Debug.Log("WARNING: CSV FILE EMPTY");
+            EditorLogger.Log("CSV FILE EMPTY");
             return new List<List<string>>();
         }
 

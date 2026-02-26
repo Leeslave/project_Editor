@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utility;
 
 public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
 {
@@ -23,8 +24,8 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
             // 1. 애플리케이션 종료 중에는 새로운 인스턴스를 만들지 않습니다.
             if (_applicationIsQuitting)
             {
-                Debug.LogWarning("[Singleton] Instance '" + typeof(T).Name +
-                                 "' already destroyed on application quit. Returning null.");
+                EditorLogger.LogWarning("[Singleton] Instance '" + typeof(T).Name +
+                                        "' already destroyed on application quit. Returning null.");
                 return null;
             }
 

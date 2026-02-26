@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Utility;
 
 public class TaskManager : MonoBehaviour
 {
@@ -84,7 +85,7 @@ public class TaskManager : MonoBehaviour
         {
             if(work.code == consoleInput.text)
             {
-                Debug.Log($"Work Entered! : {consoleInput.text}");
+                EditorLogger.Log($"Work Entered! : {consoleInput.text}");
                 consoleInput.text = "업무 로딩중...\n";
                 SceneManager.LoadScene(work.code,  LoadSceneMode.Additive);
                 SceneManager.UnloadSceneAsync(sceneName);

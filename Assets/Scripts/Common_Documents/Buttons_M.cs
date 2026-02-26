@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,7 +11,7 @@ public abstract class Buttons_M : MonoBehaviour
     protected Image image;
     protected EventTrigger ET;
     /// <summary>
-    /// Æ÷ÀÎÅÍ ¿Â, ¿ÀÇÁ, Å¬¸¯ ÀÌº¥Æ®¸¸ ÃÊ±âÈ­µÇÀÖÀ½.
+    /// í¬ì¸í„° ì˜¨, ì˜¤í”„, í´ë¦­ ì´ë²¤íŠ¸ë§Œ ì´ˆê¸°í™”ë˜ìˆìŒ.
     /// </summary>
     protected virtual void Awake()
     {

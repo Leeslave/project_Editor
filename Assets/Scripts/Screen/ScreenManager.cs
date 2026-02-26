@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Utility;
 
 public class ScreenManager : Singleton<ScreenManager>
 {
@@ -101,7 +102,7 @@ public class ScreenManager : Singleton<ScreenManager>
     /// </remarks>
     public void OnPowerClicked()
     {
-        Debug.Log("Power Clicked");
+        EditorLogger.Log("Power Clicked");
         StopAllCoroutines();
 
         switch (currentBootStatus)

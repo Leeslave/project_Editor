@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Utility;
 
 public class GlowEffect : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class GlowEffect : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"Warning: Glow Effect on the NOT Image Object");
+            EditorLogger.LogWarning($"Warning: Glow Effect on the NOT Image Object");
             Destroy(this);
         }
     }

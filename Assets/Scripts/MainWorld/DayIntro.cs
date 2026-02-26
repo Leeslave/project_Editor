@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Utility;
 
 public class DayIntro : MonoBehaviour
 {
@@ -49,7 +50,7 @@ public class DayIntro : MonoBehaviour
         // GameSystem.Instance?.SetTime(0);
         
         // 씬 로드 완료 및 전환
-        Debug.Log($"Scene Loaded : {scene}");
+        EditorLogger.Log($"Scene Loaded : {scene}");
         asyncLoad.allowSceneActivation = true;
         yield return new WaitUntil(() => isFinished);
     }

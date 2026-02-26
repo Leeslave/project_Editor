@@ -313,6 +313,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Utility;
 
 public class TutorialBorder : MonoBehaviour
 {
@@ -359,7 +360,7 @@ public class TutorialBorder : MonoBehaviour
         if (!KeepEvent)
         {
             try { trigger.triggers.Clear(); }
-            catch (System.Exception e) { Debug.Log($"{e} At Clear"); }
+            catch (System.Exception e) { EditorLogger.Log($"{e} At Clear"); }
         }
 
         TutorialSetting.instance.CurActive = this;
