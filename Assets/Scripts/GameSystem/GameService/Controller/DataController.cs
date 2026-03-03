@@ -11,8 +11,6 @@ public sealed class DataController : IDataService
      */
     private int _index;
     
-    public DailyData Data { get; private set; }
-    
     public event Action<int> OnDataChanged;
 
     public DataController()
@@ -33,6 +31,10 @@ public sealed class DataController : IDataService
             LoadDay(_index);
         }
     }
+    
+    #region DayData
+    
+    public DailyData Data { get; private set; }
 
     /// <summary>
     /// 날짜 로드
@@ -60,4 +62,16 @@ public sealed class DataController : IDataService
     {
         return Data.workList;
     }
+    
+    #endregion
+
+    #region SaveData
+    
+    public SaveData Save { get; private set; }
+    public DaySave GetDaySave(int dateIndex = -1)
+    {
+        return Save.saveList[dateIndex];
+    }
+
+    #endregion
 }

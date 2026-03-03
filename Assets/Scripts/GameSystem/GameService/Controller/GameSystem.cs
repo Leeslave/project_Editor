@@ -4,6 +4,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public sealed class GameSystem : Singleton<GameSystem>, ISaveService
 {
@@ -70,14 +71,15 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
     #region SaveManage
     //////// Save 관리 ////////
     
-    [SerializeField] private SaveData _saveData;
+    [SerializeField] private SaveData save;
+    private DaySave currentSave => save[index]
 
     public int Renown
     {
-        get => _saveData.renown;
+        get => save.renown;
         set
         {
-            _saveData.renown = value;
+            save.renown = value;
             OnRenownChanged?.Invoke(value);
         }
     }
@@ -90,7 +92,7 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
     /// <param name="index">세이브 번호</param>
     public void LoadSaveData(int index = 0)
     {
-        _saveData = new SaveData();
+        save = new SaveData();
 
         DataLoader.GetPlayerData(index);
     }
@@ -102,7 +104,7 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
     /// <returns></returns>
     public bool CheckRenown(int condition)
     {
-        if (_saveData.renown >= condition)
+        if (save.renown >= condition)
         {
             return true;
         }
