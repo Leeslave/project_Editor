@@ -4,10 +4,12 @@ namespace GameService
 {
     public interface ISaveService : IService
     {
+        public DaySave Save { get; }
+        
         /// <summary>
         /// 명성치
         /// </summary>
-        public int Renown { get; set; }
+        public int Renown { get; }
         
         /// <summary>
         /// 명성치 변화 이벤트

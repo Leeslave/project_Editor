@@ -34,12 +34,14 @@ namespace GameService
         /// <summary>
         /// 세이브 데이터 정보
         /// </summary>
-        SaveData Save
+        PlayerData Player
         {
             get;
         }
 
         DaySave GetDaySave(int dateIndex = -1);
+
+        void SaveDay(DaySave daySave);
 
         #endregion
     }

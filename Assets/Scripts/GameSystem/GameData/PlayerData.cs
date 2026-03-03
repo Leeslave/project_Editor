@@ -3,36 +3,46 @@ using System.Linq;
 using Utility;
 
 [System.Serializable]
-public struct DaySave
+public class DaySave
 {
     public int renown;
 }
 
 
 [System.Serializable]
-public class SaveData
+public class PlayerData
 {
     /**
     * 플레이어 세이브 데이터 클래스
     *   - 날짜별 세이브 정보
     *   - 최신 날짜까지 적용
     */
-    public List<DaySave> saveList = new();
+    
+    // 세이브 목록
+    private List<DaySave> saveList = new();
+    
+    public DaySave this[int index]
+    {
+        get => saveList[index];
+        set => saveList[index] = value;
+    }
+    
+    public int Count => saveList.Count;
+
 
     /// <summary>
     /// 세이브 데이터 추가
     /// </summary>
-    /// <param name="idx">추가할 날짜 인덱스</param>
     /// <param name="data">추가할 데이터</param>
-    /// <remarks>해당 날짜 전까지 누락 시 마지막 데이터 기준으로 일괄 추가</remarks>
-    public void Save(int idx, DaySave data)
+    /// <param name="idx">추가할 날짜 인덱스 (default: 마지막 날 추가)</param>
+    public void Save(DaySave data, int idx = -1)
     {
-        if (idx < 0)
+        // 마지막날 추가
+        if (idx < 0 || idx == saveList.Count)
         {
-            EditorLogger.LogWarning("Save Index Error");
+            saveList.Add(data);
             return;
         }
-        
         // 특정 날짜 저장
         if (idx < saveList.Count)
         {
@@ -41,12 +51,7 @@ public class SaveData
         // 최신 날짜까지 저장
         else
         {
-            var lastSave = saveList.LastOrDefault();
-            while (saveList.Count <= idx)
-            {
-                saveList.Add(lastSave);
-            }
-            saveList.Add(data);
+            EditorLogger.LogError("Invalid save Index");
         }
     }
 }

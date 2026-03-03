@@ -2,6 +2,8 @@
 using GameService;
 using System;
 using System.Collections.Generic;
+using Utility;
+using FileSystem;
 
 public sealed class DataController : IDataService
 {
@@ -10,8 +12,8 @@ public sealed class DataController : IDataService
      * - 해당 index에 따라 데이터 로드 및 제공
      */
     private int _index;
-    
     public event Action<int> OnDataChanged;
+    public event Action OnSaveChanged;
 
     public DataController()
     {
@@ -67,10 +69,31 @@ public sealed class DataController : IDataService
 
     #region SaveData
     
-    public SaveData Save { get; private set; }
+    public PlayerData Player { get; private set; }
+
+    public PlayerData LoadSave()
+    {
+        Player = DataLoader.GetPlayerData();
+        
+        return Player;
+    }
+    
     public DaySave GetDaySave(int dateIndex = -1)
     {
-        return Save.saveList[dateIndex];
+        return Player[dateIndex];
+    }
+
+    /// <summary>
+    /// 세이브 저장
+    /// </summary>
+    /// <remarks>현재 날짜 저장</remarks>>
+    public void SaveDay(DaySave daySave)
+    {
+        EditorLogger.Log($"Save Day {_index}");
+        Player.Save(daySave);
+        // TODO: 파일 저장
+        
+        OnSaveChanged?.Invoke();
     }
 
     #endregion
