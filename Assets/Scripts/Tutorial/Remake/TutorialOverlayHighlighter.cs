@@ -19,6 +19,7 @@ public class TutorialComponent
 {
     public GameObject target;
     public bool autoSkip;           // true = 클릭으로 넘어감, false = 타이핑 + Enter
+    public bool pause;              // 튜토리얼을 일시적으로 정지. -> 메인 월드와 같이 다른 위치에 튜토리얼 설명이 필요한 경우 사용
     public string message;
     public MessageBoxAnchor msgAnchor = MessageBoxAnchor.Auto;
     public Vector2 msgOffset;       // 미세 조정용 추가 오프셋
@@ -64,13 +65,21 @@ public class TutorialOverlayHighlighter : MonoBehaviour
     void Start()
     {
         HideMessage();
+        currentIndex = 0;
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Begin();
+        }
     }
 
     // ── Public API ───────────────────────────────────────
 
     public void Begin()
     {
-        currentIndex = 0;
         RunStep(currentIndex);
     }
 
@@ -85,6 +94,7 @@ public class TutorialOverlayHighlighter : MonoBehaviour
 
     private void RunStep(int index)
     {
+        HideMessage();
         if (index >= steps.Length) { End(); return; }
         if (stepCoroutine != null) StopCoroutine(stepCoroutine);
         stepCoroutine = StartCoroutine(CoStep(steps[index]));
@@ -106,9 +116,11 @@ public class TutorialOverlayHighlighter : MonoBehaviour
             yield return CoWaitForTypeAndEnter(step.target, step.targetText, step.message);
 
         // 4. 다음 스텝
-        HideMessage();
+        //HideMessage();
         currentIndex++;
-        RunStep(currentIndex);
+        
+        if (!step.pause) { RunStep(currentIndex); }
+        else { End();}
     }
 
     // ── 하이라이트 ───────────────────────────────────────
