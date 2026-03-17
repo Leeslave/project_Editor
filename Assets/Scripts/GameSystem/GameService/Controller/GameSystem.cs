@@ -1,7 +1,6 @@
 using System;
 using GameService;
 using System.Collections;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,6 +13,7 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
      * - 메인씬 로드 (게임 진입)
      */
 
+    private IDataService _dataService;
     private GameObject loadUI => transform.GetChild(0).gameObject;
     private Action<IService> loadHandler;
     
@@ -22,7 +22,8 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
         // 서비스 주입
         ServiceProvider.Register<ISaveService>(this);
         
-        // TODO: 세이브 파일 무결성 확인
+        // 세이브 파일 로드 및 무결성 검사
+        _dataService = ServiceProvider.Get<IDataService>();
         
         // NOTE: GameSystem 생성 즉시 메인 월드 진입 (방식 개선 필요)
         // 게임 시작
@@ -69,31 +70,24 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
     
     #region SaveManage
     //////// Save 관리 ////////
-    
-    [SerializeField] private SaveData _saveData;
+
+    public DaySave Save
+    {
+        get => _dataService.GetDaySave();
+        private set => _dataService.SaveDay(value);
+    }
 
     public int Renown
     {
-        get => _saveData.renown;
+        get => Save.renown;
         set
         {
-            _saveData.renown = value;
+            Save.renown = value;
             OnRenownChanged?.Invoke(value);
         }
     }
 
     public event Action<int> OnRenownChanged;
-
-    /// <summary>
-    /// 세이브 데이터 로드
-    /// </summary>
-    /// <param name="index">세이브 번호</param>
-    public void LoadSaveData(int index = 0)
-    {
-        _saveData = new SaveData();
-
-        DataLoader.GetPlayerData(index);
-    }
 
     /// <summary>
     /// 명성치 조건 확인
@@ -102,12 +96,13 @@ public sealed class GameSystem : Singleton<GameSystem>, ISaveService
     /// <returns></returns>
     public bool CheckRenown(int condition)
     {
-        if (_saveData.renown >= condition)
+        if (Renown >= condition)
         {
             return true;
         }
 
         return false;
     }
+    
     #endregion
 }

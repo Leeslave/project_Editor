@@ -5,6 +5,8 @@ namespace GameService
 {
     public interface IDataService : IService
     {
+        #region DateInfo
+        
         /// <summary>
         /// 게임 데이터 정보
         /// </summary>
@@ -24,5 +26,23 @@ namespace GameService
         /// 오늘 날짜의 업무 불러오기
         /// </summary>
         List<Work> GetWorkList();
+        
+        #endregion
+
+        #region SaveInfo
+
+        /// <summary>
+        /// 세이브 데이터 정보
+        /// </summary>
+        PlayerData Player
+        {
+            get;
+        }
+
+        DaySave GetDaySave(int dateIndex = -1);
+
+        void SaveDay(DaySave daySave);
+
+        #endregion
     }
 }
