@@ -106,6 +106,7 @@ public class Work
 
     public int stage; // 스테이지 번호
     public bool isClear;
+    public List<string> data = new();
 
     public Work(string _code, int _stage = 0)
     {
