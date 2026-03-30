@@ -5,6 +5,7 @@ using Utility;
 [System.Serializable]
 public class DaySave
 {
+    public string thumbnail;
     public int renown;
 }
 
