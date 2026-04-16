@@ -9,9 +9,6 @@ using Random = UnityEngine.Random;
 
 public class ResultPanel : MonoBehaviour
 {
-    // Work Service
-    IWorkService workService;
-
     private BasicButton CloseButton { get; set; }
     public TextMeshPro Title { get; set; }
     private TextMeshPro Result { get; set; }
@@ -23,7 +20,6 @@ public class ResultPanel : MonoBehaviour
         CloseButton = transform.GetChild(0).GetComponent<BasicButton>();
         Title = transform.GetChild(1).GetChild(0).GetComponent<TextMeshPro>();
         Result = transform.GetChild(2).GetChild(0).GetComponent<TextMeshPro>();
-        workService = ServiceProvider.Get<IWorkService>();
     }
 
     public void ClosePanel()
@@ -156,7 +152,7 @@ public class ResultPanel : MonoBehaviour
             CloseButton.OnMouseUpEvent.AddListener(() =>
             {
                 //Debug.Log("복호화 튜토리얼 종료!");
-                workService.ClearWork("ADFGVX_DT");
+                WorkManager.Instance.ClearWork("ADFGVX_DT");
                 StartCoroutine(CloseTask("ADFGVX_DT"));
             });
         }
@@ -172,7 +168,7 @@ public class ResultPanel : MonoBehaviour
                 CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
                 CloseButton.OnMouseUpEvent.AddListener(() =>
                 {
-                    workService.ClearWork("ADFGVX");
+                    WorkManager.Instance.ClearWork("ADFGVX");
                     StartCoroutine(CloseTask("ADFGVX"));
                 });
 
@@ -381,7 +377,7 @@ public class ResultPanel : MonoBehaviour
             CloseButton.OnMouseUpEvent.AddListener(() =>
             {
                 //Debug.Log("암호화 튜토리얼 종료!");
-                workService.ClearWork("ADFGVX_ET");
+                WorkManager.Instance.ClearWork("ADFGVX_ET");
                 StartCoroutine(CloseTask("ADFGVX_ET"));
             });
         }
@@ -396,7 +392,7 @@ public class ResultPanel : MonoBehaviour
                 CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
                 CloseButton.OnMouseUpEvent.AddListener(() =>
                 {
-                    workService.ClearWork("ADFGVX");
+                    WorkManager.Instance.ClearWork("ADFGVX");
                     StartCoroutine(CloseTask("ADFGVX"));
                 });
             }

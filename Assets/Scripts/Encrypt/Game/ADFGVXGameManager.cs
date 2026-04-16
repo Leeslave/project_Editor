@@ -125,9 +125,7 @@ public class ADFGVXGameManager : MonoBehaviour
         TextAsset stageText = Resources.Load<TextAsset>("GameData/Encrypt/ADFGVXStageData");
         ADFGVXStageData stageData = JsonConvert.DeserializeObject<ADFGVXStageData>(stageText.text);
 
-        IWorkService workService = ServiceProvider.Get<IWorkService>();
-
-        int stageNum = workService.GetStage("ADFGVX");
+        int stageNum = WorkManager.Instance.GetStage("ADFGVX");
         if (stageNum == -1)
         {
             //Debug.LogError("스테이지 데이터 로드 실패!");

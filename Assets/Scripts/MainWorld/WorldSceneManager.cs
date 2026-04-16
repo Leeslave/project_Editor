@@ -20,13 +20,14 @@ public enum World {
 
 public class WorldSceneManager : Singleton<WorldSceneManager>
 {
+    private IDayService _dayService;
+    
     /**
     * MainWorld 씬 매니저
     *   - 지역 내 위치 이동
     *   - 지역 간 이동
     */
     public GameObject mainCamera;
-    private ILocationService locationService;
     
     private int[] _bgmCode = new int[(int)World.Max]; 
     private bool isNight;
@@ -37,9 +38,9 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     [SerializeField] private FadeCurtain curtain;      // 지역 이동 효과 이미지
     public SoundManager worldBGM;  // 지역 내 배경음악
 
-    public override void Awake()
+    public void Awake()
     {
-        base.Awake();
+        _dayService = GameSystem.Instance.GetService<IDayService>();
         for (int i = 0; i < _bgmCode.Length; i++)
         {
             _bgmCode[i] = i;
@@ -48,6 +49,7 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
 
     public void Start()
     {
+        
         ServiceProvider.Get<IDayService>(service =>
         {
             service.OnTimeChanged += SetTime;

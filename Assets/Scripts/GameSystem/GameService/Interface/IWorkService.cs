@@ -19,7 +19,7 @@ namespace GameService
         /// 모든 업무 목록 확인하기
         /// </summary>
         /// <returns>업무데이터 리스트</returns>
-        public List<Work> GetList();
+        public List<string> GetList();
 
         /// <summary>
         /// 업무 스테이지 확인하기

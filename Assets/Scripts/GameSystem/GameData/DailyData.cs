@@ -102,9 +102,10 @@ public class Work
     /**
     * 업무 정보
     */
-    public string code; // 업무 코드명
-
-    public int stage; // 스테이지 번호
+    public string name;     // 업무 이름
+    public string code;     // 업무 코드명
+    public int stage;       // 스테이지 번호
+    
     public bool isClear;
 
     public Work(string _code, int _stage = 0)

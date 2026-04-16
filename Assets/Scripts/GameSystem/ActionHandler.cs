@@ -6,7 +6,6 @@ using Utility;
 
 namespace GameAction
 {
-
     public static class ActionHandler
     {
         // Action 생성 Delegate 관리
@@ -144,8 +143,8 @@ namespace GameAction
             // input Exception
             if (Day < 0) return false;
             
-            IDayService dayService = ServiceProvider.Get<IDayService>();
-            dayService.Date = Day;
+            IDayService dayService = GameSystem.Instance.GetService<IDayService>();
+            dayService.Day = Day;
             return true;
         }
     }
@@ -157,14 +156,14 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            IDayService dayService = ServiceProvider.Get<IDayService>();
+            IDayService dayService = GameSystem.Instance.GetService<IDayService>();
 
             if (dayService.Time != 3)
             {
                 return false;
             }
 
-            dayService.Date += 1;
+            dayService.Day += 1;
             return true;
         }
     }
@@ -178,7 +177,7 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            IDayService dayService = ServiceProvider.Get<IDayService>();
+            IDayService dayService = GameSystem.Instance.GetService<IDayService>();
             if (dayService.Time != Time - 1)
             {
                 return false;
@@ -199,7 +198,7 @@ namespace GameAction
         {
             if (Time < 0) return false;
             
-            IDayService dayService = ServiceProvider.Get<IDayService>();
+            IDayService dayService = GameSystem.Instance.GetService<IDayService>();
             dayService.Time = Time;
             return true;
         }
@@ -264,10 +263,10 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            var location = ServiceProvider.Get<ILocationService>();
+            var location = LocationManager.Instance;
             if (location == null) return false;
 
-            location.MoveLocation(new WorldVector(World, Index));
+            location.currentVector = new WorldVector(World, Index);
             return true;
         }
     }

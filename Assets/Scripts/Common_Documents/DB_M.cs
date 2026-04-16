@@ -46,8 +46,6 @@ public class DB_M : MonoBehaviour
     // 땃쥐에서 넘어왔다면 , Document 가 아니라 "SecureD"
     void Start()
     {
-        IWorkService workService = ServiceProvider.Get<IWorkService>();
-        
         normalInfo.SetActive(false);
         secretInfo.SetActive(false);
         if (ConvertWork.Instance == null) 
@@ -62,7 +60,7 @@ public class DB_M : MonoBehaviour
             secretInfo.SetActive(true);
         }
         
-        stageInt = workService.GetStage(clearGameName);
+        stageInt = WorkManager.Instance.GetStage(clearGameName);
         if (DB_Docs != null) { Destroy(gameObject); return; }
         DB_Docs = this;
 

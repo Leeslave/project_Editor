@@ -6,32 +6,28 @@ using Utility;
 
 public class Door : MonoBehaviour, IPointerClickHandler
 {
+    private LocationManager locationManager;
+    
     [Header("Destination")]
     public World destination;   //목적지 설정
     public int position;
     private ChatTrigger _blockChat;   // Block일시 출력할 대사
     
-    private ILocationService _locationService;
-    
     private void Awake()
     {
         _blockChat = GetComponent<ChatTrigger>();
-    }
-
-    private void Start()
-    {
-        ServiceProvider.Get<ILocationService>(service => _locationService = service);
+        locationManager = LocationManager.Instance;
     }
     
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (_locationService == null)
+        if (!locationManager)
         {
             EditorLogger.LogWarning($"World Manager Missed!! : Door");
         }
         
         // 지역이동 제한
-        if (_locationService != null && _locationService.MoveLocation(new WorldVector(destination, position)) == null)
+        if (locationManager.MoveLocation(new WorldVector(destination, position)))
         {
             // 이동 제한 텍스트 출력
             _blockChat?.StartChat();

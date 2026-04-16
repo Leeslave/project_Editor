@@ -5,6 +5,7 @@ using Utility;
 [System.Serializable]
 public class DaySave
 {
+    public int dayID;       // Day * 100 + branch
     public string thumbnail;
     public int renown;
 }
@@ -21,38 +22,37 @@ public class PlayerData
     
     // 세이브 목록
     private List<DaySave> saveList = new();
-    
-    public DaySave this[int index]
-    {
-        get => saveList[index];
-        set => saveList[index] = value;
-    }
-    
-    public int Count => saveList.Count;
+    public DaySave this[int dayID] => saveList.FirstOrDefault(s => s.dayID == dayID);
 
 
-    /// <summary>
+    /// <summary> 
     /// 세이브 데이터 추가
     /// </summary>
     /// <param name="data">추가할 데이터</param>
-    /// <param name="idx">추가할 날짜 인덱스 (default: 마지막 날 추가)</param>
-    public void Save(DaySave data, int idx = -1)
+    public void Save(DaySave data)
     {
-        // 마지막날 추가
-        if (idx < 0 || idx == saveList.Count)
+        // 1. 동일 ID 존재시 대체
+        // 2. 마지막날 기준 +1일 이상 차이(100 이상) 날 시 경고, 세이브 안함
+        // 3. 동일 날짜+해당 분기 없을 시 분기 순으로 삽입
+        var oldSave = saveList.FirstOrDefault(x => x.dayID == data.dayID);
+        
+        // Already Exist Save
+        if (oldSave != null)
         {
-            saveList.Add(data);
+            oldSave.renown =  data.renown;
             return;
         }
-        // 특정 날짜 저장
-        if (idx < saveList.Count)
+        
+        // New Save
+        int lastDay = saveList.Last().dayID % 100;
+        if (data.dayID % 100 > lastDay + 1)
         {
-            saveList[idx] = data;
+            // Day Error
+            EditorLogger.LogWarning($"Invalid Day Index {data.dayID}, Last Save : {lastDay}");
         }
-        // 최신 날짜까지 저장
-        else
-        {
-            EditorLogger.LogError("Invalid save Index");
-        }
+        
+        saveList.Add(data);
+        // Sort
+        saveList = saveList.OrderBy(x => x.dayID).ToList();
     }
 }

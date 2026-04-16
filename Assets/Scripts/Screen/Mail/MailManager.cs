@@ -52,7 +52,7 @@ public class MailManager : Singleton<MailManager>
     private async Task LoadMailAsync()
     {
         // StreamingAssets/MailData/Day 1
-        string targetFolderPath = Path.Combine(Application.streamingAssetsPath, mailDataFolderName, $"Day {_dayService.Date}");
+        string targetFolderPath = Path.Combine(Application.streamingAssetsPath, mailDataFolderName, $"Day {_dayService.Day}");
 
         if (!Directory.Exists(targetFolderPath))
         {
@@ -87,7 +87,7 @@ public class MailManager : Singleton<MailManager>
     private async Task LoadAllMailAsync()
     {
         // day 0일차부터 순회
-        for (int i = 0; i <= _dayService.Date; i++)
+        for (int i = 0; i <= _dayService.Day; i++)
         {
             // PATH: StreamingAssets/MailData/Day ?
             string targetFolderPath = Path.Combine(Application.streamingAssetsPath, mailDataFolderName, $"Day {i}");

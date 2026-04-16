@@ -13,9 +13,6 @@ using Random = UnityEngine.Random;
 // Make Pattern / End Pattern
 public class PatternManager : MonoBehaviour
 {
-    // Work Service
-    IWorkService workService;
-    
     [SerializeField] BulletManager BM;
     [SerializeField] Camera MainCam;
     [SerializeField] Player player;
@@ -102,12 +99,10 @@ public class PatternManager : MonoBehaviour
         }
         SP = new Vector2[][] { SPB, SPR, SPL, SPT };
         ReadExternalPattern();
-        
-        workService = ServiceProvider.Get<IWorkService>();
 
         try
         {
-            StageInt = workService.GetStage("Dodge");
+            StageInt = WorkManager.Instance.GetStage("Dodge");
         }
         catch { }
       
@@ -300,7 +295,7 @@ public class PatternManager : MonoBehaviour
     {
         CMDs[CurProcess].text = "Access Accept!";
         yield return TwoSec;
-        workService.ClearWork("Dodge");
+        WorkManager.Instance.ClearWork("Dodge");
 
         var loadScene = SceneManager.LoadSceneAsync("Screen", LoadSceneMode.Additive);
         yield return new WaitUntil(() => loadScene.isDone);
@@ -445,7 +440,7 @@ public class PatternManager : MonoBehaviour
         player.gameObject.SetActive(false);
         player.EndG.SetActive(true);
         player.EndG.GetComponent<RealEnd>().Ending(true);
-        workService.ClearWork("Dodge");
+        WorkManager.Instance.ClearWork("Dodge");
         SceneManager.LoadScene("Screen");
     }
 

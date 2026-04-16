@@ -5,13 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class TestGame : MonoBehaviour
 {
-    IWorkService workService;
-
-    void Start()
-    {
-        workService = ServiceProvider.Get<IWorkService>();
-    }
-
     public void Clear()
     {
         workService.ClearWork("TestGame");

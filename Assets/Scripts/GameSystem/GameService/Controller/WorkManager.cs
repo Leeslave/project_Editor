@@ -5,47 +5,50 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class WorkController : MonoBehaviour, IWorkService
+public class WorkManager : Singleton<WorkManager>
 {
     /**
      * 업무 목록 관리 서비스
-     * - dataService 기반
-     * - 업무 완료 처리
+     * - 업무 데이터 관리
+     * - 완료 처리
      */
+    private IDayService _dayService;
     
     public bool isScreenOn { get; set; }
-    public event Action OnWorkClear;
     
+    public event Action OnWorkClear;
     [SerializeField] private List<Work> works = new();
-    private IDataService _dataService;
-
-    private void Awake()
-    {
-        ServiceProvider.Register<IWorkService>(this);
-    }
+    
+    // TODO: WorkData SO 추가할 시 여기서 직접 전달
+    // private List<WorkData> workData = new();
 
     private void Start()
     {
-        _dataService = ServiceProvider.Get<IDataService>();
-        _dataService.OnDataChanged += _ => Init();      // 데이터 변경 시 자동 갱신
+        _dayService = GameSystem.Instance.GetService<IDayService>();
+        _dayService.OnDayChanged += Init;
     }
     
     /// <summary>
     /// 업무 목록 갱신 - 데이터에서 로드
     /// </summary>
-    public void Init()
+    private void Init(DailyData data)
     {
-        works = _dataService.GetWorkList();
+        works = data.workList;
     }
 
     /// <summary>
     /// 전체 업무 리스트 반환
     /// </summary>
     /// <returns>업무 리스트</returns>
-    public List<Work> GetList()
+    public List<string> GetList()
     {
-        return works;
+        return works.Select(x => x.name).ToList();
     }
+
+    // public WorkData GetWorkData(string code, int stage)
+    // {
+    //     
+    // }
 
     /// <summary>
     /// 업무 코드로 해당 업무 스테이지 반환
@@ -81,5 +84,10 @@ public class WorkController : MonoBehaviour, IWorkService
         bool isClear = works.All(work => work.isClear);
         if (isClear) OnWorkClear?.Invoke();
         return isClear;
+    }
+
+    private void OnDestroy()
+    {
+        _dayService.OnDayChanged -= Init;
     }
 }

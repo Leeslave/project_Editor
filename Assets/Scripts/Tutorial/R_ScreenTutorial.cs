@@ -34,7 +34,7 @@ public class R_ScreenTutorial : TutorialManager
             dayService = ServiceProvider.Get<IDayService>();
         }
         
-        if (dayService.Date != day || dayService.Time != time)
+        if (dayService.Day != day || dayService.Time != time)
         {
             return;
         }

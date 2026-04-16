@@ -3,7 +3,7 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using FileSystem;
+using GlobalSystem;
 
 public class ChatBuilder : Singleton<ChatBuilder>
 {
@@ -66,7 +66,7 @@ public class ChatBuilder : Singleton<ChatBuilder>
     /// <remarks>날짜 파일을 불러온 후 </remarks>
     public void EditChat(string gameFile)
     {
-        chat = DataLoader.GetChatData(gameFile);
+        chat = DataLoader.GetData<Dialogue>(gameFile).chatList;
         if (chat is null)
         {
             Debug.Log("Cannot Find chat to Edit");
@@ -91,7 +91,8 @@ public class ChatBuilder : Singleton<ChatBuilder>
         if (!onEdit) return;
         
         var path = Path.Combine(dataPath, fileName);
-        DataLoader.SaveChatData(path, chat);
+        Dialogue newChat = new() { chatList = chat };
+        DataLoader.SaveData(path, newChat);
         fileName = "";
         chat = null;
         onEdit = false;

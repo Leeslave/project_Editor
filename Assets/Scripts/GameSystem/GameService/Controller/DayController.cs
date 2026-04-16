@@ -9,32 +9,22 @@ public class DayController : MonoBehaviour, IDayService
      * 게임 날짜 컨트롤러
      * - 데이터를 통해서 관리
      */
-    private IDataService _dataService;
     
-    [SerializeField] private int date;
+    [SerializeField] private int day;
     [SerializeField] private int time;
+    [SerializeField] private int branch;
 
     [SerializeField] private DailyData data;
-    public DailyData Data => data;
-    public TimeData TimeData => data.dayTimes[time];
-    public event Action<int> OnDateChanged;
-    public event Action<int> OnTimeChanged;
     
-    public int Date
-    {
-        get => date;
-        set
-        {
-            if (date == value)
-                return;
-            date = value;
+    public TimeData TimeData => data.dayTimes[time];
 
-            // Data 갱신
-            data = _dataService.LoadDay(date);
-            
-            OnDateChanged?.Invoke(value);
-            Time = 0;
-        }
+    public event Action<DailyData> OnDayChanged;
+    public event Action<TimeData> OnTimeChanged;
+
+    public int Day
+    {
+        get => day;
+        set => ChangeDay(value);
     }
 
     public int Time
@@ -44,28 +34,37 @@ public class DayController : MonoBehaviour, IDayService
         {
             time = value;
             EditorLogger.Log($"Day Changed {time}");
-            OnTimeChanged?.Invoke(value);
+            OnTimeChanged?.Invoke(TimeData);
         }
     }
 
     private void Awake()
     {
-        ServiceProvider.Register<IDayService>(this);
+        GameSystem.Instance.RegisterService(this);
     }
 
-    private void Start()
+    private void ChangeDay(int newDay)
     {
-        _dataService = ServiceProvider.Get<IDataService>();
-        #if UNITY_EDITOR
-        // NOTE: 디버그용 날짜 즉시 로드
-        Init();
-        #endif
+        // 데이터 확인
+        var newData = DataLoader.GetDayData(newDay);
+        if (newData == null)
+        {
+            return;
+        }
+        data = newData;
+        
+        // 날짜 설정
+        day = newDay;
+        EditorLogger.Log($"Day Changed {day}");
+
+        var saveService = GameSystem.Instance.GetService<ISaveService>();
+        saveService.SelectDay(newDay);
+        
+        OnDayChanged?.Invoke(data);
+        
+        Time = 0;
     }
 
-    public void Init()
-    {
-        Date = 0;
-    }
 
     /// <summary>
     /// 해당 날짜 정보 불러오기
@@ -76,8 +75,8 @@ public class DayController : MonoBehaviour, IDayService
         return data.date;
     }
 
-    public WorldVector GetStartLocation()
+    void OnDestroy()
     {
-        return data.startLocation;
+        GameSystem.Instance.UnRegister(this);
     }
 }

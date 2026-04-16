@@ -1,35 +1,18 @@
-using GameService;
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class SaveSelector : MonoBehaviour
 {
-    private int date;
-    private DaySave saveData;
+    /**
+     * 첫 로드시 세이브 불러와 UI 생성 및 이벤트 연결
+    */
+    private Transform _panel;
+    private List<Transform> _dayPanels = new();
     
-    [Header("UI Info")]
-    [SerializeField] private TMP_Text dateInfo;
-    [SerializeField] private Image dateImage;
-    [SerializeField] private TMP_Text renown;
+    private 
 
-    public void Init(int date, DaySave saveData)
+    private void Init()
     {
-        // Init Data
-        this.date = date;
-        this.saveData = saveData;
-        
-        // Set UI
-        if (date > 0) dateInfo.text = $"Day {date.ToString()}";
-        if (!string.IsNullOrEmpty(saveData.thumbnail)) dateImage.sprite = Resources.Load<Sprite>(saveData.thumbnail);       // TODO: Data Load Path
-        renown.text = saveData.renown.ToString();
-    }
-
-    public void LoadDay()
-    {
-        var dayService = ServiceProvider.Get<IDayService>();
-        dayService.Date = date;
-        SceneManager.LoadScene("MainWorld");
+        int lastDay = 
     }
 }
