@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using FileSystem;
+using Utility;
 
 public class DayBuilder : Singleton<DayBuilder>
 {
@@ -66,7 +66,7 @@ public class DayBuilder : Singleton<DayBuilder>
     /// <remarks>날짜 파일을 불러온 후 </remarks>
     public void EditDayData(string gameFile)
     {
-        dailyData = DataLoader.GetDayData(dataPath + gameFile);
+        dailyData = DataLoader.GetDayData(gameFile);
         fileName = gameFile;
         Debug.Log($"Start Editing {gameFile}");
         onEdit = true;
@@ -96,7 +96,7 @@ public class DayBuilder : Singleton<DayBuilder>
     {
         if (!onEdit) return;
         
-        DataLoader.SaveGameData(dataPath + fileName, dailyData);
+        DataLoader.SaveData(dataPath + fileName, dailyData);
         fileName = "";
         dailyData = null;
         onEdit = false;

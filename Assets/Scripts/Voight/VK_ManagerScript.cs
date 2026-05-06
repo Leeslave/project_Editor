@@ -75,12 +75,10 @@ public class VK_ManagerScript : MonoBehaviour
     // ForQA
     IWorkService workService;
     private int StageInt;
-    private bool clearFlag = false;
 
     private void Awake()
     {
         TutorialManager = FindObjectOfType<VoightTutorialManager>();
-        workService = ServiceProvider.Get<IWorkService>();
         StageInt = workService.GetStage("VoightKampff");
         ApplyAspect(Camera.main, 4f/3f);
         if (StageInt == 0) { startTutorial = true; }

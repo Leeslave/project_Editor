@@ -9,6 +9,8 @@ using Utility;
 // 해당 게임의 모든 I/O 입출력은 해당 코드를 통해 이루어짐
 public class DB_M : MonoBehaviour
 {
+    private IWorkService WorkService => GameSystem.GetService<IWorkService>();
+    
     [HideInInspector] public static DB_M DB_Docs;
     public AttatchFile_N CntFileForAttach;
     public ToDoList_N ToDoList;
@@ -46,8 +48,6 @@ public class DB_M : MonoBehaviour
     // 땃쥐에서 넘어왔다면 , Document 가 아니라 "SecureD"
     void Start()
     {
-        IWorkService workService = ServiceProvider.Get<IWorkService>();
-        
         normalInfo.SetActive(false);
         secretInfo.SetActive(false);
         if (ConvertWork.Instance == null) 
@@ -62,7 +62,7 @@ public class DB_M : MonoBehaviour
             secretInfo.SetActive(true);
         }
         
-        stageInt = workService.GetStage(clearGameName);
+        stageInt = WorkService.GetStage(clearGameName);
         if (DB_Docs != null) { Destroy(gameObject); return; }
         DB_Docs = this;
 

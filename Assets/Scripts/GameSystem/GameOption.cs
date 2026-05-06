@@ -23,9 +23,8 @@ public class GameOption : Singleton<GameOption>
     [SerializeField]
     private AudioMixer audioMixer;
     
-    new void Awake()
+    void Awake()
     {
-        base.Awake();
         // Screen.SetResolution(resolutionX, resolutionY, false);  // 해상도 고정
     }
     

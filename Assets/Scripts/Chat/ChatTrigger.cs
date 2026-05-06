@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Utility;
-using FileSystem;
 
 public interface IChatList
 {
@@ -47,7 +46,7 @@ public class ChatTrigger : MonoBehaviour
     public void LoadChatData()
     {
         chatData = new();
-        chatData = DataLoader.GetChatData(chatAsset);
+        chatData = DataLoader.GetChatData(chatAsset).chatList;
     }
 
 

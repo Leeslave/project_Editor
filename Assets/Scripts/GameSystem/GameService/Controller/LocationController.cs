@@ -1,63 +1,54 @@
-
 using GameService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class LocationController : MonoBehaviour, ILocationService
+public class LocationController : ServiceBase<ILocationService>, ILocationService
 {
-    private IDayService _dayService;
-    public List<WorldVector> BlockList { get; set; }    // 지역 이동 제한 리스트
+    private static int Time => GameSystem.GetService<IDayService>().Time;
+    
+    private List<WorldVector>[] BlockList = new List<WorldVector>[4];    // 지역 이동 제한 리스트
     public event Action<WorldVector> OnPosChanged;
 
-    private WorldVector _vector;
-    public WorldVector currentVector 
-    { 
-        get => _vector;
-        set => MoveLocation(value);
-    }
-
-    private void Awake()
-    {
-        ServiceProvider.Register<ILocationService>(this);
-    }
-
-    private void Start()
-    {
-        ServiceProvider.Get<IDayService>(service =>
-        {
-            _dayService = service;
-            _dayService.OnTimeChanged += _ => BlockList = _dayService.TimeData.block;
-            _dayService.OnDateChanged += _ => currentVector = _dayService.GetStartLocation();
-            Init();
-        });
-        
-    }
+    [SerializeField]
+    private WorldVector _position;
     
-    public void Init()
+    public WorldVector CurrentPosition => _position;
+
+    public override void OnAwake()
     {
-        BlockList = _dayService.TimeData.block;
-        currentVector = _dayService.GetStartLocation();
+        for (int i = 0; i < 4; i++)
+        {
+            BlockList[i] = new List<WorldVector>();
+        }
     }
 
-    public WorldVector MoveLocation(WorldVector vector = null)
+    public void Init(DailyData data)
     {
-        if (vector == null)
+        for (int i = 0; i < 4; i++)
         {
-            currentVector = _dayService.GetStartLocation();
-            return currentVector;
+            BlockList[i] = data.dayTimes[i].block;
         }
         
+        MoveLocation(data.startLocation);
+    }
+
+    public void MoveLocation(WorldVector vector)
+    {
         // 블록 확인
-        if (BlockList.Any(p => p == vector))
+        if (IsBlocked(vector))
         {
-            return null;
+            return;
         }
         
         // 위치 이동
-        _vector = vector;
-        OnPosChanged?.Invoke(_vector);
-        return _vector;
+        _position = vector;
+        OnPosChanged?.Invoke(_position);
+    }
+
+    public bool IsBlocked(WorldVector vector)
+    {
+        return BlockList[Time].Any(p => p == vector);
     }
 }

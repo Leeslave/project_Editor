@@ -5,12 +5,11 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerMove : MonoBehaviour
 {
     // Inject: work Service
-    IWorkService workService;
+    private IWorkService WorkService => GameSystem.GetService<IWorkService>();
     
     [SerializeField]
     public MakeTile MT;
@@ -91,8 +90,6 @@ public class PlayerMove : MonoBehaviour
 
     private void Start()
     {
-        workService = ServiceProvider.Get<IWorkService>();
-        
         CalcFog();
         for (int i = 0; i < MT.KeyNum; i++) Marks[i].gameObject.SetActive(true);
         for (int i = 0; i < MT.KeyNum; i++)
@@ -105,6 +102,7 @@ public class PlayerMove : MonoBehaviour
         RaySub_Dist = 3 / (float)Num_Ray;
         RaySub_Coord = 1 / (float)Num_Ray;
     }
+    
     int GetKeyCount = 0;
 
     [SerializeField] float speed = 5;
@@ -382,17 +380,10 @@ public class PlayerMove : MonoBehaviour
             }
             else           // 클리어
             {
-                workService.ClearWork("Maze");
-                StartCoroutine(GameClear());
+                WorkService.ClearWork("Maze");
+                GameSystem.Instance.EnterScene("Screen");
             }
         }
-    }
-
-    private IEnumerator GameClear()
-    {
-        var loadScene = SceneManager.LoadSceneAsync("Screen", LoadSceneMode.Additive);
-        yield return new WaitUntil(() => loadScene.isDone);
-        SceneManager.UnloadSceneAsync("Maze");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
