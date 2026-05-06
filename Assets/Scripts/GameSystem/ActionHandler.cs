@@ -1,12 +1,10 @@
 using GameService;
 using System;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using Utility;
 
 namespace GameAction
 {
-
     public static class ActionHandler
     {
         // Action 생성 Delegate 관리
@@ -35,7 +33,7 @@ namespace GameAction
             Register("TIMECHANGE", s =>
             {
                 int param = int.TryParse(s, out int num) ? num : -1;
-                return new SwitchTimeAction(param);
+                return new TimeSwitchAction(param);
             });
 
             // NEXTTIME
@@ -72,6 +70,13 @@ namespace GameAction
             {
                 int param = int.TryParse(s, out int num) ? num : -1;
                 return new TutorialAction(param);
+            });
+            
+            // RENOWN
+            Register("RENOWN", s =>
+            {
+                int param = int.TryParse(s, out int num) ? num : 0;
+                return new SetRenownAction(param);
             });
 
             // EXIT
@@ -127,7 +132,7 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            SceneManager.LoadScene("Start");
+            GameSystem.Instance.EnterScene();
             return true;
         }
     }
@@ -144,8 +149,7 @@ namespace GameAction
             // input Exception
             if (Day < 0) return false;
             
-            IDayService dayService = ServiceProvider.Get<IDayService>();
-            dayService.Date = Day;
+            GameSystem.SaveService.SelectDay(Day, 0);
             return true;
         }
     }
@@ -157,28 +161,21 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            IDayService dayService = ServiceProvider.Get<IDayService>();
-
-            if (dayService.Time != 3)
-            {
-                return false;
-            }
-
-            dayService.Date += 1;
+            GameSystem.SaveService.SwitchDay();
             return true;
         }
     }
 
 
     /// <summary>
-    /// 시간대 강제 변경 액션
+    /// 시간대 변경 액션
     /// </summary>
     /// <remarks>Param 형식 : int</remarks>
     public record NextTimeAction(int Time) : IGameAction
     {
         public bool Invoke()
         {
-            IDayService dayService = ServiceProvider.Get<IDayService>();
+            IDayService dayService = GameSystem.GetService<IDayService>();
             if (dayService.Time != Time - 1)
             {
                 return false;
@@ -190,16 +187,16 @@ namespace GameAction
     }
 
     /// <summary>
-    /// 시간대 변경 액션
+    /// 시간대 강제 변경 액션
     /// </summary>
     /// <remarks>Param 형식 : int</remarks>
-    public record SwitchTimeAction(int Time) : IGameAction
+    public record TimeSwitchAction(int Time) : IGameAction
     {
         public bool Invoke()
         {
             if (Time < 0) return false;
             
-            IDayService dayService = ServiceProvider.Get<IDayService>();
+            IDayService dayService = GameSystem.GetService<IDayService>();
             dayService.Time = Time;
             return true;
         }
@@ -264,7 +261,7 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            var location = ServiceProvider.Get<ILocationService>();
+            ILocationService location = GameSystem.GetService<ILocationService>();
             if (location == null) return false;
 
             location.MoveLocation(new WorldVector(World, Index));
@@ -281,7 +278,23 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            WorldObjectFactory.Instance.RemoveObject(Name);
+            WorldObjectFactory objFactory = WorldObjectFactory.Instance;
+            if (!objFactory) return false;
+            
+            objFactory.RemoveObject(Name);
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// 명성치 변화 액션
+    /// </summary>
+    /// <param name="Amount">Param 형식 : int</param>
+    public record SetRenownAction(int Amount) : IGameAction
+    {
+        public bool Invoke()
+        {
+            GameSystem.SaveService.Renown += Amount;
             return true;
         }
     }

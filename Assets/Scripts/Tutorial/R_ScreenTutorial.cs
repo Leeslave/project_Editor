@@ -19,22 +19,12 @@ public class R_ScreenTutorial : TutorialManager
     public float duration;
     [SerializeField] private int index;
     
-    private IDayService dayService;
-
-    private void Start()
-    {
-        dayService = ServiceProvider.Get<IDayService>();
-    }
-
+    private SaveService SaveService => GameSystem.SaveService;
+    private IDayService DayService => GameSystem.GetService<IDayService>();
 
     private void OnEnable()
     {
-        if (dayService == null)
-        {
-            dayService = ServiceProvider.Get<IDayService>();
-        }
-        
-        if (dayService.Date != day || dayService.Time != time)
+        if (SaveService.DayIndex != day || DayService.Time != time)
         {
             return;
         }

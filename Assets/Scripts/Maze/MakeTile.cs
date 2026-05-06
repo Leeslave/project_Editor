@@ -3,12 +3,10 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
-using System.IO;
 
 public class MakeTile : MonoBehaviour
 {
-    // Inject: work Service
-    IWorkService workService;
+    private IWorkService WorkService => GameSystem.GetService<IWorkService>();
     
     [SerializeField] GameObject TutorialObj;
 
@@ -58,9 +56,8 @@ public class MakeTile : MonoBehaviour
     void Awake()
     {
         ApplyAspect(Camera.main, 4f/3f);
-        workService = ServiceProvider.Get<IWorkService>();
         
-        Difficulty = workService.GetStage("Maze");
+        Difficulty = WorkService.GetStage("Maze");
         if (Difficulty > 0) GetDifficulty();
         else MakeTutorial();
         

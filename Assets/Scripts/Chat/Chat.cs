@@ -60,10 +60,8 @@ public class Chat : Singleton<Chat>
     private IGameAction _gameAction = new NotImpletedAction();    // 대사 반응 함수
     private IGameAction[] choiceActions = new IGameAction[3];    // 선택지 이벤트
 
-    private new void Awake()
+    private void Awake()
     {
-        base.Awake();
-
         // 이벤트 초기화
         choiceActions = new IGameAction[3];
     }
@@ -319,7 +317,6 @@ public class Chat : Singleton<Chat>
         {
             return;
         }
-        EditorLogger.Log(CG_COUNT);
         // 캐릭터 CG 설정
         for(int i = 0; i < CG_COUNT; i++)
         {
@@ -496,22 +493,17 @@ public class Chat : Singleton<Chat>
     /// <returns>변수 실재값 반환</returns>
     private static string GetVariableValue(string keyword)
     {
-        IDayService dayService = ServiceProvider.Get<IDayService>();
+        IDayService dayService = GameSystem.GetService<IDayService>();
         Date date = dayService.GetDateInfo();
-        
-        switch(keyword)
+
+        return keyword switch
         {
-            case "{{year}}":
-                return date.year.ToString();
-            case "{{month}}":
-                return date.month.ToString();
-            case "{{day}}":
-                return date.day.ToString();
-            case "{{renown}}":
-                ISaveService saveService = ServiceProvider.Get<ISaveService>();
-                return saveService.Renown.ToString();
-        }
-        return "";
+            "{{year}}" => date.year.ToString(),
+            "{{month}}" => date.month.ToString(),
+            "{{day}}" => date.day.ToString(),
+            "{{renown}}" => GameSystem.SaveService.Renown.ToString(),
+            _ => ""
+        };
     }
 
     

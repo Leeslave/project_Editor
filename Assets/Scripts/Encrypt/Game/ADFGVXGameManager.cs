@@ -9,6 +9,8 @@ using UnityEngine.Serialization;
 
 public class ADFGVXGameManager : MonoBehaviour
 {
+    private IWorkService WorkService => GameSystem.GetService<IWorkService>();
+    
     public static ADFGVXGameManager Instance { get; private set; }
     public static LoadEncrypted LoadEncrypted;
     public static KeyPriorityTranspose KeyPriorityTranspose;
@@ -125,9 +127,7 @@ public class ADFGVXGameManager : MonoBehaviour
         TextAsset stageText = Resources.Load<TextAsset>("GameData/Encrypt/ADFGVXStageData");
         ADFGVXStageData stageData = JsonConvert.DeserializeObject<ADFGVXStageData>(stageText.text);
 
-        IWorkService workService = ServiceProvider.Get<IWorkService>();
-
-        int stageNum = workService.GetStage("ADFGVX");
+        int stageNum = WorkService.GetStage("ADFGVX");
         if (stageNum == -1)
         {
             //Debug.LogError("스테이지 데이터 로드 실패!");

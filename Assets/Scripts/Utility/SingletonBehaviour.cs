@@ -8,12 +8,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
 
     // 애플리케이션이 종료 중인지 확인하는 플래그 (종료 시 접근하여 Null 참조 오류가 나는 것을 방지)
     private static bool _applicationIsQuitting = false;
-
-    public virtual void Awake()
-    {
-        
-    }
-
+    
     /// <summary>
     /// 싱글턴 인스턴스를 가져옵니다.
     /// </summary>
@@ -29,7 +24,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : Singleton<T>
                 return null;
             }
 
-            // 2. 인스턴스가 없으면 찾거나 새로 생성합니다.
+            // 2. 인스턴스가 없으면 찾기.
             if (!_instance)
             {
                 // 씬에서 인스턴스를 찾습니다.

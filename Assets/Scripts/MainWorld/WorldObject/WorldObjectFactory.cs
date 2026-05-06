@@ -1,4 +1,3 @@
-using GameService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,56 +29,31 @@ public class WorldObjectFactory : Singleton<WorldObjectFactory>
     }
 
     public List<GameObject> prefabs;
-    
     private readonly List<List<WorldObject>> _objectList = new();
     
-    private IDayService _dayService;
-
-    
     #region routine
-    private new void Awake()
+    private void Awake()
     {
-        base.Awake();
-        
         for (int i = 0; i < Enum.GetValues(typeof(World)).Length; i++)
         {
             _objectList.Add(new List<WorldObject>());
         }
     }
 
-    private void Start()
+    public void Init(List<ChatObjectData> npcData, List<ActionObjectData> actionData)
     {
-        ServiceProvider.Get<IDayService>(service =>
-        {
-            _dayService = service;
-            _dayService.OnTimeChanged += Init;
-            
-            if (_dayService.Data != null)
-            {
-                Init();
-            }
-        });
-    }
-
-    private void OnDestroy()
-    {
-        _dayService.OnTimeChanged -= Init;
-    }
-
-    private void Init(int data)
-    {
-        Init();
-    }
-
-    public void Init()
-    {
-        var data = _dayService.TimeData;
         Clear();
         
         // Chat Object 생성
-        foreach (var item in data.npc)
+        foreach (var item in npcData)
         {
             CreateNPC(item);
+        }
+        
+        // Action Object 생성
+        foreach (var item in actionData)
+        {
+            CreateAction(item);
         }
     }
     

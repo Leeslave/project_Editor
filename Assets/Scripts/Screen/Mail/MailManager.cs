@@ -1,4 +1,3 @@
-using GameService;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,8 +26,6 @@ public class MailManager : Singleton<MailManager>
      * - 메일 파일 로드
      * - 날짜에 따라 해당 메일 추가
      */
-    private IDayService _dayService;
-    
     [SerializeField] private string mailDataFolderName = "MailData";
     [SerializeField] private List<MailInfo> mailData = new();
 
@@ -37,10 +34,10 @@ public class MailManager : Singleton<MailManager>
     public GameObject mailPrefab;
     public float panelSize = 60;
 
+    private int day => GameSystem.SaveService.DayIndex;
+
     async void Start()
     {
-        _dayService = ServiceProvider.Get<IDayService>();
-    
         // UI 초기화
         if (mailList)
         {
@@ -52,7 +49,7 @@ public class MailManager : Singleton<MailManager>
     private async Task LoadMailAsync()
     {
         // StreamingAssets/MailData/Day 1
-        string targetFolderPath = Path.Combine(Application.streamingAssetsPath, mailDataFolderName, $"Day {_dayService.Date}");
+        string targetFolderPath = Path.Combine(Application.streamingAssetsPath, mailDataFolderName, $"Day {day}");
 
         if (!Directory.Exists(targetFolderPath))
         {
@@ -87,7 +84,7 @@ public class MailManager : Singleton<MailManager>
     private async Task LoadAllMailAsync()
     {
         // day 0일차부터 순회
-        for (int i = 0; i <= _dayService.Date; i++)
+        for (int i = 0; i <= day; i++)
         {
             // PATH: StreamingAssets/MailData/Day ?
             string targetFolderPath = Path.Combine(Application.streamingAssetsPath, mailDataFolderName, $"Day {i}");

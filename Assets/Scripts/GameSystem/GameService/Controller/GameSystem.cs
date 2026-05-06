@@ -1,107 +1,118 @@
 using System;
 using GameService;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Utility;
 
-public sealed class GameSystem : Singleton<GameSystem>, ISaveService
+public sealed class GameSystem : Singleton<GameSystem>
 {
     /**
      * 게임 메인 시스템 로직
-     * - 데이터 로드 및 관리
-     * - 세이브 관리
-     * - 메인씬 로드 (게임 진입)
+     * - 게임서비스 관리
+     * - 씬 운영
      */
-
-    private IDataService _dataService;
-    private GameObject loadUI => transform.GetChild(0).gameObject;
-    private Action<IService> loadHandler;
     
-    public void Init()
+    public void Awake()
     {
-        // 서비스 주입
-        ServiceProvider.Register<ISaveService>(this);
-        
-        // 세이브 파일 로드 및 무결성 검사
-        _dataService = ServiceProvider.Get<IDataService>();
-        
-        // NOTE: GameSystem 생성 즉시 메인 월드 진입 (방식 개선 필요)
-        // 게임 시작
-        StartCoroutine(LoadNextScene("MainWorld"));
+        // 현재 켜져있는 씬 불러오기
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            if (scene.name.Contains("Controller"))
+            {
+                continue;
+            }
+
+            _currentScene = scene;
+            break;
+        }
+    }
+    
+    
+    # region ServiceManage
+    
+    /// Service 목록
+    public static SaveService SaveService;
+    private static Dictionary<Type, IService> services = new();
+
+    public static void RegisterService<T>(T service) where T : class, IService
+    {
+        var type = typeof(T);
+        if (!services.TryAdd(type, service))
+        {
+            EditorLogger.LogWarning($"Service already registered: {type.Name}");
+        }
     }
 
-    public IEnumerator LoadNextScene(string sceneName)
+    public static T GetService<T>() where T : class, IService
     {
-        // 로딩씬 시작
-        bool completeLoad = false;
+        var type = typeof(T);
+        if (services.TryGetValue(type, out IService service))
+        {
+            return service as T;
+        }
+        return null;
+    }
+
+    public static List<IService> GetAllServices()
+    {
+        List<IService> result = new();
+        result = services.Select(kv => kv.Value).ToList();
+        
+        return result;
+    }
+
+    public static void UnRegister<T>() where T : class, IService
+    {
+        services.Remove(typeof(T));
+    }
+    
+    #endregion
+    
+    #region SceneManage
+    
+    private Scene _currentScene;
+    private bool _isLoading = false;
+    private GameObject loadUI => transform.GetChild(0).gameObject;
+
+    public void EnterScene(string sceneName = "GameStart")
+    {
+        if (_isLoading)
+        {
+            EditorLogger.LogWarning($"Scene already on Loading...");
+            return;
+        }
+        
+        StartCoroutine(LoadScene(sceneName));
+    }
+    
+    public IEnumerator LoadScene(string sceneName)
+    {
+        // 로딩 시작
+        _isLoading = true;
         if (!loadUI)
         {
             loadUI.SetActive(true);
+            // TODO: 로딩 애니메이션 시작
+        }
+        
+        // 기존 씬 언로드
+        if (_currentScene.isLoaded)
+        {
+            yield return SceneManager.UnloadSceneAsync(_currentScene);
         }
         
         // 메인 씬 로드 시작
         yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         
-        loadHandler = (service =>
-        {
-            if (service is IDayService)
-            {
-                completeLoad = true;
-                ServiceProvider.OnServiceRegistered -= loadHandler;
-            }
-        });
-        ServiceProvider.OnServiceRegistered += loadHandler;
+        _currentScene = SceneManager.GetSceneByName(sceneName);
+        SceneManager.SetActiveScene(_currentScene);
         
-        // Day 시스템 로드까지 대기
-        yield return new WaitUntil(() => completeLoad || ServiceProvider.Get<IDayService>() != null);
-        var dayService = ServiceProvider.Get<IDayService>();
-
-        // TODO: Load UI 텍스트 액션 추가
-        dayService.Init();
         loadUI.SetActive(false);
-    }
-
-    public new void Awake()
-    {
-        base.Awake();
-        Init();
-    }
-    
-    
-    #region SaveManage
-    //////// Save 관리 ////////
-
-    public DaySave Save
-    {
-        get => _dataService.GetDaySave();
-        private set => _dataService.SaveDay(value);
-    }
-
-    public int Renown
-    {
-        get => Save.renown;
-        set
-        {
-            Save.renown = value;
-            OnRenownChanged?.Invoke(value);
-        }
-    }
-
-    public event Action<int> OnRenownChanged;
-
-    /// <summary>
-    /// 명성치 조건 확인
-    /// </summary>
-    /// <param name="condition"></param>
-    /// <returns></returns>
-    public bool CheckRenown(int condition)
-    {
-        if (Renown >= condition)
-        {
-            return true;
-        }
-
-        return false;
+        _isLoading = false;
     }
     
     #endregion

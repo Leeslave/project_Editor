@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class HanoiManager : MonoBehaviour 
 {
-    IWorkService workService;
+    private IWorkService workService => GameSystem.GetService<IWorkService>();
     
     // ���� �ڽ��� ���� ��������
     public bool IsPick = false;
@@ -51,13 +51,7 @@ public class HanoiManager : MonoBehaviour
     public int CurBoxNum;
     public void SetStage()
     {
-        try
-        {
-            stageInt = workService.GetStage("Document");
-        }
-        catch
-        {
-        }
+        stageInt = workService.GetStage("Document");
 
         CurBoxNum = 3 + (stageInt + 1) / 2; NextBox = CurBoxNum;
         int BreakBoxNum = stageInt - 1; if (BreakBoxNum < 0) BreakBoxNum = 0;
@@ -86,8 +80,6 @@ public class HanoiManager : MonoBehaviour
     // ���� ����, ���� Container �ʱ�ȭ �� TryȽ�� ����.
     public void _Init()
     {
-        workService = ServiceProvider.Get<IWorkService>();
-        
         PickedBox = null;
         CurCon = -1;
         IsPick = false;
@@ -203,7 +195,7 @@ public class HanoiManager : MonoBehaviour
     public void ClearEvent()
     {
         workService.ClearWork("Hanoi");
-        SceneManager.LoadScene("Screen");
+        GameSystem.Instance.EnterScene("Screen");
     }
 
     public void TouchAbleChange()

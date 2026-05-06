@@ -1,17 +1,14 @@
 using GameService;
-using System;
 using System.Collections;
 using System.Text;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class ResultPanel : MonoBehaviour
 {
-    // Work Service
-    IWorkService workService;
-
+    private IWorkService WorkService => GameSystem.GetService<IWorkService>();
+    
     private BasicButton CloseButton { get; set; }
     public TextMeshPro Title { get; set; }
     private TextMeshPro Result { get; set; }
@@ -23,7 +20,6 @@ public class ResultPanel : MonoBehaviour
         CloseButton = transform.GetChild(0).GetComponent<BasicButton>();
         Title = transform.GetChild(1).GetChild(0).GetComponent<TextMeshPro>();
         Result = transform.GetChild(2).GetChild(0).GetComponent<TextMeshPro>();
-        workService = ServiceProvider.Get<IWorkService>();
     }
 
     public void ClosePanel()
@@ -156,8 +152,8 @@ public class ResultPanel : MonoBehaviour
             CloseButton.OnMouseUpEvent.AddListener(() =>
             {
                 //Debug.Log("복호화 튜토리얼 종료!");
-                workService.ClearWork("ADFGVX_DT");
-                StartCoroutine(CloseTask("ADFGVX_DT"));
+                WorkService.ClearWork("ADFGVX_DT");
+                GameSystem.Instance.EnterScene("Screen");
             });
         }
         else
@@ -172,8 +168,8 @@ public class ResultPanel : MonoBehaviour
                 CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
                 CloseButton.OnMouseUpEvent.AddListener(() =>
                 {
-                    workService.ClearWork("ADFGVX");
-                    StartCoroutine(CloseTask("ADFGVX"));
+                    WorkService.ClearWork("ADFGVX");
+                    GameSystem.Instance.EnterScene("Screen");
                 });
 
             }
@@ -183,13 +179,6 @@ public class ResultPanel : MonoBehaviour
         CloseButton.SetAvailability(true);
     }
 
-    private IEnumerator CloseTask(string taskName)
-    {
-        Debug.Log(taskName + "Scene Name!!!!!!!!!!!!!!!!!!!!");
-        var loadScene = SceneManager.LoadSceneAsync("Screen", LoadSceneMode.Additive);
-        yield return new WaitUntil(() => loadScene.isDone);
-        SceneManager.UnloadSceneAsync(taskName);
-    }
     private IEnumerator PrintDecryptionFailed_IE(string error)
     {
         //결과 창 이동
@@ -380,9 +369,8 @@ public class ResultPanel : MonoBehaviour
             CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
             CloseButton.OnMouseUpEvent.AddListener(() =>
             {
-                //Debug.Log("암호화 튜토리얼 종료!");
-                workService.ClearWork("ADFGVX_ET");
-                StartCoroutine(CloseTask("ADFGVX_ET"));
+                WorkService.ClearWork("ADFGVX_ET");
+                GameSystem.Instance.EnterScene("Screen");
             });
         }
         else
@@ -396,8 +384,8 @@ public class ResultPanel : MonoBehaviour
                 CloseButton.OnMouseUpEvent.RemoveListener(ClosePanel);
                 CloseButton.OnMouseUpEvent.AddListener(() =>
                 {
-                    workService.ClearWork("ADFGVX");
-                    StartCoroutine(CloseTask("ADFGVX"));
+                    WorkService.ClearWork("ADFGVX");
+                    GameSystem.Instance.EnterScene("Screen");
                 });
             }
 
