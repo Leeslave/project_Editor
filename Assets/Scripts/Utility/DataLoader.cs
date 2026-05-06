@@ -23,7 +23,7 @@ namespace Utility
         private static readonly string CHATPATH = Path.Join(Application.streamingAssetsPath, "ChatData");
         private static readonly string GAMEDATAPATH = Path.Join(Application.streamingAssetsPath, "DayData"); // 게임 데이터 파일 경로
         private static readonly string GAMEFILE = "dailyData";
-        private static readonly string Savepath = Path.Join(Application.persistentDataPath, "Save/savedata.json");    // 세이브 파일 경로
+        private static readonly string Savepath = Path.Join(Application.persistentDataPath, "Player/savedata.json");    // 세이브 파일 경로
 
         /// 파일 목록 불러오기
         public static List<string> GetFileNames(string path, string type = "*.json")
@@ -56,6 +56,12 @@ namespace Utility
             // json String으로 파싱
             string jsonText = JsonConvert.SerializeObject(data,
                 new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+            
+            string directory = Path.GetDirectoryName(path);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
 
             FileStream fileStream = new(path, FileMode.Create, FileAccess.Write);
             byte[] bytes = Encoding.UTF8.GetBytes(jsonText);
