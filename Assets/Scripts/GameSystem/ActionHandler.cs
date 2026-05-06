@@ -1,7 +1,6 @@
 using GameService;
 using System;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using Utility;
 
 namespace GameAction
@@ -34,7 +33,7 @@ namespace GameAction
             Register("TIMECHANGE", s =>
             {
                 int param = int.TryParse(s, out int num) ? num : -1;
-                return new SwitchTimeAction(param);
+                return new TimeSwitchAction(param);
             });
 
             // NEXTTIME
@@ -71,6 +70,13 @@ namespace GameAction
             {
                 int param = int.TryParse(s, out int num) ? num : -1;
                 return new TutorialAction(param);
+            });
+            
+            // RENOWN
+            Register("RENOWN", s =>
+            {
+                int param = int.TryParse(s, out int num) ? num : 0;
+                return new SetRenownAction(param);
             });
 
             // EXIT
@@ -184,7 +190,7 @@ namespace GameAction
     /// 시간대 강제 변경 액션
     /// </summary>
     /// <remarks>Param 형식 : int</remarks>
-    public record SwitchTimeAction(int Time) : IGameAction
+    public record TimeSwitchAction(int Time) : IGameAction
     {
         public bool Invoke()
         {
@@ -276,6 +282,19 @@ namespace GameAction
             if (!objFactory) return false;
             
             objFactory.RemoveObject(Name);
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// 명성치 변화 액션
+    /// </summary>
+    /// <param name="Amount">Param 형식 : int</param>
+    public record SetRenownAction(int Amount) : IGameAction
+    {
+        public bool Invoke()
+        {
+            GameSystem.SaveService.Renown += Amount;
             return true;
         }
     }
