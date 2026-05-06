@@ -102,6 +102,8 @@ public class SaveController : SaveService
     /// <remarks>날짜 변경 트리거</remarks>
     private void Refresh()
     {
+        DataLoader.SavePlayerData(playerData);
+        
         // 날짜 데이터 로드
         _dailyData = DataLoader.GetDayData(DayIndex);
         
