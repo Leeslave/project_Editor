@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class ValidTask_D : MonoBehaviour
 {
+    private IWorkService WorkService => GameSystem.GetService<IWorkService>();
+    
     [SerializeField] GameObject Check;
 
     [SerializeField] Image ProgBar;
@@ -38,7 +40,7 @@ public class ValidTask_D : MonoBehaviour
         // GameClear
         if (IsEnd)
         {
-            WorkManager.Instance.ClearWork("Document");
+            WorkService.ClearWork("Document");
             SceneManager.LoadScene("Screen", LoadSceneMode.Additive);
             SceneManager.UnloadSceneAsync("Document");
             gameObject.SetActive(false);

@@ -20,8 +20,6 @@ public enum World {
 
 public class WorldSceneManager : Singleton<WorldSceneManager>
 {
-    private IDayService _dayService;
-    
     /**
     * MainWorld 씬 매니저
     *   - 지역 내 위치 이동
@@ -30,7 +28,6 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     public GameObject mainCamera;
     
     private int[] _bgmCode = new int[(int)World.Max]; 
-    private bool isNight;
 
     [Header("지역 효과")]
     [SerializeField] private int nightShift;
@@ -40,7 +37,6 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
 
     public void Awake()
     {
-        _dayService = GameSystem.Instance.GetService<IDayService>();
         for (int i = 0; i < _bgmCode.Length; i++)
         {
             _bgmCode[i] = i;
@@ -49,33 +45,25 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
 
     public void Start()
     {
-        
-        ServiceProvider.Get<IDayService>(service =>
-        {
-            service.OnTimeChanged += SetTime;
-        });
-        ServiceProvider.Get<ILocationService>(service =>
-        {
-            locationService = service;
-            service.OnPosChanged += MoveLocation;
-            MoveLocation(locationService.currentVector);
-        });
+        // 서비스 구독
+        GameSystem.GetService<ILocationService>().OnPosChanged += MoveLocation;
+        GameSystem.GetService<IDayService>().OnTimeChanged += SetTime;
     }
     
-    private void SetTime(int time)
+    private void SetTime(int time, TimeData timeData)
     {
-        isNight = time > 1;
-        // 시간대 외형 설정
-        if (isNight)
-        {
-            transform.position = new Vector3(transform.position.x, nightShift, transform.position.z);
-        }
-        else
-        {
-            transform.position = new Vector3(transform.position.x, 0, transform.position.z);
-        }
+        bool isNight = time > 1;
         
-        InitBGM(ServiceProvider.Get<IDayService>().TimeData.bgm);
+        // 시간대 외형 설정
+        transform.position = isNight ? 
+            new Vector3(transform.position.x, nightShift, transform.position.z) 
+            : new Vector3(transform.position.x, 0, transform.position.z);
+        
+        // Object 설정
+        WorldObjectFactory.Instance.Init(timeData.npc, timeData.action);
+        
+        // BGM 설정
+        InitBGM(timeData.bgm);
     }
 
     #region Move
@@ -91,7 +79,7 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     /// 지역 변경
     /// </summary>
     /// <remarks>위치 기준으로 지역 이동</remarks>
-    public void MoveLocation(WorldVector vector)
+    private void MoveLocation(WorldVector vector)
     {
         if (vector == null) return;
         
@@ -113,26 +101,22 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
         {
             _bgmCode[i] = i;
         }
-        
-        if (data != null)
+
+        if (data == null)
         {
-            // 변경사항 적용
-            foreach (var iter in data)
-            {
-                _bgmCode[(int)iter.location] = iter.code;
-            }
+            return;
+        }
+
+        // 변경사항 적용
+        foreach (var iter in data)
+        {
+            _bgmCode[(int)iter.location] = iter.code;
         }
     }
 
     private void OnDestroy()
     {
-        ServiceProvider.Get<IDayService>(service =>
-        {
-            service.OnTimeChanged -= SetTime;
-        });
-        ServiceProvider.Get<ILocationService>(service =>
-        {
-            service.OnPosChanged -= MoveLocation;
-        });
+        GameSystem.GetService<ILocationService>().OnPosChanged -= MoveLocation;
+        GameSystem.GetService<IDayService>().OnTimeChanged -= SetTime;
     }
 }

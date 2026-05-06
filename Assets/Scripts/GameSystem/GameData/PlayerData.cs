@@ -8,6 +8,13 @@ public class DaySave
     public int dayID;       // Day * 100 + branch
     public string thumbnail;
     public int renown;
+    
+    public DaySave Clone(int newID = -1)
+    {
+        if (newID == -1) newID = dayID;
+        
+        return new DaySave { dayID = newID, thumbnail = thumbnail, renown = renown };
+    }
 }
 
 
@@ -21,8 +28,14 @@ public class PlayerData
     */
     
     // 세이브 목록
-    private List<DaySave> saveList = new();
-    public DaySave this[int dayID] => saveList.FirstOrDefault(s => s.dayID == dayID);
+    private List<DaySave> _saveList;
+    public DaySave this[int dayID] => _saveList.FirstOrDefault(s => s.dayID == dayID);
+
+    public PlayerData()
+    { 
+        // 첫 생성 시 첫 날 자동 추가
+        _saveList = new() { new DaySave() };
+    }
 
 
     /// <summary> 
@@ -34,7 +47,7 @@ public class PlayerData
         // 1. 동일 ID 존재시 대체
         // 2. 마지막날 기준 +1일 이상 차이(100 이상) 날 시 경고, 세이브 안함
         // 3. 동일 날짜+해당 분기 없을 시 분기 순으로 삽입
-        var oldSave = saveList.FirstOrDefault(x => x.dayID == data.dayID);
+        var oldSave = _saveList.FirstOrDefault(x => x.dayID == data.dayID);
         
         // Already Exist Save
         if (oldSave != null)
@@ -44,15 +57,15 @@ public class PlayerData
         }
         
         // New Save
-        int lastDay = saveList.Last().dayID % 100;
+        int lastDay = _saveList.Last().dayID % 100;
         if (data.dayID % 100 > lastDay + 1)
         {
             // Day Error
             EditorLogger.LogWarning($"Invalid Day Index {data.dayID}, Last Save : {lastDay}");
         }
         
-        saveList.Add(data);
+        _saveList.Add(data);
         // Sort
-        saveList = saveList.OrderBy(x => x.dayID).ToList();
+        _saveList = _saveList.OrderBy(x => x.dayID).ToList();
     }
 }

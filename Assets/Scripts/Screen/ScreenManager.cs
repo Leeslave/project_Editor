@@ -43,10 +43,8 @@ public class ScreenManager : Singleton<ScreenManager>
     public static bool IsScreenOn = false;
 
 
-    new void Awake()
+    void Awake()
     {
-        base.Awake();
-
         // TODO: 현재 스크린 상태 설정
         // TODO: 부팅 대기 화면으로 설정
         

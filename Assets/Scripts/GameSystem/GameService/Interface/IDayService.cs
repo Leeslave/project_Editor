@@ -4,22 +4,15 @@ namespace GameService
 {
     public interface IDayService : IService
     {
-        public TimeData TimeData { get; }
         
-        /// <summary>
-        /// 날짜 변경 이벤트
-        /// </summary>
-        event Action<DailyData> OnDayChanged;
+        int Time { get; set; }
+        
+        public TimeData TimeData { get; }
 
         /// <summary>
         /// 시간대 변경 이벤트
         /// </summary>
-        event Action<TimeData> OnTimeChanged;
-        
-        // 날짜, 시간대 
-        int Day { get; set; }
-
-        int Time { get; set; }
+        event Action<int, TimeData> OnTimeChanged;
 
         /// <summary>
         /// 날짜 상세 정보 확인

@@ -10,9 +10,6 @@ namespace GameService
         /// </summary>
         public bool isScreenOn { get; set; }
 
-        /// <summary>
-        /// 모든 업무 클리어 이벤트
-        /// </summary>
         public event Action OnWorkClear;
 
         /// <summary>

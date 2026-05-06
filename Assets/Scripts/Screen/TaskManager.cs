@@ -4,7 +4,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
-using UnityEngine.SceneManagement;
 using Utility;
 
 public class TaskManager : MonoBehaviour
@@ -17,32 +16,25 @@ public class TaskManager : MonoBehaviour
     *   - 하루 업무 클리어
     */
     
-    // Inject: work service, day service
-    private IWorkService _workService;
+    // Inject
+    private IWorkService WorkService => GameSystem.GetService<IWorkService>();
 
     public GameObject taskWindow;       // 업무 프로그램 창
     public AnimationController taskConsoleAnimation;    //업무 대화 콘솔 애니메이션
     public TMP_InputField consoleInput;     // 업무 입력 창
     //public GameObject closeButton;      // 업무창 닫기 버튼
 
-    private readonly string sceneName = "Screen";
-
     private void Start()
     {
-        ServiceProvider.Get<IWorkService>(service =>
-        {
-            _workService = service;
-            _workService.OnWorkClear += FinishWork;
-            _workService.IsWorkClear();
-        });
+        WorkService.OnWorkClear += FinishWork;
     }
 
     private void OnDestroy()
     {
-        _workService.OnWorkClear -= FinishWork;
+        WorkService.OnWorkClear -= FinishWork;
     }
 
-    private void FinishWork()
+    private static void FinishWork()
     {
         new NextTimeAction(2).Invoke();
     }
@@ -57,7 +49,7 @@ public class TaskManager : MonoBehaviour
             //closeButton.SetActive(false);
             consoleInput.gameObject.SetActive(false);   //입력창 비활성화
             // 콘솔 대사 출력
-            StartCoroutine(_workService.IsWorkClear() ? TaskConsoleAnimation(1) : TaskConsoleAnimation(0));
+            StartCoroutine(WorkService.IsWorkClear() ? TaskConsoleAnimation(1) : TaskConsoleAnimation(0));
         }
     }
 
@@ -81,14 +73,13 @@ public class TaskManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in _workService.GetList())
+        foreach(var work in WorkService.GetList())
         {
-            if(work.code == consoleInput.text)
+            if(work == consoleInput.text)
             {
                 EditorLogger.Log($"Work Entered! : {consoleInput.text}");
                 consoleInput.text = "업무 로딩중...\n";
-                SceneManager.LoadScene(work.code,  LoadSceneMode.Additive);
-                SceneManager.UnloadSceneAsync(sceneName);
+                GameSystem.Instance.EnterScene(work);
                 return;
             }
         }

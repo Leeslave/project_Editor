@@ -20,57 +20,54 @@ public sealed class GameSystem : Singleton<GameSystem>
         // 현재 켜져있는 씬 불러오기
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
-            var scene = SceneManager.GetSceneAt(i);
-            if (!scene.name.Contains("Controller"))
+            Scene scene = SceneManager.GetSceneAt(i);
+            if (scene.name.Contains("Controller"))
             {
-                _currentScene = scene;
-                break;
+                continue;
             }
+
+            _currentScene = scene;
+            break;
         }
-        
-        #if DEBUG
-        // 시작화면 및 세이브 선택 시 시작 무시
-        if (!_currentScene.name.Contains("Game"))
-        {
-            StartGame();
-        }
-        #endif
     }
     
-    public void StartGame()
-    {
-        // 세이브 선택 후 게임 진입
-        // 1. DayController 초기화
-        // 2. WorkManager 생성
-        
-    }
     
     # region ServiceManage
     
     /// Service 목록
-    private List<IService> services = new();
+    public static SaveService SaveService;
+    private static Dictionary<Type, IService> services = new();
 
-    public void RegisterService<T>(T service) where T : class, IService
+    public static void RegisterService<T>(T service) where T : class, IService
     {
-        if (services.Any(x => x is T))
+        var type = typeof(T);
+        if (!services.TryAdd(type, service))
         {
-            EditorLogger.LogWarning($"Service already registered: {service.GetType().Name}");
+            EditorLogger.LogWarning($"Service already registered: {type.Name}");
         }
-        services.Add(service);
     }
 
-    public T GetService<T>() where T : class, IService
+    public static T GetService<T>() where T : class, IService
     {
-        return services.FirstOrDefault(x => x is T) as T;
+        var type = typeof(T);
+        if (services.TryGetValue(type, out IService service))
+        {
+            return service as T;
+        }
+        return null;
     }
 
-    public void UnRegister<T>(T service) where T : class, IService
+    public static List<IService> GetAllServices()
     {
-        if (!services.Contains(service))
-        {
-            EditorLogger.LogWarning($"Remove Service not registered: {service.GetType().Name}");
-        }
-        services.Remove(service);
+        List<IService> result = new();
+        result = services.Select(kv => kv.Value).ToList();
+        
+        return result;
+    }
+
+    public static void UnRegister<T>() where T : class, IService
+    {
+        services.Remove(typeof(T));
     }
     
     #endregion
@@ -81,7 +78,7 @@ public sealed class GameSystem : Singleton<GameSystem>
     private bool _isLoading = false;
     private GameObject loadUI => transform.GetChild(0).gameObject;
 
-    public void EnterScene(string sceneName)
+    public void EnterScene(string sceneName = "GameStart")
     {
         if (_isLoading)
         {

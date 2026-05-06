@@ -9,10 +9,9 @@ public class SaveSelector : MonoBehaviour
     private Transform _panel;
     private List<Transform> _dayPanels = new();
     
-    private 
 
     private void Init()
     {
-        int lastDay = 
+        
     }
 }

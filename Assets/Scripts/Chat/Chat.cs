@@ -494,22 +494,17 @@ public class Chat : Singleton<Chat>
     /// <returns>변수 실재값 반환</returns>
     private static string GetVariableValue(string keyword)
     {
-        IDayService dayService = GameSystem.Instance.GetService<IDayService>();
+        IDayService dayService = GameSystem.GetService<IDayService>();
         Date date = dayService.GetDateInfo();
-        
-        switch(keyword)
+
+        return keyword switch
         {
-            case "{{year}}":
-                return date.year.ToString();
-            case "{{month}}":
-                return date.month.ToString();
-            case "{{day}}":
-                return date.day.ToString();
-            case "{{renown}}":
-                ISaveService saveService = GameSystem.Instance.GetService<ISaveService>();
-                return saveService.Renown.ToString();
-        }
-        return "";
+            "{{year}}" => date.year.ToString(),
+            "{{month}}" => date.month.ToString(),
+            "{{day}}" => date.day.ToString(),
+            "{{renown}}" => GameSystem.SaveService.Renown.ToString(),
+            _ => ""
+        };
     }
 
     

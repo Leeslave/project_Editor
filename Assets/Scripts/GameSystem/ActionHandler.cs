@@ -126,7 +126,7 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            SceneManager.LoadScene("Start");
+            GameSystem.Instance.EnterScene();
             return true;
         }
     }
@@ -143,8 +143,7 @@ namespace GameAction
             // input Exception
             if (Day < 0) return false;
             
-            IDayService dayService = GameSystem.Instance.GetService<IDayService>();
-            dayService.Day = Day;
+            GameSystem.SaveService.SelectDay(Day, 0);
             return true;
         }
     }
@@ -156,28 +155,21 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            IDayService dayService = GameSystem.Instance.GetService<IDayService>();
-
-            if (dayService.Time != 3)
-            {
-                return false;
-            }
-
-            dayService.Day += 1;
+            GameSystem.SaveService.SwitchDay();
             return true;
         }
     }
 
 
     /// <summary>
-    /// 시간대 강제 변경 액션
+    /// 시간대 변경 액션
     /// </summary>
     /// <remarks>Param 형식 : int</remarks>
     public record NextTimeAction(int Time) : IGameAction
     {
         public bool Invoke()
         {
-            IDayService dayService = GameSystem.Instance.GetService<IDayService>();
+            IDayService dayService = GameSystem.GetService<IDayService>();
             if (dayService.Time != Time - 1)
             {
                 return false;
@@ -189,7 +181,7 @@ namespace GameAction
     }
 
     /// <summary>
-    /// 시간대 변경 액션
+    /// 시간대 강제 변경 액션
     /// </summary>
     /// <remarks>Param 형식 : int</remarks>
     public record SwitchTimeAction(int Time) : IGameAction
@@ -198,7 +190,7 @@ namespace GameAction
         {
             if (Time < 0) return false;
             
-            IDayService dayService = GameSystem.Instance.GetService<IDayService>();
+            IDayService dayService = GameSystem.GetService<IDayService>();
             dayService.Time = Time;
             return true;
         }
@@ -263,10 +255,10 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            var location = LocationManager.Instance;
+            ILocationService location = GameSystem.GetService<ILocationService>();
             if (location == null) return false;
 
-            location.currentVector = new WorldVector(World, Index);
+            location.MoveLocation(new WorldVector(World, Index));
             return true;
         }
     }
@@ -280,7 +272,10 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            WorldObjectFactory.Instance.RemoveObject(Name);
+            WorldObjectFactory objFactory = WorldObjectFactory.Instance;
+            if (!objFactory) return false;
+            
+            objFactory.RemoveObject(Name);
             return true;
         }
     }

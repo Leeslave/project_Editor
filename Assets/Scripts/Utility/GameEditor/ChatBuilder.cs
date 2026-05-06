@@ -3,7 +3,7 @@ using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using GlobalSystem;
+using Utility;
 
 public class ChatBuilder : Singleton<ChatBuilder>
 {

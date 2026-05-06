@@ -3,29 +3,18 @@ using System;
 using UnityEngine;
 using Utility;
 
-public class DayController : MonoBehaviour, IDayService
+public class DayController : ServiceBase<IDayService>, IDayService
 {
     /**
-     * 게임 날짜 컨트롤러
+     * 게임내 시간대 컨트롤러
      * - 데이터를 통해서 관리
      */
     
-    [SerializeField] private int day;
     [SerializeField] private int time;
-    [SerializeField] private int branch;
-
     [SerializeField] private DailyData data;
     
     public TimeData TimeData => data.dayTimes[time];
-
-    public event Action<DailyData> OnDayChanged;
-    public event Action<TimeData> OnTimeChanged;
-
-    public int Day
-    {
-        get => day;
-        set => ChangeDay(value);
-    }
+    public event Action<int, TimeData> OnTimeChanged;
 
     public int Time
     {
@@ -34,34 +23,14 @@ public class DayController : MonoBehaviour, IDayService
         {
             time = value;
             EditorLogger.Log($"Day Changed {time}");
-            OnTimeChanged?.Invoke(TimeData);
+            OnTimeChanged?.Invoke(time, TimeData);
         }
     }
-
-    private void Awake()
+    
+    public void Init(DailyData newData)
     {
-        GameSystem.Instance.RegisterService(this);
-    }
-
-    private void ChangeDay(int newDay)
-    {
-        // 데이터 확인
-        var newData = DataLoader.GetDayData(newDay);
-        if (newData == null)
-        {
-            return;
-        }
+        // 데이터 로드 및 시간 초기화
         data = newData;
-        
-        // 날짜 설정
-        day = newDay;
-        EditorLogger.Log($"Day Changed {day}");
-
-        var saveService = GameSystem.Instance.GetService<ISaveService>();
-        saveService.SelectDay(newDay);
-        
-        OnDayChanged?.Invoke(data);
-        
         Time = 0;
     }
 
@@ -73,10 +42,5 @@ public class DayController : MonoBehaviour, IDayService
     public Date GetDateInfo()
     {
         return data.date;
-    }
-
-    void OnDestroy()
-    {
-        GameSystem.Instance.UnRegister(this);
     }
 }

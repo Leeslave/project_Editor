@@ -46,7 +46,11 @@ namespace Utility
             return fileNames;
         }
         
-        /// 게임 데이터파일 저장하기
+        /// <summary>
+        /// 게임 데이터파일 저장
+        /// </summary>
+        /// <param name="path">저장 경로</param>
+        /// <param name="data">데이터</param>
         public static void SaveData<T>(string path, T data)
         {
             // json String으로 파싱
@@ -58,6 +62,10 @@ namespace Utility
             fileStream.Write(bytes, 0, bytes.Length);
             fileStream.Close();
         }
+        
+        // Dynamic for Save Files
+        public static void SavePlayerData(PlayerData data) => SaveData(Savepath, data);
+        
 
         /// <summary>
         /// 날짜 데이터 파일 로드

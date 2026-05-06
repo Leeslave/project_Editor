@@ -4,15 +4,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using static UnityEngine.ParticleSystem;
 using Random = UnityEngine.Random;
 
 // Make Pattern / End Pattern
 public class PatternManager : MonoBehaviour
 {
+    private IWorkService WorkService => GameSystem.GetService<IWorkService>();
+    
     [SerializeField] BulletManager BM;
     [SerializeField] Camera MainCam;
     [SerializeField] Player player;
@@ -100,11 +99,7 @@ public class PatternManager : MonoBehaviour
         SP = new Vector2[][] { SPB, SPR, SPL, SPT };
         ReadExternalPattern();
 
-        try
-        {
-            StageInt = WorkManager.Instance.GetStage("Dodge");
-        }
-        catch { }
+        StageInt = WorkService.GetStage("Dodge");
       
         if (StageInt == 0) { TutorialObject.SetActive(true); player.InitHP = 2; }
     }
@@ -295,14 +290,9 @@ public class PatternManager : MonoBehaviour
     {
         CMDs[CurProcess].text = "Access Accept!";
         yield return TwoSec;
-        WorkManager.Instance.ClearWork("Dodge");
+        WorkService.ClearWork("Dodge");
 
-        var loadScene = SceneManager.LoadSceneAsync("Screen", LoadSceneMode.Additive);
-        yield return new WaitUntil(() => loadScene.isDone);
-        SceneManager.UnloadSceneAsync("Dodge");
-
-        //if (StageInt == 0) SceneManager.LoadScene("Screen");
-        //else SceneManager.LoadScene("Document");
+        GameSystem.Instance.EnterScene("Screen");
     }
 
     // Normal                   N1 -> N2 -> Hard
@@ -440,8 +430,8 @@ public class PatternManager : MonoBehaviour
         player.gameObject.SetActive(false);
         player.EndG.SetActive(true);
         player.EndG.GetComponent<RealEnd>().Ending(true);
-        WorkManager.Instance.ClearWork("Dodge");
-        SceneManager.LoadScene("Screen");
+        WorkService.ClearWork("Dodge");
+        GameSystem.Instance.EnterScene("Screen");
     }
 
     IEnumerator CamShake(float time, float intensity = 1)      // ????? ???? ????? ??????.

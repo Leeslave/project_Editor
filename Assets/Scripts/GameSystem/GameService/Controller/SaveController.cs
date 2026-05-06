@@ -1,93 +1,119 @@
 
 using GameService;
 using System;
-using UnityEngine;
 using Utility;
 
-public class SaveController : MonoBehaviour, ISaveService
+public class SaveController : SaveService
 {
-    public int dayID;
-    private PlayerData _playerData;
-    private DaySave _currentSave;
+    /**
+     * 전체 플레이어 세이브 및 현재 날짜/분기 정보 관리
+     * - 플레이어 데이터 목록
+     * - 현재 선택 데이터 정보
+     * - 날짜/분기 전환 트리거
+     */
     
-    public DaySave Save => _currentSave;
-
-   protected void Awake()
+    // 저장 데이터
+    private PlayerData _playerData;
+    private DailyData _dailyData;
+    
+    /// <summary>
+    /// 전체 세이브 데이터 로드 및 초기화
+    /// </summary>
+    public void Init()
     {
-        GameSystem.Instance.RegisterService(this);
-        
         // 세이브 데이터 로드
         _playerData = DataLoader.GetData<PlayerData>(DataLoader.Savepath);
         if (_playerData == null)
         {
+            // 새로 시작
             EditorLogger.Log("New Save Created!");
             _playerData = new PlayerData();
         }
+        
+        // 세이브 선택 초기화
+        Save = null;
     }
    
    /// <summary>
-   /// 날짜 전환
+   /// 날짜 선택
    /// </summary>
-   /// <param name="day">전환될 날짜 (분기 유지)</param>
+   /// <param name="day">선택 날짜</param>
+   /// <param name="branch">선택 분기</param>
    /// <remarks>세이브 파일 강제 리로드</remarks>
-    public void SelectDay(int day)
+    public override void SelectDay(int day, int branch)
     {
-        int newID = day * 100 + dayID % 100;
-        Reload();
+        int newID = day * 100 + branch % 100;
+        
+        // 날짜 새로 선택
+        if (_playerData[newID] == null)
+        {
+            EditorLogger.LogWarning("No Data Exists");
+            return;
+        }
+        Save = _playerData[newID];
+
+        Refresh();
     }
 
    /// <summary>
+   /// 날짜 전환
+   /// </summary>
+    public override void SwitchDay()
+    {
+        if (Save == null)
+        {
+            EditorLogger.LogWarning("No Data Exists");
+            return;
+        }
+        
+        int newID = Save.dayID + 100;
+        DaySave newSave = Save.Clone(newID);
+        _playerData.Save(newSave);
+        Save = newSave;
+        Refresh();
+    }
+
+    /// <summary>
    /// 분기 전환
    /// </summary>
    /// <param name="branch">전환될 분기</param>
-    public void SelectBranch(int branch)
+    public override void SwitchBranch(int branch)
     {
-        // 현재 세이브 그대로 새 분기로 파생 (날짜 전환 전까지 저장 안됨)
-        dayID = (dayID / 100) * 100 + branch;
-        _currentSave.dayID = dayID;
+        if (Save == null)
+        {
+            EditorLogger.LogWarning("No Data Exists");
+            return;
+        }
+        
+        // 현재 세이브 그대로 새 분기로 파생
+        int newID = DayIndex * 100 + branch;
+        DaySave newSave = Save.Clone(newID);
+        _playerData.Save(newSave);
+        Save = newSave;
     }
    
     /// <summary>
     /// 세이브 새로 로드
     /// </summary>
-    private void Reload()
+    /// <remarks>날짜 변경 트리거</remarks>
+    private void Refresh()
     {
-        if (_playerData == null)
-        {
-            return;
-        }
+        // 날짜 데이터 로드
+        _dailyData = DataLoader.GetDayData(DayIndex);
         
-        // 기존세이브 저장
-        _playerData.Save(_currentSave);
-        
-        // 세이브 로드
-        _currentSave = _playerData[dayID];
-        if (_currentSave == null)
+        // 서비스별 Init 실행 
+        foreach (var service in GameSystem.GetAllServices())
         {
-            EditorLogger.Log("New Day Created!");
-            _currentSave = new DaySave();
+            service.Init(_dailyData);
         }
     }
 
-    public int Renown
-    {
-        get => _currentSave.renown;
-        set
-        {
-            _currentSave.renown = value;
-            OnRenownChanged?.Invoke(value);
-        }
-    }
+    #region Renown
 
-    public event Action<int> OnRenownChanged;
-
-    public bool CheckRenown(int condition)
+    public override bool CheckRenown(int condition)
     {
         return Renown >= condition;
     }
-
-    private void OnDestroy()
-    {
-        GameSystem.Instance.UnRegister(this);
-    }
+    
+    #endregion
 }

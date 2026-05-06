@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using GlobalSystem;
+using Utility;
 
 public class DayBuilder : Singleton<DayBuilder>
 {
