@@ -2,6 +2,7 @@ using GameService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class LocationController : ServiceBase<ILocationService>, ILocationService
 {
@@ -10,17 +11,27 @@ public class LocationController : ServiceBase<ILocationService>, ILocationServic
     private List<WorldVector>[] BlockList = new List<WorldVector>[4];    // 지역 이동 제한 리스트
     public event Action<WorldVector> OnPosChanged;
 
+    [SerializeField]
     private WorldVector _position;
-    public WorldVector CurrentPosition => _position;
     
+    public WorldVector CurrentPosition => _position;
+
+    public override void OnAwake()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            BlockList[i] = new List<WorldVector>();
+        }
+    }
+
     public void Init(DailyData data)
     {
-        _position = data.startLocation;
-
         for (int i = 0; i < 4; i++)
         {
             BlockList[i] = data.dayTimes[i].block;
         }
+        
+        MoveLocation(data.startLocation);
     }
 
     public void MoveLocation(WorldVector vector)

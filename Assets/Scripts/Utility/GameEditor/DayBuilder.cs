@@ -66,7 +66,7 @@ public class DayBuilder : Singleton<DayBuilder>
     /// <remarks>날짜 파일을 불러온 후 </remarks>
     public void EditDayData(string gameFile)
     {
-        dailyData = DataLoader.GetData<DailyData>(dataPath + gameFile);
+        dailyData = DataLoader.GetDayData(gameFile);
         fileName = gameFile;
         Debug.Log($"Start Editing {gameFile}");
         onEdit = true;

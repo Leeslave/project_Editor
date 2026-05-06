@@ -1,13 +1,21 @@
+using Newtonsoft.Json;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Utility;
 
 [System.Serializable]
+[JsonObject]
 public class DaySave
 {
     public int dayID;       // Day * 100 + branch
     public string thumbnail;
     public int renown;
+
+    [JsonIgnore]
+    public int Day => dayID / 100;
+    [JsonIgnore]
+    public int Branch => dayID % 100;
     
     public DaySave Clone(int newID = -1)
     {
@@ -19,7 +27,8 @@ public class DaySave
 
 
 [System.Serializable]
-public class PlayerData
+[JsonObject]
+public class PlayerData : IEnumerable<DaySave>
 {
     /**
     * 플레이어 세이브 데이터 클래스
@@ -28,15 +37,22 @@ public class PlayerData
     */
     
     // 세이브 목록
-    private List<DaySave> _saveList;
+    [JsonProperty]
+    private List<DaySave> _saveList = new();
     public DaySave this[int dayID] => _saveList.FirstOrDefault(s => s.dayID == dayID);
+    
+    [JsonIgnore]
+    public int Count => _saveList.Count;
+    [JsonIgnore]
+    public int DayCount => _saveList[^1].dayID / 100;       // 저장된 마지막 날짜 (정렬)
 
-    public PlayerData()
-    { 
-        // 첫 생성 시 첫 날 자동 추가
-        _saveList = new() { new DaySave() };
+    /// <summary>
+    /// 첫 날짜 생성
+    /// </summary>
+    public void Init()
+    {
+        _saveList.Add(new DaySave());
     }
-
 
     /// <summary> 
     /// 세이브 데이터 추가
@@ -67,5 +83,15 @@ public class PlayerData
         _saveList.Add(data);
         // Sort
         _saveList = _saveList.OrderBy(x => x.dayID).ToList();
+    }
+
+    public IEnumerator<DaySave> GetEnumerator()
+    {
+        return _saveList.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

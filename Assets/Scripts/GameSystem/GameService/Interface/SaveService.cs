@@ -46,6 +46,10 @@ namespace GameService
 
         protected virtual void OnAwake() { }
         protected virtual void GetDestroy() { }
+        
+        public abstract void Init();
+        
+        public abstract PlayerData GetPlayerData();
 
         /// <summary>
         /// 세이브 변경 : 날짜 변경

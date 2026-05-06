@@ -1,6 +1,4 @@
-
 using GameService;
-using System;
 using Utility;
 
 public class SaveController : SaveService
@@ -13,28 +11,34 @@ public class SaveController : SaveService
      */
     
     // 저장 데이터
-    private PlayerData _playerData;
+    public PlayerData playerData;
     private DailyData _dailyData;
     
     /// <summary>
     /// 전체 세이브 데이터 로드 및 초기화
     /// </summary>
-    public void Init()
+    public override void Init()
     {
         // 세이브 데이터 로드
-        _playerData = DataLoader.GetData<PlayerData>(DataLoader.Savepath);
-        if (_playerData == null)
+        playerData = DataLoader.GetPlayerData();
+        if (playerData == null)
         {
             // 새로 시작
             EditorLogger.Log("New Save Created!");
-            _playerData = new PlayerData();
+            playerData = new PlayerData();
+            playerData.Init();
         }
         
         // 세이브 선택 초기화
         Save = null;
     }
-   
-   /// <summary>
+
+    public override PlayerData GetPlayerData()
+    {
+        return playerData;
+    }
+
+    /// <summary>
    /// 날짜 선택
    /// </summary>
    /// <param name="day">선택 날짜</param>
@@ -45,12 +49,12 @@ public class SaveController : SaveService
         int newID = day * 100 + branch % 100;
         
         // 날짜 새로 선택
-        if (_playerData[newID] == null)
+        if (playerData[newID] == null)
         {
             EditorLogger.LogWarning("No Data Exists");
             return;
         }
-        Save = _playerData[newID];
+        Save = playerData[newID];
 
         Refresh();
     }
@@ -68,7 +72,7 @@ public class SaveController : SaveService
         
         int newID = Save.dayID + 100;
         DaySave newSave = Save.Clone(newID);
-        _playerData.Save(newSave);
+        playerData.Save(newSave);
         Save = newSave;
         Refresh();
     }
@@ -88,7 +92,7 @@ public class SaveController : SaveService
         // 현재 세이브 그대로 새 분기로 파생
         int newID = DayIndex * 100 + branch;
         DaySave newSave = Save.Clone(newID);
-        _playerData.Save(newSave);
+        playerData.Save(newSave);
         Save = newSave;
     }
    

@@ -206,9 +206,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: GameOption, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 837934833}
+        m_TargetAssemblyTypeName: GameEntry, Assembly-CSharp
+        m_MethodName: OnQuit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -413,10 +413,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SaveManager, Assembly-CSharp
-        m_MethodName: LoadDaySave
-        m_Mode: 3
+      - m_Target: {fileID: 837934833}
+        m_TargetAssemblyTypeName: GameEntry, Assembly-CSharp
+        m_MethodName: OnStart
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -548,6 +548,7 @@ GameObject:
   - component: {fileID: 837934831}
   - component: {fileID: 837934830}
   - component: {fileID: 837934829}
+  - component: {fileID: 837934833}
   m_Layer: 5
   m_Name: StartMenu
   m_TagString: Untagged
@@ -639,6 +640,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &837934833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 837934828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f827ec91c0db4eb4eafd5a6f75395ca1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  saveScene: SaveSelect
 --- !u!1 &1015620350
 GameObject:
   m_ObjectHideFlags: 0

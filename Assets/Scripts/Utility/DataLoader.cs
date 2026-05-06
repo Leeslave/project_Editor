@@ -20,10 +20,10 @@ namespace Utility
         */
         
         [Header("File Path")]
-        private static readonly string CHATPATH = Path.Combine(Application.streamingAssetsPath, "ChatData");
-        private static readonly string GAMEDATAPATH = Path.Combine(Application.streamingAssetsPath, "DayData"); // 게임 데이터 파일 경로
+        private static readonly string CHATPATH = Path.Join(Application.streamingAssetsPath, "ChatData");
+        private static readonly string GAMEDATAPATH = Path.Join(Application.streamingAssetsPath, "DayData"); // 게임 데이터 파일 경로
         private static readonly string GAMEFILE = "dailyData";
-        public static readonly string Savepath = Path.Combine(Application.persistentDataPath, "/Save/savedata.json");    // 세이브 파일 경로
+        private static readonly string Savepath = Path.Join(Application.persistentDataPath, "Save/savedata.json");    // 세이브 파일 경로
 
         /// 파일 목록 불러오기
         public static List<string> GetFileNames(string path, string type = "*.json")
@@ -38,7 +38,7 @@ namespace Utility
             string[] files = Directory.GetFiles(path, type, SearchOption.AllDirectories); // .json 파일만 검색
             foreach (string file in files)
             {
-                string relativePath = file.Substring(path.Length); // 파일에서 path 부분을 제거
+                string relativePath = Path.GetRelativePath(path, file);
                 fileNames.Add(relativePath);
             }
 
@@ -63,29 +63,26 @@ namespace Utility
             fileStream.Close();
         }
         
-        // Dynamic for Save Files
+        // Dynamic
         public static void SavePlayerData(PlayerData data) => SaveData(Savepath, data);
         
-
-        /// <summary>
-        /// 날짜 데이터 파일 로드
-        /// </summary>
-        /// <param name="index">해당하는 데이터 인덱스</param>
-        /// <returns>날짜 데이터</returns>
-        /// <exception cref="ArgumentException">해당하는 파일 없을 시 예외 발생</exception>
-        public static DailyData GetDayData(int index)
-        {
-            var filePath = Path.Combine(GAMEDATAPATH, $"{GAMEFILE}{index}.json");
-
-            return GetData<DailyData>(filePath);
-        }
+        public static DailyData GetDayData(int index) =>
+            GetData<DailyData>(Path.Join(GAMEDATAPATH, $"{GAMEFILE}{index}.json"));
+        public static DailyData GetDayData(string name) =>
+            GetData<DailyData>(Path.Join(GAMEDATAPATH, name));
+        
+        public static Dialogue GetChatData(string name) =>
+            GetData<Dialogue>(Path.Join(CHATPATH, name));
+        
+        public static PlayerData GetPlayerData() =>
+            GetData<PlayerData>(Savepath);
 
         /// <summary>
         /// Load Json Data
         /// </summary>
         /// <param name="path">해당하는 데이터 파일명</param>
         /// <returns>해당 데이터</returns>
-        public static T GetData<T>(string path)
+        private static T GetData<T>(string path)
         {
             // 파일 읽어오기
             if (!File.Exists(path))

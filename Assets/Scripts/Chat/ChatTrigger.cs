@@ -46,7 +46,7 @@ public class ChatTrigger : MonoBehaviour
     public void LoadChatData()
     {
         chatData = new();
-        chatData = DataLoader.GetData<Dialogue>(chatAsset).chatList;
+        chatData = DataLoader.GetChatData(chatAsset).chatList;
     }
 
 

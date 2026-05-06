@@ -66,7 +66,7 @@ public class ChatBuilder : Singleton<ChatBuilder>
     /// <remarks>날짜 파일을 불러온 후 </remarks>
     public void EditChat(string gameFile)
     {
-        chat = DataLoader.GetData<Dialogue>(gameFile).chatList;
+        chat = DataLoader.GetChatData(gameFile).chatList;
         if (chat is null)
         {
             Debug.Log("Cannot Find chat to Edit");
