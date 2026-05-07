@@ -1,4 +1,5 @@
 using GameService;
+using UnityEngine;
 using Utility;
 
 public class SaveController : SaveService
@@ -11,7 +12,7 @@ public class SaveController : SaveService
      */
     
     // 저장 데이터
-    public PlayerData playerData;
+    private PlayerData _playerData;
     private DailyData _dailyData;
     
     /// <summary>
@@ -20,13 +21,13 @@ public class SaveController : SaveService
     public override void Init()
     {
         // 세이브 데이터 로드
-        playerData = DataLoader.GetPlayerData();
-        if (playerData == null)
+        _playerData = DataLoader.GetPlayerData();
+        if (_playerData == null)
         {
             // 새로 시작
             EditorLogger.Log("New Save Created!");
-            playerData = new PlayerData();
-            playerData.Init();
+            _playerData = new PlayerData();
+            _playerData.Init();
         }
         
         // 세이브 선택 초기화
@@ -35,7 +36,7 @@ public class SaveController : SaveService
 
     public override PlayerData GetPlayerData()
     {
-        return playerData;
+        return _playerData;
     }
 
     /// <summary>
@@ -49,12 +50,12 @@ public class SaveController : SaveService
         int newID = day * 100 + branch % 100;
         
         // 날짜 새로 선택
-        if (playerData[newID] == null)
+        if (_playerData[newID] == null)
         {
             EditorLogger.LogWarning("No Data Exists");
             return;
         }
-        Save = playerData[newID];
+        Save = _playerData[newID];
 
         Refresh();
     }
@@ -72,7 +73,7 @@ public class SaveController : SaveService
         
         int newID = Save.dayID + 100;
         DaySave newSave = Save.Clone(newID);
-        playerData.Save(newSave);
+        _playerData.Save(newSave);
         Save = newSave;
         Refresh();
     }
@@ -92,7 +93,7 @@ public class SaveController : SaveService
         // 현재 세이브 그대로 새 분기로 파생
         int newID = DayIndex * 100 + branch;
         DaySave newSave = Save.Clone(newID);
-        playerData.Save(newSave);
+        _playerData.Save(newSave);
         Save = newSave;
     }
    
@@ -102,7 +103,7 @@ public class SaveController : SaveService
     /// <remarks>날짜 변경 트리거</remarks>
     private void Refresh()
     {
-        DataLoader.SavePlayerData(playerData);
+        DataLoader.SavePlayerData(_playerData);
         
         // 날짜 데이터 로드
         _dailyData = DataLoader.GetDayData(DayIndex);

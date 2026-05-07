@@ -90,7 +90,7 @@ public class ChatBuilder : Singleton<ChatBuilder>
     {
         if (!onEdit) return;
         
-        var path = Path.Combine(dataPath, fileName);
+        var path = Path.Join(dataPath, fileName);
         Dialogue newChat = new() { chatList = chat };
         DataLoader.SaveData(path, newChat);
         fileName = "";
