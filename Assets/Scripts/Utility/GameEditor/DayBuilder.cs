@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -9,11 +10,12 @@ public class DayBuilder : Singleton<DayBuilder>
     /**
      * 날짜데이터 빌드 시스템
      */
+    [Header("수정중 상태")]
+    [SerializeField] private bool onEdit;
     
     [Header("파일 수정")]
     public string fileName;
     public DailyData dailyData;
-    private bool onEdit;
 
     [Space(20)] 
     [Header("게임 파일 정보")] 
@@ -96,7 +98,8 @@ public class DayBuilder : Singleton<DayBuilder>
     {
         if (!onEdit) return;
         
-        DataLoader.SaveData(dataPath + fileName, dailyData);
+        DataLoader.SaveData(Path.Join(dataPath, fileName), dailyData);
+        EditorLogger.Log($"Data Saved {fileName}");
         fileName = "";
         dailyData = null;
         onEdit = false;
