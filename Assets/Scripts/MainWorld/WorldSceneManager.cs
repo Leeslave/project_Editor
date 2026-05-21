@@ -2,6 +2,7 @@ using GameService;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Utility;
 
 [Serializable]
 public enum World {
@@ -41,10 +42,7 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
         {
             _bgmCode[i] = i;
         }
-    }
-
-    public void Start()
-    {
+        
         // 서비스 구독
         GameSystem.GetService<ILocationService>().OnPosChanged += MoveLocation;
         GameSystem.GetService<IDayService>().OnTimeChanged += SetTime;
@@ -116,7 +114,16 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
 
     private void OnDestroy()
     {
-        GameSystem.GetService<ILocationService>().OnPosChanged -= MoveLocation;
-        GameSystem.GetService<IDayService>().OnTimeChanged -= SetTime;
+        var locateService = GameSystem.GetService<ILocationService>();
+        if (locateService != null)
+        {
+            GameSystem.GetService<ILocationService>().OnPosChanged -= MoveLocation;
+        }
+        
+        var dayService = GameSystem.GetService<IDayService>();
+        if (dayService != null)
+        {
+            GameSystem.GetService<IDayService>().OnTimeChanged -= SetTime;
+        }
     }
 }

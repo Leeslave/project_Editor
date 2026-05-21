@@ -132,7 +132,7 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            GameSystem.Instance.EnterScene();
+            GameSystem.Instance.EnterScene("GameStart");
             return true;
         }
     }
