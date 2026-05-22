@@ -91,10 +91,9 @@ public sealed class GameSystem : Singleton<GameSystem>
     
     // 현재 활성씬
     private Scene _currentScene;
-    private bool _isLoading = false;
+    [SerializeField] private bool _isLoading = false;
     
-    // TODO: Loading UI 각 씬 내부의 요소 사용
-    private GameObject loadUI => transform.GetChild(0).gameObject;
+    public FadeCurtain loadUI;
 
     /// <summary>
     /// 씬 입장
@@ -116,11 +115,14 @@ public sealed class GameSystem : Singleton<GameSystem>
     {
         // 로딩 시작
         _isLoading = true;
-        if (!loadUI)
+        
+        // 로딩씬 화면 페이드아웃
+        if (loadUI)
         {
-            loadUI.SetActive(true);
-            // TODO: 로딩 애니메이션 시작
+            loadUI.gameObject.SetActive(true);
+            loadUI.Fade(FadeMode.Out);
         }
+        yield return new WaitUntil(() => !loadUI.isLoading);
         
         // 기존 씬 언로드
         if (_currentScene.isLoaded)
@@ -131,14 +133,16 @@ public sealed class GameSystem : Singleton<GameSystem>
         // 메인 씬 로드 시작
         yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         
+        // 씬 로드 완료 및 정리
         _currentScene = SceneManager.GetSceneByName(sceneName);
         SceneManager.SetActiveScene(_currentScene);
         
+        // 로딩 종료
+        loadUI.gameObject.SetActive(false);
+        _isLoading = false;
+        
         // 콜백 실행
         callback?.Invoke();
-        
-        loadUI.SetActive(false);
-        _isLoading = false;
     }
     
     #endregion

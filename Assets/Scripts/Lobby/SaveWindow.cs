@@ -1,3 +1,4 @@
+using GameService;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,6 +32,8 @@ public class SaveWindow : MonoBehaviour
         GameSystem.Instance.EnterScene("MainWorld", callback: () =>
         {
             GameSystem.SaveService.SelectDay(_day, _branch);
+            var loadService = GameSystem.GetService<ILoadService>();
+            if (loadService != null) loadService.StartLoading();
         });
     }
 }

@@ -68,6 +68,12 @@ public class WorldVector
         // 위치와 포지션을 기준으로 해시 코드 생성
         return HashCode.Combine(location, position);
     }
+    
+    // ToString 메서드 오버라이딩
+    public override string ToString()
+    {
+        return name;
+    }
 }
 
 [Serializable]
