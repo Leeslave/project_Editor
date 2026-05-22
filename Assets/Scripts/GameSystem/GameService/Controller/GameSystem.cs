@@ -14,9 +14,16 @@ public sealed class GameSystem : Singleton<GameSystem>
      * - 게임서비스 관리
      * - 씬 운영
      */
-    
+
     public void Awake()
     {
+        // Entry 씬 로드
+        if (SceneManager.sceneCount == 1)
+        {
+            EnterScene("GameStart");
+            return;
+        }
+        
         // 현재 켜져있는 씬 불러오기
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
