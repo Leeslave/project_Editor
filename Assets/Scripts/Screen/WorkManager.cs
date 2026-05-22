@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using Utility;
 
-public class TaskManager : MonoBehaviour
+public class WorkManager : MonoBehaviour
 {
     /**
     * 업무 지원 프로그램 스크립트
@@ -20,7 +20,7 @@ public class TaskManager : MonoBehaviour
     private IWorkService WorkService => GameSystem.GetService<IWorkService>();
 
     public GameObject taskWindow;       // 업무 프로그램 창
-    public AnimationController taskConsoleAnimation;    //업무 대화 콘솔 애니메이션
+    public AnimationController workConsoleAnimation;    //업무 대화 콘솔 애니메이션
     public TMP_InputField consoleInput;     // 업무 입력 창
 
     private void Start()
@@ -42,7 +42,7 @@ public class TaskManager : MonoBehaviour
     }
 
     /// 업무창 활성화/비활성화
-    public void ActiveTaskWindow()
+    public void ActiveWorkWindow()
     {
         // 업무창 활성화
         if (!taskWindow.activeSelf)
@@ -51,17 +51,17 @@ public class TaskManager : MonoBehaviour
             //closeButton.SetActive(false);
             consoleInput.gameObject.SetActive(false);   //입력창 비활성화
             // 콘솔 대사 출력
-            StartCoroutine(WorkService.IsWorkClear() ? TaskConsoleAnimation(1) : TaskConsoleAnimation(0));
+            StartCoroutine(WorkService.IsWorkClear() ? WorkConsoleAnimation(1) : WorkConsoleAnimation(0));
         }
     }
 
     /// 텍스트 출력 후 InputField 설정
-    private IEnumerator TaskConsoleAnimation(int idx)
+    private IEnumerator WorkConsoleAnimation(int idx)
     {
         // 콘솔 텍스트 출력
-        taskConsoleAnimation.anims[idx].Clear();
-        taskConsoleAnimation.Play(idx);
-        yield return new WaitUntil(() => taskConsoleAnimation.isFinished);
+        workConsoleAnimation.anims[idx].Clear();
+        workConsoleAnimation.Play(idx);
+        yield return new WaitUntil(() => workConsoleAnimation.isFinished);
         //closeButton.SetActive(true);
 
         // 텍스트 출력 후 입력창 활성화

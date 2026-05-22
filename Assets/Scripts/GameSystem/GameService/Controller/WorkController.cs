@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class WorkManager : ServiceBase<IWorkService>, IWorkService
+public class WorkController : ServiceBase<IWorkService>, IWorkService
 {
     /**
      * 업무 목록 관리 서비스

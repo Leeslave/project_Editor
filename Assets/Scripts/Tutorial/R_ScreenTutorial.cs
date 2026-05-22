@@ -7,7 +7,7 @@ using UnityEngine;
 public class R_ScreenTutorial : TutorialManager
 {
     [Header("Managers")]
-    public TaskManager taskManager;
+    public WorkManager workManager;
     public MailManager mailManager;
 
     [Header("GameObjects")]
@@ -60,7 +60,7 @@ public class R_ScreenTutorial : TutorialManager
         panels[2].SetActive(false);
         yield return ShowPopUp(tutorials[index]);
         index++;
-        taskManager.ActiveTaskWindow();
+        workManager.ActiveWorkWindow();
         yield return ShowPopUp(tutorials[index]);
         
         for (int i = 0; i < tutorials.Length; i++)

@@ -2250,7 +2250,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 956061280}
         m_TargetAssemblyTypeName: TaskManager, Assembly-CSharp
-        m_MethodName: ActiveTaskWindow
+        m_MethodName: ActiveWorkWindow
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4972,7 +4972,7 @@ PrefabInstance:
       objectReference: {fileID: 956061280}
     - target: {fileID: 502447097478397278, guid: cb605a3989cf5af429457abeae2d40b7, type: 3}
       propertyPath: OnDoubleClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: ActiveTaskWindow
+      value: ActiveWorkWindow
       objectReference: {fileID: 0}
     - target: {fileID: 502447097478397278, guid: cb605a3989cf5af429457abeae2d40b7, type: 3}
       propertyPath: OnDoubleClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -6944,7 +6944,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blocker: {fileID: 863948016}
-  taskManager: {fileID: 956061280}
+  workManager: {fileID: 0}
   mailManager: {fileID: 1972006145}
   tutorials:
   - {fileID: 3693588859082592952}
@@ -8441,7 +8441,7 @@ GameObject:
   - component: {fileID: 956061282}
   - component: {fileID: 956061281}
   m_Layer: 5
-  m_Name: TaskManager
+  m_Name: WorkManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8460,7 +8460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskWindow: {fileID: 2078502391}
-  taskConsoleAnimation: {fileID: 956061283}
+  workConsoleAnimation: {fileID: 0}
   consoleInput: {fileID: 746519358}
 --- !u!114 &956061281
 MonoBehaviour:
