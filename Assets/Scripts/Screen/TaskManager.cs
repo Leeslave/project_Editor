@@ -22,7 +22,6 @@ public class TaskManager : MonoBehaviour
     public GameObject taskWindow;       // 업무 프로그램 창
     public AnimationController taskConsoleAnimation;    //업무 대화 콘솔 애니메이션
     public TMP_InputField consoleInput;     // 업무 입력 창
-    //public GameObject closeButton;      // 업무창 닫기 버튼
 
     private void Start()
     {
@@ -31,7 +30,10 @@ public class TaskManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        WorkService.OnWorkClear -= FinishWork;
+        if (WorkService != null)
+        {
+            WorkService.OnWorkClear -= FinishWork;
+        }
     }
 
     private static void FinishWork()
