@@ -13,8 +13,6 @@ public class ScreenManager : Singleton<ScreenManager>
         - 전원 끄기 (한번 더 눌러서 전원 끔)
         - 리셋 버튼 (초기화 밑 재부팅)
     *   desktop 관리
-        - 로그인 기능 (TODO)
-        - 특수 컷씬 기능 (+a)
     */
 
     /// 스크린내 기본 요소 (에디터 할당)
@@ -43,11 +41,8 @@ public class ScreenManager : Singleton<ScreenManager>
     public static bool IsScreenOn = false;
 
 
-    void Awake()
+    private void Awake()
     {
-        // TODO: 현재 스크린 상태 설정
-        // TODO: 부팅 대기 화면으로 설정
-        
         // 바탕 화면으로 설정
         SetScreen(IsScreenOn ? ScreenMode.On : ScreenMode.Off);
     }
@@ -57,37 +52,38 @@ public class ScreenManager : Singleton<ScreenManager>
     /// </summary>
     /// <remarks> 부팅 전으로 스크린 화면 활성화하기</remarks>
     /// <param name="screenMode">전환할 스크린 모드</param>
-    public void SetScreen(ScreenMode screenMode) 
+    public void SetScreen(ScreenMode screenMode)
     {
-        if (screenMode == ScreenMode.On)
+        switch (screenMode)
         {
-            //바탕화면 활성화
-            desktop.SetActive(true);
-            // 부팅패널 비활성화
-            bootPanel.SetActive(false);
-            // 탈출 버튼 비활성화
-            returnButton.SetActive(false);
+            case ScreenMode.On:
+                //바탕화면 활성화
+                desktop.SetActive(true);
+                // 부팅패널 비활성화
+                bootPanel.SetActive(false);
+                // 탈출 버튼 비활성화
+                returnButton.SetActive(false);
+                break;
+            case ScreenMode.TryOff:
+                //바탕화면 비활성화
+                desktop.SetActive(false);
+                // 부팅패널 활성화
+                bootPanel.SetActive(true);
+                // 탈출 버튼 활성화
+                returnButton.SetActive(true);
+                break;
+            default:
+                // 탈출 버튼 활성화
+                returnButton.SetActive(true);
+                // 바탕화면 비활성화
+                desktop.SetActive(false);
+                // 부팅패널 활성화
+                bootPanel.SetActive(true);
+                bootCLI.text = "";
+                bootCLI.gameObject.SetActive(true);
+                break;
         }
-        else if (screenMode == ScreenMode.TryOff)
-        {
-            //바탕화면 비활성화
-            desktop.SetActive(false);
-            // 부팅패널 활성화
-            bootPanel.SetActive(true);
-            // 탈출 버튼 활성화
-            returnButton.SetActive(true);
-        }
-        else
-        {
-            // 탈출 버튼 활성화
-            returnButton.SetActive(true);
-            // 바탕화면 비활성화
-            desktop.SetActive(false);
-            // 부팅패널 활성화
-            bootPanel.SetActive(true);
-            bootCLI.text = "";
-            bootCLI.gameObject.SetActive(true);
-        }
+
         currentBootStatus = screenMode;
     }
 
@@ -134,25 +130,19 @@ public class ScreenManager : Singleton<ScreenManager>
     /// <param name="sceneName">돌아갈 특정 씬</param>
     public void OnReturnClicked(string sceneName)
     {
-        if (sceneName == null || sceneName == "")
+        if (string.IsNullOrEmpty(sceneName))
         {
             sceneName = "MainWorld";
         }
 
-        StartCoroutine(LoadWorldScene(sceneName));
+        GameSystem.Instance.EnterScene(sceneName);
     }
-
-    private IEnumerator LoadWorldScene(string sceneName)
-    {
-        yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-        SceneManager.UnloadSceneAsync("Screen");
-    }
-
+    
     /**
     * 스크린 부팅 싱글톤
     * - 로고 -> 부팅 콘솔 -> 스크린 On
     */
-    IEnumerator BootScreen()
+    private IEnumerator BootScreen()
     {
         // 부팅 시작
         currentBootStatus = ScreenMode.OnBoot;
@@ -182,7 +172,7 @@ public class ScreenManager : Singleton<ScreenManager>
     * - 종료 시도 -> 부팅 종료 콘솔 활성화 -> 버튼 다시 클릭 확인 후 종료
     *                                    -> 버튼 안누를 시 돌아감
     */
-    IEnumerator OffScreen()
+    private IEnumerator OffScreen()
     {
         // 종료 시도
         SetScreen(ScreenMode.TryOff);
