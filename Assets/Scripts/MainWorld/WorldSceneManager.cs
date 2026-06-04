@@ -51,8 +51,6 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
     {
         bool isNight = time > 1;
         
-        // TODO: 날짜 전환 시(time == 0) ILoadService를 통한 전환 화면 실행
-        
         // 시간대 외형 설정
         transform.position = isNight ? 
             new Vector3(transform.position.x, nightShift, transform.position.z) 
