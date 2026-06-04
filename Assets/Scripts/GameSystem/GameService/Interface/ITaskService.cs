@@ -15,7 +15,7 @@ namespace GameService
     {
         void AddTask(Task task);
         
-        List<(Task, bool)> GetAllTasks();
+        IReadOnlyList<(Task, bool)> GetAllTasks();
         
         Task GetTask(string key);
         

@@ -1,11 +1,12 @@
 
 using GameService;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 public class TaskController : ServiceBase<ITaskService>, ITaskService
 {
-    private List<(Task task, bool isClear)> _tasks = new();
+    private readonly List<(Task task, bool isClear)> _tasks = new();
     
     public void Init(DailyData data)
     {
@@ -14,23 +15,31 @@ public class TaskController : ServiceBase<ITaskService>, ITaskService
 
     public void AddTask(Task task)
     {
-        throw new System.NotImplementedException();
+        _tasks.Add((task, isClear: false));
     }
 
-    public List<(Task, bool)> GetAllTasks()
+    public IReadOnlyList<(Task, bool)> GetAllTasks()
     {
-        throw new System.NotImplementedException();
+        return _tasks.AsReadOnly();
     }
 
     public Task GetTask(string key)
     {
-        throw new System.NotImplementedException();
+        return _tasks.FirstOrDefault(tk => tk.task.key == key).task;
     }
 
     public void ClearTask(string key)
     {
-        var task = _tasks.FirstOrDefault(t => t.task.key == key);
-        
+        for (int i = 0; i < _tasks.Count; i++)
+        {
+            if (_tasks[i].task.key != key)
+            {
+                continue;
+            }
+
+            Task tmp = _tasks[i].task;
+            _tasks[i] = (tmp, isClear: true);
+        }
     }
 
     public bool IsTaskClear()
