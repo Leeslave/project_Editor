@@ -105,8 +105,6 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
         // 위치 이동
         int x = (int)vector.location * 1000 + vector.position * 100;
         mainCamera.transform.position = new Vector3(x, 0, 0);
-        
-        EditorLogger.Log($"Move Pos to {vector.location}");
     
         // BGM 설정
         worldBGM.SetClip(_bgmCode[(int)vector.location], true);

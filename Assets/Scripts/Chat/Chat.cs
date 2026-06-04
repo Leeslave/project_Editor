@@ -54,11 +54,12 @@ public class Chat : Singleton<Chat>
     private Paragraph currentParagraph;
     private Queue<Paragraph> chatList;   // 대화 리스트
     private Queue<Paragraph> logList;   // 대화 기록 리스트
-    private bool OnTalkAnimate;
 
     /// 이벤트
     private IGameAction _gameAction = new NotImpletedAction();    // 대사 반응 함수
     private IGameAction[] choiceActions = new IGameAction[3];    // 선택지 이벤트
+
+    private Coroutine _talkAnimation = null;
 
     private void Awake()
     {
@@ -99,10 +100,10 @@ public class Chat : Singleton<Chat>
     public void NextChat()
     {      
         // 대사 진행중이면 종료
-        if (OnTalkAnimate)
+        if (_talkAnimation != null)
         {
-            StopAllCoroutines(); 
-            OnTalkAnimate = false;
+            StopCoroutine(_talkAnimation); 
+            _talkAnimation = null;
             
             // 대사 즉시 표시
             if (currentParagraph is TalkParagraph talk)
@@ -137,6 +138,13 @@ public class Chat : Singleton<Chat>
     /// </summary>
     public void SkipChat()
     {
+        // 진행중 대사 즉시 종료
+        if (_talkAnimation != null)
+        {
+            StopAllCoroutines();
+            _talkAnimation = null;
+        }
+        
         // 모든 대화 이벤트 실행
         foreach (Paragraph paragraph in chatList)
         {
@@ -262,7 +270,7 @@ public class Chat : Singleton<Chat>
                 else
                     textSFX = new();
                 
-                StartCoroutine(TextAnimation(talk));
+                _talkAnimation = StartCoroutine(TextAnimation(talk));
             }
             
             // 배경음악 설정
@@ -387,8 +395,6 @@ public class Chat : Singleton<Chat>
     /// <remarks>대사 delay, 변수값, SFX 적용</remarks>
     IEnumerator TextAnimation(TalkParagraph paragraph)
     {
-        OnTalkAnimate = true;
-        
         // 대사 초기화
         text.text = "";
         Coroutine sfxCoroutine = null;
@@ -415,7 +421,7 @@ public class Chat : Singleton<Chat>
             {
                 StopCoroutine(sfxCoroutine);
             }
-            OnTalkAnimate = false;
+            _talkAnimation = null;
         }
     }
 
