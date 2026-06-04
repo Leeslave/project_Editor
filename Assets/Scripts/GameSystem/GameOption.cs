@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameOption : Singleton<GameOption>
@@ -23,18 +22,13 @@ public class GameOption : Singleton<GameOption>
     [SerializeField]
     private AudioMixer audioMixer;
     
-    void Awake()
-    {
-        // Screen.SetResolution(resolutionX, resolutionY, false);  // 해상도 고정
-    }
-    
     public Button optionButton;
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if(optionButton is not null)
+            if(optionButton)
             {
                 optionButton.onClick.Invoke();
             }
@@ -89,13 +83,13 @@ public class GameOption : Singleton<GameOption>
     
     public void LoadSaveSelect()
     {
-        SceneManager.LoadScene("SaveSelect");
+        GameSystem.Instance.EnterScene("SaveSelect");
     }
 
 
     public void LoadStartMenu()
     {
-        SceneManager.LoadScene("Start");
+        GameSystem.Instance.EnterScene("GameStart");
     }
 
 
