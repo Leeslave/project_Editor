@@ -351,7 +351,7 @@ public class Chat : Singleton<Chat>
             
             if (data.isFade)        // 배경 전환 효과
             {
-                curtain.Fade();
+                curtain.Fade(FadeMode.In);
             }
             
             background.gameObject.SetActive(true);      // 배경 이미지 활성화

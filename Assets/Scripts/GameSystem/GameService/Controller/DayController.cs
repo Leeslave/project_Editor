@@ -22,7 +22,6 @@ public class DayController : ServiceBase<IDayService>, IDayService
         set
         {
             time = value;
-            EditorLogger.Log($"Time Changed {time}");
             OnTimeChanged?.Invoke(time, TimeData);
         }
     }

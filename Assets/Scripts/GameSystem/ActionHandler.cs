@@ -132,7 +132,7 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            GameSystem.Instance.EnterScene();
+            GameSystem.Instance.EnterScene("GameStart");
             return true;
         }
     }
@@ -240,7 +240,7 @@ namespace GameAction
     /// <summary>
     /// 튜토리얼 생성 액션
     /// </summary>
-    /// TODO:<remarks>Param 형식 : Tutorial 인터페이스</remarks>
+    /// NOTE:<remarks>Param 형식 : Tutorial 인터페이스</remarks>
     public record TutorialAction( /*ITutorial*/int Tutorial) : IGameAction
     {
         public bool Invoke()
