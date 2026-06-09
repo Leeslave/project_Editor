@@ -19,7 +19,7 @@ public enum World {
     Max
 } 
 
-public class WorldSceneManager : Singleton<WorldSceneManager>
+public class WorldSceneManager : MonoBehaviour
 {
     /**
     * MainWorld 씬 매니저

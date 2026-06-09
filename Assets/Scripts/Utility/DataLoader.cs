@@ -17,6 +17,7 @@ namespace Utility
             - ChatData 로드 : json
             - 설정파일 로드 및 저장 : json
             - 미니게임 Data 로드 : SO
+            - Sprite : Resources 내 이미지
         */
         
         [Header("File Path")]
@@ -111,6 +112,64 @@ namespace Utility
                 {
                     TypeNameHandling = TypeNameHandling.All, // 타입 구분
                 });
+        }
+        
+        
+        /// <summary>
+        /// 스프라이트 이미지 불러오기
+        /// </summary>
+        /// <param name="filePath">이미지 경로</param>
+        /// <returns></returns>
+        public static Sprite GetSprite(params string[] filePath)
+        {
+            string path = "";
+            foreach (var iter in filePath)
+            {
+                path = Path.Join(path, iter);
+            }
+            
+            Sprite result = Resources.Load<Sprite>(path);
+            
+            if (!result)
+            {
+                EditorLogger.LogError($"Image Load Failed : {path}");
+            }
+            return result;
+        }
+
+    
+        /// <summary>
+        /// 멀티 스프라이트 이미지 불러오기
+        /// </summary>
+        /// <param name="filePath">이미지 경로</param>
+        /// <param name="i">멀티 이미지내 인덱스</param>
+        /// <returns></returns>
+        public static Sprite GetSprite(int i, params string[] filePath)
+        {
+            string path = "";
+            foreach (var iter in filePath)
+            {
+                path = Path.Join(path, iter);
+            }
+            
+            Sprite[] result = Resources.LoadAll<Sprite>(path);
+        
+            // 파일명 오류
+            if (result == null)
+            {
+                EditorLogger.LogError($"Image Load Failed : {path}");
+                return null;
+            }
+
+            // 파일 번호 오류
+            if (result.Length >= i)
+            {
+                return result[i];
+            }
+        
+            EditorLogger.LogError($"Image Load Failed : {path} with {i}");
+            i = 0;
+            return result[i];
         }
     }
 }

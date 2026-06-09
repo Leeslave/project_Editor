@@ -1,6 +1,7 @@
+using GameService;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 
 [Serializable]
 public abstract class Paragraph
@@ -142,5 +143,27 @@ public struct CharacterCG
         this.fileName = fileName;
         this.index = index;
         this.isHighlight = isHighlight;
+    }
+}
+
+public static class StringExtensions
+{
+    public static readonly string[] Keywords = {"{{year}}", "{{month}}", "{{day}}", "{{renown}}"};
+    
+    public static string SwitchToValue(this string keyword)
+    {
+        if (!Keywords.Contains(keyword)) return keyword;
+        
+        IDayService dayService = GameSystem.GetService<IDayService>();
+        Date date = dayService.GetDateInfo();
+        
+        return keyword switch
+        {
+            "{{year}}" => date.year.ToString(),
+            "{{month}}" => date.month.ToString(),
+            "{{day}}" => date.day.ToString(),
+            "{{renown}}" => GameSystem.SaveService.Renown.ToString(),
+            _ => ""
+        };
     }
 }

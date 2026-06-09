@@ -1,4 +1,3 @@
-using GameService;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -20,8 +19,8 @@ public class Chat : Singleton<Chat>
     */
     private static readonly int CG_COUNT = 4;
     private static readonly int CHOICE_COUNT = 3;
-    private static string CHARACTER_PATH = "Chat/Character/";    // 캐릭터 파일 경로
-    private static string BACKGROUND_PATH = "Chat/Background/";   // 배경 CG 파일 경로
+    private const string CharacterPath = "Chat/Character/";    // 캐릭터 파일 경로
+    private const string BackgroundPath = "Chat/Background/";   // 배경 standImages 파일 경로
     
     private GameObject ChatUI => transform.GetChild(0).gameObject;
 
@@ -31,7 +30,7 @@ public class Chat : Singleton<Chat>
     [SerializeField] private SoundManager bgm;    // 배경 음악
 
     [Space(20)] [Header("대화 패널")] 
-    [SerializeField] private List<Image> CG;
+    [SerializeField] private List<Image> standImages;
     [SerializeField] private GameObject talkPanel;   // 대화 패널
     public TMP_Text talkerName;     // 발화자 이름
     [SerializeField] private TMP_Text talkerInfo;    // 발화자 정보
@@ -51,22 +50,25 @@ public class Chat : Singleton<Chat>
     
     [Space(10)] 
     [Header("대화 상태")]
-    private Paragraph currentParagraph;
-    private Queue<Paragraph> chatList;   // 대화 리스트
-    private Queue<Paragraph> logList;   // 대화 기록 리스트
+    private Paragraph _currentParagraph;
+    private Queue<Paragraph> _chatList;   // 대화 리스트
+    private Queue<Paragraph> _logList;   // 대화 기록 리스트
 
     /// 이벤트
     private IGameAction _gameAction = new NotImpletedAction();    // 대사 반응 함수
-    private IGameAction[] choiceActions = new IGameAction[3];    // 선택지 이벤트
+    private IGameAction[] _choiceActions = new IGameAction[3];    // 선택지 이벤트
 
-    private Coroutine _talkAnimation = null;
+    private Coroutine _talkAnimation;
+    private Coroutine _sfxAnimation;
 
     private void Awake()
     {
         // 이벤트 초기화
-        choiceActions = new IGameAction[3];
+        _choiceActions = new IGameAction[3];
     }
 
+    #region Chat Control
+    
     ///<summary>
     ///대화 시작
     ///</summary>
@@ -87,8 +89,8 @@ public class Chat : Singleton<Chat>
         }
         
         // 대화 리스트 할당
-        this.chatList = new Queue<Paragraph>(chats);
-        logList = new Queue<Paragraph>();   
+        _chatList = new Queue<Paragraph>(chats);
+        _logList = new Queue<Paragraph>();   
 
         ChatUI.SetActive(true);
         NextChat();        
@@ -102,11 +104,13 @@ public class Chat : Singleton<Chat>
         // 대사 진행중이면 종료
         if (_talkAnimation != null)
         {
+            StopCoroutine(_sfxAnimation);
             StopCoroutine(_talkAnimation); 
             _talkAnimation = null;
+            _sfxAnimation = null;
             
             // 대사 즉시 표시
-            if (currentParagraph is TalkParagraph talk)
+            if (_currentParagraph is TalkParagraph talk)
             {
                 text.text = talk.text;
                 return;
@@ -114,25 +118,24 @@ public class Chat : Singleton<Chat>
         } 
 
         // 이전 대사 반응 함수 실행
-        if (logList.Count != 0)
+        if (_logList.Count != 0)
         {
             _gameAction?.Invoke();
         }        
 
         // 마지막 대사 이후 or index 오류
-        if (chatList.Count <= 0)
+        if (_chatList.Count <= 0)
         {
             FinishChat();    // Chat 종료 및 비활성화
             return;
         }
 
-        currentParagraph = chatList.Dequeue(); // 현재 대사 불러오기
-        AddLog(currentParagraph);
+        _currentParagraph = _chatList.Dequeue(); // 현재 대사 불러오기
+        AddLog(_currentParagraph);
 
-        SetChat(currentParagraph);  // 대사 타입에 따라 설정
+        SetChat(_currentParagraph);  // 대사 타입에 따라 설정
     }
-
-
+    
     /// <summary>
     /// 대사 넘기기 함수
     /// </summary>
@@ -146,7 +149,7 @@ public class Chat : Singleton<Chat>
         }
         
         // 모든 대화 이벤트 실행
-        foreach (Paragraph paragraph in chatList)
+        foreach (Paragraph paragraph in _chatList)
         {
             if (paragraph is not TalkParagraph talk)
             {
@@ -166,12 +169,17 @@ public class Chat : Singleton<Chat>
     {
         background.sprite = null;   // 배경 초기화
         
-        bgm.Pause();    // BGM 종료 및 월드 BGM 재개
-        WorldSceneManager.Instance.worldBGM.Resume();
+        // BGM 종료 및 월드 BGM 재개
+        bgm.Stop();
+        SoundManager.ResumeBGM();
         
         ClearLog();     //로그 초기화
         ChatUI.SetActive(false);    // UI 종료
     }
+    
+    #endregion
+    
+    #region Log Control
 
     /// <summary>
     /// 대사 다시보기 추가
@@ -179,24 +187,30 @@ public class Chat : Singleton<Chat>
     /// <param name="para">추가할 대사</param>
     private void AddLog(Paragraph para)
     {
-        logList.Enqueue(para);
+        _logList.Enqueue(para);
 
-        if (para is TalkParagraph talk)      // 대사 다시보기
+        switch (para)
         {
-            GameObject newNode = Instantiate(remindTalkNode, remindContent.transform);
+            // 대사 다시보기
+            case TalkParagraph talk:
+                {
+                    GameObject newNode = Instantiate(remindTalkNode, remindContent.transform);
 
-            newNode.transform.GetChild(0).GetComponent<TMP_Text>().text = talk.talker;  // 발화자 설정
-            newNode.transform.GetChild(1).GetComponent<TMP_Text>().text = talk.text;    // 대사 내용
-        }
-        else if (para is ChoiceParagraph choice)   // 선택지 다시보기
-        {
-            GameObject newNode = Instantiate(remindChoiceNode, remindContent.transform);
-            
-            for(int i = 0; i < CHOICE_COUNT; i++)        // 선택지들 활성화
-            {
-                newNode.transform.GetChild(i).GetComponent<TMP_Text>().text = choice.choiceList[i].text;
-                newNode.transform.GetChild(i).gameObject.SetActive(true);
-            }
+                    newNode.transform.GetChild(0).GetComponent<TMP_Text>().text = talk.talker;  // 발화자 설정
+                    newNode.transform.GetChild(1).GetComponent<TMP_Text>().text = talk.text;    // 대사 내용
+                    break;
+                }
+            // 선택지 다시보기
+            case ChoiceParagraph choice:
+                {
+                    GameObject newNode = Instantiate(remindChoiceNode, remindContent.transform);
+                    for(int i = 0; i < CHOICE_COUNT; i++)        // 선택지들 활성화
+                    {
+                        newNode.transform.GetChild(i).GetComponent<TMP_Text>().text = choice.choiceList[i].text;
+                        newNode.transform.GetChild(i).gameObject.SetActive(true);
+                    }
+                    break;
+                }
         }
     }
 
@@ -211,6 +225,9 @@ public class Chat : Singleton<Chat>
         }
     }
     
+    #endregion
+    
+    #region UI Control
     
     /// <summary>
     /// 선택지 할당
@@ -235,7 +252,7 @@ public class Chat : Singleton<Chat>
         button.transform.GetChild(0).GetComponent<TMP_Text>().text = choice.text;
         
         // 선택지 반응 설정
-        choiceActions[choiceNum] = ActionHandler.Create(choice.reaction, choice.reactionParam);        
+        _choiceActions[choiceNum] = ActionHandler.Create(choice.reaction, choice.reactionParam);        
         button.SetActive(true);     // 선택지 활성화
     }
 
@@ -279,26 +296,23 @@ public class Chat : Singleton<Chat>
                 // 모든 음악 중지
                 if (talk.bgm == "STOP")
                 {
-                    WorldSceneManager.Instance?.worldBGM.Pause();
-                    bgm.Pause();
+                    SoundManager.PauseBGM();
                 }
                 // 월드 음악으로 되돌림
                 else if (talk.bgm == "RETURN")
                 {
                     bgm.Stop();
-                    WorldSceneManager.Instance?.worldBGM.Resume();
                 }
                 // 대화 음악 재실행
                 else if (talk.bgm == "RESTART")
                 {
-                    bgm.Resume();
+                    bgm.Play();
                 }
                 // 대화 음악 새로 실행
                 else
                 {
                     if (int.TryParse(talk.bgm, out int result))
                     {
-                        WorldSceneManager.Instance?.worldBGM.Pause();
                         bgm.SetClip(result);
                         bgm.Play();
                     }
@@ -325,24 +339,24 @@ public class Chat : Singleton<Chat>
         {
             return;
         }
-        // 캐릭터 CG 설정
+        // 캐릭터 standImages 설정
         for(int i = 0; i < CG_COUNT; i++)
         {
             CharacterCG character = data.characters[i];
-            // CG 없음
+            // standImages 없음
             if (string.IsNullOrEmpty(character.fileName))
             {
-                CG[i].sprite = null;
-                CG[i].gameObject.SetActive(false);
+                standImages[i].sprite = null;
+                standImages[i].gameObject.SetActive(false);
                 continue;
             }
                 
-            //CG 설정
-            if (!CG[i].sprite || character.fileName != CG[i].sprite.name)
+            //standImages 설정
+            if (!standImages[i].sprite || character.fileName != standImages[i].sprite.name)
             {
-                CG[i].sprite = GetSprite(CHARACTER_PATH + character.fileName, character.index);
+                standImages[i].sprite = DataLoader.GetSprite(character.index, CharacterPath, character.fileName);
             }
-            CG[i].gameObject.SetActive(true);
+            standImages[i].gameObject.SetActive(true);
         }
         
         // 배경 설정
@@ -354,7 +368,7 @@ public class Chat : Singleton<Chat>
         {
             if (!background.sprite || background.sprite.name != data.background)
             {
-                background.sprite = GetSprite(BACKGROUND_PATH + data.background); // 배경 이미지 설정 
+                background.sprite = DataLoader.GetSprite(BackgroundPath, data.background); // 배경 이미지 설정 
             }
             
             if (data.isFade)        // 배경 전환 효과
@@ -365,14 +379,13 @@ public class Chat : Singleton<Chat>
             background.gameObject.SetActive(true);      // 배경 이미지 활성화
         }
     }
-
     
-    /************************************UI 이벤트 함수*****************************************/
+    #endregion
+
+    #region Event
+
     /// 대화 스킵 버튼
-    public void OnSkipPressed()
-    {
-        SkipChat();
-    }
+    public void OnSkipPressed() => SkipChat();
 
     /// 선택지 버튼 입력 함수
     public void OnChoicePressed(int num)
@@ -382,12 +395,14 @@ public class Chat : Singleton<Chat>
             return;
 
         // 반응 함수 실행
-        choiceActions[num]?.Invoke();
+        _choiceActions[num]?.Invoke();
         NextChat();
     }
 
+    #endregion
     
-    /***********************************텍스트 출력용 함수***************************************/
+    #region Text Animation
+
     /// <summary>
     /// 대사 출력 애니메이션
     /// </summary>
@@ -397,17 +412,17 @@ public class Chat : Singleton<Chat>
     {
         // 대사 초기화
         text.text = "";
-        Coroutine sfxCoroutine = null;
         
         // 효과음 코루틴 시작
         if (paragraph.sfxDelay > 0f)
         {
-            sfxCoroutine = StartCoroutine(TextSFX(paragraph.sfxDelay / 10));
+            _sfxAnimation = StartCoroutine(TextSFX(paragraph.sfxDelay / 10));
         }
         
         // 한 글자씩 애니메이션
         try
         {
+            float time = 0f;
             foreach (char t in paragraph.text)
             {
                 // 텍스트 추가
@@ -417,15 +432,14 @@ public class Chat : Singleton<Chat>
         }
         finally
         {
-            if (sfxCoroutine != null)
+            if (_sfxAnimation != null)
             {
-                StopCoroutine(sfxCoroutine);
+                StopCoroutine(_sfxAnimation);
             }
             _talkAnimation = null;
         }
     }
-
-
+    
     private IEnumerator TextSFX(float delay)
     {
         while (true)
@@ -435,9 +449,10 @@ public class Chat : Singleton<Chat>
         }
     }
 
+    #endregion
     
+    #region Set Variable Keyword
     
-    /**************************************데이터 호출 함수 static****************************************/
     /// <summary>
     /// 대사 내 변수값 전환하기
     /// </summary>
@@ -446,13 +461,11 @@ public class Chat : Singleton<Chat>
     private static Paragraph ReplaceKeywords(Paragraph data)
     {
         StringBuilder sb = new();
-        string[] keywords = { "{{year}}", "{{month}}", "{{day}}", "{{renown}}" };
-
         switch (data)
         {
             case TalkParagraph talk:
                 sb.Append(talk.text);
-                ProcessKeywords(sb, keywords);
+                ProcessKeywords(sb);
                 talk.text = sb.ToString();
                 return talk;
             case ChoiceParagraph choice:
@@ -461,7 +474,7 @@ public class Chat : Singleton<Chat>
                     Choice newChoice = choice.choiceList[i];
                     sb.Clear();
                     sb.Append(newChoice.text);
-                    ProcessKeywords(sb, keywords);
+                    ProcessKeywords(sb);
                     newChoice.text = sb.ToString();
             
                     choice.choiceList[i] = newChoice;
@@ -476,91 +489,20 @@ public class Chat : Singleton<Chat>
     /// 키워드 대체 함수
     /// </summary>
     /// <param name="sb"></param>
-    /// <param name="keywords"></param>
-    private static void ProcessKeywords(StringBuilder sb, string[] keywords)
+    private static void ProcessKeywords(StringBuilder sb)
     {
-        foreach (string keyword in keywords)
+        foreach (string keyword in StringExtensions.Keywords)
         {
             if (!sb.ToString().Contains(keyword))
             {
                 continue;
             }
 
-            string value = GetVariableValue(keyword);
+            string value = keyword;
+            value.SwitchToValue();
             sb.Replace(keyword, value);
         }
     }
-
     
-    /// <summary>
-    /// 변수 텍스트 적용
-    /// </summary>
-    /// <param name="keyword">적용할 변수명</param>
-    /// <returns>변수 실재값 반환</returns>
-    private static string GetVariableValue(string keyword)
-    {
-        IDayService dayService = GameSystem.GetService<IDayService>();
-        Date date = dayService.GetDateInfo();
-
-        return keyword switch
-        {
-            "{{year}}" => date.year.ToString(),
-            "{{month}}" => date.month.ToString(),
-            "{{day}}" => date.day.ToString(),
-            "{{renown}}" => GameSystem.SaveService.Renown.ToString(),
-            _ => ""
-        };
-    }
-
-    
-    /// <summary>
-    /// 스프라이트 이미지 불러오기
-    /// </summary>
-    /// <param name="filePath">이미지 경로</param>
-    /// <returns></returns>
-    private static Sprite GetSprite(string filePath)
-    {
-        Sprite result = Resources.Load<Sprite>(filePath);
-        
-    #if UNITY_EDITOR
-        if (!result)
-        {
-            EditorLogger.Log($"Image Load Failed : {filePath}");
-        }
-    #endif
-        
-        return result;
-    }
-
-    
-    /// <summary>
-    /// 멀티 스프라이트 이미지 불러오기
-    /// </summary>
-    /// <param name="filePath">이미지 경로</param>
-    /// <param name="i">멀티 이미지내 인덱스</param>
-    /// <returns></returns>
-    private static Sprite GetSprite(string filePath, int i)
-    {
-        Sprite[] result = Resources.LoadAll<Sprite>(filePath);
-        
-        // 파일명 오류
-        if (result == null)
-        {
-        #if UNITY_EDITOR
-            EditorLogger.Log($"Image Load Failed : {filePath}");
-        #endif
-
-            return null;
-        }
-
-        // 파일 번호 오류
-        if (result.Length >= i)
-        {
-            return result[i];
-        }
-        
-        EditorLogger.Log($"Image Load Failed : {filePath} with {i}");
-        i = 0;
-        return result[i];
-    }
+    #endregion
 }
