@@ -2,6 +2,7 @@ using GameService;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Utility;
 
 [Serializable]
 public enum World {
@@ -18,7 +19,7 @@ public enum World {
     Max
 } 
 
-public class WorldSceneManager : Singleton<WorldSceneManager>
+public class WorldSceneManager : MonoBehaviour
 {
     /**
     * MainWorld 씬 매니저
@@ -41,10 +42,31 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
         {
             _bgmCode[i] = i;
         }
-        
-        // 서비스 구독
-        GameSystem.GetService<ILocationService>().OnPosChanged += MoveLocation;
-        GameSystem.GetService<IDayService>().OnTimeChanged += SetTime;
+    }
+
+    private void Start()
+    {
+        var locationService = GameSystem.GetService<ILocationService>();
+        if (locationService != null)
+        {
+            MoveLocation(locationService.CurrentPosition);
+            locationService.OnPosChanged += MoveLocation;
+        }
+        else
+        {
+            EditorLogger.LogError("LocationService not found");
+        }
+
+        var dayService = GameSystem.GetService<IDayService>();
+        if (dayService != null)
+        {
+            SetTime(dayService.Time, dayService.TimeData);
+            dayService.OnTimeChanged += SetTime;
+        }
+        else
+        {
+            EditorLogger.LogError("DayService not found");
+        }
     }
     
     private void SetTime(int time, TimeData timeData)
