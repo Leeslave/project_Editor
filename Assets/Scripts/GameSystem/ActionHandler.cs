@@ -49,7 +49,6 @@ namespace GameAction
             // CHATSWAP
             Register("CHATSWAP", s =>
             {
-                // NOTE: 월드 객체 탐색 관리 필요 (ObjectService에서 static으로 관리하는 방식
                 var str = s.Split(new[] { ' ', ',', '.' }, StringSplitOptions.RemoveEmptyEntries);
                 IChatList obj = WorldObjectFactory.Instance?.FindObject(str[0]) as IChatList;
                 int index = int.Parse(str[1]);
@@ -78,6 +77,23 @@ namespace GameAction
                 int param = int.TryParse(s, out int num) ? num : 0;
                 return new SetRenownAction(param);
             });
+            
+            // NEWTASK
+            Register("NEWTASK", s =>
+            {
+                var str = s.Split('-', '_', ':','=');
+                Task newTask;
+                newTask.key = str[0];
+                newTask.description = str[1];
+                
+                return new AddTaskAction(newTask);
+            });
+            
+            // CLEARTASK
+            Register("CLEARTASK", s => new ClearTaskAction(s));
+            
+            // REMOVETASK
+            Register("REMOVETASK", s => new RemoveTaskAction(s));
 
             // EXIT
             Register("EXIT", _ => new ExitGameAction());
@@ -137,6 +153,7 @@ namespace GameAction
         }
     }
 
+    #region DateAction
 
     /// <summary>
     /// 날짜 강제 변경 액션
@@ -202,6 +219,9 @@ namespace GameAction
         }
     }
 
+    #endregion
+    
+    #region ChatAction
 
     /// <summary>
     /// 대화 스킵 액션
@@ -221,8 +241,7 @@ namespace GameAction
             return true;
         }
     }
-
-
+    
     /// <summary>
     /// 대화 스킵 액션
     /// </summary>
@@ -235,8 +254,7 @@ namespace GameAction
             return true;
         }
     }
-
-
+    
     /// <summary>
     /// 튜토리얼 생성 액션
     /// </summary>
@@ -251,6 +269,9 @@ namespace GameAction
         }
     }
 
+    #endregion
+    
+    #region MainWorldAction
 
     /// <summary>
     /// 위치 이동 액션
@@ -285,6 +306,8 @@ namespace GameAction
             return true;
         }
     }
+    
+    #endregion
 
     /// <summary>
     /// 명성치 변화 액션
@@ -298,4 +321,68 @@ namespace GameAction
             return true;
         }
     }
+    
+    #region TaskAction
+
+    /// <summary>
+    /// Task 추가 액션
+    /// </summary>
+    /// <param name="Task">Param 형식 : Task 구조체</param>
+    public record AddTaskAction(Task Task) : IGameAction
+    {
+        public bool Invoke()
+        {
+            try
+            {
+                GameSystem.GetService<ITaskService>().AddTask(Task);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Task 클리어 액션
+    /// </summary>
+    /// <param name="Key">Param 형식 : string 클리어키</param>
+    public record ClearTaskAction(string Key) : IGameAction
+    {
+        public bool Invoke()
+        {
+            try
+            {
+                GameSystem.GetService<ITaskService>().ClearTask(Key);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Task 삭제 액션
+    /// </summary>
+    /// <param name="Key">Param 형식 : string 클리어키</param>
+    public record RemoveTaskAction(string Key) : IGameAction
+    {
+        public bool Invoke()
+        {
+            try
+            {
+                GameSystem.GetService<ITaskService>().RemoveTask(Key);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+    
+    #endregion
 }
