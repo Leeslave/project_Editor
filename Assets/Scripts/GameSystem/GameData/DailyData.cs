@@ -26,7 +26,13 @@ public class DailyData
     public List<Work> workList = new();
 
     // 날짜 데이터
-    public TimeData[] dayTimes = new TimeData[4];
+    public TimeData[] dayTimes = new TimeData[4]
+    {
+        new (), 
+        new (),
+        new (),
+        new ()
+    };
 }
 
 
@@ -106,7 +112,7 @@ public class Work
     public string code;     // 업무 코드명
     public int stage;       // 스테이지 번호
 
-    public Work(string _code, int _stage = 0)
+    public Work(string _code = "TestGame", int _stage = 0)
     {
         code = _code;
         stage = _stage;

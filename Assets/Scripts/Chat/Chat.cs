@@ -422,7 +422,6 @@ public class Chat : Singleton<Chat>
         // 한 글자씩 애니메이션
         try
         {
-            float time = 0f;
             foreach (char t in paragraph.text)
             {
                 // 텍스트 추가
