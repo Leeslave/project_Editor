@@ -1,34 +1,29 @@
-using System.Collections.Generic;
+using TMPro;
 
 namespace GameEditor
 {
     public class StartLocationEditUI : EditorUIBase
     {
-        public List<LocationButton> locations;
+        public TMP_Text startLocation;
 
         public override void Init(DailyData data)
         {
             base.Init(data);
 
-            RefreshButtons();
+            Refresh();
         }
 
         public void ChangeLocation(WorldVector newLocation)
         {
             CurrentData.startLocation = newLocation;
-            RefreshButtons();
+            Refresh();
         }
 
-        private void RefreshButtons()
+        private void Refresh()
         {
-            foreach (var btn in locations)
+            if (startLocation != null)
             {
-                if (btn.location == CurrentData.startLocation)
-                {
-                    btn.OnSelect();
-                    continue;
-                }
-                btn.OnSelect(false);
+                startLocation.text = CurrentData.startLocation.ToString();
             }
         }
     }

@@ -48,6 +48,7 @@ namespace GameEditor
         {
             works.RemoveAll(tuple => tuple.obj == work);
             CurrentData.workList.Remove(work.workData);
+            Destroy(work.gameObject);
         }
     }
 }

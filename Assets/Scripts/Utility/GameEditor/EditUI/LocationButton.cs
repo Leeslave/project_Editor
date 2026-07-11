@@ -1,34 +1,30 @@
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace GameEditor
 {
-    public class LocationButton : Button
+    public class LocationButton : MonoBehaviour
     {
-        public WorldVector location;
-        public GameObject selectedIcon;
-        
-        [System.Serializable] public class DataClickEvent : UnityEvent<WorldVector> { }
-        
-        public DataClickEvent OnLocationClick;
+        [SerializeField] public WorldVector location;
+        [SerializeField] Image selectedIcon;
+        public StartLocationEditUI editManager;
+        private Button button;
 
-        public override void OnPointerClick(PointerEventData eventData)
+        private void Awake()
         {
-            base.OnPointerClick(eventData);
-
-            if (IsActive() && IsInteractable())
+            button = GetComponent<Button>();
+            if (editManager != null)
             {
-                OnLocationClick?.Invoke(location);
+                button.onClick.AddListener(() => editManager.ChangeLocation(location));
+                button.onClick.AddListener(OnSelect);
             }
         }
 
-        public void OnSelect(bool isSelected = true)
+        private void OnSelect()
         {
             if (selectedIcon != null)
             {
-                selectedIcon.gameObject.SetActive(isSelected);
+                selectedIcon.sprite = GetComponent<Image>().sprite;
             }
         }
     }
