@@ -78,6 +78,8 @@ namespace GameEditor
         {
             var gameData = DataLoader.GetDayData(gameFile);
             if (gameData is null) return;
+
+            _data = gameData;
             
             fileName = gameFile;
             Debug.Log($"Start Editing {gameFile}");
@@ -94,6 +96,7 @@ namespace GameEditor
         public void MakeNewDayData()
         {
             fileName = newFileName.text;
+            _data = new DailyData();
             Debug.Log($"Create New Editing {fileName}");
             
             // DayEditor 실행으로 전달
