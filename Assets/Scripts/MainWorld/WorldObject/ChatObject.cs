@@ -5,6 +5,7 @@ using Utility;
 
 public class ChatObject : WorldObject, IChatList, IPointerClickHandler
 {
+    private bool _startedHiddenAwakeChat;
     // 현재 대사 인덱스
     public int ChatIndex { get; set; }
     // 각 대사들 모음
@@ -55,6 +56,17 @@ public class ChatObject : WorldObject, IChatList, IPointerClickHandler
             }
             
             ChatIndex = 0;
+
+            // 크기 0 NPC는 Renderer 가시성 콜백을 받을 수 없으므로,
+            // onAwake 대화를 Init 단계에서 직접 시작합니다.
+            if (positions.Count > 0 &&
+                positions[positionParam].anchor != null &&
+                Mathf.Approximately(positions[positionParam].anchor.size, 0f) &&
+                chatAssets[ChatIndex].onAwake)
+            {
+                _startedHiddenAwakeChat = true;
+                StartChat();
+            }
         }
     }
     
@@ -66,7 +78,7 @@ public class ChatObject : WorldObject, IChatList, IPointerClickHandler
     {
         if (ChatIndex >= 0)
         {
-            if (chatAssets[ChatIndex].onAwake)
+            if (chatAssets[ChatIndex].onAwake && !_startedHiddenAwakeChat)
             {
                 StartChat();
             }
