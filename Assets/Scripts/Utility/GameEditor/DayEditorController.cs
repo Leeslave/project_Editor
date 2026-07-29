@@ -330,56 +330,106 @@ namespace GameEditor
         {
             ChatObjectData npc = time.npc[index];
             RectTransform box = Box(editorContent);
-            VerticalLayoutGroup layout = box.gameObject.AddComponent<VerticalLayoutGroup>();
-            layout.padding = new RectOffset(10, 10, 10, 10); layout.spacing = 7;
-            layout.childControlHeight = true; layout.childForceExpandHeight = false;
-            RectTransform head = Horizontal(box, 7); head.gameObject.AddComponent<LayoutElement>().preferredHeight = 50;
-            LabeledString("이름", head, npc.name, v => npc.name = v);
+            VerticalLayoutGroup outerLayout = box.gameObject.AddComponent<VerticalLayoutGroup>();
+            outerLayout.padding = new RectOffset(10, 10, 10, 10);
+            outerLayout.spacing = 8;
+            outerLayout.childControlHeight = true;
+            outerLayout.childForceExpandHeight = false;
+
+            RectTransform header = Horizontal(box, 8);
+            header.gameObject.AddComponent<LayoutElement>().preferredHeight = 38;
+            TMP_Text headerTitle = Text($"NPC {index + 1}", header, 21, TextAlignmentOptions.MidlineLeft);
+            headerTitle.color = new Color(.55f, .82f, 1);
+            headerTitle.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+            Button("NPC 삭제", header, () => { time.npc.RemoveAt(index); RebuildEditor(); },
+                    new Color(.65f, .2f, .2f))
+                .gameObject.AddComponent<LayoutElement>().preferredWidth = 100;
+
+            RectTransform body = Horizontal(box, 10);
+            HorizontalLayoutGroup bodyLayout = body.GetComponent<HorizontalLayoutGroup>();
+            bodyLayout.childControlHeight = true;
+            bodyLayout.childForceExpandHeight = true;
+
+            RectTransform identityColumn = Panel("NPC 및 ChatData", body, new Color(.105f, .12f, .16f, 1));
+            LayoutElement identityColumnLayout = identityColumn.gameObject.AddComponent<LayoutElement>();
+            identityColumnLayout.flexibleWidth = .44f;
+            VerticalLayoutGroup identityLayout = identityColumn.gameObject.AddComponent<VerticalLayoutGroup>();
+            identityLayout.padding = new RectOffset(10, 10, 9, 9);
+            identityLayout.spacing = 7;
+            identityLayout.childControlHeight = true;
+            identityLayout.childForceExpandHeight = false;
+
+            TMP_Text identityTitle = Text("NPC 정보 / ChatData", identityColumn, 19, TextAlignmentOptions.Left);
+            identityTitle.color = new Color(.62f, .84f, 1);
+            identityTitle.gameObject.AddComponent<LayoutElement>().preferredHeight = 28;
+            RectTransform nameRow = Horizontal(identityColumn, 7);
+            nameRow.gameObject.AddComponent<LayoutElement>().preferredHeight = 46;
+            LabeledString("NPC 이름", nameRow, npc.name, v => npc.name = v);
             string[] types = { "none", "Rex", "Clover", "Henderson", "Kennedy", "King", "Klayton",
                 "Price", "Walter", "Mechanic", "Monk", "Reporter", "Nametag" };
-            Dropdown(head, types, Mathf.Max(0, Array.IndexOf(types, npc.objectType)), v => npc.objectType = v)
+            RectTransform typeRow = Horizontal(identityColumn, 7);
+            typeRow.gameObject.AddComponent<LayoutElement>().preferredHeight = 46;
+            TMP_Text typeLabel = Text("NPC 타입", typeRow, 18, TextAlignmentOptions.MidlineRight);
+            typeLabel.gameObject.AddComponent<LayoutElement>().preferredWidth = 92;
+            Dropdown(typeRow, types, Mathf.Max(0, Array.IndexOf(types, npc.objectType)), v => npc.objectType = v)
                 .gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
-            Button("NPC 삭제", head, () => { time.npc.RemoveAt(index); RebuildEditor(); }, new Color(.65f, .2f, .2f))
-                .gameObject.AddComponent<LayoutElement>().preferredWidth = 110;
 
-            Text("위치 / Anchor", box, 19, TextAlignmentOptions.Left);
+            if (npc.chat.Count != npc.onAwake.Count)
+                Button("chat/onAwake 대응 개수 맞춤", identityColumn, () => {
+                    NormalizePairs(npc.chat, npc.onAwake, () => "", () => false); RebuildEditor();
+                }, new Color(.65f, .42f, .12f)).gameObject.AddComponent<LayoutElement>().preferredHeight = 40;
+            for (int i = 0; i < Math.Min(npc.chat.Count, npc.onAwake.Count); i++)
+            {
+                int captured = i;
+                RectTransform row = Horizontal(identityColumn, 6);
+                row.gameObject.AddComponent<LayoutElement>().preferredHeight = 48;
+                TMP_InputField chat = Input("ChatData 상대 경로", row, false);
+                chat.text = npc.chat[i] ?? "";
+                chat.onValueChanged.AddListener(v => npc.chat[captured] = v);
+                chat.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
+                Toggle toggle = ToggleUI("자동", row, npc.onAwake[i], v => npc.onAwake[captured] = v);
+                toggle.gameObject.AddComponent<LayoutElement>().preferredWidth = 92;
+                Button("삭제", row, () => {
+                    npc.chat.RemoveAt(captured); npc.onAwake.RemoveAt(captured); RebuildEditor();
+                }).gameObject.AddComponent<LayoutElement>().preferredWidth = 66;
+            }
+            Button("+ ChatData", identityColumn, () => { npc.chat.Add(""); npc.onAwake.Add(false); RebuildEditor(); })
+                .gameObject.AddComponent<LayoutElement>().preferredHeight = 40;
+
+            RectTransform anchorColumn = Panel("위치 및 Anchor", body, new Color(.105f, .12f, .16f, 1));
+            LayoutElement anchorColumnLayout = anchorColumn.gameObject.AddComponent<LayoutElement>();
+            anchorColumnLayout.flexibleWidth = .56f;
+            VerticalLayoutGroup anchorLayout = anchorColumn.gameObject.AddComponent<VerticalLayoutGroup>();
+            anchorLayout.padding = new RectOffset(10, 10, 9, 9);
+            anchorLayout.spacing = 7;
+            anchorLayout.childControlHeight = true;
+            anchorLayout.childForceExpandHeight = false;
+            TMP_Text anchorTitle = Text("위치 / Anchor (X · Y · Size)", anchorColumn, 19, TextAlignmentOptions.Left);
+            anchorTitle.color = new Color(.62f, .84f, 1);
+            anchorTitle.gameObject.AddComponent<LayoutElement>().preferredHeight = 28;
             if (npc.positions.Count != npc.anchor.Count)
-                Button("positions/anchor 대응 개수 맞춤", box, () => {
+                Button("positions/anchor 대응 개수 맞춤", anchorColumn, () => {
                     NormalizePairs(npc.positions, npc.anchor, () => new WorldVector(World.Street, 0), () => new Anchor());
                     RebuildEditor();
                 }, new Color(.65f, .42f, .12f)).gameObject.AddComponent<LayoutElement>().preferredHeight = 40;
             for (int i = 0; i < Math.Min(npc.positions.Count, npc.anchor.Count); i++)
             {
                 int captured = i;
-                BuildAnchorRow(box, npc.positions[i], npc.anchor[i], npc.objectType, () => {
+                BuildAnchorRow(anchorColumn, npc.positions[i], npc.anchor[i], npc.objectType, () => {
                     npc.positions.RemoveAt(captured); npc.anchor.RemoveAt(captured); RebuildEditor();
                 });
             }
-            Button("+ 위치/Anchor 쌍", box, () => {
+            Button("+ 위치/Anchor", anchorColumn, () => {
                 npc.positions.Add(new WorldVector(World.Street, 0)); npc.anchor.Add(new Anchor()); RebuildEditor();
             }).gameObject.AddComponent<LayoutElement>().preferredHeight = 40;
 
-            Text("Chat / OnAwake", box, 19, TextAlignmentOptions.Left);
-            if (npc.chat.Count != npc.onAwake.Count)
-                Button("chat/onAwake 대응 개수 맞춤", box, () => {
-                    NormalizePairs(npc.chat, npc.onAwake, () => "", () => false); RebuildEditor();
-                }, new Color(.65f, .42f, .12f)).gameObject.AddComponent<LayoutElement>().preferredHeight = 40;
-            for (int i = 0; i < Math.Min(npc.chat.Count, npc.onAwake.Count); i++)
-            {
-                int captured = i;
-                RectTransform row = Horizontal(box, 7); row.gameObject.AddComponent<LayoutElement>().preferredHeight = 48;
-                TMP_InputField chat = Input("ChatData 상대 경로", row, false); chat.text = npc.chat[i] ?? "";
-                chat.onValueChanged.AddListener(v => npc.chat[captured] = v);
-                chat.gameObject.AddComponent<LayoutElement>().flexibleWidth = 1;
-                Toggle toggle = ToggleUI("자동 시작", row, npc.onAwake[i], v => npc.onAwake[captured] = v);
-                toggle.gameObject.AddComponent<LayoutElement>().preferredWidth = 145;
-                Button("삭제", row, () => { npc.chat.RemoveAt(captured); npc.onAwake.RemoveAt(captured); RebuildEditor(); })
-                    .gameObject.AddComponent<LayoutElement>().preferredWidth = 80;
-            }
-            Button("+ Chat/OnAwake 쌍", box, () => { npc.chat.Add(""); npc.onAwake.Add(false); RebuildEditor(); })
-                .gameObject.AddComponent<LayoutElement>().preferredHeight = 40;
-            box.gameObject.AddComponent<LayoutElement>().preferredHeight =
-                205 + Math.Min(npc.positions.Count, npc.anchor.Count) * 55 + Math.Min(npc.chat.Count, npc.onAwake.Count) * 55;
+            int chatRows = Math.Min(npc.chat.Count, npc.onAwake.Count);
+            int anchorRows = Math.Min(npc.positions.Count, npc.anchor.Count);
+            float leftHeight = 190 + chatRows * 55 + (npc.chat.Count != npc.onAwake.Count ? 47 : 0);
+            float rightHeight = 92 + anchorRows * 57 + (npc.positions.Count != npc.anchor.Count ? 47 : 0);
+            float bodyHeight = Mathf.Max(220, leftHeight, rightHeight);
+            body.gameObject.AddComponent<LayoutElement>().preferredHeight = bodyHeight;
+            box.gameObject.AddComponent<LayoutElement>().preferredHeight = bodyHeight + 66;
         }
 
         private void BuildAction(TimeData time, int index)
@@ -717,6 +767,11 @@ namespace GameEditor
             fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
             RectTransform item = Panel("Item", content, fieldColor);
+            item.anchorMin = new Vector2(0, 1);
+            item.anchorMax = Vector2.one;
+            item.pivot = new Vector2(.5f, 1);
+            item.anchoredPosition = Vector2.zero;
+            item.sizeDelta = new Vector2(0, 38);
             item.gameObject.AddComponent<LayoutElement>().preferredHeight = 38;
             Toggle toggle = item.gameObject.AddComponent<Toggle>();
             toggle.targetGraphic = item.GetComponent<Image>();

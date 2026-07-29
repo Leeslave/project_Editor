@@ -102,7 +102,28 @@ public static class DayEditorSceneBuilder
         newName.SetTextWithoutNotify("__dayeditor_smoke__.json");
         typeof(DayEditorController).GetMethod("CreateNew",
             BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(controller, null);
+        DailyData uiSample = (DailyData)typeof(DayEditorController)
+            .GetField("currentData", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(controller);
+        uiSample.dayTimes[0].npc.Add(new ChatObjectData
+        {
+            name = "LayoutTest",
+            objectType = "Rex",
+            positions = new List<WorldVector> { new(World.Street, 0) },
+            anchor = new List<Anchor> { new() },
+            chat = new List<string> { "layout-test.json" },
+            onAwake = new List<bool> { false }
+        });
+        typeof(DayEditorController).GetMethod("RebuildEditor",
+            BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(controller, null);
         Canvas.ForceUpdateCanvases();
+
+        RectTransform[] npcLayoutRects = controller.GetComponentsInChildren<RectTransform>(true);
+        RectTransform identityColumn = npcLayoutRects.FirstOrDefault(x => x.name == "NPC 및 ChatData");
+        RectTransform anchorColumn = npcLayoutRects.FirstOrDefault(x => x.name == "위치 및 Anchor");
+        if (identityColumn == null || anchorColumn == null || identityColumn.parent != anchorColumn.parent)
+            throw new InvalidOperationException("NPC 정보와 위치/Anchor가 두 열로 배치되지 않았습니다.");
+        if (Mathf.Abs(identityColumn.position.y - anchorColumn.position.y) > 1f)
+            throw new InvalidOperationException("NPC 두 열의 상단 정렬이 맞지 않습니다.");
 
         TMP_InputField[] inputs = controller.GetComponentsInChildren<TMP_InputField>(true);
         if (inputs.Length == 0 || inputs.Any(x => !x.customCaretColor || x.caretWidth < 2))
@@ -123,6 +144,12 @@ public static class DayEditorSceneBuilder
         if (dropdownList == null || !dropdownList.gameObject.activeInHierarchy ||
             dropdownList.GetComponentsInChildren<Toggle>(true).Length == 0)
             throw new InvalidOperationException("TMP Dropdown이 실제 선택 목록을 생성하지 못했습니다.");
+        Canvas.ForceUpdateCanvases();
+        RectTransform dropdownListRect = dropdownList as RectTransform;
+        Toggle[] optionToggles = dropdownList.GetComponentsInChildren<Toggle>(true);
+        if (dropdownListRect.rect.height < 1f ||
+            optionToggles.Any(x => ((RectTransform)x.transform).rect.height < 1f))
+            throw new InvalidOperationException("TMP Dropdown 선택 목록 또는 항목의 표시 높이가 0입니다.");
         dropdown.Hide();
 
         DailyData sample = DayEditorDataService.CreateDefault();
