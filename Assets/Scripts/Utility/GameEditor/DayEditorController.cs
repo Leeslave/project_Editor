@@ -539,9 +539,9 @@ namespace GameEditor
             var drag = modalNpc.gameObject.AddComponent<DayEditorPreviewDrag>();
             drag.onDragged = delta => {
                 if (modalAnchor == null) return;
-                RectTransform bgRect = modalBackground.rectTransform;
-                modalAnchor.x += delta.x / Mathf.Max(1, bgRect.rect.width) * 2f;
-                modalAnchor.y += delta.y / Mathf.Max(1, bgRect.rect.height) * 2f;
+                UnityEngine.Rect imageRect = GetModalBackgroundImageRect();
+                modalAnchor.x += delta.x / Mathf.Max(1, imageRect.width) * 2f;
+                modalAnchor.y += delta.y / Mathf.Max(1, imageRect.height) * 2f;
                 RefreshModalNpc();
             };
             modalMessage = Text("", card, 20, TextAlignmentOptions.Center);
@@ -573,19 +573,40 @@ namespace GameEditor
             if (anchor != null) modalScale.SetValueWithoutNotify(Mathf.Clamp(anchor.size, modalScale.minValue, modalScale.maxValue));
             modalMessage.text = found.sprite == null ? $"{vector}: 대응 배경 이미지 없음" :
                 anchor != null && npc.sprite == null ? $"{vector}: NPC 표시 이미지 없음 — 수치 편집 가능" : vector.ToString();
+            visualModal.SetActive(true);
             Canvas.ForceUpdateCanvases();
             RefreshModalNpc();
-            visualModal.SetActive(true);
         }
 
         private void RefreshModalNpc()
         {
             if (modalAnchor == null) return;
-            UnityEngine.Rect previewRect = modalBackground.rectTransform.rect;
+            UnityEngine.Rect previewRect = GetModalBackgroundImageRect();
             modalNpc.rectTransform.anchoredPosition = new Vector2(
                 modalAnchor.x * previewRect.width * .5f,
                 modalAnchor.y * previewRect.height * .5f);
             modalNpc.rectTransform.localScale = Vector3.one * modalAnchor.size;
+        }
+
+        private UnityEngine.Rect GetModalBackgroundImageRect()
+        {
+            UnityEngine.Rect container = modalBackground.rectTransform.rect;
+            Sprite sprite = modalBackground.sprite;
+            if (!modalBackground.preserveAspect || sprite == null ||
+                sprite.rect.width <= 0 || sprite.rect.height <= 0)
+                return container;
+
+            float spriteAspect = sprite.rect.width / sprite.rect.height;
+            float containerAspect = container.width / Mathf.Max(1f, container.height);
+            float width = container.width;
+            float height = container.height;
+
+            if (spriteAspect > containerAspect)
+                height = width / spriteAspect;
+            else
+                width = height * spriteAspect;
+
+            return new UnityEngine.Rect(-width * .5f, -height * .5f, width, height);
         }
 
         private void CloseVisual()
@@ -872,6 +893,11 @@ namespace GameEditor
     public sealed class DayEditorPreviewDrag : MonoBehaviour, IDragHandler
     {
         public Action<Vector2> onDragged;
-        public void OnDrag(PointerEventData eventData) => onDragged?.Invoke(eventData.delta);
+        public void OnDrag(PointerEventData eventData)
+        {
+            Canvas canvas = GetComponentInParent<Canvas>();
+            float scaleFactor = canvas == null ? 1f : Mathf.Max(.0001f, canvas.scaleFactor);
+            onDragged?.Invoke(eventData.delta / scaleFactor);
+        }
     }
 }

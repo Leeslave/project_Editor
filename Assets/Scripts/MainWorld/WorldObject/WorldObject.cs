@@ -4,6 +4,10 @@ using UnityEngine;
 
 public abstract class WorldObject : MonoBehaviour
 {
+    // 6400x4800 background at 64 PPU: 100x75 world units.
+    private const float BackgroundHalfWidth = 50f;
+    private const float BackgroundHalfHeight = 37.5f;
+
     /**
     상호작용 오브젝트
     - 버튼 클릭시 해당 파라미터로 상호작용
@@ -46,7 +50,10 @@ public abstract class WorldObject : MonoBehaviour
         // 위치 설정
         int x = (int)vector.location * 1000 + vector.position * 100;
         transform.position = new Vector3(x, 0, 0);
-        transform.position += new Vector3(anchor.x * 50, anchor.y * 50, 0);
+        transform.position += new Vector3(
+            anchor.x * BackgroundHalfWidth,
+            anchor.y * BackgroundHalfHeight,
+            0);
         
         // 크기 설정
         transform.localScale *= anchor.size;
