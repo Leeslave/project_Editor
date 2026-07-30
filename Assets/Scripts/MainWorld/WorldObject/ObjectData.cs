@@ -72,7 +72,7 @@ public class WorldVector
     // ToString 메서드 오버라이딩
     public override string ToString()
     {
-        return name;
+        return $"{location}-{position}";
     }
 }
 

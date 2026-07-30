@@ -26,6 +26,28 @@ namespace Utility
         private static readonly string GAMEFILE = "dailyData";
         private static readonly string Savepath = Path.Join(Application.persistentDataPath, "Player/savedata.json");    // 세이브 파일 경로
 
+        #region Dynamic
+        public static void SavePlayerData(PlayerData data) => SaveData(Savepath, data);
+        
+        public static void SaveDayData(string fileName, DailyData data) => 
+            SaveData(Path.Join(GAMEDATAPATH, fileName), data);
+
+        public static List<string> GetDayDataNames() => GetFileNames(GAMEDATAPATH);
+        
+        public static DailyData GetDayData(int index) =>
+            GetData<DailyData>(Path.Join(GAMEDATAPATH, $"{GAMEFILE}{index}.json"));
+        public static DailyData GetDayData(string name) =>
+            GetData<DailyData>(Path.Join(GAMEDATAPATH, name));
+        
+        public static Dialogue GetChatData(string name) =>
+            GetData<Dialogue>(Path.Join(CHATPATH, name));
+        
+        public static PlayerData GetPlayerData() =>
+            GetData<PlayerData>(Savepath);
+        
+        #endregion
+        
+        #region Manage File
         /// 파일 목록 불러오기
         public static List<string> GetFileNames(string path, string type = "*.json")
         {
@@ -70,20 +92,10 @@ namespace Utility
             fileStream.Close();
         }
         
-        // Dynamic
-        public static void SavePlayerData(PlayerData data) => SaveData(Savepath, data);
-        
-        public static DailyData GetDayData(int index) =>
-            GetData<DailyData>(Path.Join(GAMEDATAPATH, $"{GAMEFILE}{index}.json"));
-        public static DailyData GetDayData(string name) =>
-            GetData<DailyData>(Path.Join(GAMEDATAPATH, name));
-        
-        public static Dialogue GetChatData(string name) =>
-            GetData<Dialogue>(Path.Join(CHATPATH, name));
-        
-        public static PlayerData GetPlayerData() =>
-            GetData<PlayerData>(Savepath);
+        #endregion
 
+        #region Get Data
+        
         /// <summary>
         /// Load Json Data
         /// </summary>
@@ -114,7 +126,6 @@ namespace Utility
                 });
         }
         
-        
         /// <summary>
         /// 스프라이트 이미지 불러오기
         /// </summary>
@@ -136,8 +147,7 @@ namespace Utility
             }
             return result;
         }
-
-    
+        
         /// <summary>
         /// 멀티 스프라이트 이미지 불러오기
         /// </summary>
@@ -171,5 +181,7 @@ namespace Utility
             i = 0;
             return result[i];
         }
+        
+        #endregion
     }
 }
