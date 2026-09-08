@@ -11,7 +11,7 @@ public class ConvertWork : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null || Instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
@@ -21,6 +21,11 @@ public class ConvertWork : MonoBehaviour
     }
 
     private void Start() { preStepClear = false; }
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
 
     public bool PreStepClearCheck() { return preStepClear; }
 

@@ -1,6 +1,6 @@
-using GameAction;
 using GameService;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
@@ -23,22 +23,20 @@ public class WorkManager : MonoBehaviour
     public AnimationController workConsoleAnimation;    //업무 대화 콘솔 애니메이션
     public TMP_InputField consoleInput;     // 업무 입력 창
 
-    private void Start()
-    {
-        WorkService.OnWorkClear += FinishWork;
-    }
+    private bool _isEntering;
 
-    private void OnDestroy()
+    private void Awake()
     {
-        if (WorkService != null)
+        // 기존 입력창의 글꼴과 배치를 재사용하여 안내용 텍스트 생성
+        if (consoleInput.placeholder == null)
         {
-            WorkService.OnWorkClear -= FinishWork;
+            TMP_Text placeholder = Instantiate(consoleInput.textComponent,
+                consoleInput.textComponent.transform.parent);
+            placeholder.name = "Placeholder";
+            placeholder.text = "";
+            placeholder.raycastTarget = false;
+            consoleInput.placeholder = placeholder;
         }
-    }
-
-    private static void FinishWork()
-    {
-        new NextTimeAction(2).Invoke();
     }
 
     /// 업무창 활성화/비활성화
@@ -67,7 +65,12 @@ public class WorkManager : MonoBehaviour
         // 텍스트 출력 후 입력창 활성화
         if (idx == 0)
         {
+            consoleInput.text = "";
+            consoleInput.interactable = true;
             consoleInput.gameObject.SetActive(true);
+            ShowWorkMessage("업무 코드 또는 이름 입력: " + string.Join(", ",
+                WorkService.GetList().Select(work => work.name == work.code
+                    ? work.code : $"{work.name} ({work.code})")));
             EventSystem.current.SetSelectedGameObject(consoleInput.gameObject);
         }
     }
@@ -75,15 +78,57 @@ public class WorkManager : MonoBehaviour
     /// 업무 실행 이벤트 함수
     public void OnWorkEnter()
     {
-        foreach(var work in WorkService.GetList())
+        if (_isEntering || !consoleInput.gameObject.activeInHierarchy ||
+            !consoleInput.interactable || GameSystem.Instance.IsLoading) return;
+
+        string input = consoleInput.text.Trim();
+        if (string.IsNullOrEmpty(input))
         {
-            if(work == consoleInput.text)
-            {
-                EditorLogger.Log($"Work Entered! : {consoleInput.text}");
-                consoleInput.text = "업무 로딩중...\n";
-                GameSystem.Instance.EnterScene(work);
-                return;
-            }
+            ShowWorkMessage("업무 코드 또는 이름을 입력하세요.");
+            return;
         }
+
+        var works = WorkService.GetList();
+        // 업무 코드를 먼저 비교하고, 코드가 없을 때만 표시 이름으로 검색
+        var matches = works.Where(work => work.code == input).ToList();
+        if (matches.Count == 0)
+            matches = works.Where(work => work.name == input).ToList();
+
+        if (matches.Count != 1)
+        {
+            ShowWorkMessage(matches.Count == 0
+                ? "등록된 업무가 없습니다. 업무 코드를 확인하세요."
+                : "같은 이름의 업무가 있습니다. 업무 코드로 입력하세요.");
+            return;
+        }
+
+        string workCode = matches[0].code;
+        if (WorkService.IsWorkClear(workCode))
+        {
+            ShowWorkMessage("이미 완료한 업무입니다. 다른 업무를 선택하세요.");
+            return;
+        }
+        if (!WorkService.TryStartWork(workCode, out string sceneName))
+        {
+            ShowWorkMessage("업무를 불러올 수 없습니다. 다른 업무를 선택하세요.");
+            return;
+        }
+
+        _isEntering = true;
+        EditorLogger.Log($"Work Entered! : {workCode}");
+        consoleInput.interactable = false;
+        consoleInput.text = "업무 로딩중...\n";
+        GameSystem.Instance.EnterScene(sceneName);
+    }
+
+    /// <summary>
+    /// 입력창에 업무 안내를 표시하고 다시 입력할 수 있도록 초점 설정
+    /// </summary>
+    private void ShowWorkMessage(string message)
+    {
+        consoleInput.text = "";
+        if (consoleInput.placeholder is TMP_Text placeholder)
+            placeholder.text = message;
+        consoleInput.ActivateInputField();
     }
 }

@@ -2,7 +2,6 @@ using GameService;
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ValidTask_D : MonoBehaviour
@@ -40,9 +39,8 @@ public class ValidTask_D : MonoBehaviour
         // GameClear
         if (IsEnd)
         {
-            WorkService.ClearWork("Document");
-            SceneManager.LoadScene("Screen", LoadSceneMode.Additive);
-            SceneManager.UnloadSceneAsync("Document");
+            WorkService.ClearWork(DB_M.DB_Docs.WorkCode);
+            GameSystem.Instance.EnterScene("Screen");
             gameObject.SetActive(false);
         }
         else

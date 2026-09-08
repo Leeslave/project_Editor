@@ -45,18 +45,23 @@ public class DB_M : MonoBehaviour
     [SerializeField]private int stageInt = 0;
 
     private string clearGameName = "Document";
-    // 땃쥐에서 넘어왔다면 , Document 가 아니라 "SecureD"
+
+    /// <summary>
+    /// 현재 문서 모드에 대응하는 완료 처리용 업무 코드
+    /// </summary>
+    public string WorkCode => clearGameName;
     void Start()
     {
         normalInfo.SetActive(false);
         secretInfo.SetActive(false);
-        if (ConvertWork.Instance == null) 
+        // 실행 정보 없이 직접 진입한 경우 일반 문서 업무로 처리
+        if (WorkService.CurrentWorkCode != "SecureDocument")
         {
             // 일반 Document의 경우를 뜻함
             clearGameName = "Document";
             normalInfo.SetActive(true);
         }
-        else // 만약 땃쥐나 메이즈에서 넘어왔다면, 시크릿 업무를 실행해야함.
+        else // 명시적으로 선택된 극비 문서 업무
         {
             clearGameName = "SecureDocument";
             secretInfo.SetActive(true);

@@ -99,6 +99,11 @@ public sealed class GameSystem : Singleton<GameSystem>
     // 현재 활성씬
     private Scene _currentScene;
     [SerializeField] private bool _isLoading = false;
+
+    /// <summary>
+    /// 현재 씬 전환 중인지 여부
+    /// </summary>
+    public bool IsLoading => _isLoading;
     
     public FadeCurtain loadUI;
 
