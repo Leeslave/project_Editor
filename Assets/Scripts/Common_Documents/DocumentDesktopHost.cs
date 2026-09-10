@@ -12,6 +12,7 @@ namespace EditorGame.Documents
     public sealed class DocumentDesktopHost : MonoBehaviour
     {
         [SerializeField] private TMP_FontAsset font;
+        [SerializeField] private DocumentDesktopSkin skin = new DocumentDesktopSkin();
         [SerializeField] private GameObject[] legacyRoots = new GameObject[0];
         [SerializeField] private bool preview;
         [SerializeField] private TextAsset previewContent;
@@ -38,7 +39,7 @@ namespace EditorGame.Documents
             var view = new GameObject("Document Desktop", typeof(RectTransform));
             UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(view, gameObject.scene);
             var desktop = view.AddComponent<DocumentDesktop>();
-            try { desktop.Initialize(content, state, font, portraits); }
+            try { desktop.Initialize(content, state, font, portraits, skin); }
             catch { view.SetActive(false); Destroy(view); throw; }
             Desktop = desktop;
             foreach (var legacy in legacyRoots)

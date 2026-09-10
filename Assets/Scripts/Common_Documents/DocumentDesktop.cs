@@ -34,7 +34,7 @@ namespace EditorGame.Documents
         public DocumentPlayState GetStateSnapshot() => DocumentContract.Copy(state);
 
         public void Initialize(DocumentAssignment content, DocumentPlayState playState, TMP_FontAsset font,
-            IDictionary<string, Sprite> portraitAssets = null)
+            IDictionary<string, Sprite> portraitAssets = null, DocumentDesktopSkin skin = null)
         {
             if (root != null) throw new InvalidOperationException("Desktop is already initialized.");
             if (font == null) throw new ArgumentNullException(nameof(font));
@@ -49,7 +49,7 @@ namespace EditorGame.Documents
                 throw new ArgumentException("Play state is missing a person profile.");
             if (portraitAssets != null)
                 foreach (var pair in portraitAssets) portraits.Add(pair.Key, pair.Value);
-            ui = new DocumentDesktopUI(font);
+            ui = new DocumentDesktopUI(font, skin);
             Build();
         }
 
@@ -108,7 +108,7 @@ namespace EditorGame.Documents
             }
             // Desktop icons remain below windows; the taskbar and watermark are outside their bounds.
             area.SetAsLastSibling();
-            var panel = ui.Panel("Instructions", root, new Color32(210, 210, 200, 255));
+            var panel = ui.Frame("Instructions", root);
             DocumentDesktopUI.Place(panel, 1280, 0, 320, 960);
             var heading = ui.Text(panel, assignment.Mode == DocumentMode.Forgery ? "극비 업무" : "진술 대조", 30);
             DocumentDesktopUI.Place(heading.rectTransform, 18, 18, 284, 48);
@@ -147,9 +147,9 @@ namespace EditorGame.Documents
 
         private void RefreshControls()
         {
-            record.interactable = CanRecord;
-            cancel.interactable = CanSelect && (statementId != null || actionId != null);
-            submit.interactable = CanSubmit;
+            ui.SetInteractable(record, CanRecord);
+            ui.SetInteractable(cancel, CanSelect && (statementId != null || actionId != null));
+            ui.SetInteractable(submit, CanSubmit);
         }
 
         private static string KindName(DocumentKind kind)
@@ -159,13 +159,14 @@ namespace EditorGame.Documents
 
         private void Folder(Transform parent, DocumentKind kind, float x)
         {
-            var button = ui.Button(parent, "▣ " + KindName(kind), () => OpenFolder(kind));
+            var button = ui.Button(parent, KindName(kind), () => OpenFolder(kind));
+            ui.Icon(button, ui.WindowIcon, false);
             DocumentDesktopUI.Place((RectTransform)button.transform, x, 22, 154, 74);
         }
 
         private RectTransform NewWindow(string key, string title, float width, float height)
         {
-            var frame = ui.Panel(title, area, DocumentDesktopUI.Surface);
+            var frame = ui.Frame(title, area);
             int slot = windows.Count % 6;
             DocumentDesktopUI.Place(frame, 20 + slot * 90, 118 + slot * 35, width, height);
             var bar = ui.Panel("Title", frame, DocumentDesktopUI.Navy);
@@ -181,8 +182,10 @@ namespace EditorGame.Documents
             });
             bar.gameObject.AddComponent<DocumentWindowDrag>().Initialize(window, area);
             var min = ui.Button(bar, "−", () => frame.gameObject.SetActive(false));
+            ui.Icon(min, ui.MinimizeSymbol, true);
             DocumentDesktopUI.Place((RectTransform)min.transform, width - 96, 4, 38, 32);
             var close = ui.Button(bar, "×", () => CloseWindow(key));
+            ui.Icon(close, ui.CloseSymbol, true);
             DocumentDesktopUI.Place((RectTransform)close.transform, width - 52, 4, 36, 32);
             windows.Add(key, window);
             var task = ui.Button(taskbar, title, window.Focus);
@@ -255,7 +258,7 @@ namespace EditorGame.Documents
                     windows["document:" + document.Id].Focus();
                     SelectLine(document, line.Id);
                 });
-                button.interactable = CanInvestigate(document.PersonId);
+                ui.SetInteractable(button, CanInvestigate(document.PersonId));
                 var label = button.GetComponentInChildren<TMP_Text>();
                 label.alignment = TextAlignmentOptions.TopLeft;
                 float preferred = label.GetPreferredValues(label.text, 500, 0).y + 20;
@@ -268,7 +271,7 @@ namespace EditorGame.Documents
         private void ProfileInput(Transform parent, DocumentContent document, ProfileField field)
         {
             ui.Text(parent, field.ToString(), 18);
-            var rect = ui.Panel(field.ToString(), parent, Color.white);
+            var rect = ui.InputPanel(field.ToString(), parent);
             DocumentDesktopUI.Row(rect, 68);
             var input = rect.gameObject.AddComponent<TMP_InputField>();
             var viewport = ui.Rect("Viewport", rect);
@@ -342,8 +345,7 @@ namespace EditorGame.Documents
         {
             foreach (var pair in lineButtons)
                 if (pair.Value != null)
-                    pair.Value.GetComponent<Image>().color = pair.Key == statementId || pair.Key == actionId
-                        ? new Color(.7f, .8f, 1) : DocumentDesktopUI.Surface;
+                    ui.SetSelected(pair.Value, pair.Key == statementId || pair.Key == actionId);
         }
 
         private void CloseWindow(string key)
@@ -374,7 +376,7 @@ namespace EditorGame.Documents
             foreach (var document in assignment.Documents.Where(d => d.PersonId == investigation.PersonId))
                 foreach (var line in document.Lines)
                     if (lineButtons.TryGetValue(line.Id, out var button) && button != null)
-                        button.interactable = CanInvestigate(document.PersonId);
+                        ui.SetInteractable(button, CanInvestigate(document.PersonId));
             RefreshStatus();
         }
 
@@ -387,7 +389,7 @@ namespace EditorGame.Documents
             state.Phase = SubmissionPhase.Submitted;
             ClearSelection();
             foreach (var input in GetComponentsInChildren<TMP_InputField>(true)) input.interactable = false;
-            foreach (var button in lineButtons.Values) if (button != null) button.interactable = false;
+            foreach (var button in lineButtons.Values) if (button != null) ui.SetInteractable(button, false);
             RefreshStatus();
         }
 
