@@ -14,12 +14,14 @@ namespace EditorGame.Documents
         public event Action<string, string> PairSelectionChanged;
         public event Action<string, ProfileField, string> ProfileChanged;
         public event Action RecordRequested;
+        public event Action<string> InvestigationCompletionRequested;
         public event Action SubmissionRequested;
         private DocumentAssignment assignment;
         private DocumentPlayState state;
         private DocumentDesktopUI ui;
         private RectTransform root, area, taskbar;
         private TMP_Text progress;
+        private string statusMessage;
         private Button record, cancel, submit;
         private string statementId, actionId, selectedPerson, selectedDate;
         private bool submissionAllowed = true;
@@ -27,6 +29,7 @@ namespace EditorGame.Documents
         private readonly Dictionary<string, Button> tasks = new Dictionary<string, Button>();
         private readonly Dictionary<string, DocumentContent> documents = new Dictionary<string, DocumentContent>();
         private readonly Dictionary<string, Button> lineButtons = new Dictionary<string, Button>();
+        private readonly Dictionary<string, Button> investigationButtons = new Dictionary<string, Button>();
         private readonly Dictionary<string, PersonContent> people = new Dictionary<string, PersonContent>();
         private readonly Dictionary<string, PersonEditState> edits = new Dictionary<string, PersonEditState>();
         private readonly Dictionary<string, Sprite> portraits = new Dictionary<string, Sprite>();
@@ -118,6 +121,17 @@ namespace EditorGame.Documents
             ui.Text(content, assignment.Instructions ?? "");
             foreach (var instruction in assignment.Edits)
                 ui.Text(content, people[instruction.PersonId].Profile.Name + " — " + instruction.DisplayText);
+            if (assignment.Mode == DocumentMode.StatementCheck)
+                foreach (var personId in assignment.TargetPersonIds)
+                {
+                    string targetId = personId;
+                    var complete = ui.Button(content, people[targetId].Profile.Name + " 조사완료", () =>
+                    {
+                        if (CanCompleteInvestigation(targetId)) InvestigationCompletionRequested?.Invoke(targetId);
+                    });
+                    DocumentDesktopUI.Row(complete, 52);
+                    investigationButtons.Add(targetId, complete);
+                }
             progress = ui.Text(panel, "");
             DocumentDesktopUI.Place(progress.rectTransform, 18, 660, 284, 128);
             record = ui.Button(panel, "기록하기", () => { if (CanRecord) RecordRequested?.Invoke(); });
@@ -150,6 +164,8 @@ namespace EditorGame.Documents
             ui.SetInteractable(record, CanRecord);
             ui.SetInteractable(cancel, CanSelect && (statementId != null || actionId != null));
             ui.SetInteractable(submit, CanSubmit);
+            foreach (var pair in investigationButtons)
+                ui.SetInteractable(pair.Value, CanCompleteInvestigation(pair.Key));
         }
 
         private static string KindName(DocumentKind kind)
@@ -321,6 +337,12 @@ namespace EditorGame.Documents
         private bool CanSelect => state.Phase == SubmissionPhase.Working;
         private bool CanInvestigate(string personId) => CanSelect &&
             state.Investigations.Any(i => i.PersonId == personId && !i.Completed);
+        private bool CanCompleteInvestigation(string personId)
+        {
+            var investigation = state.Investigations.FirstOrDefault(i => i.PersonId == personId);
+            return CanSelect && investigation != null && !investigation.Completed &&
+                investigation.Records.Count > 0 && InvestigationCompletionRequested != null;
+        }
 
         private void SelectLine(DocumentContent document, string lineId)
         {
@@ -380,6 +402,36 @@ namespace EditorGame.Documents
             RefreshStatus();
         }
 
+        /// <summary>Adds one evaluated event to the snapshot owned by this view.</summary>
+        public void AddReputationEvent(ReputationEvent reputationEvent)
+        {
+            if (!CanSelect) throw new InvalidOperationException("Submission is locked.");
+            if (reputationEvent == null || string.IsNullOrWhiteSpace(reputationEvent.Id))
+                throw new ArgumentException("A reputation event ID is required.");
+            if (state.Events.Any(item => item.Id == reputationEvent.Id)) return;
+            state.Events.Add(DocumentContract.Copy(reputationEvent));
+        }
+
+        /// <summary>Shows controller feedback without changing scoring or investigation state.</summary>
+        public void ShowStatusMessage(string message)
+        {
+            statusMessage = message;
+            RefreshStatus();
+        }
+
+        /// <summary>Opens a scrollable, read-only result window after the controller locks submission.</summary>
+        public void ShowSubmissionResult(string title, IEnumerable<string> lines)
+        {
+            const string key = "submission:result";
+            if (windows.TryGetValue(key, out var existing))
+            {
+                existing.Focus();
+                return;
+            }
+            var body = NewWindow(key, title, 760, 650);
+            foreach (string line in lines) ui.Text(body, line, 21);
+        }
+
         /// <summary>Additional controller gate; true never bypasses the mode's investigation or submission locks.</summary>
         public void SetSubmissionAllowed(bool allowed) { submissionAllowed = allowed; }
 
@@ -387,19 +439,22 @@ namespace EditorGame.Documents
         {
             if (!CanSelect) return;
             state.Phase = SubmissionPhase.Submitted;
+            statusMessage = null;
             ClearSelection();
             foreach (var input in GetComponentsInChildren<TMP_InputField>(true)) input.interactable = false;
             foreach (var button in lineButtons.Values) if (button != null) ui.SetInteractable(button, false);
+            foreach (var button in investigationButtons.Values) if (button != null) ui.SetInteractable(button, false);
             RefreshStatus();
         }
 
         private void RefreshStatus()
         {
-            progress.text = state.Phase != SubmissionPhase.Working ? "제출 완료 · 열람 전용" :
+            string summary = state.Phase != SubmissionPhase.Working ? "제출 완료 · 열람 전용" :
                 assignment.Mode == DocumentMode.StatementCheck
                     ? "조사 완료 " + state.Investigations.Count(i => i.Completed) + " / " + state.Investigations.Count +
                       "\n기록 " + state.Investigations.Sum(i => i.Records.Count) + "건"
                     : "문서를 닫아도 수정 내용은 유지됩니다.";
+            progress.text = string.IsNullOrEmpty(statusMessage) ? summary : summary + "\n" + statusMessage;
         }
     }
 }

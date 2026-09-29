@@ -1,0 +1,77 @@
+[
+  {
+    "Id": "statement-day-3",
+    "Mode": "StatementCheck",
+    "Stage": 0,
+    "TargetDateId": "Day 3",
+    "Instructions": "오늘의 조사 대상: 핸더슨, 프라이스\n각 인물의 진술과 실제 행동에서 모순을 기록한 뒤 조사완료를 누르십시오.",
+    "TargetPersonIds": ["person-henderson", "person-price"],
+    "People": [
+      {"Id": "person-henderson", "PortraitKey": null, "Profile": {"Name": "핸더슨", "Age": "41", "Sex": "Male", "Country": "주렌", "Job": "물류부 기사"}},
+      {"Id": "person-price", "PortraitKey": null, "Profile": {"Name": "프라이스", "Age": "27", "Sex": "Female", "Country": "노르반", "Job": "행정부 서기관"}},
+      {"Id": "person-clayton", "PortraitKey": null, "Profile": {"Name": "클레이튼", "Age": "34", "Sex": "Male", "Country": "아슬라니아", "Job": "검열부 문서관"}}
+    ],
+    "Documents": [
+      {"Id": "doc-henderson-statement", "PersonId": "person-henderson", "DateId": "Day 3", "Kind": "Statement", "Lines": [
+        {"Id": "hs-0830", "Time": "08:30", "Text": "아침에 일어나서 바로 출근 준비를 했습니다."},
+        {"Id": "hs-0915", "Time": "09:15", "Text": "회사에 도착해서 업무를 시작했어요."},
+        {"Id": "hs-1140", "Time": "11:40", "Text": "점심시간 전에 잠깐 화장실에 다녀왔습니다."},
+        {"Id": "hs-1200", "Time": "12:00", "Text": "구내식당에서 동료들과 점심을 먹었어요."},
+        {"Id": "hs-1320", "Time": "13:20", "Text": "오후 업무를 시작했습니다."},
+        {"Id": "hs-1505", "Time": "15:05", "Text": "잠깐 커피를 마시러 휴게실에 갔었어요."},
+        {"Id": "hs-1730", "Time": "17:30", "Text": "정시에 퇴근했습니다."}
+      ]},
+      {"Id": "doc-henderson-action", "PersonId": "person-henderson", "DateId": "Day 3", "Kind": "Action", "Lines": [
+        {"Id": "ha-083211", "Time": "08:32:11", "Text": "자택 현관 출입"},
+        {"Id": "ha-091844", "Time": "09:18:44", "Text": "회사 정문 출입"},
+        {"Id": "ha-113802", "Time": "11:38:02", "Text": "3층 화장실 출입"},
+        {"Id": "ha-120133", "Time": "12:01:33", "Text": "구내식당 출입"},
+        {"Id": "ha-131507", "Time": "13:15:07", "Text": "사무실 복귀"},
+        {"Id": "ha-150328", "Time": "15:03:28", "Text": "[구역 외] 도박장 출입"},
+        {"Id": "ha-172955", "Time": "17:29:55", "Text": "회사 정문 퇴장"}
+      ]},
+      {"Id": "doc-price-statement", "PersonId": "person-price", "DateId": "Day 3", "Kind": "Statement", "Lines": [
+        {"Id": "ps-0700", "Time": "07:00", "Text": "새벽에 조깅을 하고 왔어요."},
+        {"Id": "ps-0900", "Time": "09:00", "Text": "출근해서 서류 정리를 했습니다."},
+        {"Id": "ps-1030", "Time": "10:30", "Text": "회의실에서 팀 미팅이 있었어요."},
+        {"Id": "ps-1215", "Time": "12:15", "Text": "혼자 도시락을 먹었습니다."},
+        {"Id": "ps-1400", "Time": "14:00", "Text": "오후에는 외근이 있었어요. 3구역 관공서에 갔습니다."},
+        {"Id": "ps-1630", "Time": "16:30", "Text": "외근에서 복귀했어요."},
+        {"Id": "ps-1800", "Time": "18:00", "Text": "야근을 좀 하다가 퇴근했습니다."}
+      ]},
+      {"Id": "doc-price-action", "PersonId": "person-price", "DateId": "Day 3", "Kind": "Action", "Lines": [
+        {"Id": "pa-070215", "Time": "07:02:15", "Text": "자택 주변 공원 감지"},
+        {"Id": "pa-090322", "Time": "09:03:22", "Text": "회사 정문 출입"},
+        {"Id": "pa-102841", "Time": "10:28:41", "Text": "4층 회의실 B 출입"},
+        {"Id": "pa-121108", "Time": "12:11:08", "Text": "사무실 체류"},
+        {"Id": "pa-140533", "Time": "14:05:33", "Text": "[5구역] 미등록 건물 출입"},
+        {"Id": "pa-162817", "Time": "16:28:17", "Text": "회사 정문 출입"},
+        {"Id": "pa-180240", "Time": "18:02:40", "Text": "회사 정문 퇴장"}
+      ]},
+      {"Id": "doc-clayton-old-statement", "PersonId": "person-clayton", "DateId": "Day 2", "Kind": "Statement", "Lines": [
+        {"Id": "cs-old", "Time": "09:00", "Text": "이전 날짜의 비지정 진술서입니다."}
+      ]},
+      {"Id": "doc-clayton-old-action", "PersonId": "person-clayton", "DateId": "Day 2", "Kind": "Action", "Lines": [
+        {"Id": "ca-old", "Time": "09:03:00", "Text": "이전 날짜의 비지정 행동 기록입니다."}
+      ]}
+    ],
+    "Answers": [
+      {"Id": "answer-henderson-location", "PersonId": "person-henderson", "StatementLineId": "hs-1505", "ActionLineId": "ha-150328"},
+      {"Id": "answer-price-location", "PersonId": "person-price", "StatementLineId": "ps-1400", "ActionLineId": "pa-140533"}
+    ],
+    "Edits": [],
+    "Policy": {
+      "Reputation": [
+        {"Reason": "CorrectPair", "Timing": "Record", "Unit": "Pair", "Delta": null},
+        {"Reason": "IncorrectPair", "Timing": "Record", "Unit": "Pair", "Delta": null},
+        {"Reason": "UnauthorizedView", "Timing": "View", "Unit": "View", "Delta": null},
+        {"Reason": "MissingPair", "Timing": "InvestigationComplete", "Unit": "Pair", "Delta": null}
+      ],
+      "UnlockCombination": "Unspecified",
+      "UnlockScope": "Unspecified",
+      "PrerequisiteWorkCodes": [],
+      "StoryThreshold": null,
+      "StoryBranchId": null
+    }
+  }
+]
