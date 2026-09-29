@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace EditorGame.Documents
 {
-    /// <summary>Common desktop presentation. Scoring, completion and persistent storage belong to game services.</summary>
+    /// <summary>문서 창과 입력을 표시한다. 판정, 완료 및 저장은 외부에서 처리한다.</summary>
     public sealed class DocumentDesktop : MonoBehaviour
     {
         public event Action<ViewRecord> DocumentOpened;
@@ -20,6 +20,7 @@ namespace EditorGame.Documents
         private DocumentPlayState state;
         private DocumentDesktopUI ui;
         private RectTransform root, area, taskbar;
+        private Vector2 lastParentSize;
         private TMP_Text progress;
         private string statusMessage;
         private Button record, cancel, submit;
@@ -34,7 +35,7 @@ namespace EditorGame.Documents
         private readonly Dictionary<string, PersonEditState> edits = new Dictionary<string, PersonEditState>();
         private readonly Dictionary<string, Sprite> portraits = new Dictionary<string, Sprite>();
 
-        public DocumentPlayState GetStateSnapshot() => DocumentContract.Copy(state);
+        public DocumentPlayState GetStateSnapshot() => DocumentContract.CopyState(state);
 
         public void Initialize(DocumentAssignment content, DocumentPlayState playState, TMP_FontAsset font,
             IDictionary<string, Sprite> portraitAssets = null, DocumentDesktopSkin skin = null)
@@ -44,7 +45,7 @@ namespace EditorGame.Documents
             DocumentContract.Validate(content);
             ValidateState(content, playState);
             assignment = DocumentContract.Copy(content);
-            state = DocumentContract.Copy(playState);
+            state = DocumentContract.CopyState(playState);
             foreach (var person in assignment.People) people.Add(person.Id, person);
             foreach (var document in assignment.Documents) documents.Add(document.Id, document);
             foreach (var person in state.People) edits.Add(person.PersonId, person);
@@ -56,7 +57,7 @@ namespace EditorGame.Documents
             Build();
         }
 
-        // Validate the state shape consumed by this view. Record scoring and save migration belong to controllers.
+        // 화면이 사용하는 상태 구조만 검사하며 기록 판정과 저장 변환은 처리하지 않는다.
         private static void ValidateState(DocumentAssignment content, DocumentPlayState value)
         {
             if (value == null || value.AssignmentId != content.Id || string.IsNullOrWhiteSpace(value.WorkInstanceId) ||
@@ -109,7 +110,7 @@ namespace EditorGame.Documents
                 Folder(workspace, DocumentKind.Statement, 20);
                 Folder(workspace, DocumentKind.Action, 190);
             }
-            // Desktop icons remain below windows; the taskbar and watermark are outside their bounds.
+            // 창은 바탕 화면 아이콘보다 위에 두고 작업표시줄 영역은 침범하지 않는다.
             area.SetAsLastSibling();
             var panel = ui.Frame("Instructions", root);
             DocumentDesktopUI.Place(panel, 1280, 0, 320, 960);
@@ -150,16 +151,17 @@ namespace EditorGame.Documents
         {
             if (root == null) return;
             var parent = (RectTransform)root.parent;
+            if (parent.rect.size == lastParentSize) return;
+            lastParentSize = parent.rect.size;
             float scale = Mathf.Min(parent.rect.width / 1600f, parent.rect.height / 960f);
             root.localScale = Vector3.one * scale;
-            RefreshControls();
         }
 
         private bool CanRecord => CanSelect && statementId != null && actionId != null && RecordRequested != null;
         private bool CanSubmit => CanSelect && submissionAllowed && SubmissionRequested != null &&
             (assignment.Mode == DocumentMode.Forgery || state.Investigations.All(i => i.Completed));
 
-        private void RefreshControls()
+        public void RefreshControls()
         {
             ui.SetInteractable(record, CanRecord);
             ui.SetInteractable(cancel, CanSelect && (statementId != null || actionId != null));
@@ -180,7 +182,7 @@ namespace EditorGame.Documents
             DocumentDesktopUI.Place((RectTransform)button.transform, x, 22, 154, 74);
         }
 
-        private RectTransform NewWindow(string key, string title, float width, float height)
+        private RectTransform NewWindow(string key, string title, float width, float height, Action onClose = null)
         {
             var frame = ui.Frame(title, area);
             int slot = windows.Count % 6;
@@ -200,7 +202,7 @@ namespace EditorGame.Documents
             var min = ui.Button(bar, "−", () => frame.gameObject.SetActive(false));
             ui.Icon(min, ui.MinimizeSymbol, true);
             DocumentDesktopUI.Place((RectTransform)min.transform, width - 96, 4, 38, 32);
-            var close = ui.Button(bar, "×", () => CloseWindow(key));
+            var close = ui.Button(bar, "×", onClose ?? (() => CloseWindow(key)));
             ui.Icon(close, ui.CloseSymbol, true);
             DocumentDesktopUI.Place((RectTransform)close.transform, width - 52, 4, 36, 32);
             windows.Add(key, window);
@@ -299,44 +301,20 @@ namespace EditorGame.Documents
             input.textComponent = label;
             input.targetGraphic = rect.GetComponent<Image>();
             input.lineType = TMP_InputField.LineType.SingleLine;
-            input.text = GetField(edits[document.PersonId].Values, field);
+            input.text = edits[document.PersonId].Values.Get(field);
             input.interactable = state.Phase == SubmissionPhase.Working && document.DateId == assignment.TargetDateId;
             input.onSelect.AddListener(_ => windows["document:" + document.Id].Focus());
             input.onValueChanged.AddListener(value =>
             {
                 if (state.Phase != SubmissionPhase.Working) return;
-                SetField(edits[document.PersonId].Values, field, value);
+                edits[document.PersonId].Values.Set(field, value);
                 ProfileChanged?.Invoke(document.PersonId, field, value);
             });
             input.onEndEdit.AddListener(value =>
             {
                 if (state.Phase != SubmissionPhase.Working) return;
-                SetField(edits[document.PersonId].Values, field, value);
+                edits[document.PersonId].Values.Set(field, value);
             });
-        }
-
-        private static string GetField(ProfileValues value, ProfileField field)
-        {
-            switch (field)
-            {
-                case ProfileField.Name: return value.Name;
-                case ProfileField.Age: return value.Age;
-                case ProfileField.Sex: return value.Sex;
-                case ProfileField.Country: return value.Country;
-                default: return value.Job;
-            }
-        }
-
-        private static void SetField(ProfileValues value, ProfileField field, string text)
-        {
-            switch (field)
-            {
-                case ProfileField.Name: value.Name = text; break;
-                case ProfileField.Age: value.Age = text; break;
-                case ProfileField.Sex: value.Sex = text; break;
-                case ProfileField.Country: value.Country = text; break;
-                case ProfileField.Job: value.Job = text; break;
-            }
         }
 
         private bool CanSelect => state.Phase == SubmissionPhase.Working;
@@ -358,6 +336,7 @@ namespace EditorGame.Documents
             if (document.Kind == DocumentKind.Statement) statementId = lineId;
             else actionId = lineId;
             RefreshSelection();
+            RefreshControls();
             PairSelectionChanged?.Invoke(statementId, actionId);
         }
 
@@ -365,6 +344,7 @@ namespace EditorGame.Documents
         {
             statementId = actionId = selectedPerson = selectedDate = null;
             RefreshSelection();
+            RefreshControls();
             PairSelectionChanged?.Invoke(null, null);
         }
 
@@ -378,10 +358,10 @@ namespace EditorGame.Documents
         private void CloseWindow(string key)
         {
             if (!windows.TryGetValue(key, out var window)) return;
-            // Finish the current IME/edit session before destroying its visual input field.
+            // 입력창을 제거하기 전에 진행 중인 한글 조합을 확정한다.
             foreach (var input in window.GetComponentsInChildren<TMP_InputField>(true))
                 if (input.isFocused) input.DeactivateInputField();
-            // Removing the view never removes profile edits, records or the investigation state.
+            // 창만 제거하고 수정값과 조사 상태는 유지한다.
             window.gameObject.SetActive(false);
             Destroy(window.gameObject);
             tasks[key].gameObject.SetActive(false);
@@ -392,7 +372,7 @@ namespace EditorGame.Documents
                 foreach (var line in document.Lines) lineButtons.Remove(line.Id);
         }
 
-        /// <summary>Controllers publish evaluated investigation state; the desktop does not judge selected pairs.</summary>
+        /// <summary>외부에서 판정한 조사 상태를 화면에 반영한다.</summary>
         public void UpdateInvestigation(InvestigationState investigation)
         {
             if (!CanSelect) throw new InvalidOperationException("Submission is locked.");
@@ -408,9 +388,10 @@ namespace EditorGame.Documents
                     if (lineButtons.TryGetValue(line.Id, out var button) && button != null)
                         ui.SetInteractable(button, CanInvestigate(document.PersonId));
             RefreshStatus();
+            RefreshControls();
         }
 
-        /// <summary>Adds one evaluated event to the snapshot owned by this view.</summary>
+        /// <summary>판정된 평판 사건을 현재 상태에 중복 없이 추가한다.</summary>
         public void AddReputationEvent(ReputationEvent reputationEvent)
         {
             if (!CanSelect) throw new InvalidOperationException("Submission is locked.");
@@ -420,14 +401,14 @@ namespace EditorGame.Documents
             state.Events.Add(DocumentContract.Copy(reputationEvent));
         }
 
-        /// <summary>Shows controller feedback without changing scoring or investigation state.</summary>
+        /// <summary>판정 상태를 바꾸지 않고 안내 문구만 표시한다.</summary>
         public void ShowStatusMessage(string message)
         {
             statusMessage = message;
             RefreshStatus();
         }
 
-        /// <summary>Opens a scrollable, read-only result window after the controller locks submission.</summary>
+        /// <summary>제출 잠금 이후 읽기 전용 결과 창을 연다.</summary>
         public void ShowSubmissionResult(string title, IEnumerable<string> lines, Action onConfirm = null)
         {
             const string key = "submission:result";
@@ -436,23 +417,28 @@ namespace EditorGame.Documents
                 existing.Focus();
                 return;
             }
-            var body = NewWindow(key, title, 760, 650);
+            bool confirmed = false;
+            Action confirm = () =>
+            {
+                if (confirmed) return;
+                confirmed = true;
+                onConfirm?.Invoke();
+            };
+            var body = NewWindow(key, title, 760, 650, onConfirm == null ? null : confirm);
             foreach (string line in lines) ui.Text(body, line, 21);
             if (onConfirm != null)
             {
-                bool confirmed = false;
-                var confirm = ui.Button(body, "확인 · 업무 종료", () =>
-                {
-                    if (confirmed) return;
-                    confirmed = true;
-                    onConfirm();
-                });
-                DocumentDesktopUI.Row(confirm, 58);
+                var confirmButton = ui.Button(body, "확인 · 업무 종료", confirm);
+                DocumentDesktopUI.Row(confirmButton, 58);
             }
         }
 
-        /// <summary>Additional controller gate; true never bypasses the mode's investigation or submission locks.</summary>
-        public void SetSubmissionAllowed(bool allowed) { submissionAllowed = allowed; }
+        /// <summary>모드별 제출 조건을 유지하면서 외부 제출 허용 상태를 반영한다.</summary>
+        public void SetSubmissionAllowed(bool allowed)
+        {
+            submissionAllowed = allowed;
+            RefreshControls();
+        }
 
         public void LockSubmission()
         {

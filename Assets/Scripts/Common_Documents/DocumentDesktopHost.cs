@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace EditorGame.Documents
 {
-    /// <summary>Scene entry point. Runtime callers supply an explicit assignment and restored/new work state.</summary>
+    /// <summary>과제와 신규 또는 복원 상태를 받아 문서 화면을 생성하는 씬 진입점이다.</summary>
     public sealed class DocumentDesktopHost : MonoBehaviour
     {
         [SerializeField] private TMP_FontAsset font;
@@ -29,8 +29,8 @@ namespace EditorGame.Documents
         }
 
         /// <summary>
-        /// Called by the mode controller after selecting content and resolving its work-instance state.
-        /// The host never changes daily work completion, reputation or save data.
+        /// 모드 컨트롤러가 콘텐츠와 업무 상태를 결정한 뒤 호출한다.
+        /// 호스트는 업무 완료, 평판 및 저장 데이터를 변경하지 않는다.
         /// </summary>
         public void Show(DocumentAssignment content, DocumentPlayState state, IDictionary<string, Sprite> portraits = null)
         {
@@ -62,7 +62,7 @@ namespace EditorGame.Documents
             return snapshot;
         }
 
-        // Scene teardown must not reactivate legacy scripts or serialize a state that will be discarded.
+        // 씬 종료 중에는 레거시 화면을 다시 켜거나 폐기할 상태를 만들지 않는다.
         private void ReleaseView(bool restoreLegacy)
         {
             if (Desktop != null)
@@ -101,7 +101,7 @@ namespace EditorGame.Documents
                 state = DocumentContract.Begin(content, DocumentContract.Key("desktop-preview", content.Id));
             Show(content, state);
             displayedPreview = mode;
-            // Preview does not attach scoring/submission listeners or write to gameplay services.
+            // 미리보기는 판정 이벤트를 연결하거나 게임 서비스에 값을 쓰지 않는다.
         }
 
         private void OnDestroy() { ReleaseView(false); }

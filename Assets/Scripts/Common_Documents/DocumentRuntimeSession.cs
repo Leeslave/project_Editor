@@ -7,14 +7,19 @@ using Utility;
 
 namespace EditorGame.Documents
 {
-    /// <summary>Keeps document work state alive between scene entries and applies each result once.</summary>
+    /// <summary>씬 재진입용 업무 상태를 보관하고 각 결과를 한 번만 적용한다.</summary>
     public static class DocumentRuntimeSession
     {
-        private static readonly Dictionary<string, DocumentPlayState> Sessions =
-            new Dictionary<string, DocumentPlayState>(StringComparer.Ordinal);
-        private static readonly HashSet<string> AppliedEventIds = new HashSet<string>(StringComparer.Ordinal);
-        private static readonly HashSet<string> AppliedWorkIds = new HashSet<string>(StringComparer.Ordinal);
-        private static readonly HashSet<string> AppliedStoryIds = new HashSet<string>(StringComparer.Ordinal);
+        private sealed class RuntimeState
+        {
+            public DocumentPlayState PlayState;
+            public readonly HashSet<string> AppliedEventIds = new HashSet<string>(StringComparer.Ordinal);
+            public bool WorkApplied;
+            public bool StoryApplied;
+        }
+
+        private static readonly Dictionary<string, RuntimeState> Sessions =
+            new Dictionary<string, RuntimeState>(StringComparer.Ordinal);
 
         public static bool TryBegin(DocumentAssignment assignment, IWorkService workService,
             out DocumentPlayState state, out string error)
@@ -43,28 +48,29 @@ namespace EditorGame.Documents
             int saveId = GameSystem.SaveService == null ? -1 : GameSystem.SaveService.CurrentSaveId;
             string workInstanceId = DocumentContract.Key("document-work", saveId.ToString(),
                 assignment.WorkCode, assignment.Stage.ToString(), assignment.Id);
-            if (!Sessions.TryGetValue(workInstanceId, out state))
+            if (!Sessions.TryGetValue(workInstanceId, out RuntimeState runtime))
             {
                 state = DocumentContract.Begin(assignment, workInstanceId);
-                Sessions.Add(workInstanceId, DocumentContract.Copy(state));
+                Sessions.Add(workInstanceId, new RuntimeState { PlayState = DocumentContract.CopyState(state) });
             }
-            else state = DocumentContract.Copy(state);
+            else state = DocumentContract.CopyState(runtime.PlayState);
             return true;
         }
 
         public static void CaptureAndApply(DocumentPlayState state)
         {
             if (state == null || string.IsNullOrWhiteSpace(state.WorkInstanceId)) return;
-            Sessions[state.WorkInstanceId] = DocumentContract.Copy(state);
+            RuntimeState runtime = GetRuntime(state.WorkInstanceId);
+            runtime.PlayState = DocumentContract.CopyState(state);
             foreach (ReputationEvent reputationEvent in state.Events)
             {
-                if (AppliedEventIds.Contains(reputationEvent.Id)) continue;
+                if (runtime.AppliedEventIds.Contains(reputationEvent.Id)) continue;
                 if (!reputationEvent.Delta.HasValue)
                     throw new InvalidOperationException("Unconfigured reputation event: " + reputationEvent.Id);
                 if (GameSystem.SaveService == null)
                     throw new InvalidOperationException("Save service is required to apply reputation.");
                 new SetRenownAction(reputationEvent.Delta.Value).Invoke();
-                AppliedEventIds.Add(reputationEvent.Id);
+                runtime.AppliedEventIds.Add(reputationEvent.Id);
             }
         }
 
@@ -78,7 +84,8 @@ namespace EditorGame.Documents
             }
 
             CaptureAndApply(submission.Snapshot);
-            if (AppliedWorkIds.Contains(submission.WorkInstanceId)) return true;
+            RuntimeState runtime = GetRuntime(submission.WorkInstanceId);
+            if (runtime.WorkApplied) return true;
             if (workService.CurrentWorkCode != submission.WorkCode)
             {
                 error = "실행 중인 업무와 제출 업무가 일치하지 않습니다.";
@@ -86,7 +93,7 @@ namespace EditorGame.Documents
             }
             if (!workService.ClearWork(submission.WorkCode))
             {
-                // ClearWork returns whether every daily work is clear, so verify this work separately.
+                // 반환값은 하루 전체 완료 여부이므로 현재 업무 상태를 별도로 확인한다.
                 if (!workService.IsWorkClear(submission.WorkCode))
                 {
                     error = "업무 완료 상태를 반영하지 못했습니다.";
@@ -94,23 +101,24 @@ namespace EditorGame.Documents
                 }
             }
 
-            DocumentPlayState applied = DocumentContract.Copy(submission.Snapshot);
+            DocumentPlayState applied = DocumentContract.CopyState(submission.Snapshot);
             applied.Phase = SubmissionPhase.Applied;
-            Sessions[submission.WorkInstanceId] = applied;
-            AppliedWorkIds.Add(submission.WorkInstanceId);
+            runtime.PlayState = applied;
+            runtime.WorkApplied = true;
             return true;
         }
 
         public static void ApplyStoryBranch(DocumentPolicy policy, string workInstanceId)
         {
             if (policy == null || !policy.StoryThreshold.HasValue ||
-                string.IsNullOrWhiteSpace(policy.StoryBranchId) || GameSystem.SaveService == null ||
-                AppliedStoryIds.Contains(workInstanceId)) return;
+                string.IsNullOrWhiteSpace(policy.StoryBranchId) || GameSystem.SaveService == null) return;
+            RuntimeState runtime = GetRuntime(workInstanceId);
+            if (runtime.StoryApplied) return;
             if (!GameSystem.SaveService.CheckRenown(policy.StoryThreshold.Value)) return;
             if (int.TryParse(policy.StoryBranchId, out int branch))
             {
                 GameSystem.SaveService.SwitchBranch(branch);
-                AppliedStoryIds.Add(workInstanceId);
+                runtime.StoryApplied = true;
             }
             else EditorLogger.LogError("Document story branch ID must be an integer: " + policy.StoryBranchId);
         }
@@ -138,6 +146,16 @@ namespace EditorGame.Documents
             if (policy.UnlockCombination == UnlockCombination.Any)
                 return policy.PrerequisiteWorkCodes.Exists(workService.IsWorkClear);
             return false;
+        }
+
+        private static RuntimeState GetRuntime(string workInstanceId)
+        {
+            if (!Sessions.TryGetValue(workInstanceId, out RuntimeState runtime))
+            {
+                runtime = new RuntimeState();
+                Sessions.Add(workInstanceId, runtime);
+            }
+            return runtime;
         }
     }
 }

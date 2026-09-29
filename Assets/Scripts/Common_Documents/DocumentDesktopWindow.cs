@@ -35,7 +35,7 @@ namespace EditorGame.Documents
 
         internal void Move(Vector2 delta)
         {
-            // Both pointer coordinates and window position are local to the workspace.
+            // 포인터와 창 위치는 같은 작업 영역 로컬 좌표를 사용한다.
             var position = rect.anchoredPosition + delta;
             position.x = Mathf.Clamp(position.x, 0, Mathf.Max(0, bounds.rect.width - rect.rect.width));
             position.y = Mathf.Clamp(position.y, -Mathf.Max(0, bounds.rect.height - rect.rect.height), 0);

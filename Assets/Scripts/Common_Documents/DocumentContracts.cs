@@ -23,7 +23,7 @@ namespace EditorGame.Documents
         public string Id;
         public DocumentMode Mode;
         public int Stage;
-        // Content date is independent of the player's progression day.
+        // 문서 날짜는 플레이 진행 일차와 별도다.
         public string TargetDateId;
         public string Instructions;
         public List<string> TargetPersonIds = new List<string>();
@@ -39,7 +39,7 @@ namespace EditorGame.Documents
     public sealed class PersonContent
     {
         public string Id;
-        // Asset reference key, never a mutable portrait index or identity key.
+        // 변경 가능한 배열 번호 대신 초상화 자산 키를 사용한다.
         public string PortraitKey;
         public ProfileValues Profile = new ProfileValues();
     }
@@ -56,6 +56,32 @@ namespace EditorGame.Documents
         public ProfileValues Copy()
         {
             return new ProfileValues { Name = Name, Age = Age, Sex = Sex, Country = Country, Job = Job };
+        }
+
+        public string Get(ProfileField field)
+        {
+            switch (field)
+            {
+                case ProfileField.Name: return Name;
+                case ProfileField.Age: return Age;
+                case ProfileField.Sex: return Sex;
+                case ProfileField.Country: return Country;
+                case ProfileField.Job: return Job;
+                default: throw new ArgumentOutOfRangeException(nameof(field));
+            }
+        }
+
+        public void Set(ProfileField field, string value)
+        {
+            switch (field)
+            {
+                case ProfileField.Name: Name = value; break;
+                case ProfileField.Age: Age = value; break;
+                case ProfileField.Sex: Sex = value; break;
+                case ProfileField.Country: Country = value; break;
+                case ProfileField.Job: Job = value; break;
+                default: throw new ArgumentOutOfRangeException(nameof(field));
+            }
         }
     }
 
@@ -99,7 +125,7 @@ namespace EditorGame.Documents
     [Serializable]
     public sealed class DocumentPolicy
     {
-        // No fabricated balance defaults. null means not configured, not zero.
+        // null은 0이 아니라 미설정 정책을 뜻한다.
         public List<ReputationRule> Reputation = new List<ReputationRule>();
         public UnlockCombination UnlockCombination = UnlockCombination.Unspecified;
         public UnlockScope UnlockScope = UnlockScope.Unspecified;
@@ -117,7 +143,7 @@ namespace EditorGame.Documents
         public int? Delta;
     }
 
-    // Keep mutable play state separate from the source content; DTO fields are not read-only.
+    // 실행 상태는 원본 과제에서 복사하며 별도로 저장할 수 있다.
     [Serializable]
     public sealed class DocumentPlayState
     {
@@ -201,32 +227,77 @@ namespace EditorGame.Documents
 
     public static class DocumentContract
     {
-        // JSON deep copy includes all lists/values; no Unity objects or $type metadata.
+        // Unity 객체와 타입 메타데이터가 없는 DTO를 JSON으로 깊은 복사한다.
         public static T Copy<T>(T value)
         {
             var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
             return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(value, settings), settings);
         }
 
-        /// <summary>NFC comparison only: whitespace and case remain significant; null equals empty.</summary>
+        public static DocumentPlayState CopyState(DocumentPlayState value)
+        {
+            if (value == null) return null;
+            return new DocumentPlayState
+            {
+                WorkInstanceId = value.WorkInstanceId,
+                AssignmentId = value.AssignmentId,
+                Phase = value.Phase,
+                People = value.People.Select(item => new PersonEditState
+                {
+                    PersonId = item.PersonId,
+                    Values = item.Values.Copy()
+                }).ToList(),
+                Investigations = value.Investigations.Select(item => new InvestigationState
+                {
+                    PersonId = item.PersonId,
+                    Completed = item.Completed,
+                    Records = item.Records.Select(record => new PairRecord
+                    {
+                        Id = record.Id,
+                        StatementLineId = record.StatementLineId,
+                        ActionLineId = record.ActionLineId,
+                        MatchedAnswerId = record.MatchedAnswerId,
+                        Correct = record.Correct
+                    }).ToList(),
+                    MissingAnswerIds = new List<string>(item.MissingAnswerIds)
+                }).ToList(),
+                Views = value.Views.Select(item => new ViewRecord
+                {
+                    Id = item.Id,
+                    DocumentId = item.DocumentId,
+                    Authorized = item.Authorized
+                }).ToList(),
+                Events = value.Events.Select(item => new ReputationEvent
+                {
+                    Id = item.Id,
+                    Reason = item.Reason,
+                    Timing = item.Timing,
+                    Unit = item.Unit,
+                    SubjectId = item.SubjectId,
+                    Delta = item.Delta
+                }).ToList()
+            };
+        }
+
+        /// <summary>NFC만 정규화하며 공백과 대소문자는 구분하고 null은 빈 문자열로 취급한다.</summary>
         public static bool SameText(string left, string right)
         {
             return string.Equals((left ?? "").Normalize(NormalizationForm.FormC),
                 (right ?? "").Normalize(NormalizationForm.FormC), StringComparison.Ordinal);
         }
 
-        /// <summary>Classifies a field without awarding reputation; unchanged unrequested fields are neutral.</summary>
+        /// <summary>평판을 적용하지 않고 필드 결과만 분류한다.</summary>
         public static FieldOutcome ClassifyField(string original, string submitted, string expected, bool instructed)
         {
             if (!instructed)
                 return SameText(original, submitted) ? FieldOutcome.Unchanged : FieldOutcome.UnrequestedEdit;
-            // A no-op instruction must not award a successful-edit event.
+            // 원본과 같은 목표값은 성공 수정으로 보상하지 않는다.
             if (SameText(original, expected) && SameText(original, submitted)) return FieldOutcome.Unchanged;
             if (SameText(submitted, expected)) return FieldOutcome.CorrectEdit;
             return SameText(original, submitted) ? FieldOutcome.UnchangedTarget : FieldOutcome.IncorrectEdit;
         }
 
-        // Length-prefixed components avoid separator collisions in persistent keys.
+        // 길이 접두어로 영속 키 구성 요소의 구분 충돌을 막는다.
         public static string Key(params string[] parts)
         {
             if (parts == null || parts.Length == 0) throw new ArgumentException("Key components are required.");
@@ -239,7 +310,7 @@ namespace EditorGame.Documents
             return key.ToString();
         }
 
-        /// <summary>Starts a new work instance only. Re-entry must restore its existing state instead.</summary>
+        /// <summary>새 업무 상태를 만든다. 재진입 상태는 런타임 세션에서 복원한다.</summary>
         public static DocumentPlayState Begin(DocumentAssignment content, string workInstanceId)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
@@ -254,7 +325,7 @@ namespace EditorGame.Documents
             return state;
         }
 
-        /// <summary>Validates content structure and supplied policy rules; unfinished policy values are allowed.</summary>
+        /// <summary>콘텐츠 구조와 제공된 정책을 검사하며 미설정 정책값은 허용한다.</summary>
         public static void Validate(DocumentAssignment content)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
@@ -388,8 +459,8 @@ namespace EditorGame.Documents
         }
 
         /// <summary>
-        /// Requires configured reputation and (for forgery) unlock rules before runtime integration.
-        /// Does not evaluate prerequisite completion or validate story branch references; services own those checks.
+        /// 실행에 필요한 평판 및 극비 해금 정책이 설정되었는지 검사한다.
+        /// 선행 업무 완료와 스토리 분기 참조는 게임 서비스가 검사한다.
         /// </summary>
         public static void ValidateForExecution(DocumentAssignment content)
         {
@@ -419,7 +490,7 @@ namespace EditorGame.Documents
 
         private static void RequireRule(DocumentPolicy policy, ReputationReason reason, ReputationUnit unit)
         {
-            // ValidatePolicy already enforces the unique legal timing for this reason/unit.
+            // 시점과 단위의 유효성 및 중복은 ValidatePolicy에서 이미 검사한다.
             if (!policy.Reputation.Any(r => r.Reason == reason && r.Unit == unit))
                 throw new ArgumentException("Missing reputation rule: " + reason + "/" + unit);
         }

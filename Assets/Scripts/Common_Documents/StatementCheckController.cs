@@ -1,74 +1,34 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using GameService;
-using Newtonsoft.Json;
-using UnityEngine;
-using Utility;
 
 namespace EditorGame.Documents
 {
-    /// <summary>Evaluates statement/action pairs and publishes a locked submission snapshot.</summary>
-    public sealed class StatementCheckController : MonoBehaviour
+    /// <summary>진술·행동 기록을 판정하고 일반 문서 업무 제출 결과를 만든다.</summary>
+    public sealed class StatementCheckController : DocumentWorkController
     {
-        [SerializeField] private DocumentDesktopHost host;
-        [SerializeField] private TextAsset assignmentContent;
+        protected override DocumentMode Mode => DocumentMode.StatementCheck;
+        protected override string UnauthorizedViewMessage => "지정되지 않은 문서를 열람했습니다.";
 
-        public DocumentSubmission LastSubmission { get; private set; }
-        public event Action<DocumentSubmission> Submitted;
-
-        private IWorkService WorkService => GameSystem.GetService<IWorkService>();
-        private DocumentAssignment assignment;
-        private DocumentDesktop desktop;
         private string statementId;
         private string actionId;
+        private Dictionary<string, DocumentContent> documentsByLine;
 
-        private void Start()
+        protected override void AttachModeHandlers()
         {
-            if (WorkService == null || WorkService.CurrentWorkCode != "Document") return;
-            if (host == null || assignmentContent == null)
-            {
-                EditorLogger.LogError("Statement check host or content is missing.");
-                return;
-            }
-            int stage = WorkService.GetStage("Document");
-            assignment = LoadAssignment(stage);
-            if (assignment == null)
-            {
-                EditorLogger.LogError($"Statement assignment not found: stage {stage}");
-                return;
-            }
-
-            if (!DocumentRuntimeSession.TryBegin(assignment, WorkService, out var state, out string error))
-            {
-                EditorLogger.LogError(error);
-                return;
-            }
-            host.Show(assignment, state);
-            desktop = host.Desktop;
-            desktop.DocumentOpened += OnDocumentOpened;
-            desktop.PairSelectionChanged += OnPairSelectionChanged;
-            desktop.RecordRequested += RecordSelection;
-            desktop.InvestigationCompletionRequested += CompleteInvestigation;
-            desktop.SubmissionRequested += Submit;
+            Desktop.PairSelectionChanged += OnPairSelectionChanged;
+            Desktop.RecordRequested += RecordSelection;
+            Desktop.InvestigationCompletionRequested += CompleteInvestigation;
+            documentsByLine = Assignment.Documents
+                .SelectMany(document => document.Lines.Select(line => new { line.Id, Document = document }))
+                .ToDictionary(item => item.Id, item => item.Document, StringComparer.Ordinal);
         }
 
-        private DocumentAssignment LoadAssignment(int stage)
+        protected override void DetachModeHandlers()
         {
-            var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
-            var contents = JsonConvert.DeserializeObject<List<DocumentAssignment>>(assignmentContent.text, settings);
-            return contents?.SingleOrDefault(item => item.Mode == DocumentMode.StatementCheck && item.Stage == stage);
-        }
-
-        private void OnDocumentOpened(ViewRecord view)
-        {
-            if (!view.Authorized)
-            {
-                AddEvent(ReputationReason.UnauthorizedView, ReputationTiming.View, ReputationUnit.View,
-                    view.Id, view.Id);
-                desktop.ShowStatusMessage("지정되지 않은 문서를 열람했습니다.");
-            }
-            CaptureAndApply();
+            Desktop.PairSelectionChanged -= OnPairSelectionChanged;
+            Desktop.RecordRequested -= RecordSelection;
+            Desktop.InvestigationCompletionRequested -= CompleteInvestigation;
         }
 
         private void OnPairSelectionChanged(string statement, string action)
@@ -80,24 +40,21 @@ namespace EditorGame.Documents
         private void RecordSelection()
         {
             if (statementId == null || actionId == null) return;
-            var state = desktop.GetStateSnapshot();
-            var documentByLine = assignment.Documents
-                .SelectMany(document => document.Lines.Select(line => new { line.Id, Document = document }))
-                .ToDictionary(item => item.Id, item => item.Document, StringComparer.Ordinal);
-            if (!documentByLine.TryGetValue(statementId, out var statement) ||
-                !documentByLine.TryGetValue(actionId, out var action) || statement.PersonId != action.PersonId)
+            DocumentPlayState state = Desktop.GetStateSnapshot();
+            if (!documentsByLine.TryGetValue(statementId, out var statement) ||
+                !documentsByLine.TryGetValue(actionId, out var action) || statement.PersonId != action.PersonId)
                 return;
 
-            var investigation = state.Investigations.Single(item => item.PersonId == statement.PersonId);
+            InvestigationState investigation = state.Investigations.Single(item => item.PersonId == statement.PersonId);
             if (investigation.Completed) return;
             if (investigation.Records.Any(item => item.StatementLineId == statementId && item.ActionLineId == actionId))
             {
-                desktop.ClearSelection();
-                desktop.ShowStatusMessage("이미 기록한 조합입니다.");
+                Desktop.ClearSelection();
+                Desktop.ShowStatusMessage("이미 기록한 조합입니다.");
                 return;
             }
 
-            var answer = assignment.Answers.SingleOrDefault(item =>
+            AnswerPair answer = Assignment.Answers.SingleOrDefault(item =>
                 item.PersonId == statement.PersonId && item.StatementLineId == statementId && item.ActionLineId == actionId);
             bool correct = answer != null;
             investigation.Records.Add(new PairRecord
@@ -108,86 +65,74 @@ namespace EditorGame.Documents
                 MatchedAnswerId = answer?.Id,
                 Correct = correct
             });
-            var reason = correct ? ReputationReason.CorrectPair : ReputationReason.IncorrectPair;
-            AddEvent(reason, ReputationTiming.Record, ReputationUnit.Pair,
+            AddEvent(correct ? ReputationReason.CorrectPair : ReputationReason.IncorrectPair,
+                ReputationTiming.Record, ReputationUnit.Pair,
                 DocumentContract.Key(statementId, actionId), statementId, actionId);
-            desktop.UpdateInvestigation(investigation);
+            Desktop.UpdateInvestigation(investigation);
             CaptureAndApply();
-            desktop.ClearSelection();
-            desktop.ShowStatusMessage(correct ? "불일치를 기록했습니다." : "일치하지 않는 기록을 제출했습니다.");
+            Desktop.ClearSelection();
+            Desktop.ShowStatusMessage(correct ? "불일치를 기록했습니다." : "일치하지 않는 기록을 제출했습니다.");
         }
 
         private void CompleteInvestigation(string personId)
         {
-            var state = desktop.GetStateSnapshot();
-            var investigation = state.Investigations.Single(item => item.PersonId == personId);
+            DocumentPlayState state = Desktop.GetStateSnapshot();
+            InvestigationState investigation = state.Investigations.Single(item => item.PersonId == personId);
             if (investigation.Completed || investigation.Records.Count == 0) return;
 
             var found = new HashSet<string>(investigation.Records
                 .Where(item => item.Correct && item.MatchedAnswerId != null)
                 .Select(item => item.MatchedAnswerId), StringComparer.Ordinal);
-            investigation.MissingAnswerIds = assignment.Answers
+            investigation.MissingAnswerIds = Assignment.Answers
                 .Where(item => item.PersonId == personId && !found.Contains(item.Id))
                 .Select(item => item.Id).ToList();
             investigation.Completed = true;
             foreach (string answerId in investigation.MissingAnswerIds)
                 AddEvent(ReputationReason.MissingPair, ReputationTiming.InvestigationComplete,
                     ReputationUnit.Pair, answerId, answerId);
-            desktop.UpdateInvestigation(investigation);
+            Desktop.UpdateInvestigation(investigation);
             CaptureAndApply();
-            desktop.ShowStatusMessage(investigation.MissingAnswerIds.Count == 0
+            Desktop.ShowStatusMessage(investigation.MissingAnswerIds.Count == 0
                 ? "조사를 완료했습니다." : $"조사를 완료했습니다. 누락 {investigation.MissingAnswerIds.Count}건");
         }
 
-        private void Submit()
+        protected override void Submit()
         {
             if (LastSubmission != null) return;
-            desktop.LockSubmission();
-            var snapshot = desktop.GetStateSnapshot();
+            Desktop.LockSubmission();
+            DocumentPlayState snapshot = Desktop.GetStateSnapshot();
             bool successful = snapshot.Investigations.All(item =>
                 item.MissingAnswerIds.Count == 0 && item.Records.All(record => record.Correct));
-            LastSubmission = new DocumentSubmission
+            var submission = new DocumentSubmission
             {
                 WorkInstanceId = snapshot.WorkInstanceId,
-                AssignmentId = assignment.Id,
-                WorkCode = assignment.WorkCode,
-                Stage = assignment.Stage,
-                TargetDateId = assignment.TargetDateId,
+                AssignmentId = Assignment.Id,
+                WorkCode = Assignment.WorkCode,
+                Stage = Assignment.Stage,
+                TargetDateId = Assignment.TargetDateId,
                 Successful = successful,
                 Snapshot = snapshot
             };
-            var resultLines = SubmissionResults(snapshot);
-            desktop.ShowStatusMessage(successful ? "모든 기록이 정확합니다." : "오판 또는 누락 기록이 있습니다.");
-            if (!DocumentRuntimeSession.Complete(LastSubmission, WorkService, out string error))
-            {
-                desktop.ShowStatusMessage(error);
-                return;
-            }
-            DocumentRuntimeSession.ApplyStoryBranch(assignment.Policy, LastSubmission.WorkInstanceId);
-            int reputationDelta = DocumentRuntimeSession.ReputationDelta(snapshot);
-            resultLines.Add($"평판 변화: {(reputationDelta >= 0 ? "+" : "")}{reputationDelta}");
-            resultLines.Add("업무 제출이 완료되었습니다. 확인하면 업무 화면으로 돌아갑니다.");
-            desktop.ShowSubmissionResult(successful ? "검증 완료" : "검증 결과", resultLines,
-                DocumentRuntimeSession.ReturnToScreen);
-            Submitted?.Invoke(DocumentContract.Copy(LastSubmission));
+            Desktop.ShowStatusMessage(successful ? "모든 기록이 정확합니다." : "오판 또는 누락 기록이 있습니다.");
+            FinishSubmission(submission, successful ? "검증 완료" : "검증 결과", SubmissionResults(snapshot));
         }
 
         private List<string> SubmissionResults(DocumentPlayState state)
         {
-            var people = assignment.People.ToDictionary(item => item.Id, item => item.Profile.Name, StringComparer.Ordinal);
-            var lines = assignment.Documents.SelectMany(document => document.Lines)
+            var names = Assignment.People.ToDictionary(item => item.Id, item => item.Profile.Name, StringComparer.Ordinal);
+            var lines = Assignment.Documents.SelectMany(document => document.Lines)
                 .ToDictionary(item => item.Id, item => item, StringComparer.Ordinal);
-            var answers = assignment.Answers.ToDictionary(item => item.Id, item => item, StringComparer.Ordinal);
+            var answers = Assignment.Answers.ToDictionary(item => item.Id, item => item, StringComparer.Ordinal);
             var result = new List<string>();
-            foreach (var investigation in state.Investigations)
+            foreach (InvestigationState investigation in state.Investigations)
             {
-                foreach (var record in investigation.Records.Where(item => !item.Correct))
-                    result.Add("[오판] " + people[investigation.PersonId] + "\n진술: " + Line(lines, record.StatementLineId) +
+                foreach (PairRecord record in investigation.Records.Where(item => !item.Correct))
+                    result.Add("[오판] " + names[investigation.PersonId] + "\n진술: " + Line(lines, record.StatementLineId) +
                         "\n행동: " + Line(lines, record.ActionLineId));
                 foreach (string answerId in investigation.MissingAnswerIds)
                 {
-                    var answer = answers[answerId];
-                    result.Add("[누락] " + people[investigation.PersonId] + "\n진술: " + Line(lines, answer.StatementLineId) +
+                    AnswerPair answer = answers[answerId];
+                    result.Add("[누락] " + names[investigation.PersonId] + "\n진술: " + Line(lines, answer.StatementLineId) +
                         "\n행동: " + Line(lines, answer.ActionLineId));
                 }
             }
@@ -198,42 +143,8 @@ namespace EditorGame.Documents
 
         private static string Line(IReadOnlyDictionary<string, DocumentLine> lines, string id)
         {
-            var line = lines[id];
+            DocumentLine line = lines[id];
             return line.Time + " " + line.Text;
-        }
-
-        private void AddEvent(ReputationReason reason, ReputationTiming timing, ReputationUnit unit,
-            string subjectId, params string[] keyParts)
-        {
-            var state = desktop.GetStateSnapshot();
-            var parts = new List<string> { state.WorkInstanceId, reason.ToString() };
-            parts.AddRange(keyParts);
-            var rule = assignment.Policy.Reputation.FirstOrDefault(item =>
-                item.Reason == reason && item.Timing == timing && item.Unit == unit);
-            desktop.AddReputationEvent(new ReputationEvent
-            {
-                Id = DocumentContract.Key(parts.ToArray()),
-                Reason = reason,
-                Timing = timing,
-                Unit = unit,
-                SubjectId = subjectId,
-                Delta = rule?.Delta
-            });
-        }
-
-        private void CaptureAndApply()
-        {
-            DocumentRuntimeSession.CaptureAndApply(desktop.GetStateSnapshot());
-        }
-
-        private void OnDestroy()
-        {
-            if (desktop == null) return;
-            desktop.DocumentOpened -= OnDocumentOpened;
-            desktop.PairSelectionChanged -= OnPairSelectionChanged;
-            desktop.RecordRequested -= RecordSelection;
-            desktop.InvestigationCompletionRequested -= CompleteInvestigation;
-            desktop.SubmissionRequested -= Submit;
         }
     }
 }

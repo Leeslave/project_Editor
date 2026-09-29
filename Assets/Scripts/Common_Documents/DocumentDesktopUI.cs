@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace EditorGame.Documents
 {
-    // Shared uGUI construction keeps the runtime hierarchy and authored content independent.
+    // 콘텐츠와 분리된 공통 uGUI 계층을 생성한다.
     internal sealed class DocumentDesktopUI
     {
         internal static readonly Color Surface = new Color32(192, 192, 192, 255);
@@ -117,7 +117,7 @@ namespace EditorGame.Documents
             button.targetGraphic = rect.GetComponent<Image>();
             if (skin.Raised != null)
             {
-                // Keep TMP labels and document callbacks while using the vendor's button state artwork.
+                // TMP 문구와 콜백은 유지하고 버튼 상태 이미지만 재사용한다.
                 button.transition = Selectable.Transition.SpriteSwap;
                 button.spriteState = new SpriteState
                 {
