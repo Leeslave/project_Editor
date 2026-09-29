@@ -11,6 +11,7 @@ namespace GameService
         protected DaySave Save;
 
         public int DayIndex => Save.dayID / 100;
+        public int CurrentSaveId => Save?.dayID ?? -1;
 
         /// <summary>
         /// 명성치

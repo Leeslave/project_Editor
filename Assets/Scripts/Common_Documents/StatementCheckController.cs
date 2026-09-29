@@ -25,15 +25,13 @@ namespace EditorGame.Documents
 
         private void Start()
         {
+            if (WorkService == null || WorkService.CurrentWorkCode != "Document") return;
             if (host == null || assignmentContent == null)
             {
                 EditorLogger.LogError("Statement check host or content is missing.");
                 return;
             }
-            if (WorkService != null && WorkService.CurrentWorkCode == "SecureDocument") return;
-
-            int stage = WorkService == null ? 0 : WorkService.GetStage("Document");
-            if (stage < 0) stage = 0; // Direct scene entry uses the previewable first assignment.
+            int stage = WorkService.GetStage("Document");
             assignment = LoadAssignment(stage);
             if (assignment == null)
             {
@@ -41,8 +39,12 @@ namespace EditorGame.Documents
                 return;
             }
 
-            string instanceId = DocumentContract.Key("statement-check", assignment.Id, Guid.NewGuid().ToString("N"));
-            host.Show(assignment, DocumentContract.Begin(assignment, instanceId));
+            if (!DocumentRuntimeSession.TryBegin(assignment, WorkService, out var state, out string error))
+            {
+                EditorLogger.LogError(error);
+                return;
+            }
+            host.Show(assignment, state);
             desktop = host.Desktop;
             desktop.DocumentOpened += OnDocumentOpened;
             desktop.PairSelectionChanged += OnPairSelectionChanged;
@@ -60,10 +62,13 @@ namespace EditorGame.Documents
 
         private void OnDocumentOpened(ViewRecord view)
         {
-            if (view.Authorized) return;
-            AddEvent(ReputationReason.UnauthorizedView, ReputationTiming.View, ReputationUnit.View,
-                view.Id, view.Id);
-            desktop.ShowStatusMessage("지정되지 않은 문서를 열람했습니다.");
+            if (!view.Authorized)
+            {
+                AddEvent(ReputationReason.UnauthorizedView, ReputationTiming.View, ReputationUnit.View,
+                    view.Id, view.Id);
+                desktop.ShowStatusMessage("지정되지 않은 문서를 열람했습니다.");
+            }
+            CaptureAndApply();
         }
 
         private void OnPairSelectionChanged(string statement, string action)
@@ -107,6 +112,7 @@ namespace EditorGame.Documents
             AddEvent(reason, ReputationTiming.Record, ReputationUnit.Pair,
                 DocumentContract.Key(statementId, actionId), statementId, actionId);
             desktop.UpdateInvestigation(investigation);
+            CaptureAndApply();
             desktop.ClearSelection();
             desktop.ShowStatusMessage(correct ? "불일치를 기록했습니다." : "일치하지 않는 기록을 제출했습니다.");
         }
@@ -128,6 +134,7 @@ namespace EditorGame.Documents
                 AddEvent(ReputationReason.MissingPair, ReputationTiming.InvestigationComplete,
                     ReputationUnit.Pair, answerId, answerId);
             desktop.UpdateInvestigation(investigation);
+            CaptureAndApply();
             desktop.ShowStatusMessage(investigation.MissingAnswerIds.Count == 0
                 ? "조사를 완료했습니다." : $"조사를 완료했습니다. 누락 {investigation.MissingAnswerIds.Count}건");
         }
@@ -151,7 +158,17 @@ namespace EditorGame.Documents
             };
             var resultLines = SubmissionResults(snapshot);
             desktop.ShowStatusMessage(successful ? "모든 기록이 정확합니다." : "오판 또는 누락 기록이 있습니다.");
-            desktop.ShowSubmissionResult(successful ? "검증 완료" : "검증 결과", resultLines);
+            if (!DocumentRuntimeSession.Complete(LastSubmission, WorkService, out string error))
+            {
+                desktop.ShowStatusMessage(error);
+                return;
+            }
+            DocumentRuntimeSession.ApplyStoryBranch(assignment.Policy, LastSubmission.WorkInstanceId);
+            int reputationDelta = DocumentRuntimeSession.ReputationDelta(snapshot);
+            resultLines.Add($"평판 변화: {(reputationDelta >= 0 ? "+" : "")}{reputationDelta}");
+            resultLines.Add("업무 제출이 완료되었습니다. 확인하면 업무 화면으로 돌아갑니다.");
+            desktop.ShowSubmissionResult(successful ? "검증 완료" : "검증 결과", resultLines,
+                DocumentRuntimeSession.ReturnToScreen);
             Submitted?.Invoke(DocumentContract.Copy(LastSubmission));
         }
 
@@ -202,6 +219,11 @@ namespace EditorGame.Documents
                 SubjectId = subjectId,
                 Delta = rule?.Delta
             });
+        }
+
+        private void CaptureAndApply()
+        {
+            DocumentRuntimeSession.CaptureAndApply(desktop.GetStateSnapshot());
         }
 
         private void OnDestroy()

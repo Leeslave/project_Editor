@@ -26,16 +26,16 @@
     ],
     "Policy": {
       "Reputation": [
-        {"Reason": "UnauthorizedView", "Timing": "View", "Unit": "View", "Delta": null},
-        {"Reason": "CorrectEdit", "Timing": "Submission", "Unit": "Field", "Delta": null},
-        {"Reason": "IncorrectEdit", "Timing": "Submission", "Unit": "Field", "Delta": null},
-        {"Reason": "UnrequestedEdit", "Timing": "Submission", "Unit": "Field", "Delta": null},
-        {"Reason": "UnchangedTarget", "Timing": "Submission", "Unit": "Field", "Delta": null},
-        {"Reason": "UnchangedTarget", "Timing": "Submission", "Unit": "Person", "Delta": null}
+        {"Reason": "UnauthorizedView", "Timing": "View", "Unit": "View", "Delta": -1},
+        {"Reason": "CorrectEdit", "Timing": "Submission", "Unit": "Field", "Delta": 1},
+        {"Reason": "IncorrectEdit", "Timing": "Submission", "Unit": "Field", "Delta": -1},
+        {"Reason": "UnrequestedEdit", "Timing": "Submission", "Unit": "Field", "Delta": -1},
+        {"Reason": "UnchangedTarget", "Timing": "Submission", "Unit": "Field", "Delta": -1},
+        {"Reason": "UnchangedTarget", "Timing": "Submission", "Unit": "Person", "Delta": -3}
       ],
-      "UnlockCombination": "Unspecified",
-      "UnlockScope": "Unspecified",
-      "PrerequisiteWorkCodes": [],
+      "UnlockCombination": "All",
+      "UnlockScope": "SameDay",
+      "PrerequisiteWorkCodes": ["Dodge", "Maze"],
       "StoryThreshold": null,
       "StoryBranchId": null
     }

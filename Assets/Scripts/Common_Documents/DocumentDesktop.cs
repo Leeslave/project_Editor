@@ -428,7 +428,7 @@ namespace EditorGame.Documents
         }
 
         /// <summary>Opens a scrollable, read-only result window after the controller locks submission.</summary>
-        public void ShowSubmissionResult(string title, IEnumerable<string> lines)
+        public void ShowSubmissionResult(string title, IEnumerable<string> lines, Action onConfirm = null)
         {
             const string key = "submission:result";
             if (windows.TryGetValue(key, out var existing))
@@ -438,6 +438,17 @@ namespace EditorGame.Documents
             }
             var body = NewWindow(key, title, 760, 650);
             foreach (string line in lines) ui.Text(body, line, 21);
+            if (onConfirm != null)
+            {
+                bool confirmed = false;
+                var confirm = ui.Button(body, "확인 · 업무 종료", () =>
+                {
+                    if (confirmed) return;
+                    confirmed = true;
+                    onConfirm();
+                });
+                DocumentDesktopUI.Row(confirm, 58);
+            }
         }
 
         /// <summary>Additional controller gate; true never bypasses the mode's investigation or submission locks.</summary>

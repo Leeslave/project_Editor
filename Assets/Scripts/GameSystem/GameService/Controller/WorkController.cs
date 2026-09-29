@@ -58,6 +58,9 @@ public class WorkController : ServiceBase<IWorkService>, IWorkService
         sceneName = null;
         Work target = _workList.Keys.FirstOrDefault(work => work.code == workCode);
         if (target == null || _workList[target]) return false;
+        // 극비 문서 업무는 같은 날 두 선행 업무를 모두 완료한 뒤 실행할 수 있다.
+        if (workCode == "SecureDocument" &&
+            (!IsWorkClear("Dodge") || !IsWorkClear("Maze"))) return false;
 
         string targetScene = workCode == "SecureDocument" ? "Document" : workCode;
         if (!Application.CanStreamedLevelBeLoaded(targetScene))

@@ -62,10 +62,10 @@
     "Edits": [],
     "Policy": {
       "Reputation": [
-        {"Reason": "CorrectPair", "Timing": "Record", "Unit": "Pair", "Delta": null},
-        {"Reason": "IncorrectPair", "Timing": "Record", "Unit": "Pair", "Delta": null},
-        {"Reason": "UnauthorizedView", "Timing": "View", "Unit": "View", "Delta": null},
-        {"Reason": "MissingPair", "Timing": "InvestigationComplete", "Unit": "Pair", "Delta": null}
+        {"Reason": "CorrectPair", "Timing": "Record", "Unit": "Pair", "Delta": 1},
+        {"Reason": "IncorrectPair", "Timing": "Record", "Unit": "Pair", "Delta": -1},
+        {"Reason": "UnauthorizedView", "Timing": "View", "Unit": "View", "Delta": -1},
+        {"Reason": "MissingPair", "Timing": "InvestigationComplete", "Unit": "Pair", "Delta": -1}
       ],
       "UnlockCombination": "Unspecified",
       "UnlockScope": "Unspecified",

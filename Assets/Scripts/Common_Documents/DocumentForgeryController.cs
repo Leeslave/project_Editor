@@ -38,8 +38,12 @@ namespace EditorGame.Documents
                 return;
             }
 
-            string instanceId = DocumentContract.Key("document-forgery", assignment.Id, Guid.NewGuid().ToString("N"));
-            host.Show(assignment, DocumentContract.Begin(assignment, instanceId));
+            if (!DocumentRuntimeSession.TryBegin(assignment, WorkService, out var state, out string error))
+            {
+                EditorLogger.LogError(error);
+                return;
+            }
+            host.Show(assignment, state);
             desktop = host.Desktop;
             desktop.DocumentOpened += OnDocumentOpened;
             desktop.ProfileChanged += OnProfileChanged;
@@ -55,14 +59,18 @@ namespace EditorGame.Documents
 
         private void OnDocumentOpened(ViewRecord view)
         {
-            if (view.Authorized) return;
-            AddEvent(ReputationReason.UnauthorizedView, ReputationTiming.View, ReputationUnit.View,
-                view.Id, view.Id);
-            desktop.ShowStatusMessage("지정되지 않은 인물 파일을 열람했습니다.");
+            if (!view.Authorized)
+            {
+                AddEvent(ReputationReason.UnauthorizedView, ReputationTiming.View, ReputationUnit.View,
+                    view.Id, view.Id);
+                desktop.ShowStatusMessage("지정되지 않은 인물 파일을 열람했습니다.");
+            }
+            CaptureAndApply();
         }
 
         private void OnProfileChanged(string personId, ProfileField field, string value)
         {
+            CaptureAndApply();
             desktop.ShowStatusMessage("입력 내용은 창을 닫아도 유지됩니다.");
         }
 
@@ -89,7 +97,18 @@ namespace EditorGame.Documents
                 Fields = fields
             };
             desktop.ShowStatusMessage(successful ? "모든 조작 지시가 정확합니다." : "오타 또는 미수행 지시가 있습니다.");
-            desktop.ShowSubmissionResult(successful ? "극비 업무 완료" : "극비 업무 결과", ResultLines(fields));
+            if (!DocumentRuntimeSession.Complete(LastSubmission, WorkService, out string error))
+            {
+                desktop.ShowStatusMessage(error);
+                return;
+            }
+            DocumentRuntimeSession.ApplyStoryBranch(assignment.Policy, LastSubmission.WorkInstanceId);
+            List<string> resultLines = ResultLines(fields);
+            int reputationDelta = DocumentRuntimeSession.ReputationDelta(snapshot);
+            resultLines.Add($"평판 변화: {(reputationDelta >= 0 ? "+" : "")}{reputationDelta}");
+            resultLines.Add("업무 제출이 완료되었습니다. 확인하면 업무 화면으로 돌아갑니다.");
+            desktop.ShowSubmissionResult(successful ? "극비 업무 완료" : "극비 업무 결과", resultLines,
+                DocumentRuntimeSession.ReturnToScreen);
             Submitted?.Invoke(DocumentContract.Copy(LastSubmission));
         }
 
@@ -216,6 +235,11 @@ namespace EditorGame.Documents
                 case ProfileField.Country: return values.Country;
                 default: return values.Job;
             }
+        }
+
+        private void CaptureAndApply()
+        {
+            DocumentRuntimeSession.CaptureAndApply(desktop.GetStateSnapshot());
         }
 
         private void OnDestroy()
