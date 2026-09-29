@@ -1,0 +1,43 @@
+[
+  {
+    "Id": "forgery-confidential-example",
+    "Mode": "Forgery",
+    "Stage": 0,
+    "TargetDateId": "Confidential",
+    "Instructions": "극비 인물 정보 조작 지시\n클로버: 국적을 주렌, 직업을 보안부 C팀 사원으로 변경\n월터: 나이를 38, 국적을 노르반, 직업을 외교부 특수요원으로 변경\n지시되지 않은 항목은 원본 그대로 유지하십시오.",
+    "TargetPersonIds": ["person-clover", "person-walter"],
+    "People": [
+      {"Id": "person-clover", "PortraitKey": null, "Profile": {"Name": "클로버", "Age": "29", "Sex": "Female", "Country": "아슬라니아", "Job": "언론부 A팀 대리"}},
+      {"Id": "person-walter", "PortraitKey": null, "Profile": {"Name": "월터", "Age": "45", "Sex": "Male", "Country": "주렌", "Job": "보안부 B팀 팀장"}},
+      {"Id": "person-clayton", "PortraitKey": null, "Profile": {"Name": "클레이튼", "Age": "34", "Sex": "Male", "Country": "아슬라니아", "Job": "검열부 문서관"}}
+    ],
+    "Documents": [
+      {"Id": "profile-clover-confidential", "PersonId": "person-clover", "DateId": "Confidential", "Kind": "Profile", "Lines": []},
+      {"Id": "profile-walter-confidential", "PersonId": "person-walter", "DateId": "Confidential", "Kind": "Profile", "Lines": []},
+      {"Id": "profile-clayton-archive", "PersonId": "person-clayton", "DateId": "Archive", "Kind": "Profile", "Lines": []}
+    ],
+    "Answers": [],
+    "Edits": [
+      {"Id": "edit-clover-country", "PersonId": "person-clover", "Field": "Country", "TargetValue": "주렌", "DisplayText": "국적: 주렌"},
+      {"Id": "edit-clover-job", "PersonId": "person-clover", "Field": "Job", "TargetValue": "보안부 C팀 사원", "DisplayText": "직업: 보안부 C팀 사원"},
+      {"Id": "edit-walter-age", "PersonId": "person-walter", "Field": "Age", "TargetValue": "38", "DisplayText": "나이: 38"},
+      {"Id": "edit-walter-country", "PersonId": "person-walter", "Field": "Country", "TargetValue": "노르반", "DisplayText": "국적: 노르반"},
+      {"Id": "edit-walter-job", "PersonId": "person-walter", "Field": "Job", "TargetValue": "외교부 특수요원", "DisplayText": "직업: 외교부 특수요원"}
+    ],
+    "Policy": {
+      "Reputation": [
+        {"Reason": "UnauthorizedView", "Timing": "View", "Unit": "View", "Delta": null},
+        {"Reason": "CorrectEdit", "Timing": "Submission", "Unit": "Field", "Delta": null},
+        {"Reason": "IncorrectEdit", "Timing": "Submission", "Unit": "Field", "Delta": null},
+        {"Reason": "UnrequestedEdit", "Timing": "Submission", "Unit": "Field", "Delta": null},
+        {"Reason": "UnchangedTarget", "Timing": "Submission", "Unit": "Field", "Delta": null},
+        {"Reason": "UnchangedTarget", "Timing": "Submission", "Unit": "Person", "Delta": null}
+      ],
+      "UnlockCombination": "Unspecified",
+      "UnlockScope": "Unspecified",
+      "PrerequisiteWorkCodes": [],
+      "StoryThreshold": null,
+      "StoryBranchId": null
+    }
+  }
+]

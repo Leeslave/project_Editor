@@ -39586,6 +39586,7 @@ GameObject:
   - component: {fileID: 880003002}
   - component: {fileID: 880003003}
   - component: {fileID: 880003004}
+  - component: {fileID: 880003005}
   m_Layer: 0
   m_Name: DocumentDesktopHost
   m_TagString: Untagged
@@ -39653,3 +39654,17 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   host: {fileID: 880003003}
   assignmentContent: {fileID: 4900000, guid: 17a1ac9f0b7d4cdf9de60ca68bce282f, type: 3}
+--- !u!114 &880003005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 880003001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 991eedbbef2d486fa3cb62478aabed45, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  host: {fileID: 880003003}
+  assignmentContent: {fileID: 4900000, guid: 4f7659e760924c12897094f1a24a7081, type: 3}

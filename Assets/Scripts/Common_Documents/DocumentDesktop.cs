@@ -308,6 +308,11 @@ namespace EditorGame.Documents
                 SetField(edits[document.PersonId].Values, field, value);
                 ProfileChanged?.Invoke(document.PersonId, field, value);
             });
+            input.onEndEdit.AddListener(value =>
+            {
+                if (state.Phase != SubmissionPhase.Working) return;
+                SetField(edits[document.PersonId].Values, field, value);
+            });
         }
 
         private static string GetField(ProfileValues value, ProfileField field)
@@ -373,6 +378,9 @@ namespace EditorGame.Documents
         private void CloseWindow(string key)
         {
             if (!windows.TryGetValue(key, out var window)) return;
+            // Finish the current IME/edit session before destroying its visual input field.
+            foreach (var input in window.GetComponentsInChildren<TMP_InputField>(true))
+                if (input.isFocused) input.DeactivateInputField();
             // Removing the view never removes profile edits, records or the investigation state.
             window.gameObject.SetActive(false);
             Destroy(window.gameObject);
