@@ -62,7 +62,13 @@ namespace EditorGame.Documents
             if (state == null || string.IsNullOrWhiteSpace(state.WorkInstanceId)) return;
             RuntimeState runtime = GetRuntime(state.WorkInstanceId);
             runtime.PlayState = DocumentContract.CopyState(state);
-            foreach (ReputationEvent reputationEvent in state.Events)
+            ApplyNewReputationEvents(runtime, state.Events);
+        }
+
+        private static void ApplyNewReputationEvents(RuntimeState runtime,
+            IEnumerable<ReputationEvent> reputationEvents)
+        {
+            foreach (ReputationEvent reputationEvent in reputationEvents)
             {
                 if (runtime.AppliedEventIds.Contains(reputationEvent.Id)) continue;
                 if (!reputationEvent.Delta.HasValue)

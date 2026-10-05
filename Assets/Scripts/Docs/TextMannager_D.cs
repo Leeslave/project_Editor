@@ -4,27 +4,41 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class TextMannager_D : MonoBehaviour
 {
-    [SerializeField] bool IsRecord;
+    private const int DotPoolSize = 25;
+    private const int TextPoolSize = 16;
+    private const float DotSpacing = 30f;
 
-    [SerializeField] GameObject TextsPref;
-    [SerializeField] GameObject DotPref;
-    [SerializeField] EventTrigger NotTouch;
+    [FormerlySerializedAs("IsRecord")]
+    [SerializeField] private bool isRecord;
 
+    [FormerlySerializedAs("TextsPref")]
+    [SerializeField] private GameObject textPrefab;
+    [FormerlySerializedAs("DotPref")]
+    [SerializeField] private GameObject dotPrefab;
+    [FormerlySerializedAs("NotTouch")]
+    [SerializeField] private EventTrigger interactionBlocker;
+    [FormerlySerializedAs("Message")]
+    [SerializeField] private TMP_Text resultMessage;
+    [FormerlySerializedAs("AbnormalBT")]
+    [SerializeField] private Button abnormalButton;
+    [FormerlySerializedAs("NormalBT")]
+    [SerializeField] private Button normalButton;
 
-    [NonSerialized] List<GameObject> Dots;
-    [NonSerialized] List<GameObject> TextsObj;
-    [NonSerialized] List<Docs_Back> Texts;
+    [NonSerialized] private List<GameObject> dots;
+    [NonSerialized] private List<GameObject> textObjects;
+    [NonSerialized] private List<Docs_Back> textEntries;
 
     public TextMannager_D OtherMannager;
 
-    int ActivateText = 0;
+    private int activeTextCount;
 
     public Transform CurSelection;
-    int CurOpen = -1;
+    private int selectedTextIndex = -1;
 
     public int Errors = 0;
 
@@ -32,40 +46,53 @@ public class TextMannager_D : MonoBehaviour
 
     private void Start()
     {
-        TextsObj = new List<GameObject> { TextsPref };
-        Dots = new List<GameObject>();
+        textObjects = new List<GameObject>(TextPoolSize) { textPrefab };
+        dots = new List<GameObject>(DotPoolSize);
+        textEntries = new List<Docs_Back>(TextPoolSize);
 
-        for (int i = 0; i < 25; i++) Dots.Add(Instantiate(DotPref, transform));
-        for (int i = 0; i < 15; i++) TextsObj.Add(Instantiate(TextsPref, TextsPref.transform.parent));
-        Texts = new List<Docs_Back>();
-        foreach (var k in TextsObj)
+        for (int i = 0; i < DotPoolSize; i++)
+            dots.Add(Instantiate(dotPrefab, transform));
+        for (int i = 1; i < TextPoolSize; i++)
+            textObjects.Add(Instantiate(textPrefab, textPrefab.transform.parent));
+        foreach (GameObject textObject in textObjects)
         {
-            Texts.Add(k.GetComponent<Docs_Back>());
-            k.SetActive(false);
+            textEntries.Add(textObject.GetComponent<Docs_Back>());
+            textObject.SetActive(false);
         }
     }
 
     private void OnDisable()
     {
-        CurOpen = -1;
-        foreach (var k in TextsObj) k.SetActive(false); ActivateText = 0;
-        if (IsRecord) { NormalBT.interactable = true; AbnormalBT.interactable = false; }
+        selectedTextIndex = -1;
+        CurSelection = null;
+        if (textObjects != null)
+        {
+            foreach (GameObject textObject in textObjects)
+                textObject.SetActive(false);
+        }
+        activeTextCount = 0;
+        if (isRecord)
+        {
+            normalButton.interactable = true;
+            abnormalButton.interactable = false;
+        }
     }
 
 
     public void AddText(string text, Color color, TextAlignmentOptions align = TextAlignmentOptions.Left, bool IsTouchAble = true)
     {
-        TextsObj[ActivateText].SetActive(true);
-        Texts[ActivateText++].AddTexts(text, color, this,align, IsTouchAble); 
+        textObjects[activeTextCount].SetActive(true);
+        textEntries[activeTextCount++].AddTexts(text, color, this, align, IsTouchAble);
     }
 
     public void Clicked(int Ind, Transform tr)
     {
-        if (CurOpen != -1) Texts[CurOpen].UnSelect();
-        CurOpen = Ind; CurSelection = tr;
+        if (selectedTextIndex != -1)
+            textEntries[selectedTextIndex].UnSelect();
+        selectedTextIndex = Ind;
+        CurSelection = tr;
 
-        
-        if(OtherMannager.CurOpen != -1)
+        if (OtherMannager.selectedTextIndex != -1)
         {
             JudgeStart();
             OtherMannager.JudgeStart();
@@ -74,49 +101,54 @@ public class TextMannager_D : MonoBehaviour
 
     public void JudgeStart()
     {
-            NotTouch.gameObject.SetActive(true);
-            Vector3 Gap = (OtherMannager.CurSelection.position - CurSelection.position) * 0.5f;
-            int x = Mathf.FloorToInt(Mathf.Abs(Gap.x / 30));
-            int y = Mathf.FloorToInt(Mathf.Abs(Gap.y / 30));
-            Vector3 xGap = x == 0 ? Vector3.zero : Gap / x; xGap.y = 0;
-            Vector3 yGap = y == 0 ? Vector3.zero : Gap / y; yGap.x = 0;
+        interactionBlocker.gameObject.SetActive(true);
+        Vector3 halfDistance = (OtherMannager.CurSelection.position - CurSelection.position) * 0.5f;
+        int horizontalSteps = Mathf.FloorToInt(Mathf.Abs(halfDistance.x / DotSpacing));
+        int verticalSteps = Mathf.FloorToInt(Mathf.Abs(halfDistance.y / DotSpacing));
+        Vector3 horizontalStep = horizontalSteps == 0 ? Vector3.zero : halfDistance / horizontalSteps;
+        horizontalStep.y = 0;
+        Vector3 verticalStep = verticalSteps == 0 ? Vector3.zero : halfDistance / verticalSteps;
+        verticalStep.x = 0;
 
-            Vector3 StartPos = CurSelection.position;
-
-            int l = 0;
-            for (int i = 0; i < x; i++) { Dots[l++].transform.position = StartPos+ xGap * i;}
-            StartPos = StartPos + xGap * (x - 1);
-            for(int i = 0; i <= y; i++) { Dots[l++].transform.position = StartPos + yGap * i;}
-            StartCoroutine(DotAct(l));
+        Vector3 startPosition = CurSelection.position;
+        int dotCount = 0;
+        for (int i = 0; i < horizontalSteps; i++)
+            dots[dotCount++].transform.position = startPosition + horizontalStep * i;
+        startPosition += horizontalStep * (horizontalSteps - 1);
+        for (int i = 0; i <= verticalSteps; i++)
+            dots[dotCount++].transform.position = startPosition + verticalStep * i;
+        StartCoroutine(DotAct(dotCount));
     }
 
-    [SerializeField] TMP_Text Message;
-    [SerializeField] Button AbnormalBT;
-    [SerializeField] Button NormalBT;
-
-    IEnumerator DotAct(int i)
+    private IEnumerator DotAct(int dotCount)
     {
-        for(int x = 0; x < i-1; x++)
+        for (int index = 0; index < dotCount - 1; index++)
         {
-            Dots[x].SetActive(true);
+            dots[index].SetActive(true);
             yield return new WaitForSeconds(0.1f);
         }
-        if (IsRecord)
+        if (isRecord)
         {
-            Message.transform.position = Dots[i-1].transform.position; Message.gameObject.SetActive(true);
+            resultMessage.transform.position = dots[dotCount - 1].transform.position;
+            resultMessage.gameObject.SetActive(true);
             if (IsCor() && OtherMannager.IsCor())
             {
-                CorrectedAnswer(); OtherMannager.CorrectedAnswer();
-                Message.text = $"Abnormal Detection!";
+                CorrectedAnswer();
+                OtherMannager.CorrectedAnswer();
+                resultMessage.text = "Abnormal Detection!";
                 CurDocs.IsAbnormalFinded = true;
-                AbnormalBT.interactable = true;
-                NormalBT.interactable = false;
+                abnormalButton.interactable = true;
+                normalButton.interactable = false;
             }
-            else Message.text = $"No Abnormal";
-            MyUi.AddEvent(NotTouch, EventTriggerType.PointerClick,
-                (PointerEventData DT) =>
+            else resultMessage.text = "No Abnormal";
+            MyUi.AddEvent(interactionBlocker, EventTriggerType.PointerClick,
+                (PointerEventData eventData) =>
                 {
-                    RemoveDot(); OtherMannager.RemoveDot(); Message.gameObject.SetActive(false); NotTouch.gameObject.SetActive(false);NotTouch.triggers.Clear();
+                    RemoveDot();
+                    OtherMannager.RemoveDot();
+                    resultMessage.gameObject.SetActive(false);
+                    interactionBlocker.gameObject.SetActive(false);
+                    interactionBlocker.triggers.Clear();
                 }
             );
         }
@@ -124,15 +156,19 @@ public class TextMannager_D : MonoBehaviour
 
     public void CorrectedAnswer()
     {
-        Texts[CurOpen].GetCorrected();
+        textEntries[selectedTextIndex].GetCorrected();
     }
 
     public bool IsCor() 
     {
-        return MyAns == CurOpen; 
+        return MyAns == selectedTextIndex;
     }
 
-    public void RemoveDot() { foreach (var k in Dots) k.SetActive(false); }
+    public void RemoveDot()
+    {
+        foreach (GameObject dot in dots)
+            dot.SetActive(false);
+    }
 
     [HideInInspector] public Docs CurDocs;
 

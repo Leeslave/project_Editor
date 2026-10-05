@@ -81,6 +81,15 @@ namespace EditorGame.Documents
 
         private void Build()
         {
+            CreateDesktopRoot();
+            CreateWorkspace();
+            CreateInstructionPanel();
+            RefreshStatus();
+            RefreshControls();
+        }
+
+        private void CreateDesktopRoot()
+        {
             var canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 50;
@@ -90,6 +99,10 @@ namespace EditorGame.Documents
             root = ui.Panel("Desktop 5 by 3", backdrop, DocumentDesktopUI.Surface);
             root.anchorMin = root.anchorMax = root.pivot = new Vector2(.5f, .5f);
             root.sizeDelta = new Vector2(1600, 960);
+        }
+
+        private void CreateWorkspace()
+        {
             var workspace = ui.Panel("Workspace 4 by 3", root,
                 assignment.Mode == DocumentMode.Forgery ? Color.black : DocumentDesktopUI.Surface);
             DocumentDesktopUI.Place(workspace, 0, 0, 1280, 960);
@@ -99,7 +112,7 @@ namespace EditorGame.Documents
             taskbar = ui.Taskbar(workspace);
             if (assignment.Mode == DocumentMode.Forgery)
             {
-                Folder(workspace, DocumentKind.Profile, 20);
+                CreateFolderShortcut(workspace, DocumentKind.Profile, 20);
                 var mark = ui.Text(workspace, "CONFIDENTIAL", 32);
                 mark.color = Color.red;
                 mark.alignment = TextAlignmentOptions.Right;
@@ -107,11 +120,15 @@ namespace EditorGame.Documents
             }
             else
             {
-                Folder(workspace, DocumentKind.Statement, 20);
-                Folder(workspace, DocumentKind.Action, 190);
+                CreateFolderShortcut(workspace, DocumentKind.Statement, 20);
+                CreateFolderShortcut(workspace, DocumentKind.Action, 190);
             }
             // 창은 바탕 화면 아이콘보다 위에 두고 작업표시줄 영역은 침범하지 않는다.
             area.SetAsLastSibling();
+        }
+
+        private void CreateInstructionPanel()
+        {
             var panel = ui.Frame("Instructions", root);
             DocumentDesktopUI.Place(panel, 1280, 0, 320, 960);
             var heading = ui.Text(panel, assignment.Mode == DocumentMode.Forgery ? "극비 업무" : "진술 대조", 30);
@@ -143,8 +160,6 @@ namespace EditorGame.Documents
             cancel.gameObject.SetActive(assignment.Mode == DocumentMode.StatementCheck);
             submit = ui.Button(panel, "ValidTask · 제출", () => { if (CanSubmit) SubmissionRequested?.Invoke(); });
             DocumentDesktopUI.Place((RectTransform)submit.transform, 18, 878, 284, 60);
-            RefreshStatus();
-            RefreshControls();
         }
 
         private void LateUpdate()
@@ -170,19 +185,19 @@ namespace EditorGame.Documents
                 ui.SetInteractable(pair.Value, CanCompleteInvestigation(pair.Key));
         }
 
-        private static string KindName(DocumentKind kind)
+        private static string GetKindName(DocumentKind kind)
         {
             return kind == DocumentKind.Statement ? "진술 파일" : kind == DocumentKind.Action ? "실제 행동" : "인물";
         }
 
-        private void Folder(Transform parent, DocumentKind kind, float x)
+        private void CreateFolderShortcut(Transform parent, DocumentKind kind, float x)
         {
-            var button = ui.Button(parent, KindName(kind), () => OpenFolder(kind));
+            var button = ui.Button(parent, GetKindName(kind), () => OpenFolder(kind));
             ui.Icon(button, ui.WindowIcon, false);
             DocumentDesktopUI.Place((RectTransform)button.transform, x, 22, 154, 74);
         }
 
-        private RectTransform NewWindow(string key, string title, float width, float height, Action onClose = null)
+        private RectTransform CreateWindow(string key, string title, float width, float height, Action onClose = null)
         {
             var frame = ui.Frame(title, area);
             int slot = windows.Count % 6;
@@ -223,7 +238,7 @@ namespace EditorGame.Documents
             if ((assignment.Mode == DocumentMode.Forgery) != (kind == DocumentKind.Profile)) return;
             string key = "folder:" + kind;
             if (windows.TryGetValue(key, out var existing)) { existing.Focus(); return; }
-            var body = NewWindow(key, KindName(kind), 470, 570);
+            var body = CreateWindow(key, GetKindName(kind), 470, 570);
             foreach (var document in assignment.Documents.Where(d => d.Kind == kind))
             {
                 var button = ui.Button(body, people[document.PersonId].Profile.Name + "  /  " + document.DateId,
@@ -239,7 +254,7 @@ namespace EditorGame.Documents
             if ((assignment.Mode == DocumentMode.Forgery) != (document.Kind == DocumentKind.Profile)) return;
             string key = "document:" + document.Id;
             if (windows.TryGetValue(key, out var existing)) { existing.Focus(); return; }
-            var body = NewWindow(key, people[document.PersonId].Profile.Name + " · " + KindName(document.Kind), 570, 620);
+            var body = CreateWindow(key, people[document.PersonId].Profile.Name + " · " + GetKindName(document.Kind), 570, 620);
             RenderDocument(document, body);
             if (state.Phase != SubmissionPhase.Working) return;
             var view = new ViewRecord
@@ -266,7 +281,8 @@ namespace EditorGame.Documents
                     DocumentDesktopUI.Row(portrait, 150);
                 }
                 else ui.Text(body, "[사진 없음]");
-                foreach (ProfileField field in Enum.GetValues(typeof(ProfileField))) ProfileInput(body, document, field);
+                foreach (ProfileField field in Enum.GetValues(typeof(ProfileField)))
+                    CreateProfileInput(body, document, field);
                 return;
             }
             foreach (var line in document.Lines)
@@ -286,7 +302,7 @@ namespace EditorGame.Documents
             RefreshSelection();
         }
 
-        private void ProfileInput(Transform parent, DocumentContent document, ProfileField field)
+        private void CreateProfileInput(Transform parent, DocumentContent document, ProfileField field)
         {
             ui.Text(parent, field.ToString(), 18);
             var rect = ui.InputPanel(field.ToString(), parent);
@@ -424,7 +440,7 @@ namespace EditorGame.Documents
                 confirmed = true;
                 onConfirm?.Invoke();
             };
-            var body = NewWindow(key, title, 760, 650, onConfirm == null ? null : confirm);
+            var body = CreateWindow(key, title, 760, 650, onConfirm == null ? null : confirm);
             foreach (string line in lines) ui.Text(body, line, 21);
             if (onConfirm != null)
             {

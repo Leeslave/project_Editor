@@ -36,18 +36,42 @@ namespace EditorGame.Documents
         {
             if (font == null) throw new InvalidOperationException("A desktop TMP font must be assigned.");
             if (Desktop != null) throw new InvalidOperationException("Close the current desktop and retain its snapshot first.");
+            Desktop = CreateDesktop(content, state, portraits);
+            HideLegacyRoots();
+            EnsureEventSystem();
+        }
+
+        private DocumentDesktop CreateDesktop(DocumentAssignment content, DocumentPlayState state,
+            IDictionary<string, Sprite> portraits)
+        {
             var view = new GameObject("Document Desktop", typeof(RectTransform));
             UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(view, gameObject.scene);
             var desktop = view.AddComponent<DocumentDesktop>();
-            try { desktop.Initialize(content, state, font, portraits, skin); }
-            catch { view.SetActive(false); Destroy(view); throw; }
-            Desktop = desktop;
+            try
+            {
+                desktop.Initialize(content, state, font, portraits, skin);
+                return desktop;
+            }
+            catch
+            {
+                view.SetActive(false);
+                Destroy(view);
+                throw;
+            }
+        }
+
+        private void HideLegacyRoots()
+        {
             foreach (var legacy in legacyRoots)
             {
                 if (legacy == null) continue;
                 previousActive[legacy] = legacy.activeSelf;
                 legacy.SetActive(false);
             }
+        }
+
+        private void EnsureEventSystem()
+        {
             if (EventSystem.current == null)
             {
                 ownedEventSystem = new GameObject("Desktop EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
@@ -72,7 +96,13 @@ namespace EditorGame.Documents
                 Desktop = null;
             }
             if (restoreLegacy)
-                foreach (var entry in previousActive) if (entry.Key != null) entry.Key.SetActive(entry.Value);
+            {
+                foreach (var entry in previousActive)
+                {
+                    if (entry.Key != null)
+                        entry.Key.SetActive(entry.Value);
+                }
+            }
             previousActive.Clear();
             if (ownedEventSystem != null)
             {

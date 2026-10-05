@@ -10,16 +10,16 @@ namespace EditorGame.Documents
         protected override DocumentMode Mode => DocumentMode.StatementCheck;
         protected override string UnauthorizedViewMessage => "지정되지 않은 문서를 열람했습니다.";
 
-        private string statementId;
-        private string actionId;
-        private Dictionary<string, DocumentContent> documentsByLine;
+        private string selectedStatementLineId;
+        private string selectedActionLineId;
+        private Dictionary<string, DocumentContent> documentsByLineId;
 
         protected override void AttachModeHandlers()
         {
             Desktop.PairSelectionChanged += OnPairSelectionChanged;
             Desktop.RecordRequested += RecordSelection;
             Desktop.InvestigationCompletionRequested += CompleteInvestigation;
-            documentsByLine = Assignment.Documents
+            documentsByLineId = Assignment.Documents
                 .SelectMany(document => document.Lines.Select(line => new { line.Id, Document = document }))
                 .ToDictionary(item => item.Id, item => item.Document, StringComparer.Ordinal);
         }
@@ -33,21 +33,22 @@ namespace EditorGame.Documents
 
         private void OnPairSelectionChanged(string statement, string action)
         {
-            statementId = statement;
-            actionId = action;
+            selectedStatementLineId = statement;
+            selectedActionLineId = action;
         }
 
         private void RecordSelection()
         {
-            if (statementId == null || actionId == null) return;
+            if (selectedStatementLineId == null || selectedActionLineId == null) return;
             DocumentPlayState state = Desktop.GetStateSnapshot();
-            if (!documentsByLine.TryGetValue(statementId, out var statement) ||
-                !documentsByLine.TryGetValue(actionId, out var action) || statement.PersonId != action.PersonId)
+            if (!documentsByLineId.TryGetValue(selectedStatementLineId, out var statement) ||
+                !documentsByLineId.TryGetValue(selectedActionLineId, out var action) || statement.PersonId != action.PersonId)
                 return;
 
             InvestigationState investigation = state.Investigations.Single(item => item.PersonId == statement.PersonId);
             if (investigation.Completed) return;
-            if (investigation.Records.Any(item => item.StatementLineId == statementId && item.ActionLineId == actionId))
+            if (investigation.Records.Any(item => item.StatementLineId == selectedStatementLineId &&
+                item.ActionLineId == selectedActionLineId))
             {
                 Desktop.ClearSelection();
                 Desktop.ShowStatusMessage("이미 기록한 조합입니다.");
@@ -55,19 +56,21 @@ namespace EditorGame.Documents
             }
 
             AnswerPair answer = Assignment.Answers.SingleOrDefault(item =>
-                item.PersonId == statement.PersonId && item.StatementLineId == statementId && item.ActionLineId == actionId);
+                item.PersonId == statement.PersonId && item.StatementLineId == selectedStatementLineId &&
+                item.ActionLineId == selectedActionLineId);
             bool correct = answer != null;
             investigation.Records.Add(new PairRecord
             {
-                Id = DocumentContract.Key(state.WorkInstanceId, "record", statementId, actionId),
-                StatementLineId = statementId,
-                ActionLineId = actionId,
+                Id = DocumentContract.Key(state.WorkInstanceId, "record", selectedStatementLineId, selectedActionLineId),
+                StatementLineId = selectedStatementLineId,
+                ActionLineId = selectedActionLineId,
                 MatchedAnswerId = answer?.Id,
                 Correct = correct
             });
             AddEvent(correct ? ReputationReason.CorrectPair : ReputationReason.IncorrectPair,
                 ReputationTiming.Record, ReputationUnit.Pair,
-                DocumentContract.Key(statementId, actionId), statementId, actionId);
+                DocumentContract.Key(selectedStatementLineId, selectedActionLineId),
+                selectedStatementLineId, selectedActionLineId);
             Desktop.UpdateInvestigation(investigation);
             CaptureAndApply();
             Desktop.ClearSelection();

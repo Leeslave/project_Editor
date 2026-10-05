@@ -156,6 +156,13 @@ namespace EditorGame.Documents
             ApplySprite(outer, skin.Recessed);
             Place(outer, x, y, width, height);
             var scroll = outer.gameObject.AddComponent<ScrollRect>();
+            RectTransform content = CreateScrollContent(outer, scroll);
+            CreateScrollbar(outer, scroll, width, height);
+            return content;
+        }
+
+        private RectTransform CreateScrollContent(RectTransform outer, ScrollRect scroll)
+        {
             var viewport = Panel("Viewport", outer, Color.white);
             Fill(viewport, 4);
             viewport.offsetMax = new Vector2(-22, -4);
@@ -177,6 +184,11 @@ namespace EditorGame.Documents
             scroll.horizontal = false;
             scroll.movementType = ScrollRect.MovementType.Clamped;
             scroll.scrollSensitivity = 35;
+            return content;
+        }
+
+        private void CreateScrollbar(RectTransform outer, ScrollRect scroll, float width, float height)
+        {
             var track = Panel("Scrollbar", outer, Surface);
             ApplySprite(track, skin.ScrollTrack);
             Place(track, width - 18, 0, 18, height);
@@ -188,7 +200,6 @@ namespace EditorGame.Documents
             bar.targetGraphic = handle.GetComponent<Image>();
             bar.direction = Scrollbar.Direction.BottomToTop;
             scroll.verticalScrollbar = bar;
-            return content;
         }
 
         internal static void Row(Component component, float height)

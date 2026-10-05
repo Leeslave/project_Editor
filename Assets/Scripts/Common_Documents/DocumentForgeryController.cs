@@ -54,28 +54,32 @@ namespace EditorGame.Documents
 
         private List<FieldResult> EvaluateFields(DocumentPlayState state)
         {
-            var originals = Assignment.People.ToDictionary(item => item.Id, item => item.Profile, StringComparer.Ordinal);
-            var submitted = state.People.ToDictionary(item => item.PersonId, item => item.Values, StringComparer.Ordinal);
-            var instructions = Assignment.Edits.ToDictionary(
+            var originalProfiles = Assignment.People.ToDictionary(
+                item => item.Id, item => item.Profile, StringComparer.Ordinal);
+            var submittedProfiles = state.People.ToDictionary(
+                item => item.PersonId, item => item.Values, StringComparer.Ordinal);
+            var editsByField = Assignment.Edits.ToDictionary(
                 item => DocumentContract.Key(item.PersonId, item.Field.ToString()), item => item, StringComparer.Ordinal);
             var results = new List<FieldResult>();
             foreach (string personId in Assignment.TargetPersonIds)
-            foreach (ProfileField field in Enum.GetValues(typeof(ProfileField)))
             {
-                string key = DocumentContract.Key(personId, field.ToString());
-                bool instructed = instructions.TryGetValue(key, out var instruction);
-                string original = originals[personId].Get(field);
-                string submittedValue = submitted[personId].Get(field);
-                string expected = instructed ? instruction.TargetValue : original;
-                results.Add(new FieldResult
+                foreach (ProfileField field in Enum.GetValues(typeof(ProfileField)))
                 {
-                    PersonId = personId,
-                    Field = field,
-                    Original = original,
-                    Submitted = submittedValue,
-                    Expected = expected,
-                    Outcome = DocumentContract.ClassifyField(original, submittedValue, expected, instructed)
-                });
+                    string key = DocumentContract.Key(personId, field.ToString());
+                    bool instructed = editsByField.TryGetValue(key, out EditInstruction instruction);
+                    string original = originalProfiles[personId].Get(field);
+                    string submittedValue = submittedProfiles[personId].Get(field);
+                    string expected = instructed ? instruction.TargetValue : original;
+                    results.Add(new FieldResult
+                    {
+                        PersonId = personId,
+                        Field = field,
+                        Original = original,
+                        Submitted = submittedValue,
+                        Expected = expected,
+                        Outcome = DocumentContract.ClassifyField(original, submittedValue, expected, instructed)
+                    });
+                }
             }
             return results;
         }
@@ -95,29 +99,26 @@ namespace EditorGame.Documents
                 }
 
                 foreach (FieldResult field in personFields)
-                {
-                    string fieldKey = DocumentContract.Key(personId, field.Field.ToString());
-                    switch (field.Outcome)
-                    {
-                        case FieldOutcome.CorrectEdit:
-                            AddEvent(ReputationReason.CorrectEdit, ReputationTiming.Submission,
-                                ReputationUnit.Field, fieldKey, personId, field.Field.ToString());
-                            break;
-                        case FieldOutcome.IncorrectEdit:
-                            AddEvent(ReputationReason.IncorrectEdit, ReputationTiming.Submission,
-                                ReputationUnit.Field, fieldKey, personId, field.Field.ToString());
-                            break;
-                        case FieldOutcome.UnchangedTarget when instructions.Contains(fieldKey):
-                            AddEvent(ReputationReason.UnchangedTarget, ReputationTiming.Submission,
-                                ReputationUnit.Field, fieldKey, personId, field.Field.ToString());
-                            break;
-                        case FieldOutcome.UnrequestedEdit:
-                            AddEvent(ReputationReason.UnrequestedEdit, ReputationTiming.Submission,
-                                ReputationUnit.Field, fieldKey, personId, field.Field.ToString());
-                            break;
-                    }
-                }
+                    AddFieldReputationEvent(personId, field, instructions);
             }
+        }
+
+        private void AddFieldReputationEvent(string personId, FieldResult field, HashSet<string> instructions)
+        {
+            string fieldKey = DocumentContract.Key(personId, field.Field.ToString());
+            ReputationReason reason;
+            switch (field.Outcome)
+            {
+                case FieldOutcome.CorrectEdit: reason = ReputationReason.CorrectEdit; break;
+                case FieldOutcome.IncorrectEdit: reason = ReputationReason.IncorrectEdit; break;
+                case FieldOutcome.UnchangedTarget when instructions.Contains(fieldKey):
+                    reason = ReputationReason.UnchangedTarget;
+                    break;
+                case FieldOutcome.UnrequestedEdit: reason = ReputationReason.UnrequestedEdit; break;
+                default: return;
+            }
+            AddEvent(reason, ReputationTiming.Submission, ReputationUnit.Field,
+                fieldKey, personId, field.Field.ToString());
         }
 
         private List<string> ResultLines(List<FieldResult> fields)

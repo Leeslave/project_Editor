@@ -1,45 +1,48 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class Docs_Back : Buttons_M
 {
 
-    [SerializeField] TextMannager_D TMD;
-    [SerializeField] TMP_Text Text;
-    [SerializeField] Color AfColor;
-    int MyInd;
-    RectTransform Rect;
-    Outline Out;
-    TextMannager_D TD;
+    [FormerlySerializedAs("TMD")]
+    [SerializeField] private TextMannager_D defaultManager;
+    [FormerlySerializedAs("Text")]
+    [SerializeField] private TMP_Text textLabel;
+    [FormerlySerializedAs("AfColor")]
+    [SerializeField] private Color hoverColor;
+    private int entryIndex;
+    private RectTransform parentRect;
+    private Outline outline;
+    private TextMannager_D manager;
     public bool React = true;
     public bool IsSelect = false;
 
     protected override void Awake()
     {
         base.Awake();
-        MyInd = transform.GetSiblingIndex() - 4;
-        Rect = transform.parent.GetComponent<RectTransform>();
-        Out = GetComponent<Outline>(); 
+        entryIndex = transform.GetSiblingIndex() - 4;
+        parentRect = transform.parent.GetComponent<RectTransform>();
+        outline = GetComponent<Outline>();
     }
 
-    Color cnt = new Color(0, 0, 0, 0);
-    protected override void Click(PointerEventData Data)
+    protected override void Click(PointerEventData eventData)
     {
         if (React && !IsSelect)
         {
             image.color = BfColor;
             IsSelect = true;
-            TD.Clicked(MyInd, transform);
+            manager.Clicked(entryIndex, transform);
         }
     }
     protected override void OnPointer(PointerEventData data)
     {
         if (React && !IsSelect)
         {
-            image.color = AfColor;
-            Out.enabled = true;
+            image.color = hoverColor;
+            outline.enabled = true;
         }
     }
     protected override void OutPointer(PointerEventData data)
@@ -47,26 +50,34 @@ public class Docs_Back : Buttons_M
         if (React && !IsSelect)
         {
             image.color = BfColor;
-            Out.enabled = false;
+            outline.enabled = false;
         }
     }
 
     public void UnSelect()
     {
         image.color = BfColor;
-        Out.enabled = false;
+        outline.enabled = false;
         IsSelect = false;
     }
 
     public void AddTexts(string text, Color color, TextMannager_D pr, TextAlignmentOptions align = TextAlignmentOptions.Left,bool IsTouchAble = true)
     {
-        Text.text = text; Text.color = color; Text.alignment = align; if (TD == null) TD = pr;
-        image.raycastTarget = IsTouchAble; Out.enabled = false; this.React = IsTouchAble;
-        LayoutRebuilder.ForceRebuildLayoutImmediate(Rect);
+        textLabel.text = text;
+        textLabel.color = color;
+        textLabel.alignment = align;
+        if (manager == null)
+            manager = pr != null ? pr : defaultManager;
+        image.raycastTarget = IsTouchAble;
+        outline.enabled = false;
+        React = IsTouchAble;
+        LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
     }
 
     public void GetCorrected()
     {
-        Out.enabled = false; image.raycastTarget = false; Text.fontStyle |= FontStyles.Strikethrough;
+        outline.enabled = false;
+        image.raycastTarget = false;
+        textLabel.fontStyle |= FontStyles.Strikethrough;
     }
 }

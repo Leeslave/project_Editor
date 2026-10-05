@@ -71,101 +71,108 @@ public class DB_M : MonoBehaviour
         if (DB_Docs != null) { Destroy(gameObject); return; }
         DB_Docs = this;
 
-        // Read Manipulation Data
+        InitializeInfoCategories();
+        CreateFolderIcons();
+        PrepareInstructions();
+
+        if (stageInt == 1)
+            StartCoroutine(TutoTest());
+    }
+
+    private void InitializeInfoCategories()
+    {
         InfSub.Add(Enum.GetNames(typeof(Country)));
         InfSub.Add(Enum.GetNames(typeof(Job)));
         InfSub.Add(Enum.GetNames(typeof(Belonging)));
         InfSub.Add(Enum.GetNames(typeof(Part)));
+    }
 
-        GameObject cnt = null;
+    private void CreateFolderIcons()
+    {
         for (int i = 0; i < PeopleList.Count - 1; i++)
-        {
-            var tmp = DBFolder.NewIcon(PeopleList[i].name_e, spr, 1);
-            if (i == 0) cnt = tmp;
-        }
+            DBFolder.NewIcon(PeopleList[i].name_e, spr, 1);
         DBFolder.gameObject.SetActive(false);
-        
-        //Read News Data
+
         for (int i = 0; i < NewsList.Length - 1; i++)
         {
             NewsFolder.NewIcon(NewsList[i].publishDay, spr, 2);
-            var j = NewsList[i].Main[0].Split('\n');
-            if (j.Length != 1) NewsList[i].Main = j.ToList();
+            string[] newsLines = NewsList[i].Main[0].Split('\n');
+            if (newsLines.Length != 1) NewsList[i].Main = newsLines.ToList();
         }
         NewsFolder.gameObject.SetActive(false);
-        //Read Docs Data
-        foreach (var k in DocsList) DocsFolder.NewIcon(name: k.Subject, Image: spr, 3);
+
+        foreach (Docs document in DocsList)
+            DocsFolder.NewIcon(name: document.Subject, Image: spr, 3);
         DocsFolder.gameObject.SetActive(false);
-        
-        // Set Instruction
-        foreach(var k in InstructionList)
+    }
+
+    private void PrepareInstructions()
+    {
+        foreach (Instruction instruction in InstructionList)
         {
-            EditorLogger.Log("k.stageInt: " + k.stageInt);
+            EditorLogger.Log("k.stageInt: " + instruction.stageInt);
             EditorLogger.Log("now stageInte: " + stageInt);
-            //if (k.Month == Month && k.date == Day)
-            if (k.stageInt == stageInt)
-            { 
+            if (instruction.stageInt == stageInt)
+            {
                 EditorLogger.Log("stageInt 대조");
-                Instructions = k;
-                // 정답용 Data에 등록된 인물의 이름을 저장(중복 생성 방지)
-                List<string> TargetSub = new List<string>();
-
-                // Instruction과 기존 DB의 인물 정보를 조합하여 정답용 Data를 생성
-                foreach (var j in k.InfoInst)
-                {
-                    PeopleIndex s = new PeopleIndex();
-                    if (!TargetSub.Contains(j.Target))          // 정답용 Data에 해당 인물이 없을 경우 s에 해당 인물 정보 할당
-                    {
-                        s = new PeopleIndex(FindPeople(j.Target));
-                        k.Peoples.Add(s);
-                        TargetSub.Add(j.Target);
-                    }
-                    else foreach(var i in k.Peoples)if(i.name_e == j.Target) { s = i; break; }      // 이미 있을 경우, 정답용 Data에서 해당 인물의 정보를 가져온 뒤 s에 할당
-  
-                    switch (j.ToDo)
-                    {
-                        case 0:
-                            s.country = (Country)j.After;
-                            break;
-                        case 1:
-                            s.job = (Job)j.After;
-                            break;
-                        case 4:
-                            s.curFace = j.After;
-                            break;
-                        case 2:
-                            s.belong = (Belonging)j.After;
-                            break;
-                        case 3:
-                            s.part = (Part)j.After;
-                            break;
-                    }
-                }
-
-                // Instruction과 기존 DB의 뉴스 정보를 조합하여 정답용 Data를 생성
-                News NewsSub = FindNews($"{Month}/" + Day.ToString("D2"));
-                if (NewsSub != null)
-                {
-                    // Calculate Cur News's Maximum Line(mx)
-                    int mx = NewsSub.Main.Count; foreach (var j in k.NewsInst) if (j.Line > mx) mx = j.Line;
-                    // Add Over Line & Add News Main To Evaluate News Main
-                    k.NewsMain = new List<string>(); foreach (var i in NewsSub.Main) k.NewsMain.Add(i); for (int I = NewsSub.Main.Count; I < mx; I++) k.NewsMain.Add("");
-                    // Apply Changes At Evaluate News
-                    foreach (var i in k.NewsInst) k.NewsMain[i.Line] = i.Goal;
-                }
-                break; 
+                Instructions = instruction;
+                PreparePeopleAnswers(instruction);
+                PrepareNewsAnswers(instruction);
+                break;
             }
-        }
-
-        //secretInfo.gameObject.SetActive(PlayerPrefs.GetInt("DocumentTest")==1);
-
-        if (stageInt == 1)
-        {
-            StartCoroutine(TutoTest(cnt));
         }
     }
 
-    IEnumerator TutoTest(GameObject cnt)
+    private void PreparePeopleAnswers(Instruction instruction)
+    {
+        var targetNames = new List<string>();
+        foreach (var edit in instruction.InfoInst)
+        {
+            PeopleIndex person = new PeopleIndex();
+            if (!targetNames.Contains(edit.Target))
+            {
+                person = new PeopleIndex(FindPeople(edit.Target));
+                instruction.Peoples.Add(person);
+                targetNames.Add(edit.Target);
+            }
+            else
+            {
+                foreach (PeopleIndex existing in instruction.Peoples)
+                {
+                    if (existing.name_e != edit.Target) continue;
+                    person = existing;
+                    break;
+                }
+            }
+
+            switch (edit.ToDo)
+            {
+                case 0: person.country = (Country)edit.After; break;
+                case 1: person.job = (Job)edit.After; break;
+                case 2: person.belong = (Belonging)edit.After; break;
+                case 3: person.part = (Part)edit.After; break;
+                case 4: person.curFace = edit.After; break;
+            }
+        }
+    }
+
+    private void PrepareNewsAnswers(Instruction instruction)
+    {
+        News source = FindNews($"{Month}/" + Day.ToString("D2"));
+        if (source == null) return;
+
+        int maximumLine = source.Main.Count;
+        foreach (var edit in instruction.NewsInst)
+            if (edit.Line > maximumLine) maximumLine = edit.Line;
+
+        instruction.NewsMain = new List<string>(source.Main);
+        for (int index = source.Main.Count; index < maximumLine; index++)
+            instruction.NewsMain.Add("");
+        foreach (var edit in instruction.NewsInst)
+            instruction.NewsMain[edit.Line] = edit.Goal;
+    }
+
+    IEnumerator TutoTest()
     {
         yield return new WaitForSeconds(0.2f);
 
@@ -234,39 +241,43 @@ public class DB_M : MonoBehaviour
     /// <param name="Score">{인물 종합 점수, 뉴스 종합 점수, 문서 종합 점수}</param>
     public void EvaluateWork(ref int[] Score)
     {
-        // Evaluate Info
-        int Score_Info = 0;
+        Score[0] = EvaluatePeople();
+        Score[1] = EvaluateNews();
+        Score[2] = EvaluateDocuments();
+    }
+
+    private int EvaluatePeople()
+    {
+        int score = 0;
         for (int i = 0; i < Instructions.Peoples.Count; i++)
+            score += Instructions.Peoples[i].Evaluate(FindPeople(Instructions.InfoInst[i].Target));
+        return score;
+    }
+
+    private int EvaluateNews()
+    {
+        int score = 0;
+        News currentNews = FindNews($"{Month}/" + Day.ToString("D2"));
+        if (currentNews != null)
         {
-            Score_Info += Instructions.Peoples[i].Evaluate(FindPeople(Instructions.InfoInst[i].Target));
+            score -= Mathf.Abs(currentNews.Main.Count - Instructions.NewsMain.Count);
+            int sharedLineCount = Mathf.Min(currentNews.Main.Count, Instructions.NewsMain.Count);
+            for (int index = 0; index < sharedLineCount; index++)
+                if (currentNews.Main[index].TrimEnd('\n', '\r') != Instructions.NewsMain[index].TrimEnd('\n', '\r'))
+                    score--;
         }
+        return score;
+    }
 
-        // Evaluate News
-        int Score_News = 0;
-        var EvalNews = FindNews($"{Month}/" + Day.ToString("D2"));
-        if (EvalNews != null)
+    private int EvaluateDocuments()
+    {
+        int score = 0;
+        foreach (var instruction in Instructions.DocsInst)
         {
-            Score_News -= Mathf.Abs(EvalNews.Main.Count - Instructions.NewsMain.Count);
-            int l = Mathf.Min(EvalNews.Main.Count, Instructions.NewsMain.Count);
-        
-            for(int i = 0; i < l; i++)
-            {
-                
-                if (EvalNews.Main[i].TrimEnd('\n','\r') != Instructions.NewsMain[i].TrimEnd('\n', '\r')) Score_News--;
-
-                //print($"line {i}\n Answer : {EvalNews.Main[i].TrimEnd('\n', '\r')}\n Cur : {Instructions.NewsMain[i].TrimEnd('\n', '\r')}\n Score : {Score_News}");
-            }
+            Docs document = FindDocs(instruction.Name);
+            if (document.IsAbnormalFinded != document.IsWrongDocs)
+                score--;
         }
-
-
-        // Evaluate Docs
-        int Score_Docs = 0;
-        foreach(var k in Instructions.DocsInst)
-        {
-            var Docs_Sub = FindDocs(k.Name);
-            if (Docs_Sub.IsAbnormalFinded != Docs_Sub.IsWrongDocs) Score_Docs--;
-        }
-
-        Score[0] = Score_Info; Score[1] = Score_News; Score[2] = Score_Docs;
+        return score;
     }
 }

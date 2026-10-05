@@ -27,7 +27,7 @@ namespace EditorGame.Documents
         protected virtual void Start()
         {
             IWorkService workService = WorkService;
-            string workCode = Mode == DocumentMode.Forgery ? "SecureDocument" : "Document";
+            string workCode = GetWorkCode(Mode);
             if (workService == null || workService.CurrentWorkCode != workCode) return;
             if (host == null || assignmentContent == null)
             {
@@ -48,6 +48,16 @@ namespace EditorGame.Documents
                 return;
             }
 
+            OpenDesktop(state);
+        }
+
+        private static string GetWorkCode(DocumentMode mode)
+        {
+            return mode == DocumentMode.Forgery ? "SecureDocument" : "Document";
+        }
+
+        private void OpenDesktop(DocumentPlayState state)
+        {
             host.Show(Assignment, state);
             Desktop = host.Desktop;
             Desktop.DocumentOpened += OnDocumentOpened;
@@ -58,8 +68,9 @@ namespace EditorGame.Documents
 
         private DocumentAssignment LoadAssignment(int stage)
         {
-            var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
-            var assignments = JsonConvert.DeserializeObject<List<DocumentAssignment>>(assignmentContent.text, settings);
+            var serializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
+            var assignments = JsonConvert.DeserializeObject<List<DocumentAssignment>>(
+                assignmentContent.text, serializerSettings);
             return assignments?.SingleOrDefault(item => item.Mode == Mode && item.Stage == stage);
         }
 
@@ -78,13 +89,13 @@ namespace EditorGame.Documents
             string subjectId, params string[] keyParts)
         {
             DocumentPlayState state = Desktop.GetStateSnapshot();
-            var parts = new List<string> { state.WorkInstanceId, reason.ToString() };
-            parts.AddRange(keyParts);
+            var eventKeyParts = new List<string> { state.WorkInstanceId, reason.ToString() };
+            eventKeyParts.AddRange(keyParts);
             ReputationRule rule = Assignment.Policy.Reputation.FirstOrDefault(item =>
                 item.Reason == reason && item.Timing == timing && item.Unit == unit);
             Desktop.AddReputationEvent(new ReputationEvent
             {
-                Id = DocumentContract.Key(parts.ToArray()),
+                Id = DocumentContract.Key(eventKeyParts.ToArray()),
                 Reason = reason,
                 Timing = timing,
                 Unit = unit,
