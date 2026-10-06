@@ -18,7 +18,7 @@ public sealed class GameSystem : Singleton<GameSystem>
     public void Awake()
     {
         // Entry 씬 로드
-        if (SceneManager.sceneCount == 1)
+        if (SceneManager.sceneCount == 1 && gameObject.scene.name != "DirectPlayController")
         {
             EnterScene("GameStart");
             return;
