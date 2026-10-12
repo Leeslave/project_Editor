@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,7 +13,7 @@ namespace EditorGame.Documents
         [SerializeField] private DocumentDesktopSkin skin = new DocumentDesktopSkin();
         [SerializeField] private GameObject[] legacyRoots = new GameObject[0];
         [SerializeField] private bool preview;
-        [SerializeField] private TextAsset previewContent;
+        [SerializeField, Min(0)] private int previewStage;
         [SerializeField] private DocumentMode previewMode;
         public DocumentDesktop Desktop { get; private set; }
         private readonly Dictionary<GameObject, bool> previousActive = new Dictionary<GameObject, bool>();
@@ -120,18 +118,31 @@ namespace EditorGame.Documents
 
         private void ShowPreview(DocumentMode mode)
         {
-            if (!Application.isPlaying || !preview || previewContent == null) return;
-            var assignments = JsonConvert.DeserializeObject<List<DocumentAssignment>>(previewContent.text,
-                new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None });
-            var content = assignments?.SingleOrDefault(a => a.Mode == mode);
-            if (content == null) throw new InvalidOperationException("Missing preview assignment.");
+            if (!Application.isPlaying || !preview) return;
+            string workCode = mode == DocumentMode.Forgery ? "SecureDocument" : "Document";
+            DocumentStageData stageData = DocumentStageRepository.Load(workCode, previewStage);
+            if (stageData == null) throw new InvalidOperationException("Missing preview stage data.");
+            stageData.ValidateForExecution();
+            DocumentAssignment content = stageData.Assignment;
             if (Desktop != null && displayedPreview.HasValue)
                 previewStates[displayedPreview.Value] = Close();
             if (!previewStates.TryGetValue(mode, out var state))
                 state = DocumentContract.Begin(content, DocumentContract.Key("desktop-preview", content.Id));
-            Show(content, state);
+            Show(content, state, LoadPortraits(content));
             displayedPreview = mode;
             // 미리보기는 판정 이벤트를 연결하거나 게임 서비스에 값을 쓰지 않는다.
+        }
+
+        private static Dictionary<string, Sprite> LoadPortraits(DocumentAssignment content)
+        {
+            var result = new Dictionary<string, Sprite>(StringComparer.Ordinal);
+            foreach (PersonContent person in content.People)
+            {
+                if (string.IsNullOrWhiteSpace(person.PortraitKey)) continue;
+                Sprite portrait = Resources.Load<Sprite>("Image/" + person.PortraitKey);
+                if (portrait != null) result[person.PortraitKey] = portrait;
+            }
+            return result;
         }
 
         private void OnDestroy() { ReleaseView(false); }

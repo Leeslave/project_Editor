@@ -11,6 +11,8 @@ public class DaySave
     public int dayID;       // Day * 100 + branch
     public string thumbnail;
     public int renown;
+    public List<WorkCompletionRecord> completedWorks = new();
+    public List<string> appliedSettlementIds = new();
 
     [JsonIgnore]
     public int Day => dayID / 100;
@@ -21,7 +23,29 @@ public class DaySave
     {
         if (newID == -1) newID = dayID;
         
-        return new DaySave { dayID = newID, thumbnail = thumbnail, renown = renown };
+        return new DaySave
+        {
+            dayID = newID,
+            thumbnail = thumbnail,
+            renown = renown,
+            completedWorks = completedWorks == null ? new List<WorkCompletionRecord>() :
+                completedWorks.Select(item => new WorkCompletionRecord(item.workCode, item.stage)).ToList(),
+            appliedSettlementIds = appliedSettlementIds == null ? new List<string>() :
+                new List<string>(appliedSettlementIds)
+        };
+    }
+}
+
+[System.Serializable]
+public class WorkCompletionRecord
+{
+    public string workCode;
+    public int stage;
+
+    public WorkCompletionRecord(string workCode, int stage)
+    {
+        this.workCode = workCode;
+        this.stage = stage;
     }
 }
 
@@ -68,7 +92,10 @@ public class PlayerData : IEnumerable<DaySave>
         // Already Exist Save
         if (oldSave != null)
         {
-            oldSave.renown =  data.renown;
+            oldSave.thumbnail = data.thumbnail;
+            oldSave.renown = data.renown;
+            oldSave.completedWorks = data.completedWorks;
+            oldSave.appliedSettlementIds = data.appliedSettlementIds;
             return;
         }
         

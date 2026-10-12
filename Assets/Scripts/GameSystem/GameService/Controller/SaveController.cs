@@ -1,4 +1,7 @@
 using GameService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Utility;
 
@@ -57,6 +60,8 @@ public class SaveController : SaveService
         }
         Save = _playerData[newID];
 
+        NormalizeSave();
+
         Refresh();
     }
 
@@ -95,6 +100,7 @@ public class SaveController : SaveService
         DaySave newSave = Save.Clone(newID);
         _playerData.Save(newSave);
         Save = newSave;
+        Persist();
     }
    
     /// <summary>
@@ -120,6 +126,45 @@ public class SaveController : SaveService
     public override bool CheckRenown(int condition)
     {
         return Renown >= condition;
+    }
+
+    public override bool IsWorkCompleted(string workCode, int stage = -1)
+    {
+        NormalizeSave();
+        return Save != null && Save.completedWorks.Any(item => item.workCode == workCode &&
+            (stage < 0 || item.stage == stage));
+    }
+
+    public override void RecordWorkCompletion(string workCode, int stage)
+    {
+        NormalizeSave();
+        if (Save == null || IsWorkCompleted(workCode, stage)) return;
+        Save.completedWorks.Add(new WorkCompletionRecord(workCode, stage));
+        Persist();
+    }
+
+    public override bool TryApplyRenownSettlement(string settlementId, int delta)
+    {
+        NormalizeSave();
+        if (Save == null || string.IsNullOrWhiteSpace(settlementId) ||
+            Save.appliedSettlementIds.Contains(settlementId)) return false;
+        Save.appliedSettlementIds.Add(settlementId);
+        Renown += delta;
+        Persist();
+        return true;
+    }
+
+    private void NormalizeSave()
+    {
+        if (Save == null) return;
+        Save.completedWorks ??= new List<WorkCompletionRecord>();
+        Save.appliedSettlementIds ??= new List<string>();
+    }
+
+    private void Persist()
+    {
+        _playerData.Save(Save);
+        DataLoader.SavePlayerData(_playerData);
     }
     
     #endregion

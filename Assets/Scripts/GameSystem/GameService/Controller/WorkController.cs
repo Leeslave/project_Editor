@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Utility;
+using EditorGame.Documents;
 
 public class WorkController : ServiceBase<IWorkService>, IWorkService
 {
@@ -42,7 +43,7 @@ public class WorkController : ServiceBase<IWorkService>, IWorkService
     /// <returns>업무 리스트</returns>
     public List<(string code, string name)> GetList()
     {
-        return _workList.Keys.Select(work => (
+        return _workList.Keys.Where(IsAvailable).Select(work => (
             work.code,
             string.IsNullOrWhiteSpace(work.name) ? work.code : work.name.Trim())).ToList();
     }
@@ -58,9 +59,7 @@ public class WorkController : ServiceBase<IWorkService>, IWorkService
         sceneName = null;
         Work target = _workList.Keys.FirstOrDefault(work => work.code == workCode);
         if (target == null || _workList[target]) return false;
-        // 극비 문서 업무는 같은 날 두 선행 업무를 모두 완료한 뒤 실행할 수 있다.
-        if (workCode == "SecureDocument" &&
-            (!IsWorkClear("Dodge") || !IsWorkClear("Maze"))) return false;
+        if (!IsAvailable(target)) return false;
 
         string targetScene = workCode == "SecureDocument" ? "Document" : workCode;
         if (!Application.CanStreamedLevelBeLoaded(targetScene))
@@ -120,6 +119,7 @@ public class WorkController : ServiceBase<IWorkService>, IWorkService
         }
         if (_workList[target]) return IsWorkClear();
         _workList[target] = true;
+        GameSystem.SaveService?.RecordWorkCompletion(target.code, target.stage);
         
         // 모든 업무 완료 확인
         bool onClear = IsWorkClear();
@@ -140,5 +140,27 @@ public class WorkController : ServiceBase<IWorkService>, IWorkService
     {
         // 업무가 없는 날도 조회만 수행하며 시간 진행은 스토리 액션에 맡김
         return _workList.Values.All(done => done);
+    }
+
+    private bool IsAvailable(Work work)
+    {
+        if (work == null) return false;
+        if (work.code != "Document" && work.code != "SecureDocument") return true;
+        DocumentStageData stageData = DocumentStageRepository.Load(work.code, work.stage);
+        if (stageData == null)
+        {
+            EditorLogger.LogError($"Document stage data not found: {work.code}/Stage_{work.stage}");
+            return false;
+        }
+        try
+        {
+            stageData.ValidateForExecution();
+            return work.code != "SecureDocument" || stageData.IsUnlocked(GameSystem.SaveService);
+        }
+        catch (Exception exception)
+        {
+            EditorLogger.LogError($"Invalid document stage data: {exception.Message}");
+            return false;
+        }
     }
 }

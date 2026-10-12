@@ -11,10 +11,6 @@ namespace EditorGame.Documents
     public enum ProfileField { Name, Age, Sex, Country, Job }
     public enum SubmissionPhase { Working, Submitted, Applied }
     public enum UnlockCombination { Unspecified, All, Any }
-    public enum UnlockScope { Unspecified, SameDay, Cumulative }
-    public enum ReputationReason { CorrectPair, IncorrectPair, UnauthorizedView, MissingPair, CorrectEdit, IncorrectEdit, UnchangedTarget, UnrequestedEdit }
-    public enum ReputationTiming { Record, View, InvestigationComplete, Submission }
-    public enum ReputationUnit { Pair, View, Field, Person }
     public enum FieldOutcome { Unchanged, CorrectEdit, IncorrectEdit, UnchangedTarget, UnrequestedEdit }
 
     [Serializable]
@@ -31,7 +27,6 @@ namespace EditorGame.Documents
         public List<DocumentContent> Documents = new List<DocumentContent>();
         public List<AnswerPair> Answers = new List<AnswerPair>();
         public List<EditInstruction> Edits = new List<EditInstruction>();
-        public DocumentPolicy Policy = new DocumentPolicy();
         [JsonIgnore] public string WorkCode => Mode == DocumentMode.Forgery ? "SecureDocument" : "Document";
     }
 
@@ -122,27 +117,6 @@ namespace EditorGame.Documents
         public string DisplayText;
     }
 
-    [Serializable]
-    public sealed class DocumentPolicy
-    {
-        // null은 0이 아니라 미설정 정책을 뜻한다.
-        public List<ReputationRule> Reputation = new List<ReputationRule>();
-        public UnlockCombination UnlockCombination = UnlockCombination.Unspecified;
-        public UnlockScope UnlockScope = UnlockScope.Unspecified;
-        public List<string> PrerequisiteWorkCodes = new List<string>();
-        public int? StoryThreshold;
-        public string StoryBranchId;
-    }
-
-    [Serializable]
-    public sealed class ReputationRule
-    {
-        public ReputationReason Reason;
-        public ReputationTiming Timing;
-        public ReputationUnit Unit;
-        public int? Delta;
-    }
-
     // 실행 상태는 원본 과제에서 복사하며 별도로 저장할 수 있다.
     [Serializable]
     public sealed class DocumentPlayState
@@ -153,7 +127,6 @@ namespace EditorGame.Documents
         public List<PersonEditState> People = new List<PersonEditState>();
         public List<InvestigationState> Investigations = new List<InvestigationState>();
         public List<ViewRecord> Views = new List<ViewRecord>();
-        public List<ReputationEvent> Events = new List<ReputationEvent>();
     }
 
     [Serializable]
@@ -191,17 +164,6 @@ namespace EditorGame.Documents
     }
 
     [Serializable]
-    public sealed class ReputationEvent
-    {
-        public string Id;
-        public ReputationReason Reason;
-        public ReputationTiming Timing;
-        public ReputationUnit Unit;
-        public string SubjectId;
-        public int? Delta;
-    }
-
-    [Serializable]
     public sealed class FieldResult
     {
         public string PersonId;
@@ -223,6 +185,9 @@ namespace EditorGame.Documents
         public bool Successful;
         public DocumentPlayState Snapshot;
         public List<FieldResult> Fields = new List<FieldResult>();
+        public int IncorrectCount;
+        public int CaughtCount;
+        public int ReputationDelta;
     }
 
     public static class DocumentContract
@@ -266,15 +231,6 @@ namespace EditorGame.Documents
                     Id = item.Id,
                     DocumentId = item.DocumentId,
                     Authorized = item.Authorized
-                }).ToList(),
-                Events = value.Events.Select(item => new ReputationEvent
-                {
-                    Id = item.Id,
-                    Reason = item.Reason,
-                    Timing = item.Timing,
-                    Unit = item.Unit,
-                    SubjectId = item.SubjectId,
-                    Delta = item.Delta
                 }).ToList()
             };
         }
@@ -325,7 +281,7 @@ namespace EditorGame.Documents
             return state;
         }
 
-        /// <summary>콘텐츠 구조와 제공된 정책을 검사하며 미설정 정책값은 허용한다.</summary>
+        /// <summary>문서 콘텐츠의 ID, 참조 관계와 모드별 필수 데이터를 검사한다.</summary>
         public static void Validate(DocumentAssignment content)
         {
             if (content == null) throw new ArgumentNullException(nameof(content));
@@ -333,8 +289,8 @@ namespace EditorGame.Documents
             if (!Enum.IsDefined(typeof(DocumentMode), content.Mode) || content.Stage < 0)
                 throw new ArgumentException("Invalid document mode or stage.");
             if (content.People == null || content.Documents == null || content.Answers == null ||
-                content.Edits == null || content.TargetPersonIds == null || content.Policy == null)
-                throw new ArgumentException("Content collections and policy are required.");
+                content.Edits == null || content.TargetPersonIds == null)
+                throw new ArgumentException("Content collections are required.");
             var ids = new HashSet<string>(StringComparer.Ordinal);
             Action<string> add = id =>
             {
@@ -409,90 +365,6 @@ namespace EditorGame.Documents
             if ((content.Mode == DocumentMode.StatementCheck && content.Edits.Count != 0) ||
                 (content.Mode == DocumentMode.Forgery && content.Answers.Count != 0))
                 throw new ArgumentException("Assignment contains instructions for the other mode.");
-            ValidatePolicy(content.Policy);
-        }
-
-        private static bool IsValidRule(ReputationRule rule)
-        {
-            switch (rule.Reason)
-            {
-                case ReputationReason.CorrectPair:
-                case ReputationReason.IncorrectPair:
-                    return rule.Timing == ReputationTiming.Record && rule.Unit == ReputationUnit.Pair;
-                case ReputationReason.UnauthorizedView:
-                    return rule.Timing == ReputationTiming.View && rule.Unit == ReputationUnit.View;
-                case ReputationReason.MissingPair:
-                    return rule.Timing == ReputationTiming.InvestigationComplete && rule.Unit == ReputationUnit.Pair;
-                case ReputationReason.CorrectEdit:
-                case ReputationReason.IncorrectEdit:
-                case ReputationReason.UnrequestedEdit:
-                    return rule.Timing == ReputationTiming.Submission && rule.Unit == ReputationUnit.Field;
-                case ReputationReason.UnchangedTarget:
-                    return rule.Timing == ReputationTiming.Submission &&
-                        (rule.Unit == ReputationUnit.Field || rule.Unit == ReputationUnit.Person);
-                default:
-                    return false;
-            }
-        }
-
-        private static void ValidatePolicy(DocumentPolicy policy)
-        {
-            if (policy == null || policy.Reputation == null || policy.PrerequisiteWorkCodes == null)
-                throw new ArgumentException("Policy collections are required.");
-            if (!Enum.IsDefined(typeof(UnlockCombination), policy.UnlockCombination) ||
-                !Enum.IsDefined(typeof(UnlockScope), policy.UnlockScope))
-                throw new ArgumentException("Invalid unlock policy.");
-            var rules = new HashSet<string>(StringComparer.Ordinal);
-            foreach (var rule in policy.Reputation)
-            {
-                if (rule == null || !IsValidRule(rule)) throw new ArgumentException("Invalid reputation reason/timing/unit.");
-                if (!rules.Add(Key(rule.Reason.ToString(), rule.Timing.ToString(), rule.Unit.ToString())))
-                    throw new ArgumentException("Duplicate reputation rule: " + rule.Reason);
-                bool reward = rule.Reason == ReputationReason.CorrectPair || rule.Reason == ReputationReason.CorrectEdit;
-                if (rule.Delta.HasValue && (reward ? rule.Delta.Value < 0 : rule.Delta.Value > 0))
-                    throw new ArgumentException("Reputation delta has the wrong sign: " + rule.Reason);
-            }
-            var codes = new HashSet<string>(StringComparer.Ordinal);
-            foreach (var code in policy.PrerequisiteWorkCodes)
-                if (string.IsNullOrWhiteSpace(code) || !codes.Add(code))
-                    throw new ArgumentException("Empty or duplicate prerequisite work code.");
-        }
-
-        /// <summary>
-        /// 실행에 필요한 평판 및 극비 해금 정책이 설정되었는지 검사한다.
-        /// 선행 업무 완료와 스토리 분기 참조는 게임 서비스가 검사한다.
-        /// </summary>
-        public static void ValidateForExecution(DocumentAssignment content)
-        {
-            Validate(content);
-            var policy = content.Policy;
-            foreach (var rule in policy.Reputation)
-                if (!rule.Delta.HasValue) throw new ArgumentException("Unconfigured reputation delta: " + rule.Reason);
-            RequireRule(policy, ReputationReason.UnauthorizedView, ReputationUnit.View);
-            if (content.Mode == DocumentMode.StatementCheck)
-            {
-                RequireRule(policy, ReputationReason.CorrectPair, ReputationUnit.Pair);
-                RequireRule(policy, ReputationReason.IncorrectPair, ReputationUnit.Pair);
-                RequireRule(policy, ReputationReason.MissingPair, ReputationUnit.Pair);
-            }
-            else
-            {
-                RequireRule(policy, ReputationReason.CorrectEdit, ReputationUnit.Field);
-                RequireRule(policy, ReputationReason.IncorrectEdit, ReputationUnit.Field);
-                RequireRule(policy, ReputationReason.UnrequestedEdit, ReputationUnit.Field);
-                RequireRule(policy, ReputationReason.UnchangedTarget, ReputationUnit.Field);
-                RequireRule(policy, ReputationReason.UnchangedTarget, ReputationUnit.Person);
-                if (policy.UnlockCombination == UnlockCombination.Unspecified ||
-                    policy.UnlockScope == UnlockScope.Unspecified || policy.PrerequisiteWorkCodes.Count == 0)
-                    throw new ArgumentException("Forgery unlock policy is not configured.");
-            }
-        }
-
-        private static void RequireRule(DocumentPolicy policy, ReputationReason reason, ReputationUnit unit)
-        {
-            // 시점과 단위의 유효성 및 중복은 ValidatePolicy에서 이미 검사한다.
-            if (!policy.Reputation.Any(r => r.Reason == reason && r.Unit == unit))
-                throw new ArgumentException("Missing reputation rule: " + reason + "/" + unit);
         }
     }
 }

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using GameService;
-using Newtonsoft.Json;
 using UnityEngine;
 using Utility;
 
@@ -12,12 +10,12 @@ namespace EditorGame.Documents
     public abstract class DocumentWorkController : MonoBehaviour
     {
         [SerializeField] private DocumentDesktopHost host;
-        [SerializeField] private TextAsset assignmentContent;
 
         public DocumentSubmission LastSubmission { get; private set; }
         public event Action<DocumentSubmission> Submitted;
 
         protected DocumentAssignment Assignment { get; private set; }
+        protected DocumentStageData StageData { get; private set; }
         protected DocumentDesktop Desktop { get; private set; }
         protected IWorkService WorkService => GameSystem.GetService<IWorkService>();
 
@@ -29,20 +27,21 @@ namespace EditorGame.Documents
             IWorkService workService = WorkService;
             string workCode = GetWorkCode(Mode);
             if (workService == null || workService.CurrentWorkCode != workCode) return;
-            if (host == null || assignmentContent == null)
+            if (host == null)
             {
                 EditorLogger.LogError($"{Mode} host or content is missing.");
                 return;
             }
 
             int stage = workService.GetStage(workCode);
-            Assignment = LoadAssignment(stage);
-            if (Assignment == null)
+            StageData = DocumentStageRepository.Load(workCode, stage);
+            Assignment = StageData == null ? null : StageData.Assignment;
+            if (StageData == null || Assignment == null)
             {
                 EditorLogger.LogError($"{Mode} assignment not found: stage {stage}");
                 return;
             }
-            if (!DocumentRuntimeSession.TryBegin(Assignment, workService, out var state, out string error))
+            if (!DocumentRuntimeSession.TryBegin(StageData, workService, out var state, out string error))
             {
                 EditorLogger.LogError(error);
                 return;
@@ -58,7 +57,7 @@ namespace EditorGame.Documents
 
         private void OpenDesktop(DocumentPlayState state)
         {
-            host.Show(Assignment, state);
+            host.Show(Assignment, state, LoadPortraits());
             Desktop = host.Desktop;
             Desktop.DocumentOpened += OnDocumentOpened;
             Desktop.SubmissionRequested += Submit;
@@ -66,61 +65,47 @@ namespace EditorGame.Documents
             Desktop.RefreshControls();
         }
 
-        private DocumentAssignment LoadAssignment(int stage)
+        private Dictionary<string, Sprite> LoadPortraits()
         {
-            var serializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
-            var assignments = JsonConvert.DeserializeObject<List<DocumentAssignment>>(
-                assignmentContent.text, serializerSettings);
-            return assignments?.SingleOrDefault(item => item.Mode == Mode && item.Stage == stage);
+            var portraits = new Dictionary<string, Sprite>(StringComparer.Ordinal);
+            foreach (PersonContent person in Assignment.People)
+            {
+                if (string.IsNullOrWhiteSpace(person.PortraitKey)) continue;
+                Sprite portrait = Resources.Load<Sprite>("Image/" + person.PortraitKey);
+                if (portrait != null) portraits[person.PortraitKey] = portrait;
+                else EditorLogger.LogWarning("Document portrait not found: " + person.PortraitKey);
+            }
+            return portraits;
         }
 
         private void OnDocumentOpened(ViewRecord view)
         {
             if (!view.Authorized)
             {
-                AddEvent(ReputationReason.UnauthorizedView, ReputationTiming.View, ReputationUnit.View,
-                    view.Id, view.Id);
                 Desktop.ShowStatusMessage(UnauthorizedViewMessage);
             }
-            CaptureAndApply();
+            CaptureState();
         }
 
-        protected void AddEvent(ReputationReason reason, ReputationTiming timing, ReputationUnit unit,
-            string subjectId, params string[] keyParts)
+        protected void CaptureState()
         {
-            DocumentPlayState state = Desktop.GetStateSnapshot();
-            var eventKeyParts = new List<string> { state.WorkInstanceId, reason.ToString() };
-            eventKeyParts.AddRange(keyParts);
-            ReputationRule rule = Assignment.Policy.Reputation.FirstOrDefault(item =>
-                item.Reason == reason && item.Timing == timing && item.Unit == unit);
-            Desktop.AddReputationEvent(new ReputationEvent
-            {
-                Id = DocumentContract.Key(eventKeyParts.ToArray()),
-                Reason = reason,
-                Timing = timing,
-                Unit = unit,
-                SubjectId = subjectId,
-                Delta = rule?.Delta
-            });
-        }
-
-        protected void CaptureAndApply()
-        {
-            DocumentRuntimeSession.CaptureAndApply(Desktop.GetStateSnapshot());
+            DocumentRuntimeSession.Capture(Desktop.GetStateSnapshot());
         }
 
         protected void FinishSubmission(DocumentSubmission submission, string title, List<string> resultLines)
         {
-            if (!DocumentRuntimeSession.Complete(submission, WorkService, out string error))
+            int delta = StageData.Settlement.Calculate(submission.IncorrectCount, submission.CaughtCount,
+                StageData.IsConfidential);
+            submission.ReputationDelta = delta;
+            if (!DocumentRuntimeSession.Complete(submission, WorkService, delta, out string error))
             {
                 Desktop.ShowStatusMessage(error);
                 return;
             }
 
             LastSubmission = submission;
-            DocumentRuntimeSession.ApplyStoryBranch(Assignment.Policy, submission.WorkInstanceId);
-            int reputationDelta = DocumentRuntimeSession.ReputationDelta(submission.Snapshot);
-            resultLines.Add($"평판 변화: {(reputationDelta >= 0 ? "+" : "")}{reputationDelta}");
+            resultLines.Add($"오류 {submission.IncorrectCount}건 · 발각 {submission.CaughtCount}건");
+            resultLines.Add($"평판 변화: {(delta >= 0 ? "+" : "")}{delta}");
             resultLines.Add("업무 제출이 완료되었습니다. 확인하면 업무 화면으로 돌아갑니다.");
             Desktop.ShowSubmissionResult(title, resultLines, DocumentRuntimeSession.ReturnToScreen);
             Submitted?.Invoke(DocumentContract.Copy(submission));

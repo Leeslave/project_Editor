@@ -22,6 +22,7 @@ namespace EditorGame.Documents
         private RectTransform root, area, taskbar;
         private Vector2 lastParentSize;
         private TMP_Text progress;
+        private TMP_Text recordHistory;
         private string statusMessage;
         private Button record, cancel, submit;
         private string statementId, actionId, selectedPerson, selectedDate;
@@ -62,7 +63,7 @@ namespace EditorGame.Documents
         {
             if (value == null || value.AssignmentId != content.Id || string.IsNullOrWhiteSpace(value.WorkInstanceId) ||
                 !Enum.IsDefined(typeof(SubmissionPhase), value.Phase) || value.People == null ||
-                value.Investigations == null || value.Views == null || value.Events == null)
+                value.Investigations == null || value.Views == null)
                 throw new ArgumentException("A matching, structurally valid work state is required.");
             var peopleIds = new HashSet<string>(StringComparer.Ordinal);
             foreach (var person in value.People)
@@ -85,6 +86,7 @@ namespace EditorGame.Documents
             CreateWorkspace();
             CreateInstructionPanel();
             RefreshStatus();
+            RefreshRecordHistory();
             RefreshControls();
         }
 
@@ -133,7 +135,7 @@ namespace EditorGame.Documents
             DocumentDesktopUI.Place(panel, 1280, 0, 320, 960);
             var heading = ui.Text(panel, assignment.Mode == DocumentMode.Forgery ? "극비 업무" : "진술 대조", 30);
             DocumentDesktopUI.Place(heading.rectTransform, 18, 18, 284, 48);
-            var content = ui.Scroll(panel, 12, 80, 296, 560);
+            var content = ui.Scroll(panel, 12, 80, 296, assignment.Mode == DocumentMode.StatementCheck ? 400 : 560);
             ui.Text(content, "날짜: " + assignment.TargetDateId);
             ui.Text(content, "대상: " + string.Join(", ", assignment.TargetPersonIds.Select(id => people[id].Profile.Name)));
             ui.Text(content, assignment.Instructions ?? "");
@@ -150,6 +152,11 @@ namespace EditorGame.Documents
                     DocumentDesktopUI.Row(complete, 52);
                     investigationButtons.Add(targetId, complete);
                 }
+            if (assignment.Mode == DocumentMode.StatementCheck)
+            {
+                var history = ui.Scroll(panel, 12, 492, 296, 150);
+                recordHistory = ui.Text(history, "");
+            }
             progress = ui.Text(panel, "");
             DocumentDesktopUI.Place(progress.rectTransform, 18, 660, 284, 128);
             record = ui.Button(panel, "기록하기", () => { if (CanRecord) RecordRequested?.Invoke(); });
@@ -404,17 +411,8 @@ namespace EditorGame.Documents
                     if (lineButtons.TryGetValue(line.Id, out var button) && button != null)
                         ui.SetInteractable(button, CanInvestigate(document.PersonId));
             RefreshStatus();
+            RefreshRecordHistory();
             RefreshControls();
-        }
-
-        /// <summary>판정된 평판 사건을 현재 상태에 중복 없이 추가한다.</summary>
-        public void AddReputationEvent(ReputationEvent reputationEvent)
-        {
-            if (!CanSelect) throw new InvalidOperationException("Submission is locked.");
-            if (reputationEvent == null || string.IsNullOrWhiteSpace(reputationEvent.Id))
-                throw new ArgumentException("A reputation event ID is required.");
-            if (state.Events.Any(item => item.Id == reputationEvent.Id)) return;
-            state.Events.Add(DocumentContract.Copy(reputationEvent));
         }
 
         /// <summary>판정 상태를 바꾸지 않고 안내 문구만 표시한다.</summary>
@@ -476,6 +474,25 @@ namespace EditorGame.Documents
                       "\n기록 " + state.Investigations.Sum(i => i.Records.Count) + "건"
                     : "문서를 닫아도 수정 내용은 유지됩니다.";
             progress.text = string.IsNullOrEmpty(statusMessage) ? summary : summary + "\n" + statusMessage;
+        }
+
+        private void RefreshRecordHistory()
+        {
+            if (recordHistory == null) return;
+            var lines = assignment.Documents.SelectMany(document => document.Lines)
+                .ToDictionary(line => line.Id, StringComparer.Ordinal);
+            var entries = new List<string> { "기록 이력" };
+            foreach (InvestigationState investigation in state.Investigations)
+            foreach (PairRecord pair in investigation.Records)
+                entries.Add(people[investigation.PersonId].Profile.Name + "\n진술: " +
+                    FormatLine(lines[pair.StatementLineId]) + "\n행동: " + FormatLine(lines[pair.ActionLineId]));
+            if (entries.Count == 1) entries.Add("기록 없음");
+            recordHistory.text = string.Join("\n\n", entries);
+        }
+
+        private static string FormatLine(DocumentLine line)
+        {
+            return line.Time + " " + line.Text;
         }
     }
 }

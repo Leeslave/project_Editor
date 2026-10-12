@@ -22,7 +22,7 @@ namespace EditorGame.Documents
 
         private void OnProfileChanged(string personId, ProfileField field, string value)
         {
-            CaptureAndApply();
+            CaptureState();
             Desktop.ShowStatusMessage("입력 내용은 창을 닫아도 유지됩니다.");
         }
 
@@ -31,7 +31,6 @@ namespace EditorGame.Documents
             if (LastSubmission != null) return;
             DocumentPlayState state = Desktop.GetStateSnapshot();
             List<FieldResult> fields = EvaluateFields(state);
-            CreateSubmissionEvents(fields);
             Desktop.LockSubmission();
 
             DocumentPlayState snapshot = Desktop.GetStateSnapshot();
@@ -46,7 +45,11 @@ namespace EditorGame.Documents
                 TargetDateId = Assignment.TargetDateId,
                 Successful = successful,
                 Snapshot = snapshot,
-                Fields = fields
+                Fields = fields,
+                IncorrectCount = fields.Count(item => item.Outcome == FieldOutcome.IncorrectEdit ||
+                    item.Outcome == FieldOutcome.UnchangedTarget || item.Outcome == FieldOutcome.UnrequestedEdit),
+                CaughtCount = snapshot.Views.Count(item => !item.Authorized) +
+                    fields.Count(item => item.Outcome == FieldOutcome.UnrequestedEdit)
             };
             Desktop.ShowStatusMessage(successful ? "모든 조작 지시가 정확합니다." : "오타 또는 미수행 지시가 있습니다.");
             FinishSubmission(submission, successful ? "극비 업무 완료" : "극비 업무 결과", ResultLines(fields));
@@ -82,43 +85,6 @@ namespace EditorGame.Documents
                 }
             }
             return results;
-        }
-
-        private void CreateSubmissionEvents(List<FieldResult> fields)
-        {
-            var instructions = new HashSet<string>(Assignment.Edits.Select(item =>
-                DocumentContract.Key(item.PersonId, item.Field.ToString())), StringComparer.Ordinal);
-            foreach (string personId in Assignment.TargetPersonIds)
-            {
-                List<FieldResult> personFields = fields.Where(item => item.PersonId == personId).ToList();
-                if (personFields.All(item => DocumentContract.SameText(item.Original, item.Submitted)))
-                {
-                    AddEvent(ReputationReason.UnchangedTarget, ReputationTiming.Submission,
-                        ReputationUnit.Person, personId, personId);
-                    continue;
-                }
-
-                foreach (FieldResult field in personFields)
-                    AddFieldReputationEvent(personId, field, instructions);
-            }
-        }
-
-        private void AddFieldReputationEvent(string personId, FieldResult field, HashSet<string> instructions)
-        {
-            string fieldKey = DocumentContract.Key(personId, field.Field.ToString());
-            ReputationReason reason;
-            switch (field.Outcome)
-            {
-                case FieldOutcome.CorrectEdit: reason = ReputationReason.CorrectEdit; break;
-                case FieldOutcome.IncorrectEdit: reason = ReputationReason.IncorrectEdit; break;
-                case FieldOutcome.UnchangedTarget when instructions.Contains(fieldKey):
-                    reason = ReputationReason.UnchangedTarget;
-                    break;
-                case FieldOutcome.UnrequestedEdit: reason = ReputationReason.UnrequestedEdit; break;
-                default: return;
-            }
-            AddEvent(reason, ReputationTiming.Submission, ReputationUnit.Field,
-                fieldKey, personId, field.Field.ToString());
         }
 
         private List<string> ResultLines(List<FieldResult> fields)

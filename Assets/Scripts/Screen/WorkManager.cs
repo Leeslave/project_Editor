@@ -110,10 +110,7 @@ public class WorkManager : MonoBehaviour
         }
         if (!WorkService.TryStartWork(workCode, out string sceneName))
         {
-            ShowWorkMessage(workCode == "SecureDocument" &&
-                (!WorkService.IsWorkClear("Dodge") || !WorkService.IsWorkClear("Maze"))
-                    ? "극비 문서 업무는 회피 훈련과 미로 업무를 먼저 완료해야 합니다."
-                    : "업무를 불러올 수 없습니다. 다른 업무를 선택하세요.");
+            ShowWorkMessage("업무 해금 조건 또는 스테이지 데이터를 확인할 수 없습니다.");
             return;
         }
 

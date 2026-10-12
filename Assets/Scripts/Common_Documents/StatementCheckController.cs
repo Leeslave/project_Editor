@@ -67,14 +67,10 @@ namespace EditorGame.Documents
                 MatchedAnswerId = answer?.Id,
                 Correct = correct
             });
-            AddEvent(correct ? ReputationReason.CorrectPair : ReputationReason.IncorrectPair,
-                ReputationTiming.Record, ReputationUnit.Pair,
-                DocumentContract.Key(selectedStatementLineId, selectedActionLineId),
-                selectedStatementLineId, selectedActionLineId);
             Desktop.UpdateInvestigation(investigation);
-            CaptureAndApply();
+            CaptureState();
             Desktop.ClearSelection();
-            Desktop.ShowStatusMessage(correct ? "불일치를 기록했습니다." : "일치하지 않는 기록을 제출했습니다.");
+            Desktop.ShowStatusMessage("선택한 진술과 행동을 기록했습니다.");
         }
 
         private void CompleteInvestigation(string personId)
@@ -90,13 +86,9 @@ namespace EditorGame.Documents
                 .Where(item => item.PersonId == personId && !found.Contains(item.Id))
                 .Select(item => item.Id).ToList();
             investigation.Completed = true;
-            foreach (string answerId in investigation.MissingAnswerIds)
-                AddEvent(ReputationReason.MissingPair, ReputationTiming.InvestigationComplete,
-                    ReputationUnit.Pair, answerId, answerId);
             Desktop.UpdateInvestigation(investigation);
-            CaptureAndApply();
-            Desktop.ShowStatusMessage(investigation.MissingAnswerIds.Count == 0
-                ? "조사를 완료했습니다." : $"조사를 완료했습니다. 누락 {investigation.MissingAnswerIds.Count}건");
+            CaptureState();
+            Desktop.ShowStatusMessage("조사를 완료했습니다. 정확도는 최종 제출 후 공개됩니다.");
         }
 
         protected override void Submit()
@@ -114,7 +106,10 @@ namespace EditorGame.Documents
                 Stage = Assignment.Stage,
                 TargetDateId = Assignment.TargetDateId,
                 Successful = successful,
-                Snapshot = snapshot
+                Snapshot = snapshot,
+                IncorrectCount = snapshot.Investigations.Sum(item =>
+                    item.Records.Count(record => !record.Correct) + item.MissingAnswerIds.Count),
+                CaughtCount = snapshot.Views.Count(item => !item.Authorized)
             };
             Desktop.ShowStatusMessage(successful ? "모든 기록이 정확합니다." : "오판 또는 누락 기록이 있습니다.");
             FinishSubmission(submission, successful ? "검증 완료" : "검증 결과", SubmissionResults(snapshot));
