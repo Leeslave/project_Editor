@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using GameService;
 using UnityEngine;
 using Utility;
@@ -89,5 +91,43 @@ public sealed class DirectPlaySaveService : SaveService
     public override bool CheckRenown(int condition)
     {
         return Save != null && Renown >= condition;
+    }
+
+    public override bool IsWorkCompleted(string workCode, int stage = -1)
+    {
+        if (IsDirectSecureDocument()) return true;
+        EnsureWorkHistory();
+        return Save != null && Save.completedWorks.Any(item => item.workCode == workCode &&
+            (stage < 0 || item.stage == stage));
+    }
+
+    public override void RecordWorkCompletion(string workCode, int stage)
+    {
+        EnsureWorkHistory();
+        if (Save == null || IsWorkCompleted(workCode, stage)) return;
+        Save.completedWorks.Add(new WorkCompletionRecord(workCode, stage));
+    }
+
+    public override bool TryApplyRenownSettlement(string settlementId, int delta)
+    {
+        EnsureWorkHistory();
+        if (Save == null || string.IsNullOrWhiteSpace(settlementId) ||
+            Save.appliedSettlementIds.Contains(settlementId)) return false;
+        Save.appliedSettlementIds.Add(settlementId);
+        Renown += delta;
+        return true;
+    }
+
+    private bool IsDirectSecureDocument()
+    {
+        return suppliedData?.workList != null && suppliedData.workList.Count == 1 &&
+            suppliedData.workList[0]?.code == "SecureDocument";
+    }
+
+    private void EnsureWorkHistory()
+    {
+        if (Save == null) return;
+        Save.completedWorks ??= new List<WorkCompletionRecord>();
+        Save.appliedSettlementIds ??= new List<string>();
     }
 }
