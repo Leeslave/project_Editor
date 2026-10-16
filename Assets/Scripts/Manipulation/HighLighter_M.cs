@@ -22,11 +22,11 @@ public class HighLighter_M : MonoBehaviour
 
     private void Awake()
     {
-        if (IsFolder == 1 && FolderType != -1) Files = DB_M.DB_Docs.InfSub[FolderType].ToList();
+        if (IsFolder == 1 && FolderType != -1) Files = EditingDesktopController.Instance.ProfileOptions[FolderType].ToList();
         ColorOff = Clicker.color;
         ColorHigh = Clicker.color + new Color(0, 0, 0, 0.5f);
         ColorOn = Clicker.color + new Color(0, 0, 0, 1);
-        MyUi.ButtonInit(GetComponent<EventTrigger>(),OnPointer,OutPointer,Touch);
+        UiEventUtility.InitializeButton(GetComponent<EventTrigger>(),OnPointer,OutPointer,Touch);
     }
 
     private void OnPointer(PointerEventData Event)

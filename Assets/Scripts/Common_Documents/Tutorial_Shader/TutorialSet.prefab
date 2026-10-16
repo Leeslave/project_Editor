@@ -284,11 +284,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 620624407ca7c2f47a83c9b809388dc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsRect: 0
-  Mat: {fileID: 2100000, guid: 5803b931590601b4aa380477ff8d510b, type: 2}
-  TextBox: {fileID: 2557942222361432875}
-  CanvasRect: {fileID: 224502303287608463}
-  Target: {fileID: 0}
+  _isRect: 0
+  _maskMaterial: {fileID: 2100000, guid: 5803b931590601b4aa380477ff8d510b, type: 2}
+  _textBox: {fileID: 2557942222361432875}
+  _canvasRect: {fileID: 224502303287608463}
+  _target: {fileID: 0}
 --- !u!1 &3085071948178713182
 GameObject:
   m_ObjectHideFlags: 0
@@ -407,12 +407,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AutoStart: 0
-  ForTutoCond: {fileID: 683283543997763006}
-  CircleTuto: {fileID: 1776320347444427833}
-  BoxTuto: {fileID: 5141130332145023332}
-  TextBox: {fileID: 3533718089342273400}
-  CurActive: {fileID: 0}
-  TutorialList: []
+  CompletionSignal: {fileID: 683283543997763006}
+  _circleHighlight: {fileID: 1776320347444427833}
+  _boxHighlight: {fileID: 5141130332145023332}
+  _textBox: {fileID: 3533718089342273400}
+  CurrentBorder: {fileID: 0}
+  Steps: []
 --- !u!1 &3879963279095189826
 GameObject:
   m_ObjectHideFlags: 0
@@ -635,8 +635,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 620624407ca7c2f47a83c9b809388dc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsRect: 1
-  Mat: {fileID: 2100000, guid: 593b7ccc59699ef43827346455b8f14a, type: 2}
-  TextBox: {fileID: 2557942222361432875}
-  CanvasRect: {fileID: 224502303287608463}
-  Target: {fileID: 0}
+  _isRect: 1
+  _maskMaterial: {fileID: 2100000, guid: 593b7ccc59699ef43827346455b8f14a, type: 2}
+  _textBox: {fileID: 2557942222361432875}
+  _canvasRect: {fileID: 224502303287608463}
+  _target: {fileID: 0}

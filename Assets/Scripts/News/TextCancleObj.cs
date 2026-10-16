@@ -12,7 +12,7 @@ public class TextCancleObj : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(Resetkey) && OnInputGap)
         {
-            DB_M.DB_Docs.NewsManager.CancleWork();
+            EditingDesktopController.Instance.NewsManager.CancleWork();
             OnInputGap = false;
             Invoke("CanInput", 0.2f);
         }

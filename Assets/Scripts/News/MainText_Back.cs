@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class MainText_Back : Buttons_M
+public class MainText_Back : PointerButton
 {
     GameObject Field;
     [SerializeField] GameObject Text;
@@ -31,18 +31,18 @@ public class MainText_Back : Buttons_M
     {
         if (Field.activeSelf) return;
         Field.SetActive(true);
-        image.color = BfColor;
+        _buttonImage.color = _defaultColor;
         Text.SetActive(false);
-        if (DB_M.DB_Docs.NewsManager != null) DB_M.DB_Docs.NewsManager.OpenText(MyInd);
+        if (EditingDesktopController.Instance.NewsManager != null) EditingDesktopController.Instance.NewsManager.OpenText(MyInd);
         //else
     }
     protected override void OnPointer(PointerEventData data)
     {
         if (Field.activeSelf) return;
-        image.color = AfColor;
+        _buttonImage.color = AfColor;
     }
     protected override void OutPointer(PointerEventData data)
     {
-        image.color = BfColor;
+        _buttonImage.color = _defaultColor;
     }
 }

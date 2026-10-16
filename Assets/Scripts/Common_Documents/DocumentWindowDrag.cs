@@ -5,32 +5,32 @@ namespace EditorGame.Documents
 {
     public sealed class DocumentWindowDrag : MonoBehaviour, IBeginDragHandler, IDragHandler
     {
-        private DocumentDesktopWindow window;
-        private RectTransform bounds;
-        private Vector2 previous;
-        private bool hasPoint;
+        private DocumentDesktopWindow _window;
+        private RectTransform _dragBounds;
+        private Vector2 _previousPoint;
+        private bool _hasPreviousPoint;
 
         internal void Initialize(DocumentDesktopWindow target, RectTransform area)
         {
-            window = target;
-            bounds = area;
+            _window = target;
+            _dragBounds = area;
         }
 
         public void OnBeginDrag(PointerEventData data)
         {
-            window.Focus();
-            hasPoint = RectTransformUtility.ScreenPointToLocalPointInRectangle(bounds, data.position,
-                data.pressEventCamera, out previous);
+            _window.Focus();
+            _hasPreviousPoint = RectTransformUtility.ScreenPointToLocalPointInRectangle(_dragBounds, data.position,
+                data.pressEventCamera, out _previousPoint);
         }
 
         public void OnDrag(PointerEventData data)
         {
             Vector2 point;
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(bounds, data.position,
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_dragBounds, data.position,
                 data.pressEventCamera, out point)) return;
-            if (hasPoint) window.Move(point - previous);
-            previous = point;
-            hasPoint = true;
+            if (_hasPreviousPoint) _window.Move(point - _previousPoint);
+            _previousPoint = point;
+            _hasPreviousPoint = true;
         }
     }
 }

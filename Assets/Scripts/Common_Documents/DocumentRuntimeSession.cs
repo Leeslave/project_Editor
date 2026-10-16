@@ -13,7 +13,7 @@ namespace EditorGame.Documents
             public bool WorkApplied;
         }
 
-        private static readonly Dictionary<string, RuntimeState> Sessions =
+        private static readonly Dictionary<string, RuntimeState> _sessions =
             new Dictionary<string, RuntimeState>(StringComparer.Ordinal);
 
         public static bool TryBegin(DocumentStageData stageData, IWorkService workService,
@@ -43,10 +43,10 @@ namespace EditorGame.Documents
             int saveId = GameSystem.SaveService == null ? -1 : GameSystem.SaveService.CurrentSaveId;
             string workInstanceId = DocumentContract.Key("document-work", saveId.ToString(),
                 assignment.WorkCode, assignment.Stage.ToString(), assignment.Id);
-            if (!Sessions.TryGetValue(workInstanceId, out RuntimeState runtime))
+            if (!_sessions.TryGetValue(workInstanceId, out RuntimeState runtime))
             {
                 state = DocumentContract.Begin(assignment, workInstanceId);
-                Sessions.Add(workInstanceId, new RuntimeState { PlayState = DocumentContract.CopyState(state) });
+                _sessions.Add(workInstanceId, new RuntimeState { PlayState = DocumentContract.CopyState(state) });
             }
             else state = DocumentContract.CopyState(runtime.PlayState);
             return true;
@@ -103,12 +103,13 @@ namespace EditorGame.Documents
                 GameSystem.Instance.EnterScene("Screen");
         }
 
+        // 업무 실행 키에 대응하는 세션 상태를 가져오거나 생성한다.
         private static RuntimeState GetRuntime(string workInstanceId)
         {
-            if (!Sessions.TryGetValue(workInstanceId, out RuntimeState runtime))
+            if (!_sessions.TryGetValue(workInstanceId, out RuntimeState runtime))
             {
                 runtime = new RuntimeState();
-                Sessions.Add(workInstanceId, runtime);
+                _sessions.Add(workInstanceId, runtime);
             }
             return runtime;
         }

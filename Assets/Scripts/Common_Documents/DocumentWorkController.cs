@@ -9,7 +9,7 @@ namespace EditorGame.Documents
     /// <summary>두 문서 업무의 씬 진입, 세션, 평판 및 제출 흐름을 공통 처리한다.</summary>
     public abstract class DocumentWorkController : MonoBehaviour
     {
-        [SerializeField] private DocumentDesktopHost host;
+        [SerializeField] private DocumentDesktopHost _host;
 
         public DocumentSubmission LastSubmission { get; private set; }
         public event Action<DocumentSubmission> Submitted;
@@ -17,6 +17,7 @@ namespace EditorGame.Documents
         protected DocumentAssignment Assignment { get; private set; }
         protected DocumentStageData StageData { get; private set; }
         protected DocumentDesktop Desktop { get; private set; }
+        internal DocumentContentIndex ContentIndex { get; private set; }
         protected IWorkService WorkService => GameSystem.GetService<IWorkService>();
 
         protected abstract DocumentMode Mode { get; }
@@ -25,9 +26,9 @@ namespace EditorGame.Documents
         protected virtual void Start()
         {
             IWorkService workService = WorkService;
-            string workCode = GetWorkCode(Mode);
+            string workCode = DocumentContract.GetWorkCode(Mode);
             if (workService == null || workService.CurrentWorkCode != workCode) return;
-            if (host == null)
+            if (_host == null)
             {
                 EditorLogger.LogError($"{Mode} host or content is missing.");
                 return;
@@ -50,34 +51,19 @@ namespace EditorGame.Documents
             OpenDesktop(state);
         }
 
-        private static string GetWorkCode(DocumentMode mode)
-        {
-            return mode == DocumentMode.Forgery ? "SecureDocument" : "Document";
-        }
-
+        // 문서 화면을 열고 모드별 입력 이벤트를 연결한다.
         private void OpenDesktop(DocumentPlayState state)
         {
-            host.Show(Assignment, state, LoadPortraits());
-            Desktop = host.Desktop;
+            ContentIndex = new DocumentContentIndex(Assignment);
+            _host.Show(Assignment, state, DocumentPortraitLoader.Load(Assignment));
+            Desktop = _host.Desktop;
             Desktop.DocumentOpened += OnDocumentOpened;
             Desktop.SubmissionRequested += Submit;
             AttachModeHandlers();
             Desktop.RefreshControls();
         }
 
-        private Dictionary<string, Sprite> LoadPortraits()
-        {
-            var portraits = new Dictionary<string, Sprite>(StringComparer.Ordinal);
-            foreach (PersonContent person in Assignment.People)
-            {
-                if (string.IsNullOrWhiteSpace(person.PortraitKey)) continue;
-                Sprite portrait = Resources.Load<Sprite>("Image/" + person.PortraitKey);
-                if (portrait != null) portraits[person.PortraitKey] = portrait;
-                else EditorLogger.LogWarning("Document portrait not found: " + person.PortraitKey);
-            }
-            return portraits;
-        }
-
+        // 비지정 문서 열람을 안내하고 진행 상태를 보관한다.
         private void OnDocumentOpened(ViewRecord view)
         {
             if (!view.Authorized)

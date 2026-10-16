@@ -9,21 +9,20 @@ namespace EditorGame.Documents
     /// <summary>과제와 신규 또는 복원 상태를 받아 문서 화면을 생성하는 씬 진입점이다.</summary>
     public sealed class DocumentDesktopHost : MonoBehaviour
     {
-        [SerializeField] private TMP_FontAsset font;
-        [SerializeField] private DocumentDesktopSkin skin = new DocumentDesktopSkin();
-        [SerializeField] private GameObject[] legacyRoots = new GameObject[0];
-        [SerializeField] private bool preview;
-        [SerializeField, Min(0)] private int previewStage;
-        [SerializeField] private DocumentMode previewMode;
+        [SerializeField] private TMP_FontAsset _font;
+        [SerializeField] private DocumentDesktopSkin _skin = new DocumentDesktopSkin();
+        [SerializeField] private bool _preview;
+        [SerializeField, Min(0)] private int _previewStage;
+        [SerializeField] private DocumentMode _previewMode;
         public DocumentDesktop Desktop { get; private set; }
-        private readonly Dictionary<GameObject, bool> previousActive = new Dictionary<GameObject, bool>();
-        private readonly Dictionary<DocumentMode, DocumentPlayState> previewStates = new Dictionary<DocumentMode, DocumentPlayState>();
-        private GameObject ownedEventSystem;
-        private DocumentMode? displayedPreview;
+        private readonly Dictionary<DocumentMode, DocumentPlayState> _previewStates = new Dictionary<DocumentMode, DocumentPlayState>();
+        private GameObject _ownedEventSystem;
+        private DocumentMode? _displayedPreview;
 
+        // 설정된 모드와 스테이지의 미리보기를 시작한다.
         private void Start()
         {
-            if (preview) ShowPreview(previewMode);
+            if (_preview) ShowPreview(_previewMode);
         }
 
         /// <summary>
@@ -32,13 +31,13 @@ namespace EditorGame.Documents
         /// </summary>
         public void Show(DocumentAssignment content, DocumentPlayState state, IDictionary<string, Sprite> portraits = null)
         {
-            if (font == null) throw new InvalidOperationException("A desktop TMP font must be assigned.");
+            if (_font == null) throw new InvalidOperationException("A desktop TMP font must be assigned.");
             if (Desktop != null) throw new InvalidOperationException("Close the current desktop and retain its snapshot first.");
             Desktop = CreateDesktop(content, state, portraits);
-            HideLegacyRoots();
             EnsureEventSystem();
         }
 
+        // 문서 화면을 생성하고 초기화 실패 시 생성한 오브젝트를 해제한다.
         private DocumentDesktop CreateDesktop(DocumentAssignment content, DocumentPlayState state,
             IDictionary<string, Sprite> portraits)
         {
@@ -47,7 +46,7 @@ namespace EditorGame.Documents
             var desktop = view.AddComponent<DocumentDesktop>();
             try
             {
-                desktop.Initialize(content, state, font, portraits, skin);
+                desktop.Initialize(content, state, _font, portraits, _skin);
                 return desktop;
             }
             catch
@@ -58,34 +57,25 @@ namespace EditorGame.Documents
             }
         }
 
-        private void HideLegacyRoots()
-        {
-            foreach (var legacy in legacyRoots)
-            {
-                if (legacy == null) continue;
-                previousActive[legacy] = legacy.activeSelf;
-                legacy.SetActive(false);
-            }
-        }
-
+        // 씬에 입력 이벤트 시스템이 없으면 생성한다.
         private void EnsureEventSystem()
         {
             if (EventSystem.current == null)
             {
-                ownedEventSystem = new GameObject("Desktop EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
-                UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(ownedEventSystem, gameObject.scene);
+                _ownedEventSystem = new GameObject("Desktop EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
+                UnityEngine.SceneManagement.SceneManager.MoveGameObjectToScene(_ownedEventSystem, gameObject.scene);
             }
         }
 
         public DocumentPlayState Close()
         {
             DocumentPlayState snapshot = Desktop == null ? null : Desktop.GetStateSnapshot();
-            ReleaseView(true);
+            ReleaseView();
             return snapshot;
         }
 
-        // 씬 종료 중에는 레거시 화면을 다시 켜거나 폐기할 상태를 만들지 않는다.
-        private void ReleaseView(bool restoreLegacy)
+        // 호스트가 소유한 문서 화면과 입력 시스템을 해제한다.
+        private void ReleaseView()
         {
             if (Desktop != null)
             {
@@ -93,58 +83,41 @@ namespace EditorGame.Documents
                 Destroy(Desktop.gameObject);
                 Desktop = null;
             }
-            if (restoreLegacy)
+            if (_ownedEventSystem != null)
             {
-                foreach (var entry in previousActive)
-                {
-                    if (entry.Key != null)
-                        entry.Key.SetActive(entry.Value);
-                }
-            }
-            previousActive.Clear();
-            if (ownedEventSystem != null)
-            {
-                ownedEventSystem.SetActive(false);
-                Destroy(ownedEventSystem);
-                ownedEventSystem = null;
+                _ownedEventSystem.SetActive(false);
+                Destroy(_ownedEventSystem);
+                _ownedEventSystem = null;
             }
         }
 
+        // 진술 대조 모드의 미리보기를 연다.
         [ContextMenu("Preview/Statement Check")]
         private void PreviewStatements() { ShowPreview(DocumentMode.StatementCheck); }
 
+        // 프로필 조작 모드의 미리보기를 연다.
         [ContextMenu("Preview/Forgery")]
         private void PreviewForgery() { ShowPreview(DocumentMode.Forgery); }
 
+        // 서비스를 변경하지 않고 미리보기 과제와 상태를 표시한다.
         private void ShowPreview(DocumentMode mode)
         {
-            if (!Application.isPlaying || !preview) return;
-            string workCode = mode == DocumentMode.Forgery ? "SecureDocument" : "Document";
-            DocumentStageData stageData = DocumentStageRepository.Load(workCode, previewStage);
+            if (!Application.isPlaying || !_preview) return;
+            string workCode = DocumentContract.GetWorkCode(mode);
+            DocumentStageData stageData = DocumentStageRepository.Load(workCode, _previewStage);
             if (stageData == null) throw new InvalidOperationException("Missing preview stage data.");
             stageData.ValidateForExecution();
             DocumentAssignment content = stageData.Assignment;
-            if (Desktop != null && displayedPreview.HasValue)
-                previewStates[displayedPreview.Value] = Close();
-            if (!previewStates.TryGetValue(mode, out var state))
+            if (Desktop != null && _displayedPreview.HasValue)
+                _previewStates[_displayedPreview.Value] = Close();
+            if (!_previewStates.TryGetValue(mode, out var state))
                 state = DocumentContract.Begin(content, DocumentContract.Key("desktop-preview", content.Id));
-            Show(content, state, LoadPortraits(content));
-            displayedPreview = mode;
+            Show(content, state, DocumentPortraitLoader.Load(content));
+            _displayedPreview = mode;
             // 미리보기는 판정 이벤트를 연결하거나 게임 서비스에 값을 쓰지 않는다.
         }
 
-        private static Dictionary<string, Sprite> LoadPortraits(DocumentAssignment content)
-        {
-            var result = new Dictionary<string, Sprite>(StringComparer.Ordinal);
-            foreach (PersonContent person in content.People)
-            {
-                if (string.IsNullOrWhiteSpace(person.PortraitKey)) continue;
-                Sprite portrait = Resources.Load<Sprite>("Image/" + person.PortraitKey);
-                if (portrait != null) result[person.PortraitKey] = portrait;
-            }
-            return result;
-        }
-
-        private void OnDestroy() { ReleaseView(false); }
+        // 호스트가 소유한 화면과 입력 시스템을 해제한다.
+        private void OnDestroy() { ReleaseView(); }
     }
 }

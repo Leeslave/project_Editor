@@ -11,18 +11,18 @@ namespace EditorGame.Documents
         internal static readonly Color Surface = new Color32(192, 192, 192, 255);
         internal static readonly Color Ink = new Color32(20, 20, 20, 255);
         internal static readonly Color Navy = new Color32(0, 0, 128, 255);
-        private readonly TMP_FontAsset font;
-        private readonly DocumentDesktopSkin skin;
+        private readonly TMP_FontAsset _font;
+        private readonly DocumentDesktopSkin _skin;
 
         internal DocumentDesktopUI(TMP_FontAsset font, DocumentDesktopSkin skin)
         {
-            this.font = font;
-            this.skin = skin ?? new DocumentDesktopSkin();
+            _font = font;
+            _skin = skin ?? new DocumentDesktopSkin();
         }
 
-        internal Sprite CloseSymbol => skin.Close;
-        internal Sprite MinimizeSymbol => skin.Minimize;
-        internal Sprite WindowIcon => skin.WindowIcon;
+        internal Sprite CloseSymbol => _skin.Close;
+        internal Sprite MinimizeSymbol => _skin.Minimize;
+        internal Sprite WindowIcon => _skin.WindowIcon;
 
         internal void SetInteractable(Button button, bool enabled)
         {
@@ -35,9 +35,10 @@ namespace EditorGame.Documents
         internal void SetSelected(Button button, bool selected)
         {
             button.GetComponent<Image>().color = selected
-                ? new Color(.7f, .8f, 1) : skin.Raised != null ? Color.white : Surface;
+                ? new Color(.7f, .8f, 1) : _skin.Raised != null ? Color.white : Surface;
         }
 
+        // 패널에 지정된 UI 스프라이트를 적용한다.
         private static void ApplySprite(RectTransform rect, Sprite sprite)
         {
             if (sprite == null) return;
@@ -50,14 +51,14 @@ namespace EditorGame.Documents
         internal RectTransform Frame(string name, Transform parent)
         {
             var frame = Panel(name, parent, Surface);
-            ApplySprite(frame, skin.Raised);
+            ApplySprite(frame, _skin.Raised);
             return frame;
         }
 
         internal RectTransform InputPanel(string name, Transform parent)
         {
             var panel = Panel(name, parent, Color.white);
-            ApplySprite(panel, skin.Recessed);
+            ApplySprite(panel, _skin.Recessed);
             return panel;
         }
 
@@ -93,7 +94,7 @@ namespace EditorGame.Documents
         internal TMP_Text Text(Transform parent, string value, float size = 22)
         {
             var text = Rect("Text", parent).gameObject.AddComponent<TextMeshProUGUI>();
-            text.font = font;
+            text.font = _font;
             text.text = value;
             text.fontSize = size;
             text.color = Ink;
@@ -115,16 +116,16 @@ namespace EditorGame.Documents
             colors.disabledColor = new Color(.6f, .6f, .6f);
             button.colors = colors;
             button.targetGraphic = rect.GetComponent<Image>();
-            if (skin.Raised != null)
+            if (_skin.Raised != null)
             {
                 // TMP 문구와 콜백은 유지하고 버튼 상태 이미지만 재사용한다.
                 button.transition = Selectable.Transition.SpriteSwap;
                 button.spriteState = new SpriteState
                 {
-                    highlightedSprite = skin.Selected,
-                    selectedSprite = skin.Selected,
-                    pressedSprite = skin.Pressed,
-                    disabledSprite = skin.Raised
+                    highlightedSprite = _skin.Selected,
+                    selectedSprite = _skin.Selected,
+                    pressedSprite = _skin.Pressed,
+                    disabledSprite = _skin.Raised
                 };
             }
             if (click != null) button.onClick.AddListener(() => click());
@@ -153,7 +154,7 @@ namespace EditorGame.Documents
         internal RectTransform Scroll(Transform parent, float x, float y, float width, float height)
         {
             var outer = Panel("Scroll", parent, new Color32(244, 244, 235, 255));
-            ApplySprite(outer, skin.Recessed);
+            ApplySprite(outer, _skin.Recessed);
             Place(outer, x, y, width, height);
             var scroll = outer.gameObject.AddComponent<ScrollRect>();
             RectTransform content = CreateScrollContent(outer, scroll);
@@ -161,6 +162,7 @@ namespace EditorGame.Documents
             return content;
         }
 
+        // 스크롤 영역의 뷰포트와 자동 높이 콘텐츠를 생성한다.
         private RectTransform CreateScrollContent(RectTransform outer, ScrollRect scroll)
         {
             var viewport = Panel("Viewport", outer, Color.white);
@@ -187,13 +189,14 @@ namespace EditorGame.Documents
             return content;
         }
 
+        // 스크롤 영역에 세로 스크롤바를 연결한다.
         private void CreateScrollbar(RectTransform outer, ScrollRect scroll, float width, float height)
         {
             var track = Panel("Scrollbar", outer, Surface);
-            ApplySprite(track, skin.ScrollTrack);
+            ApplySprite(track, _skin.ScrollTrack);
             Place(track, width - 18, 0, 18, height);
             var handle = Panel("Handle", track, Color.gray);
-            ApplySprite(handle, skin.Raised);
+            ApplySprite(handle, _skin.Raised);
             Fill(handle);
             var bar = track.gameObject.AddComponent<Scrollbar>();
             bar.handleRect = handle;
@@ -211,7 +214,7 @@ namespace EditorGame.Documents
         internal RectTransform Taskbar(Transform parent)
         {
             var outer = Panel("Taskbar", parent, Surface);
-            ApplySprite(outer, skin.Toolbar);
+            ApplySprite(outer, _skin.Toolbar);
             Place(outer, 0, 906, 1280, 54);
             var viewport = Panel("Viewport", outer, Surface);
             Fill(viewport, 4);

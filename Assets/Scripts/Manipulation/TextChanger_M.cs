@@ -30,7 +30,7 @@ public class TextChanger_M : MonoBehaviour
     public void Changer(string a)
     {
         j.text = a;
-        DB_M.DB_Docs.PersonDataManager.ValidData(Ind, a);
+        EditingDesktopController.Instance.PersonDataManager.ValidData(Ind, a);
         Invoke("SizeChange", 0.05f);
     }
 

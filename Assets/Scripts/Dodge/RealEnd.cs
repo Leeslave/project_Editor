@@ -59,7 +59,7 @@ public class RealEnd : MonoBehaviour
         transform.GetChild(3).gameObject.SetActive(true);
 
         // 종료 버튼에 종료 기능 할당
-        MyUi.AddEvent(transform.GetChild(3).gameObject.GetComponent<EventTrigger>(), EventTriggerType.PointerClick,Exit);
+        UiEventUtility.AddEvent(transform.GetChild(3).gameObject.GetComponent<EventTrigger>(), EventTriggerType.PointerClick,Exit);
 
         yield break;
     }

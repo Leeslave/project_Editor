@@ -131,10 +131,10 @@ public class TextMannager_N : MonoBehaviour
         {
             if (text.Equals(NewsChange[line]) && Texts[line].gameObject.activeSelf)
             {
-                if (TutorialSetting.instance != null) if(TutorialSetting.instance.TutorialList.Count != 0) TutorialSetting.instance.TutorialList[0].IsRemove = true;
-                DB_M.DB_Docs.ToDoList.CheckList(0, line, true);
+                if (TutorialController.Instance != null) if(TutorialController.Instance.Steps.Count != 0) TutorialController.Instance.Steps[0].RemoveAfterCompletion = true;
+                EditingDesktopController.Instance.TaskList.CheckList(0, line, true);
             }
-            else DB_M.DB_Docs.ToDoList.CheckList(0, line, false);
+            else EditingDesktopController.Instance.TaskList.CheckList(0, line, false);
         }
         else foreach(var k in MainTexts)
             {

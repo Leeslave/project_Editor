@@ -20,6 +20,7 @@ namespace EditorGame.Documents
             Desktop.ProfileChanged -= OnProfileChanged;
         }
 
+        // 프로필 변경 후 진행 상태를 보관하고 안내를 표시한다.
         private void OnProfileChanged(string personId, ProfileField field, string value)
         {
             CaptureState();
@@ -55,14 +56,13 @@ namespace EditorGame.Documents
             FinishSubmission(submission, successful ? "극비 업무 완료" : "극비 업무 결과", ResultLines(fields));
         }
 
+        // 원본과 제출값을 지시된 목표값과 비교한다.
         private List<FieldResult> EvaluateFields(DocumentPlayState state)
         {
-            var originalProfiles = Assignment.People.ToDictionary(
-                item => item.Id, item => item.Profile, StringComparer.Ordinal);
+            var people = ContentIndex.PeopleById;
             var submittedProfiles = state.People.ToDictionary(
                 item => item.PersonId, item => item.Values, StringComparer.Ordinal);
-            var editsByField = Assignment.Edits.ToDictionary(
-                item => DocumentContract.Key(item.PersonId, item.Field.ToString()), item => item, StringComparer.Ordinal);
+            var editsByField = ContentIndex.EditsByField;
             var results = new List<FieldResult>();
             foreach (string personId in Assignment.TargetPersonIds)
             {
@@ -70,7 +70,7 @@ namespace EditorGame.Documents
                 {
                     string key = DocumentContract.Key(personId, field.ToString());
                     bool instructed = editsByField.TryGetValue(key, out EditInstruction instruction);
-                    string original = originalProfiles[personId].Get(field);
+                    string original = people[personId].Profile.Get(field);
                     string submittedValue = submittedProfiles[personId].Get(field);
                     string expected = instructed ? instruction.TargetValue : original;
                     results.Add(new FieldResult
@@ -87,12 +87,13 @@ namespace EditorGame.Documents
             return results;
         }
 
+        // 프로필 판정 결과를 제출 화면의 문장으로 변환한다.
         private List<string> ResultLines(List<FieldResult> fields)
         {
-            var names = Assignment.People.ToDictionary(item => item.Id, item => item.Profile.Name, StringComparer.Ordinal);
+            var people = ContentIndex.PeopleById;
             var result = fields
                 .Where(item => item.Outcome != FieldOutcome.Unchanged)
-                .Select(field => $"[{OutcomeName(field.Outcome)}] {names[field.PersonId]} · {field.Field}\n" +
+                .Select(field => $"[{OutcomeName(field.Outcome)}] {people[field.PersonId].Profile.Name} · {field.Field}\n" +
                     $"기존: {field.Original}\n입력: {field.Submitted}\n목표: {field.Expected}")
                 .ToList();
             if (result.Count == 0) result.Add("수정된 정보가 없습니다.");
@@ -100,6 +101,7 @@ namespace EditorGame.Documents
             return result;
         }
 
+        // 프로필 판정 결과의 한국어 이름을 반환한다.
         private static string OutcomeName(FieldOutcome outcome)
         {
             switch (outcome)

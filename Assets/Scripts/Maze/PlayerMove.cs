@@ -77,7 +77,7 @@ public class PlayerMove : MonoBehaviour
         AS = GetComponent<AudioSource>();
         Bf_X = transform.position.x;
         Bf_Y = transform.position.y;
-        if(TutorialSetting.instance == null) MoveAble = true;
+        if(TutorialController.Instance == null) MoveAble = true;
         Dir = Vector3.up;
         LastTrans = transform.position;
         maincam.transform.position = new Vector3(transform.position.x, transform.position.y, -10);
@@ -391,7 +391,7 @@ public class PlayerMove : MonoBehaviour
         if (collision.CompareTag("Key"))
         {
             // 튜토용
-            if (TutorialSetting.instance != null) { TutorialSetting.instance.ForTutoCond.SetActive(true);  MoveAble = false ; }
+            if (TutorialController.Instance != null) { TutorialController.Instance.CompletionSignal.SetActive(true);  MoveAble = false ; }
             // 플레이어의 뒤를 따라오는 Key의 특성 상, 플레이어와 충돌할 수 있음으로, 해당 연산에 영향을 받지 않는 tag 및 layer로 변경.
             KeyTrain.Add(collision.gameObject.GetComponent<Rigidbody2D>());
             collision.tag = "Untagged";

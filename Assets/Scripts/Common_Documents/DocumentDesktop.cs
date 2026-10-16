@@ -16,45 +16,48 @@ namespace EditorGame.Documents
         public event Action RecordRequested;
         public event Action<string> InvestigationCompletionRequested;
         public event Action SubmissionRequested;
-        private DocumentAssignment assignment;
-        private DocumentPlayState state;
-        private DocumentDesktopUI ui;
-        private RectTransform root, area, taskbar;
-        private Vector2 lastParentSize;
-        private TMP_Text progress;
-        private TMP_Text recordHistory;
-        private string statusMessage;
-        private Button record, cancel, submit;
-        private string statementId, actionId, selectedPerson, selectedDate;
-        private bool submissionAllowed = true;
-        private readonly Dictionary<string, DocumentDesktopWindow> windows = new Dictionary<string, DocumentDesktopWindow>();
-        private readonly Dictionary<string, Button> tasks = new Dictionary<string, Button>();
-        private readonly Dictionary<string, DocumentContent> documents = new Dictionary<string, DocumentContent>();
-        private readonly Dictionary<string, Button> lineButtons = new Dictionary<string, Button>();
-        private readonly Dictionary<string, Button> investigationButtons = new Dictionary<string, Button>();
-        private readonly Dictionary<string, PersonContent> people = new Dictionary<string, PersonContent>();
-        private readonly Dictionary<string, PersonEditState> edits = new Dictionary<string, PersonEditState>();
-        private readonly Dictionary<string, Sprite> portraits = new Dictionary<string, Sprite>();
+        private DocumentAssignment _assignment;
+        private DocumentPlayState _playState;
+        private DocumentDesktopUI _desktopUi;
+        private RectTransform _desktopRoot;
+        private RectTransform _windowArea;
+        private RectTransform _taskbar;
+        private Vector2 _lastParentSize;
+        private TMP_Text _progressText;
+        private TMP_Text _recordHistoryText;
+        private string _statusMessage;
+        private Button _recordButton;
+        private Button _cancelButton;
+        private Button _submitButton;
+        private string _selectedStatementLineId;
+        private string _selectedActionLineId;
+        private string _selectedPersonId;
+        private string _selectedDate;
+        private DocumentContentIndex _contentIndex;
+        private bool _submissionAllowed = true;
+        private readonly Dictionary<string, DocumentDesktopWindow> _windowsByKey = new Dictionary<string, DocumentDesktopWindow>();
+        private readonly Dictionary<string, Button> _taskbarButtonsByKey = new Dictionary<string, Button>();
+        private readonly Dictionary<string, Button> _lineButtonsById = new Dictionary<string, Button>();
+        private readonly Dictionary<string, Button> _investigationButtonsByPersonId = new Dictionary<string, Button>();
+        private readonly Dictionary<string, PersonEditState> _editsByPersonId = new Dictionary<string, PersonEditState>();
+        private readonly Dictionary<string, Sprite> _portraitsByKey = new Dictionary<string, Sprite>();
 
-        public DocumentPlayState GetStateSnapshot() => DocumentContract.CopyState(state);
+        public DocumentPlayState GetStateSnapshot() => DocumentContract.CopyState(_playState);
 
         public void Initialize(DocumentAssignment content, DocumentPlayState playState, TMP_FontAsset font,
             IDictionary<string, Sprite> portraitAssets = null, DocumentDesktopSkin skin = null)
         {
-            if (root != null) throw new InvalidOperationException("Desktop is already initialized.");
+            if (_desktopRoot != null) throw new InvalidOperationException("Desktop is already initialized.");
             if (font == null) throw new ArgumentNullException(nameof(font));
             DocumentContract.Validate(content);
             ValidateState(content, playState);
-            assignment = DocumentContract.Copy(content);
-            state = DocumentContract.CopyState(playState);
-            foreach (var person in assignment.People) people.Add(person.Id, person);
-            foreach (var document in assignment.Documents) documents.Add(document.Id, document);
-            foreach (var person in state.People) edits.Add(person.PersonId, person);
-            if (people.Keys.Any(id => !edits.ContainsKey(id) || edits[id].Values == null))
-                throw new ArgumentException("Play state is missing a person profile.");
+            _assignment = DocumentContract.Copy(content);
+            _playState = DocumentContract.CopyState(playState);
+            _contentIndex = new DocumentContentIndex(_assignment);
+            foreach (var person in _playState.People) _editsByPersonId.Add(person.PersonId, person);
             if (portraitAssets != null)
-                foreach (var pair in portraitAssets) portraits.Add(pair.Key, pair.Value);
-            ui = new DocumentDesktopUI(font, skin);
+                foreach (var pair in portraitAssets) _portraitsByKey.Add(pair.Key, pair.Value);
+            _desktopUi = new DocumentDesktopUI(font, skin);
             Build();
         }
 
@@ -80,6 +83,7 @@ namespace EditorGame.Documents
                 throw new ArgumentException("Investigation state must match the assignment targets and mode.");
         }
 
+        // 작업 영역과 안내 패널을 만들고 초기 상태를 표시한다.
         private void Build()
         {
             CreateDesktopRoot();
@@ -90,32 +94,34 @@ namespace EditorGame.Documents
             RefreshControls();
         }
 
+        // 화면 비율을 유지하는 문서 바탕 화면을 생성한다.
         private void CreateDesktopRoot()
         {
             var canvas = gameObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             canvas.sortingOrder = 50;
             gameObject.AddComponent<GraphicRaycaster>();
-            var backdrop = ui.Panel("Letterbox", transform, Color.black);
+            var backdrop = _desktopUi.Panel("Letterbox", transform, Color.black);
             DocumentDesktopUI.Fill(backdrop);
-            root = ui.Panel("Desktop 5 by 3", backdrop, DocumentDesktopUI.Surface);
-            root.anchorMin = root.anchorMax = root.pivot = new Vector2(.5f, .5f);
-            root.sizeDelta = new Vector2(1600, 960);
+            _desktopRoot = _desktopUi.Panel("Desktop 5 by 3", backdrop, DocumentDesktopUI.Surface);
+            _desktopRoot.anchorMin = _desktopRoot.anchorMax = _desktopRoot.pivot = new Vector2(.5f, .5f);
+            _desktopRoot.sizeDelta = new Vector2(1600, 960);
         }
 
+        // 문서 아이콘과 창 영역, 작업표시줄을 배치한다.
         private void CreateWorkspace()
         {
-            var workspace = ui.Panel("Workspace 4 by 3", root,
-                assignment.Mode == DocumentMode.Forgery ? Color.black : DocumentDesktopUI.Surface);
+            var workspace = _desktopUi.Panel("Workspace 4 by 3", _desktopRoot,
+                _assignment.Mode == DocumentMode.Forgery ? Color.black : DocumentDesktopUI.Surface);
             DocumentDesktopUI.Place(workspace, 0, 0, 1280, 960);
-            area = ui.Rect("Windows", workspace);
-            DocumentDesktopUI.Place(area, 0, 0, 1280, 844);
-            area.gameObject.AddComponent<RectMask2D>();
-            taskbar = ui.Taskbar(workspace);
-            if (assignment.Mode == DocumentMode.Forgery)
+            _windowArea = _desktopUi.Rect("Windows", workspace);
+            DocumentDesktopUI.Place(_windowArea, 0, 0, 1280, 844);
+            _windowArea.gameObject.AddComponent<RectMask2D>();
+            _taskbar = _desktopUi.Taskbar(workspace);
+            if (_assignment.Mode == DocumentMode.Forgery)
             {
                 CreateFolderShortcut(workspace, DocumentKind.Profile, 20);
-                var mark = ui.Text(workspace, "CONFIDENTIAL", 32);
+                var mark = _desktopUi.Text(workspace, "CONFIDENTIAL", 32);
                 mark.color = Color.red;
                 mark.alignment = TextAlignmentOptions.Right;
                 DocumentDesktopUI.Place(mark.rectTransform, 800, 852, 460, 40);
@@ -126,115 +132,122 @@ namespace EditorGame.Documents
                 CreateFolderShortcut(workspace, DocumentKind.Action, 190);
             }
             // 창은 바탕 화면 아이콘보다 위에 두고 작업표시줄 영역은 침범하지 않는다.
-            area.SetAsLastSibling();
+            _windowArea.SetAsLastSibling();
         }
 
+        // 업무 안내와 조사 및 제출 버튼을 생성한다.
         private void CreateInstructionPanel()
         {
-            var panel = ui.Frame("Instructions", root);
+            var panel = _desktopUi.Frame("Instructions", _desktopRoot);
             DocumentDesktopUI.Place(panel, 1280, 0, 320, 960);
-            var heading = ui.Text(panel, assignment.Mode == DocumentMode.Forgery ? "극비 업무" : "진술 대조", 30);
+            var heading = _desktopUi.Text(panel, _assignment.Mode == DocumentMode.Forgery ? "극비 업무" : "진술 대조", 30);
             DocumentDesktopUI.Place(heading.rectTransform, 18, 18, 284, 48);
-            var content = ui.Scroll(panel, 12, 80, 296, assignment.Mode == DocumentMode.StatementCheck ? 400 : 560);
-            ui.Text(content, "날짜: " + assignment.TargetDateId);
-            ui.Text(content, "대상: " + string.Join(", ", assignment.TargetPersonIds.Select(id => people[id].Profile.Name)));
-            ui.Text(content, assignment.Instructions ?? "");
-            foreach (var instruction in assignment.Edits)
-                ui.Text(content, people[instruction.PersonId].Profile.Name + " — " + instruction.DisplayText);
-            if (assignment.Mode == DocumentMode.StatementCheck)
-                foreach (var personId in assignment.TargetPersonIds)
+            var content = _desktopUi.Scroll(panel, 12, 80, 296, _assignment.Mode == DocumentMode.StatementCheck ? 400 : 560);
+            if (_assignment.Mode == DocumentMode.StatementCheck && _assignment.Stage == 0)
+                _desktopUi.Text(content, "바탕화면의 '진술 파일'과 '실제 행동' 아이콘을 클릭해 문서를 여세요.");
+            _desktopUi.Text(content, "날짜: " + _assignment.TargetDateId);
+            _desktopUi.Text(content, "대상: " + string.Join(", ", _assignment.TargetPersonIds.Select(id => _contentIndex.PeopleById[id].Profile.Name)));
+            _desktopUi.Text(content, _assignment.Instructions ?? "");
+            foreach (var instruction in _assignment.Edits)
+                _desktopUi.Text(content, _contentIndex.PeopleById[instruction.PersonId].Profile.Name + " — " + instruction.DisplayText);
+            if (_assignment.Mode == DocumentMode.StatementCheck)
+                foreach (var personId in _assignment.TargetPersonIds)
                 {
                     string targetId = personId;
-                    var complete = ui.Button(content, people[targetId].Profile.Name + " 조사완료", () =>
+                    var complete = _desktopUi.Button(content, _contentIndex.PeopleById[targetId].Profile.Name + " 조사완료", () =>
                     {
                         if (CanCompleteInvestigation(targetId)) InvestigationCompletionRequested?.Invoke(targetId);
                     });
                     DocumentDesktopUI.Row(complete, 52);
-                    investigationButtons.Add(targetId, complete);
+                    _investigationButtonsByPersonId.Add(targetId, complete);
                 }
-            if (assignment.Mode == DocumentMode.StatementCheck)
+            if (_assignment.Mode == DocumentMode.StatementCheck)
             {
-                var history = ui.Scroll(panel, 12, 492, 296, 150);
-                recordHistory = ui.Text(history, "");
+                var history = _desktopUi.Scroll(panel, 12, 492, 296, 150);
+                _recordHistoryText = _desktopUi.Text(history, "");
             }
-            progress = ui.Text(panel, "");
-            DocumentDesktopUI.Place(progress.rectTransform, 18, 660, 284, 128);
-            record = ui.Button(panel, "기록하기", () => { if (CanRecord) RecordRequested?.Invoke(); });
-            DocumentDesktopUI.Place((RectTransform)record.transform, 18, 800, 136, 48);
-            cancel = ui.Button(panel, "취소하기", ClearSelection);
-            DocumentDesktopUI.Place((RectTransform)cancel.transform, 166, 800, 136, 48);
-            record.gameObject.SetActive(assignment.Mode == DocumentMode.StatementCheck);
-            cancel.gameObject.SetActive(assignment.Mode == DocumentMode.StatementCheck);
-            submit = ui.Button(panel, "ValidTask · 제출", () => { if (CanSubmit) SubmissionRequested?.Invoke(); });
-            DocumentDesktopUI.Place((RectTransform)submit.transform, 18, 878, 284, 60);
+            _progressText = _desktopUi.Text(panel, "");
+            DocumentDesktopUI.Place(_progressText.rectTransform, 18, 660, 284, 128);
+            _recordButton = _desktopUi.Button(panel, "기록하기", () => { if (CanRecord) RecordRequested?.Invoke(); });
+            DocumentDesktopUI.Place((RectTransform)_recordButton.transform, 18, 800, 136, 48);
+            _cancelButton = _desktopUi.Button(panel, "취소하기", ClearSelection);
+            DocumentDesktopUI.Place((RectTransform)_cancelButton.transform, 166, 800, 136, 48);
+            _recordButton.gameObject.SetActive(_assignment.Mode == DocumentMode.StatementCheck);
+            _cancelButton.gameObject.SetActive(_assignment.Mode == DocumentMode.StatementCheck);
+            _submitButton = _desktopUi.Button(panel, "ValidTask · 제출", () => { if (CanSubmit) SubmissionRequested?.Invoke(); });
+            DocumentDesktopUI.Place((RectTransform)_submitButton.transform, 18, 878, 284, 60);
         }
 
+        // 부모 영역 크기가 바뀌면 바탕 화면의 배율을 갱신한다.
         private void LateUpdate()
         {
-            if (root == null) return;
-            var parent = (RectTransform)root.parent;
-            if (parent.rect.size == lastParentSize) return;
-            lastParentSize = parent.rect.size;
+            if (_desktopRoot == null) return;
+            var parent = (RectTransform)_desktopRoot.parent;
+            if (parent.rect.size == _lastParentSize) return;
+            _lastParentSize = parent.rect.size;
             float scale = Mathf.Min(parent.rect.width / 1600f, parent.rect.height / 960f);
-            root.localScale = Vector3.one * scale;
+            _desktopRoot.localScale = Vector3.one * scale;
         }
 
-        private bool CanRecord => CanSelect && statementId != null && actionId != null && RecordRequested != null;
-        private bool CanSubmit => CanSelect && submissionAllowed && SubmissionRequested != null &&
-            (assignment.Mode == DocumentMode.Forgery || state.Investigations.All(i => i.Completed));
+        private bool CanRecord => CanSelect && _selectedStatementLineId != null && _selectedActionLineId != null && RecordRequested != null;
+        private bool CanSubmit => CanSelect && _submissionAllowed && SubmissionRequested != null &&
+            (_assignment.Mode == DocumentMode.Forgery || _playState.Investigations.All(i => i.Completed));
 
         public void RefreshControls()
         {
-            ui.SetInteractable(record, CanRecord);
-            ui.SetInteractable(cancel, CanSelect && (statementId != null || actionId != null));
-            ui.SetInteractable(submit, CanSubmit);
-            foreach (var pair in investigationButtons)
-                ui.SetInteractable(pair.Value, CanCompleteInvestigation(pair.Key));
+            _desktopUi.SetInteractable(_recordButton, CanRecord);
+            _desktopUi.SetInteractable(_cancelButton, CanSelect && (_selectedStatementLineId != null || _selectedActionLineId != null));
+            _desktopUi.SetInteractable(_submitButton, CanSubmit);
+            foreach (var pair in _investigationButtonsByPersonId)
+                _desktopUi.SetInteractable(pair.Value, CanCompleteInvestigation(pair.Key));
         }
 
+        // 문서 종류에 대응하는 폴더 표시 이름을 반환한다.
         private static string GetKindName(DocumentKind kind)
         {
             return kind == DocumentKind.Statement ? "진술 파일" : kind == DocumentKind.Action ? "실제 행동" : "인물";
         }
 
+        // 문서 종류별 폴더를 여는 바로가기를 만든다.
         private void CreateFolderShortcut(Transform parent, DocumentKind kind, float x)
         {
-            var button = ui.Button(parent, GetKindName(kind), () => OpenFolder(kind));
-            ui.Icon(button, ui.WindowIcon, false);
+            var button = _desktopUi.Button(parent, GetKindName(kind), () => OpenFolder(kind));
+            _desktopUi.Icon(button, _desktopUi.WindowIcon, false);
             DocumentDesktopUI.Place((RectTransform)button.transform, x, 22, 154, 74);
         }
 
+        // 제목 표시줄과 작업표시줄 버튼을 포함한 창을 생성한다.
         private RectTransform CreateWindow(string key, string title, float width, float height, Action onClose = null)
         {
-            var frame = ui.Frame(title, area);
-            int slot = windows.Count % 6;
+            var frame = _desktopUi.Frame(title, _windowArea);
+            int slot = _windowsByKey.Count % 6;
             DocumentDesktopUI.Place(frame, 20 + slot * 90, 118 + slot * 35, width, height);
-            var bar = ui.Panel("Title", frame, DocumentDesktopUI.Navy);
+            var bar = _desktopUi.Panel("Title", frame, DocumentDesktopUI.Navy);
             DocumentDesktopUI.Place(bar, 4, 4, width - 8, 40);
-            var label = ui.Text(bar, title, 21);
+            var label = _desktopUi.Text(bar, title, 21);
             label.color = Color.white;
             label.overflowMode = TextOverflowModes.Ellipsis;
             DocumentDesktopUI.Place(label.rectTransform, 8, 5, width - 112, 32);
             var window = frame.gameObject.AddComponent<DocumentDesktopWindow>();
-            window.Initialize(area, bar.GetComponent<Image>(), focused =>
+            window.Initialize(_windowArea, bar.GetComponent<Image>(), focused =>
             {
-                foreach (var item in windows.Values) item.SetFocused(item == focused);
+                foreach (var item in _windowsByKey.Values) item.SetFocused(item == focused);
             });
-            bar.gameObject.AddComponent<DocumentWindowDrag>().Initialize(window, area);
-            var min = ui.Button(bar, "−", () => frame.gameObject.SetActive(false));
-            ui.Icon(min, ui.MinimizeSymbol, true);
+            bar.gameObject.AddComponent<DocumentWindowDrag>().Initialize(window, _windowArea);
+            var min = _desktopUi.Button(bar, "−", () => frame.gameObject.SetActive(false));
+            _desktopUi.Icon(min, _desktopUi.MinimizeSymbol, true);
             DocumentDesktopUI.Place((RectTransform)min.transform, width - 96, 4, 38, 32);
-            var close = ui.Button(bar, "×", onClose ?? (() => CloseWindow(key)));
-            ui.Icon(close, ui.CloseSymbol, true);
+            var close = _desktopUi.Button(bar, "×", onClose ?? (() => CloseWindow(key)));
+            _desktopUi.Icon(close, _desktopUi.CloseSymbol, true);
             DocumentDesktopUI.Place((RectTransform)close.transform, width - 52, 4, 36, 32);
-            windows.Add(key, window);
-            var task = ui.Button(taskbar, title, window.Focus);
+            _windowsByKey.Add(key, window);
+            var task = _desktopUi.Button(_taskbar, title, window.Focus);
             DocumentDesktopUI.Row(task, 34);
             task.GetComponent<LayoutElement>().preferredWidth = 230;
             task.GetComponent<LayoutElement>().minWidth = 230;
             task.GetComponentInChildren<TMP_Text>().overflowMode = TextOverflowModes.Ellipsis;
-            tasks.Add(key, task);
-            var body = ui.Scroll(frame, 8, 52, width - 16, height - 60);
+            _taskbarButtonsByKey.Add(key, task);
+            var body = _desktopUi.Scroll(frame, 8, 52, width - 16, height - 60);
             window.Move(Vector2.zero);
             window.Focus();
             return body;
@@ -242,13 +255,13 @@ namespace EditorGame.Documents
 
         public void OpenFolder(DocumentKind kind)
         {
-            if ((assignment.Mode == DocumentMode.Forgery) != (kind == DocumentKind.Profile)) return;
+            if ((_assignment.Mode == DocumentMode.Forgery) != (kind == DocumentKind.Profile)) return;
             string key = "folder:" + kind;
-            if (windows.TryGetValue(key, out var existing)) { existing.Focus(); return; }
+            if (_windowsByKey.TryGetValue(key, out var existing)) { existing.Focus(); return; }
             var body = CreateWindow(key, GetKindName(kind), 470, 570);
-            foreach (var document in assignment.Documents.Where(d => d.Kind == kind))
+            foreach (var document in _assignment.Documents.Where(d => d.Kind == kind))
             {
-                var button = ui.Button(body, people[document.PersonId].Profile.Name + "  /  " + document.DateId,
+                var button = _desktopUi.Button(body, _contentIndex.PeopleById[document.PersonId].Profile.Name + "  /  " + document.DateId,
                     () => OpenDocument(document.Id));
                 DocumentDesktopUI.Row(button, 70);
             }
@@ -256,143 +269,150 @@ namespace EditorGame.Documents
 
         public void OpenDocument(string documentId)
         {
-            if (documentId == null || !documents.TryGetValue(documentId, out var document))
+            if (documentId == null || !_contentIndex.DocumentsById.TryGetValue(documentId, out var document))
                 throw new ArgumentException("Unknown document ID.");
-            if ((assignment.Mode == DocumentMode.Forgery) != (document.Kind == DocumentKind.Profile)) return;
+            if ((_assignment.Mode == DocumentMode.Forgery) != (document.Kind == DocumentKind.Profile)) return;
             string key = "document:" + document.Id;
-            if (windows.TryGetValue(key, out var existing)) { existing.Focus(); return; }
-            var body = CreateWindow(key, people[document.PersonId].Profile.Name + " · " + GetKindName(document.Kind), 570, 620);
+            if (_windowsByKey.TryGetValue(key, out var existing)) { existing.Focus(); return; }
+            var body = CreateWindow(key, _contentIndex.PeopleById[document.PersonId].Profile.Name + " · " + GetKindName(document.Kind), 570, 620);
             RenderDocument(document, body);
-            if (state.Phase != SubmissionPhase.Working) return;
+            if (_playState.Phase != SubmissionPhase.Working) return;
             var view = new ViewRecord
             {
-                Id = DocumentContract.Key(state.WorkInstanceId, "view", Guid.NewGuid().ToString("N")),
+                Id = DocumentContract.Key(_playState.WorkInstanceId, "view", Guid.NewGuid().ToString("N")),
                 DocumentId = document.Id,
-                Authorized = assignment.TargetPersonIds.Contains(document.PersonId) && document.DateId == assignment.TargetDateId
+                Authorized = _assignment.TargetPersonIds.Contains(document.PersonId) && document.DateId == _assignment.TargetDateId
             };
-            state.Views.Add(view);
+            _playState.Views.Add(view);
             DocumentOpened?.Invoke(DocumentContract.Copy(view));
         }
 
+        // 문서 종류에 맞는 프로필 또는 기록 줄을 표시한다.
         private void RenderDocument(DocumentContent document, RectTransform body)
         {
-            ui.Text(body, people[document.PersonId].Profile.Name + "\n" + document.DateId, 24);
+            _desktopUi.Text(body, _contentIndex.PeopleById[document.PersonId].Profile.Name + "\n" + document.DateId, 24);
             if (document.Kind == DocumentKind.Profile)
             {
-                var person = people[document.PersonId];
-                if (person.PortraitKey != null && portraits.TryGetValue(person.PortraitKey, out var sprite) && sprite != null)
+                var person = _contentIndex.PeopleById[document.PersonId];
+                if (person.PortraitKey != null && _portraitsByKey.TryGetValue(person.PortraitKey, out var sprite) && sprite != null)
                 {
-                    var portrait = ui.Panel("Portrait", body, Color.white).GetComponent<Image>();
+                    var portrait = _desktopUi.Panel("Portrait", body, Color.white).GetComponent<Image>();
                     portrait.sprite = sprite;
                     portrait.preserveAspect = true;
                     DocumentDesktopUI.Row(portrait, 150);
                 }
-                else ui.Text(body, "[사진 없음]");
+                else _desktopUi.Text(body, "[사진 없음]");
                 foreach (ProfileField field in Enum.GetValues(typeof(ProfileField)))
                     CreateProfileInput(body, document, field);
                 return;
             }
             foreach (var line in document.Lines)
             {
-                var button = ui.Button(body, line.Time + "  " + line.Text, () =>
+                var button = _desktopUi.Button(body, line.Time + "  " + line.Text, () =>
                 {
-                    windows["document:" + document.Id].Focus();
+                    _windowsByKey["document:" + document.Id].Focus();
                     SelectLine(document, line.Id);
                 });
-                ui.SetInteractable(button, CanInvestigate(document.PersonId));
+                _desktopUi.SetInteractable(button, CanInvestigate(document.PersonId));
                 var label = button.GetComponentInChildren<TMP_Text>();
                 label.alignment = TextAlignmentOptions.TopLeft;
                 float preferred = label.GetPreferredValues(label.text, 500, 0).y + 20;
                 DocumentDesktopUI.Row(button, Mathf.Max(66, preferred));
-                lineButtons[line.Id] = button;
+                _lineButtonsById[line.Id] = button;
             }
             RefreshSelection();
         }
 
+        // 프로필 항목의 입력값과 변경 이벤트를 연결한다.
         private void CreateProfileInput(Transform parent, DocumentContent document, ProfileField field)
         {
-            ui.Text(parent, field.ToString(), 18);
-            var rect = ui.InputPanel(field.ToString(), parent);
+            _desktopUi.Text(parent, field.ToString(), 18);
+            var rect = _desktopUi.InputPanel(field.ToString(), parent);
             DocumentDesktopUI.Row(rect, 68);
             var input = rect.gameObject.AddComponent<TMP_InputField>();
-            var viewport = ui.Rect("Viewport", rect);
+            var viewport = _desktopUi.Rect("Viewport", rect);
             DocumentDesktopUI.Fill(viewport, 8);
             viewport.gameObject.AddComponent<RectMask2D>();
-            var label = ui.Text(viewport, "");
+            var label = _desktopUi.Text(viewport, "");
             DocumentDesktopUI.Fill(label.rectTransform);
             input.textViewport = viewport;
             input.textComponent = label;
             input.targetGraphic = rect.GetComponent<Image>();
             input.lineType = TMP_InputField.LineType.SingleLine;
-            input.text = edits[document.PersonId].Values.Get(field);
-            input.interactable = state.Phase == SubmissionPhase.Working && document.DateId == assignment.TargetDateId;
-            input.onSelect.AddListener(_ => windows["document:" + document.Id].Focus());
+            input.text = _editsByPersonId[document.PersonId].Values.Get(field);
+            input.interactable = _playState.Phase == SubmissionPhase.Working && document.DateId == _assignment.TargetDateId;
+            input.onSelect.AddListener(_ => _windowsByKey["document:" + document.Id].Focus());
             input.onValueChanged.AddListener(value =>
             {
-                if (state.Phase != SubmissionPhase.Working) return;
-                edits[document.PersonId].Values.Set(field, value);
+                if (_playState.Phase != SubmissionPhase.Working) return;
+                _editsByPersonId[document.PersonId].Values.Set(field, value);
                 ProfileChanged?.Invoke(document.PersonId, field, value);
             });
             input.onEndEdit.AddListener(value =>
             {
-                if (state.Phase != SubmissionPhase.Working) return;
-                edits[document.PersonId].Values.Set(field, value);
+                if (_playState.Phase != SubmissionPhase.Working) return;
+                _editsByPersonId[document.PersonId].Values.Set(field, value);
             });
         }
 
-        private bool CanSelect => state.Phase == SubmissionPhase.Working;
+        private bool CanSelect => _playState.Phase == SubmissionPhase.Working;
+        // 해당 인물의 조사가 진행 중인지 확인한다.
         private bool CanInvestigate(string personId) => CanSelect &&
-            state.Investigations.Any(i => i.PersonId == personId && !i.Completed);
+            _playState.Investigations.Any(i => i.PersonId == personId && !i.Completed);
+        // 기록이 있는 미완료 조사인지 확인한다.
         private bool CanCompleteInvestigation(string personId)
         {
-            var investigation = state.Investigations.FirstOrDefault(i => i.PersonId == personId);
+            var investigation = _playState.Investigations.FirstOrDefault(i => i.PersonId == personId);
             return CanSelect && investigation != null && !investigation.Completed &&
                 investigation.Records.Count > 0 && InvestigationCompletionRequested != null;
         }
 
+        // 같은 인물과 날짜의 진술 및 행동 선택을 갱신한다.
         private void SelectLine(DocumentContent document, string lineId)
         {
             if (!CanInvestigate(document.PersonId)) return;
-            if (selectedPerson != document.PersonId || selectedDate != document.DateId) ClearSelection();
-            selectedPerson = document.PersonId;
-            selectedDate = document.DateId;
-            if (document.Kind == DocumentKind.Statement) statementId = lineId;
-            else actionId = lineId;
+            if (_selectedPersonId != document.PersonId || _selectedDate != document.DateId) ClearSelection();
+            _selectedPersonId = document.PersonId;
+            _selectedDate = document.DateId;
+            if (document.Kind == DocumentKind.Statement) _selectedStatementLineId = lineId;
+            else _selectedActionLineId = lineId;
             RefreshSelection();
             RefreshControls();
-            PairSelectionChanged?.Invoke(statementId, actionId);
+            PairSelectionChanged?.Invoke(_selectedStatementLineId, _selectedActionLineId);
         }
 
         public void ClearSelection()
         {
-            statementId = actionId = selectedPerson = selectedDate = null;
+            _selectedStatementLineId = _selectedActionLineId = _selectedPersonId = _selectedDate = null;
             RefreshSelection();
             RefreshControls();
             PairSelectionChanged?.Invoke(null, null);
         }
 
+        // 선택된 문서 줄의 강조 표시를 갱신한다.
         private void RefreshSelection()
         {
-            foreach (var pair in lineButtons)
+            foreach (var pair in _lineButtonsById)
                 if (pair.Value != null)
-                    ui.SetSelected(pair.Value, pair.Key == statementId || pair.Key == actionId);
+                    _desktopUi.SetSelected(pair.Value, pair.Key == _selectedStatementLineId || pair.Key == _selectedActionLineId);
         }
 
+        // 입력 조합을 확정한 뒤 창과 작업표시줄 버튼을 해제한다.
         private void CloseWindow(string key)
         {
-            if (!windows.TryGetValue(key, out var window)) return;
+            if (!_windowsByKey.TryGetValue(key, out var window)) return;
             // 입력창을 제거하기 전에 진행 중인 한글 조합을 확정한다.
             foreach (var input in window.GetComponentsInChildren<TMP_InputField>(true))
                 if (input.isFocused) input.DeactivateInputField();
             // 창만 제거하고 수정값과 조사 상태는 유지한다.
             window.gameObject.SetActive(false);
             Destroy(window.gameObject);
-            tasks[key].gameObject.SetActive(false);
-            Destroy(tasks[key].gameObject);
-            windows.Remove(key);
-            tasks.Remove(key);
-            if (key.StartsWith("document:", StringComparison.Ordinal) && documents.TryGetValue(key.Substring(9), out var document))
-                foreach (var line in document.Lines) lineButtons.Remove(line.Id);
+            _taskbarButtonsByKey[key].gameObject.SetActive(false);
+            Destroy(_taskbarButtonsByKey[key].gameObject);
+            _windowsByKey.Remove(key);
+            _taskbarButtonsByKey.Remove(key);
+            if (key.StartsWith("document:", StringComparison.Ordinal) && _contentIndex.DocumentsById.TryGetValue(key.Substring(9), out var document))
+                foreach (var line in document.Lines) _lineButtonsById.Remove(line.Id);
         }
 
         /// <summary>외부에서 판정한 조사 상태를 화면에 반영한다.</summary>
@@ -401,15 +421,15 @@ namespace EditorGame.Documents
             if (!CanSelect) throw new InvalidOperationException("Submission is locked.");
             if (investigation == null || investigation.Records == null || investigation.MissingAnswerIds == null)
                 throw new ArgumentException("Investigation and record collections are required.");
-            int index = state.Investigations.FindIndex(i => i.PersonId == investigation.PersonId);
+            int index = _playState.Investigations.FindIndex(i => i.PersonId == investigation.PersonId);
             if (index < 0) throw new ArgumentException("Unknown investigation target.");
-            if (state.Investigations[index].Completed) throw new InvalidOperationException("Investigation is locked.");
-            state.Investigations[index] = DocumentContract.Copy(investigation);
-            if (investigation.Completed && selectedPerson == investigation.PersonId) ClearSelection();
-            foreach (var document in assignment.Documents.Where(d => d.PersonId == investigation.PersonId))
+            if (_playState.Investigations[index].Completed) throw new InvalidOperationException("Investigation is locked.");
+            _playState.Investigations[index] = DocumentContract.Copy(investigation);
+            if (investigation.Completed && _selectedPersonId == investigation.PersonId) ClearSelection();
+            foreach (var document in _assignment.Documents.Where(d => d.PersonId == investigation.PersonId))
                 foreach (var line in document.Lines)
-                    if (lineButtons.TryGetValue(line.Id, out var button) && button != null)
-                        ui.SetInteractable(button, CanInvestigate(document.PersonId));
+                    if (_lineButtonsById.TryGetValue(line.Id, out var button) && button != null)
+                        _desktopUi.SetInteractable(button, CanInvestigate(document.PersonId));
             RefreshStatus();
             RefreshRecordHistory();
             RefreshControls();
@@ -418,7 +438,7 @@ namespace EditorGame.Documents
         /// <summary>판정 상태를 바꾸지 않고 안내 문구만 표시한다.</summary>
         public void ShowStatusMessage(string message)
         {
-            statusMessage = message;
+            _statusMessage = message;
             RefreshStatus();
         }
 
@@ -426,7 +446,7 @@ namespace EditorGame.Documents
         public void ShowSubmissionResult(string title, IEnumerable<string> lines, Action onConfirm = null)
         {
             const string key = "submission:result";
-            if (windows.TryGetValue(key, out var existing))
+            if (_windowsByKey.TryGetValue(key, out var existing))
             {
                 existing.Focus();
                 return;
@@ -439,10 +459,10 @@ namespace EditorGame.Documents
                 onConfirm?.Invoke();
             };
             var body = CreateWindow(key, title, 760, 650, onConfirm == null ? null : confirm);
-            foreach (string line in lines) ui.Text(body, line, 21);
+            foreach (string line in lines) _desktopUi.Text(body, line, 21);
             if (onConfirm != null)
             {
-                var confirmButton = ui.Button(body, "확인 · 업무 종료", confirm);
+                var confirmButton = _desktopUi.Button(body, "확인 · 업무 종료", confirm);
                 DocumentDesktopUI.Row(confirmButton, 58);
             }
         }
@@ -450,46 +470,48 @@ namespace EditorGame.Documents
         /// <summary>모드별 제출 조건을 유지하면서 외부 제출 허용 상태를 반영한다.</summary>
         public void SetSubmissionAllowed(bool allowed)
         {
-            submissionAllowed = allowed;
+            _submissionAllowed = allowed;
             RefreshControls();
         }
 
         public void LockSubmission()
         {
             if (!CanSelect) return;
-            state.Phase = SubmissionPhase.Submitted;
-            statusMessage = null;
+            _playState.Phase = SubmissionPhase.Submitted;
+            _statusMessage = null;
             ClearSelection();
             foreach (var input in GetComponentsInChildren<TMP_InputField>(true)) input.interactable = false;
-            foreach (var button in lineButtons.Values) if (button != null) ui.SetInteractable(button, false);
-            foreach (var button in investigationButtons.Values) if (button != null) ui.SetInteractable(button, false);
+            foreach (var button in _lineButtonsById.Values) if (button != null) _desktopUi.SetInteractable(button, false);
+            foreach (var button in _investigationButtonsByPersonId.Values) if (button != null) _desktopUi.SetInteractable(button, false);
             RefreshStatus();
         }
 
+        // 업무 진행 상황과 안내 메시지를 표시한다.
         private void RefreshStatus()
         {
-            string summary = state.Phase != SubmissionPhase.Working ? "제출 완료 · 열람 전용" :
-                assignment.Mode == DocumentMode.StatementCheck
-                    ? "조사 완료 " + state.Investigations.Count(i => i.Completed) + " / " + state.Investigations.Count +
-                      "\n기록 " + state.Investigations.Sum(i => i.Records.Count) + "건"
+            string summary = _playState.Phase != SubmissionPhase.Working ? "제출 완료 · 열람 전용" :
+                _assignment.Mode == DocumentMode.StatementCheck
+                    ? "조사 완료 " + _playState.Investigations.Count(i => i.Completed) + " / " + _playState.Investigations.Count +
+                      "\n기록 " + _playState.Investigations.Sum(i => i.Records.Count) + "건"
                     : "문서를 닫아도 수정 내용은 유지됩니다.";
-            progress.text = string.IsNullOrEmpty(statusMessage) ? summary : summary + "\n" + statusMessage;
+            _progressText.text = string.IsNullOrEmpty(_statusMessage) ? summary : summary + "\n" + _statusMessage;
         }
 
+        // 저장된 진술 및 행동 조합을 기록 이력에 표시한다.
         private void RefreshRecordHistory()
         {
-            if (recordHistory == null) return;
-            var lines = assignment.Documents.SelectMany(document => document.Lines)
-                .ToDictionary(line => line.Id, StringComparer.Ordinal);
+            if (_recordHistoryText == null) return;
+            var lines = _contentIndex.LinesById;
             var entries = new List<string> { "기록 이력" };
-            foreach (InvestigationState investigation in state.Investigations)
+            foreach (InvestigationState investigation in _playState.Investigations)
             foreach (PairRecord pair in investigation.Records)
-                entries.Add(people[investigation.PersonId].Profile.Name + "\n진술: " +
+                entries.Add(_contentIndex.PeopleById[investigation.PersonId].Profile.Name + "\n진술: " +
                     FormatLine(lines[pair.StatementLineId]) + "\n행동: " + FormatLine(lines[pair.ActionLineId]));
             if (entries.Count == 1) entries.Add("기록 없음");
-            recordHistory.text = string.Join("\n\n", entries);
+            _recordHistoryText.text = string.Join("\n\n", entries);
         }
 
+        // 기록 줄의 시간과 내용을 하나의 문장으로 묶는다.
         private static string FormatLine(DocumentLine line)
         {
             return line.Time + " " + line.Text;

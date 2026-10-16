@@ -126,7 +126,6 @@ public class Player : MonoBehaviour
 
     [SerializeField] AudioSource AS;
     // 탄막과 충돌했을 때
-    // PM과 DB_M.DB_Docs.NewsManager관련은 PatternManager 및 Timer 참조
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Bullet"))
