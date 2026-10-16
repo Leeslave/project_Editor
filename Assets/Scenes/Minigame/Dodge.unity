@@ -5638,14 +5638,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AutoStart: 1
-  ForTutoCond: {fileID: 2223403202059893049}
-  CircleTuto: {fileID: 1082656510453778622}
-  BoxTuto: {fileID: 5834529185486917091}
-  TextBox: {fileID: 2786274944617280511}
-  CurActive: {fileID: 0}
-  TutorialList:
-  - TargetObj: {fileID: 651338443}
-    ChildInd: 
+  CompletionSignal: {fileID: 2223403202059893049}
+  _circleHighlight: {fileID: 1082656510453778622}
+  _boxHighlight: {fileID: 5834529185486917091}
+  _textBox: {fileID: 2786274944617280511}
+  CurrentBorder: {fileID: 0}
+  Steps:
+  - TargetObject: {fileID: 651338443}
+    TargetChildIndices: 
     Text: "<size=150%><color=red><\uD50C\uB808\uC774\uC5B4></color></size>\n\u2190,
       \u2192</color> \uD639\uC740 <color=red> A  D</color> \uD0A4\uB85C\n<color=blue>
       \uC88C, \uC6B0 </color> \uB85C \uC774\uB3D9\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
@@ -5653,28 +5653,28 @@ MonoBehaviour:
     - TriggerType: 4
       ReactAnywhere: 1
       ClickCount: 0
-      TutoEvent:
+      Callback:
         m_PersistentCalls:
           m_Calls: []
-      IsEndPoint: 1
-      AddTargetAction: 0
-    StartEvent: []
-    EndEvent: []
-    DisableObjects: []
-    AbleObjects: []
+      CompletesStep: 1
+      IncludeTargetActions: 0
+    StartEvents: []
+    EndEvents: []
+    DisabledObjects: []
+    EnabledObjects: []
     ActiveTarget: {fileID: 0}
-    ActiveChild: 
-    InActiveTarget: {fileID: 0}
-    InActiveChild: 
-    StartGap: 0
+    ActivationChildIndices: 
+    DeactivationTarget: {fileID: 0}
+    DeactivationChildIndices: 
+    StartDelay: 0
     IsRect: 0
     TimeScale: 0
-    GoNextTuto: 1
-    IsHighlight: 1
-    KeepEvent: 0
-    IsRemove: 1
-  - TargetObj: {fileID: 1674494033}
-    ChildInd: 
+    ContinueAutomatically: 1
+    HighlightTarget: 1
+    KeepEvents: 0
+    RemoveAfterCompletion: 1
+  - TargetObject: {fileID: 1674494033}
+    TargetChildIndices: 
     Text: "<size=150%><color=red> \uD504\uB85C\uC138\uC2A4 \uC9C4\uD589\uB3C4 </color></size>\n\uD604\uC7AC
       \uD504\uB85C\uC138\uC2A4\uC758 \uC9C4\uD589\uB3C4\uB97C \uB098\uD0C0\uB0C5\uB2C8\uB2E4.\n\uC7A0\uAE08\uC774
       \uD574\uC81C\uB41C \uBAA8\uC591\uC774 \uD574\uB2F9 \uB2E8\uACC4\uC758\n\uD504\uB85C\uC138\uC2A4\uAC00
@@ -5685,28 +5685,28 @@ MonoBehaviour:
     - TriggerType: 4
       ReactAnywhere: 1
       ClickCount: 0
-      TutoEvent:
+      Callback:
         m_PersistentCalls:
           m_Calls: []
-      IsEndPoint: 1
-      AddTargetAction: 0
-    StartEvent: []
-    EndEvent: []
-    DisableObjects: []
-    AbleObjects: []
+      CompletesStep: 1
+      IncludeTargetActions: 0
+    StartEvents: []
+    EndEvents: []
+    DisabledObjects: []
+    EnabledObjects: []
     ActiveTarget: {fileID: 0}
-    ActiveChild: 
-    InActiveTarget: {fileID: 0}
-    InActiveChild: 
-    StartGap: 0
+    ActivationChildIndices: 
+    DeactivationTarget: {fileID: 0}
+    DeactivationChildIndices: 
+    StartDelay: 0
     IsRect: 1
     TimeScale: 0
-    GoNextTuto: 1
-    IsHighlight: 1
-    KeepEvent: 0
-    IsRemove: 1
-  - TargetObj: {fileID: 327523273}
-    ChildInd: 
+    ContinueAutomatically: 1
+    HighlightTarget: 1
+    KeepEvents: 0
+    RemoveAfterCompletion: 1
+  - TargetObject: {fileID: 327523273}
+    TargetChildIndices: 
     Text: "<size=150%><color=red> \uBC1C\uD310 </color></size>\n<color=red>\uD50C\uB808\uC774\uC5B4</color>\uAC00
       \uD574\uB2F9 \uBC1C\uD310\uC5D0 \uB2FF\uC73C\uBA74\n\uC911\uB825\uC758 \uBC29\uD5A5\uC774
       \uBC14\uB01D\uB2C8\uB2E4!"
@@ -5714,17 +5714,17 @@ MonoBehaviour:
     - TriggerType: 4
       ReactAnywhere: 1
       ClickCount: 0
-      TutoEvent:
+      Callback:
         m_PersistentCalls:
           m_Calls: []
-      IsEndPoint: 1
-      AddTargetAction: 0
-    StartEvent: []
-    EndEvent:
+      CompletesStep: 1
+      IncludeTargetActions: 0
+    StartEvents: []
+    EndEvents:
     - m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 2276084644392996271}
-          m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
+          m_TargetAssemblyTypeName: TutorialController, Assembly-CSharp
           m_MethodName: ResetTime
           m_Mode: 1
           m_Arguments:
@@ -5735,40 +5735,40 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    DisableObjects: []
-    AbleObjects: []
+    DisabledObjects: []
+    EnabledObjects: []
     ActiveTarget: {fileID: 3823308400715706811}
-    ActiveChild: 00000000
-    InActiveTarget: {fileID: 0}
-    InActiveChild: 
-    StartGap: 0
+    ActivationChildIndices: 00000000
+    DeactivationTarget: {fileID: 0}
+    DeactivationChildIndices: 
+    StartDelay: 0
     IsRect: 1
     TimeScale: 0
-    GoNextTuto: 0
-    IsHighlight: 1
-    KeepEvent: 0
-    IsRemove: 1
-  - TargetObj: {fileID: 0}
-    ChildInd: 
+    ContinueAutomatically: 0
+    HighlightTarget: 1
+    KeepEvents: 0
+    RemoveAfterCompletion: 1
+  - TargetObject: {fileID: 0}
+    TargetChildIndices: 
     Text: 
     Events: []
-    StartEvent: []
-    EndEvent: []
-    DisableObjects: []
-    AbleObjects: []
+    StartEvents: []
+    EndEvents: []
+    DisabledObjects: []
+    EnabledObjects: []
     ActiveTarget: {fileID: 0}
-    ActiveChild: 
-    InActiveTarget: {fileID: 0}
-    InActiveChild: 
-    StartGap: 0
+    ActivationChildIndices: 
+    DeactivationTarget: {fileID: 0}
+    DeactivationChildIndices: 
+    StartDelay: 0
     IsRect: 1
     TimeScale: 0
-    GoNextTuto: 1
-    IsHighlight: 1
-    KeepEvent: 0
-    IsRemove: 1
-  - TargetObj: {fileID: 3823308400715706811}
-    ChildInd: 00000000
+    ContinueAutomatically: 1
+    HighlightTarget: 1
+    KeepEvents: 0
+    RemoveAfterCompletion: 1
+  - TargetObject: {fileID: 3823308400715706811}
+    TargetChildIndices: 00000000
     Text: "<size=150%><color=red> \uD0C4\uB9C9 </color></size>\n<color=red>\uD50C\uB808\uC774\uC5B4</color>\uAC00
       \uD0C4\uB9C9\uC5D0 \uB2FF\uC73C\uBA74\n\uD504\uB85C\uC138\uC2A4\uAC00 \uCC98\uC74C\uBD80\uD130
       \uB2E4\uC2DC \uC2E4\uD589\uB429\uB2C8\uB2E4!"
@@ -5776,47 +5776,47 @@ MonoBehaviour:
     - TriggerType: 4
       ReactAnywhere: 1
       ClickCount: 0
-      TutoEvent:
+      Callback:
         m_PersistentCalls:
           m_Calls: []
-      IsEndPoint: 1
-      AddTargetAction: 0
-    StartEvent: []
-    EndEvent:
+      CompletesStep: 1
+      IncludeTargetActions: 0
+    StartEvents: []
+    EndEvents:
     - m_PersistentCalls:
         m_Calls: []
-    DisableObjects: []
-    AbleObjects: []
+    DisabledObjects: []
+    EnabledObjects: []
     ActiveTarget: {fileID: 0}
-    ActiveChild: 
-    InActiveTarget: {fileID: 0}
-    InActiveChild: 
-    StartGap: 0.5
+    ActivationChildIndices: 
+    DeactivationTarget: {fileID: 0}
+    DeactivationChildIndices: 
+    StartDelay: 0.5
     IsRect: 1
     TimeScale: 0
-    GoNextTuto: 1
-    IsHighlight: 1
-    KeepEvent: 0
-    IsRemove: 1
-  - TargetObj: {fileID: 3823308400715706811}
-    ChildInd: 00000000
+    ContinueAutomatically: 1
+    HighlightTarget: 1
+    KeepEvents: 0
+    RemoveAfterCompletion: 1
+  - TargetObject: {fileID: 3823308400715706811}
+    TargetChildIndices: 00000000
     Text: "<color=red>\uD0C4\uB9C9</color>\uC5D0 \uB2FF\uC9C0 \uC54A\uC740 \uCC44\uB85C
       \uBC84\uD168\uBD05\uC2DC\uB2E4!"
     Events:
     - TriggerType: 4
       ReactAnywhere: 1
       ClickCount: 0
-      TutoEvent:
+      Callback:
         m_PersistentCalls:
           m_Calls: []
-      IsEndPoint: 1
-      AddTargetAction: 0
-    StartEvent: []
-    EndEvent:
+      CompletesStep: 1
+      IncludeTargetActions: 0
+    StartEvents: []
+    EndEvents:
     - m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 2276084644392996271}
-          m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
+          m_TargetAssemblyTypeName: TutorialController, Assembly-CSharp
           m_MethodName: ResetTime
           m_Mode: 1
           m_Arguments:
@@ -5827,40 +5827,40 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    DisableObjects: []
-    AbleObjects: []
+    DisabledObjects: []
+    EnabledObjects: []
     ActiveTarget: {fileID: 1204323216}
-    ActiveChild: 
-    InActiveTarget: {fileID: 0}
-    InActiveChild: 
-    StartGap: 0
+    ActivationChildIndices: 
+    DeactivationTarget: {fileID: 0}
+    DeactivationChildIndices: 
+    StartDelay: 0
     IsRect: 1
     TimeScale: 0
-    GoNextTuto: 0
-    IsHighlight: 0
-    KeepEvent: 0
-    IsRemove: 1
-  - TargetObj: {fileID: 0}
-    ChildInd: 
+    ContinueAutomatically: 0
+    HighlightTarget: 0
+    KeepEvents: 0
+    RemoveAfterCompletion: 1
+  - TargetObject: {fileID: 0}
+    TargetChildIndices: 
     Text: 
     Events: []
-    StartEvent: []
-    EndEvent: []
-    DisableObjects: []
-    AbleObjects: []
+    StartEvents: []
+    EndEvents: []
+    DisabledObjects: []
+    EnabledObjects: []
     ActiveTarget: {fileID: 0}
-    ActiveChild: 
-    InActiveTarget: {fileID: 0}
-    InActiveChild: 
-    StartGap: 0
+    ActivationChildIndices: 
+    DeactivationTarget: {fileID: 0}
+    DeactivationChildIndices: 
+    StartDelay: 0
     IsRect: 1
     TimeScale: 0
-    GoNextTuto: 1
-    IsHighlight: 1
-    KeepEvent: 0
-    IsRemove: 1
-  - TargetObj: {fileID: 1204323216}
-    ChildInd: 00000000
+    ContinueAutomatically: 1
+    HighlightTarget: 1
+    KeepEvents: 0
+    RemoveAfterCompletion: 1
+  - TargetObject: {fileID: 1204323216}
+    TargetChildIndices: 00000000
     Text: "<size=150%><color=red> \uC5D0\uB7EC \uC624\uBE0C\uC81D\uD2B8 </color></size>\n\uD574\uB2F9
       \uC624\uBE0C\uC81D\uD2B8\uB97C \uD68D\uB4DD\uD558\uC5EC \uD574\uD0B9 \uD504\uB85C\uC138\uC2A4\uB97C
       \uC9C4\uD589\uC2DC\uD0AC \uC218 \uC788\uC2B5\uB2C8\uB2E4!\n\uD574\uB2F9 \uC624\uBE0C\uC81D\uD2B8\uB97C
@@ -5869,17 +5869,17 @@ MonoBehaviour:
     - TriggerType: 4
       ReactAnywhere: 1
       ClickCount: 0
-      TutoEvent:
+      Callback:
         m_PersistentCalls:
           m_Calls: []
-      IsEndPoint: 1
-      AddTargetAction: 0
-    StartEvent: []
-    EndEvent:
+      CompletesStep: 1
+      IncludeTargetActions: 0
+    StartEvents: []
+    EndEvents:
     - m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 2276084644392996271}
-          m_TargetAssemblyTypeName: TutorialSetting, Assembly-CSharp
+          m_TargetAssemblyTypeName: TutorialController, Assembly-CSharp
           m_MethodName: ResetTime
           m_Mode: 1
           m_Arguments:
@@ -5890,38 +5890,38 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    DisableObjects: []
-    AbleObjects: []
+    DisabledObjects: []
+    EnabledObjects: []
     ActiveTarget: {fileID: 0}
-    ActiveChild: 
-    InActiveTarget: {fileID: 1204323216}
-    InActiveChild: 
-    StartGap: 0
+    ActivationChildIndices: 
+    DeactivationTarget: {fileID: 1204323216}
+    DeactivationChildIndices: 
+    StartDelay: 0
     IsRect: 1
     TimeScale: 0
-    GoNextTuto: 0
-    IsHighlight: 0
-    KeepEvent: 0
-    IsRemove: 1
-  - TargetObj: {fileID: 0}
-    ChildInd: 
+    ContinueAutomatically: 0
+    HighlightTarget: 0
+    KeepEvents: 0
+    RemoveAfterCompletion: 1
+  - TargetObject: {fileID: 0}
+    TargetChildIndices: 
     Text: 
     Events: []
-    StartEvent: []
-    EndEvent: []
-    DisableObjects: []
-    AbleObjects: []
+    StartEvents: []
+    EndEvents: []
+    DisabledObjects: []
+    EnabledObjects: []
     ActiveTarget: {fileID: 0}
-    ActiveChild: 
-    InActiveTarget: {fileID: 0}
-    InActiveChild: 
-    StartGap: 0
+    ActivationChildIndices: 
+    DeactivationTarget: {fileID: 0}
+    DeactivationChildIndices: 
+    StartDelay: 0
     IsRect: 1
     TimeScale: 0
-    GoNextTuto: 1
-    IsHighlight: 1
-    KeepEvent: 0
-    IsRemove: 1
+    ContinueAutomatically: 1
+    HighlightTarget: 1
+    KeepEvents: 0
+    RemoveAfterCompletion: 1
 --- !u!1 &2484009687396312517
 GameObject:
   m_ObjectHideFlags: 0
@@ -6393,13 +6393,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 620624407ca7c2f47a83c9b809388dc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsRect: 1
-  Mat: {fileID: 2100000, guid: 593b7ccc59699ef43827346455b8f14a, type: 2}
-  TextBox: {fileID: 3809831206207760300}
-  CanvasRect: {fileID: 1494359491428397064}
-  Target: {fileID: 0}
-  worldCam: {fileID: 519420031}
-  uiCam: {fileID: 519420031}
+  _isRect: 1
+  _maskMaterial: {fileID: 2100000, guid: 593b7ccc59699ef43827346455b8f14a, type: 2}
+  _textBox: {fileID: 3809831206207760300}
+  _canvasRect: {fileID: 1494359491428397064}
+  _target: {fileID: 0}
+  _worldCamera: {fileID: 519420031}
+  _uiCamera: {fileID: 519420031}
 --- !u!222 &7386293995082742402
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6420,13 +6420,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 620624407ca7c2f47a83c9b809388dc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsRect: 0
-  Mat: {fileID: 2100000, guid: 5803b931590601b4aa380477ff8d510b, type: 2}
-  TextBox: {fileID: 3809831206207760300}
-  CanvasRect: {fileID: 1494359491428397064}
-  Target: {fileID: 0}
-  worldCam: {fileID: 519420031}
-  uiCam: {fileID: 519420031}
+  _isRect: 0
+  _maskMaterial: {fileID: 2100000, guid: 5803b931590601b4aa380477ff8d510b, type: 2}
+  _textBox: {fileID: 3809831206207760300}
+  _canvasRect: {fileID: 1494359491428397064}
+  _target: {fileID: 0}
+  _worldCamera: {fileID: 519420031}
+  _uiCamera: {fileID: 519420031}
 --- !u!222 &7993286020646777673
 CanvasRenderer:
   m_ObjectHideFlags: 0

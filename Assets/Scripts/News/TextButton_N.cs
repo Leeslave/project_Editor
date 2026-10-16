@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 // 줄 생성, 삭제 버튼
-public class TextButton_N : Buttons_M
+public class TextButton_N : PointerButton
 {
     [SerializeField] UnityEngine.UI.Image MyImage;
     [SerializeField] MainText_N MainText;
@@ -13,7 +13,7 @@ public class TextButton_N : Buttons_M
 
     protected override void Click(PointerEventData Data)
     {
-        MyImage.color = BfColor;
+        MyImage.color = _defaultColor;
     }
 
     protected override void OnPointer(PointerEventData data)
@@ -25,13 +25,13 @@ public class TextButton_N : Buttons_M
 
     protected override void OutPointer(PointerEventData data)
     {
-        MyImage.color = BfColor;
+        MyImage.color = _defaultColor;
         if (IsRemove) MainText.OnRemoveButton = false;
         else MainText.OnAddButton = false;
     }
 
     private void OnDisable()
     {
-        MyImage.color = BfColor;
+        MyImage.color = _defaultColor;
     }
 }

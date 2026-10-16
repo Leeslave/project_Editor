@@ -28,18 +28,18 @@ public class Drager_M : MonoBehaviour
             if (IsTouch)
             {
                 ForTutoCond.SetActive(true);
-                if (DB_M.DB_Docs.PersonDataManager.CurDraggedType != 4) cnt.GetComponent<TextChanger_M>().Changer(d[DB_M.DB_Docs.PersonDataManager.CurDraggedType] + name);
-                else { FaceImage.sprite = MyImage.sprite; DB_M.DB_Docs.PersonDataManager.FaceNum = name[0] - '0'; }
+                if (EditingDesktopController.Instance.PersonDataManager.CurDraggedType != 4) cnt.GetComponent<TextChanger_M>().Changer(d[EditingDesktopController.Instance.PersonDataManager.CurDraggedType] + name);
+                else { FaceImage.sprite = MyImage.sprite; EditingDesktopController.Instance.PersonDataManager.FaceNum = name[0] - '0'; }
             }
             gameObject.SetActive(false);
-            DB_M.DB_Docs.PersonDataManager.TouchAbleChange();
+            EditingDesktopController.Instance.PersonDataManager.TouchAbleChange();
         }
     }
     
     private void OnTriggerEnter2D(Collider2D collision) 
     {
         IsTouch = true;
-        cnt = collision.transform.GetChild(DB_M.DB_Docs.PersonDataManager.CurDraggedType).GetComponent<Image>();
+        cnt = collision.transform.GetChild(EditingDesktopController.Instance.PersonDataManager.CurDraggedType).GetComponent<Image>();
         cnt.color = cnt.color + C1;
     }
 

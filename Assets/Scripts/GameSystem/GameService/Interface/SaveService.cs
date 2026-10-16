@@ -11,6 +11,7 @@ namespace GameService
         protected DaySave Save;
 
         public int DayIndex => Save.dayID / 100;
+        public int CurrentSaveId => Save?.dayID ?? -1;
 
         /// <summary>
         /// 명성치
@@ -75,5 +76,9 @@ namespace GameService
         /// <param name="condition">명성치 조건</param>
         /// <returns>조건 달성 여부 반환</returns>
         public abstract bool CheckRenown(int condition);
+
+        public abstract bool IsWorkCompleted(string workCode, int stage = -1);
+        public abstract void RecordWorkCompletion(string workCode, int stage);
+        public abstract bool TryApplyRenownSettlement(string settlementId, int delta);
     }
 }

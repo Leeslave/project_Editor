@@ -54,7 +54,7 @@ public class InfChange : MonoBehaviour
         transform.position = Vector3.zero;
         if (PeopleName != "")
         {
-            CurPeople = DB_M.DB_Docs.FindPeople(PeopleName);
+            CurPeople = EditingDesktopController.Instance.FindPeople(PeopleName);
             ChangeInf(CurPeople);
         }
     }
@@ -148,7 +148,7 @@ public class InfChange : MonoBehaviour
                 cnt.name = CurHighLighted.Files[i];
                 cnt.transform.GetChild(2).GetComponent<TMP_Text>().text = CurHighLighted.Files[i];
             }
-            DB_M.DB_Docs.GetOption.Tabs[2].Subs[0] = Files;
+            EditingDesktopController.Instance.FileViewer.Tabs[2].Subs[0] = Files;
             Files.SetActive(true);
         }
         else if(CurPeople != null)
@@ -161,7 +161,7 @@ public class InfChange : MonoBehaviour
                 cnt.transform.GetChild(2).GetComponent<TMP_Text>().text = $"Face{i + 1}";
                 cnt.transform.GetChild(1).GetComponent<Image>().sprite = CurPeople.Faces[i];
             }
-            DB_M.DB_Docs.GetOption.Tabs[2].Subs[0] = Faces;
+            EditingDesktopController.Instance.FileViewer.Tabs[2].Subs[0] = Faces;
             Faces.SetActive(true);
         }
         Folders.SetActive(false);
@@ -180,30 +180,30 @@ public class InfChange : MonoBehaviour
         CurFolder = null;
         Files.SetActive(false);
         Faces.SetActive(false);
-        DB_M.DB_Docs.GetOption.Tabs[2].Subs[0] = Folders;
+        EditingDesktopController.Instance.FileViewer.Tabs[2].Subs[0] = Folders;
         Folders.SetActive(true);
     }
 
     public void ChangeInf(PeopleIndex FindPeople)
     {
         CurPeople = FindPeople;
-        Name.text = "이름 : " + FindPeople.name_k;
-        Age.text = "나이 : " + FindPeople.age;
-        Sex.text = "성별 : " + (FindPeople.isMan ? "남성" : "여성");
-        country.text = "국가 : " + FindPeople.country;
-        job.text = "직급 : " + FindPeople.job;
-        belong.text = "부서 : " + FindPeople.belong;
-        part.text = "소속 : " + FindPeople.part;
-        Face.sprite = FindPeople.Faces[FindPeople.curFace];
+        Name.text = "이름 : " + FindPeople.KoreanName;
+        Age.text = "나이 : " + FindPeople.Age;
+        Sex.text = "성별 : " + (FindPeople.IsMale ? "남성" : "여성");
+        country.text = "국가 : " + FindPeople.Country;
+        job.text = "직급 : " + FindPeople.Job;
+        belong.text = "부서 : " + FindPeople.Affiliation;
+        part.text = "소속 : " + FindPeople.Division;
+        Face.sprite = FindPeople.Faces[FindPeople.CurrentFaceIndex];
     }
 
     public void ApplyChange()
     {
-        CurPeople.country = (Country)Enum.Parse(typeof(Country),country.text.Split(" ")[2]);
-        CurPeople.job = (Job)Enum.Parse(typeof(Job), job.text.Split(" ")[2]);
-        CurPeople.belong = (Belonging)Enum.Parse(typeof(Belonging), belong.text.Split(" ")[2]);
-        CurPeople.part = (Part)Enum.Parse(typeof(Part), part.text.Split(" ")[2]);
-        CurPeople.curFace = FaceNum;
+        CurPeople.Country = (Country)Enum.Parse(typeof(Country),country.text.Split(" ")[2]);
+        CurPeople.Job = (Job)Enum.Parse(typeof(Job), job.text.Split(" ")[2]);
+        CurPeople.Affiliation = (Belonging)Enum.Parse(typeof(Belonging), belong.text.Split(" ")[2]);
+        CurPeople.Division = (Part)Enum.Parse(typeof(Part), part.text.Split(" ")[2]);
+        CurPeople.CurrentFaceIndex = FaceNum;
     }
 
     private void OnDisable()
@@ -216,18 +216,18 @@ public class InfChange : MonoBehaviour
     {
         foreach(var k in PeopleCorrect)
         {
-            if(k.Item1.Equals(CurPeople.name_e) && k.Item2 == ind)
+            if(k.Item1.Equals(CurPeople.EnglishName) && k.Item2 == ind)
             {
                 switch (ind)
                 {
                     case 4: // Image
-                        if (FaceNum == k.Item3) DB_M.DB_Docs.ToDoList.CheckList(2, -1, true, k.Item4);
-                        else DB_M.DB_Docs.ToDoList.CheckList(2, -1, false, k.Item4);
+                        if (FaceNum == k.Item3) EditingDesktopController.Instance.TaskList.CheckList(2, -1, true, k.Item4);
+                        else EditingDesktopController.Instance.TaskList.CheckList(2, -1, false, k.Item4);
                         break;
                     default:    // ETC
                         var j = text.Split(" ")[2];
-                        if (DB_M.DB_Docs.InfSub[ind][k.Item3].TrimEnd() == j) DB_M.DB_Docs.ToDoList.CheckList(2, 0, true, k.Item4);
-                        else DB_M.DB_Docs.ToDoList.CheckList(2, -1, false, k.Item4);
+                        if (EditingDesktopController.Instance.ProfileOptions[ind][k.Item3].TrimEnd() == j) EditingDesktopController.Instance.TaskList.CheckList(2, 0, true, k.Item4);
+                        else EditingDesktopController.Instance.TaskList.CheckList(2, -1, false, k.Item4);
                         break;
                         
                 }

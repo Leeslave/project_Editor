@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53ca94ef9db34e4c94c53cbb0a5fa1ce, type: 3}
+  m_Name: Stage_0
+  m_EditorClassIdentifier:
+  WorkCode: "SecureDocument"
+  Stage: 0
+  Assignment:
+    Id: "forgery-confidential-example"
+    Mode: 1
+    Stage: 0
+    TargetDateId: "Confidential"
+    Instructions: "극비 인물 정보 조작 지시\n클로버: 국적을 주렌, 직업을 보안부 C팀 사원으로 변경\n월터: 나이를 38, 국적을 노르반, 직업을 외교부 특수요원으로 변경\n지시되지 않은 항목은 원본 그대로 유지하십시오."
+    TargetPersonIds:
+      - "person-clover"
+      - "person-walter"
+    People:
+      - Id: "person-clover"
+        PortraitKey: "Clover_0"
+        Profile:
+          Name: "클로버"
+          Age: "29"
+          Sex: "Female"
+          Country: "아슬라니아"
+          Job: "언론부 A팀 대리"
+      - Id: "person-walter"
+        PortraitKey: "Walter_0"
+        Profile:
+          Name: "월터"
+          Age: "45"
+          Sex: "Male"
+          Country: "주렌"
+          Job: "보안부 B팀 팀장"
+      - Id: "person-clayton"
+        PortraitKey: "Klayton_0"
+        Profile:
+          Name: "클레이튼"
+          Age: "34"
+          Sex: "Male"
+          Country: "아슬라니아"
+          Job: "검열부 문서관"
+    Documents:
+      - Id: "profile-clover-confidential"
+        PersonId: "person-clover"
+        DateId: "Confidential"
+        Kind: 2
+        Lines: []
+      - Id: "profile-walter-confidential"
+        PersonId: "person-walter"
+        DateId: "Confidential"
+        Kind: 2
+        Lines: []
+      - Id: "profile-clayton-archive"
+        PersonId: "person-clayton"
+        DateId: "Archive"
+        Kind: 2
+        Lines: []
+    Answers: []
+    Edits:
+      - Id: "edit-clover-country"
+        PersonId: "person-clover"
+        Field: 3
+        TargetValue: "주렌"
+        DisplayText: "국적: 주렌"
+      - Id: "edit-clover-job"
+        PersonId: "person-clover"
+        Field: 4
+        TargetValue: "보안부 C팀 사원"
+        DisplayText: "직업: 보안부 C팀 사원"
+      - Id: "edit-walter-age"
+        PersonId: "person-walter"
+        Field: 1
+        TargetValue: "38"
+        DisplayText: "나이: 38"
+      - Id: "edit-walter-country"
+        PersonId: "person-walter"
+        Field: 3
+        TargetValue: "노르반"
+        DisplayText: "국적: 노르반"
+      - Id: "edit-walter-job"
+        PersonId: "person-walter"
+        Field: 4
+        TargetValue: "외교부 특수요원"
+        DisplayText: "직업: 외교부 특수요원"
+  Settlement:
+    Completion: 1
+    IncorrectPerCount: -1
+    ConfidentialMission: 1
+    CaughtPerCount: -1
+  UnlockCombination: 1
+  Prerequisites:
+    - WorkCode: "Dodge"
+      Stage: -1
+    - WorkCode: "Maze"
+      Stage: -1

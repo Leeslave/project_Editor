@@ -1,0 +1,59 @@
+[
+  {
+    "Id": "example-statement-day-3",
+    "Mode": "StatementCheck",
+    "Stage": 0,
+    "TargetDateId": "example-day-3",
+    "Instructions": "오늘의 조사 대상: 핸더슨, 프라이스",
+    "TargetPersonIds": ["person-henderson", "person-price"],
+    "People": [
+      {"Id": "person-henderson", "PortraitKey": null, "Profile": {"Name": "핸더슨", "Age": "41", "Sex": "Male", "Country": "주렌", "Job": "물류부 기사"}},
+      {"Id": "person-price", "PortraitKey": null, "Profile": {"Name": "프라이스", "Age": "27", "Sex": "Female", "Country": "노르반", "Job": "행정부 서기관"}}
+    ],
+    "Documents": [
+      {"Id": "doc-henderson-statement", "PersonId": "person-henderson", "DateId": "example-day-3", "Kind": "Statement", "Lines": [
+        {"Id": "line-henderson-breakroom", "Time": "15:05", "Text": "잠깐 커피를 마시러 휴게실에 갔었어요."}
+      ]},
+      {"Id": "doc-henderson-action", "PersonId": "person-henderson", "DateId": "example-day-3", "Kind": "Action", "Lines": [
+        {"Id": "line-henderson-gambling", "Time": "15:03:28", "Text": "[구역 외] 도박장 출입"}
+      ]},
+      {"Id": "doc-price-statement", "PersonId": "person-price", "DateId": "example-day-3", "Kind": "Statement", "Lines": [
+        {"Id": "line-price-government", "Time": "14:00", "Text": "오후에는 외근이 있었어요. 3구역 관공서에 갔습니다."}
+      ]},
+      {"Id": "doc-price-action", "PersonId": "person-price", "DateId": "example-day-3", "Kind": "Action", "Lines": [
+        {"Id": "line-price-unregistered", "Time": "14:05:33", "Text": "[5구역] 미등록 건물 출입"}
+      ]}
+    ],
+    "Answers": [
+      {"Id": "answer-henderson-location", "PersonId": "person-henderson", "StatementLineId": "line-henderson-breakroom", "ActionLineId": "line-henderson-gambling"},
+      {"Id": "answer-price-location", "PersonId": "person-price", "StatementLineId": "line-price-government", "ActionLineId": "line-price-unregistered"}
+    ],
+    "Edits": [],
+    "Policy": {"Reputation": [], "UnlockCombination": "Unspecified", "UnlockScope": "Unspecified", "PrerequisiteWorkCodes": [], "StoryThreshold": null, "StoryBranchId": null}
+  },
+  {
+    "Id": "example-forgery",
+    "Mode": "Forgery",
+    "Stage": 0,
+    "TargetDateId": "example-confidential",
+    "Instructions": "조작 대상: 클로버, 월터",
+    "TargetPersonIds": ["person-clover", "person-walter"],
+    "People": [
+      {"Id": "person-clover", "PortraitKey": null, "Profile": {"Name": "클로버", "Age": "29", "Sex": "Female", "Country": "아슬라니아", "Job": "언론부 A팀 대리"}},
+      {"Id": "person-walter", "PortraitKey": null, "Profile": {"Name": "월터", "Age": "45", "Sex": "Male", "Country": "주렌", "Job": "보안부 B팀 팀장"}}
+    ],
+    "Documents": [
+      {"Id": "doc-clover-profile", "PersonId": "person-clover", "DateId": "example-confidential", "Kind": "Profile", "Lines": []},
+      {"Id": "doc-walter-profile", "PersonId": "person-walter", "DateId": "example-confidential", "Kind": "Profile", "Lines": []}
+    ],
+    "Answers": [],
+    "Edits": [
+      {"Id": "edit-clover-country", "PersonId": "person-clover", "Field": "Country", "TargetValue": "주렌", "DisplayText": "국가를 주렌으로 수정"},
+      {"Id": "edit-clover-job", "PersonId": "person-clover", "Field": "Job", "TargetValue": "보안부 C팀 사원", "DisplayText": "직업을 보안부 C팀 사원으로 수정"},
+      {"Id": "edit-walter-age", "PersonId": "person-walter", "Field": "Age", "TargetValue": "38", "DisplayText": "나이를 38로 수정"},
+      {"Id": "edit-walter-country", "PersonId": "person-walter", "Field": "Country", "TargetValue": "노르반", "DisplayText": "국가를 노르반으로 수정"},
+      {"Id": "edit-walter-job", "PersonId": "person-walter", "Field": "Job", "TargetValue": "외교부 특수요원", "DisplayText": "직업을 외교부 특수요원으로 수정"}
+    ],
+    "Policy": {"Reputation": [], "UnlockCombination": "Unspecified", "UnlockScope": "Unspecified", "PrerequisiteWorkCodes": [], "StoryThreshold": null, "StoryBranchId": null}
+  }
+]

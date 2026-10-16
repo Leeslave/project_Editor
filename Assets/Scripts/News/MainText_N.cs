@@ -33,7 +33,7 @@ public class MainText_N : MonoBehaviour
     public void Enter(string text)
     {
         Text.text = Field.text;
-        if (text != MyLast) DB_M.DB_Docs.NewsManager.Commands_Back.Add(new Tuple<string, int, int>(MyLast, MyInd, 0));
+        if (text != MyLast) EditingDesktopController.Instance.NewsManager.Commands_Back.Add(new Tuple<string, int, int>(MyLast, MyInd, 0));
         gameObject.SetActive(false);
         Text.gameObject.SetActive(true);
         
@@ -72,7 +72,7 @@ public class MainText_N : MonoBehaviour
     /// </summary>
     public void AddUnder()
     {
-        DB_M.DB_Docs.NewsManager.ActiveText("Empty", MyInd);
+        EditingDesktopController.Instance.NewsManager.ActiveText("Empty", MyInd);
     }
 
     /// <summary>
@@ -80,8 +80,8 @@ public class MainText_N : MonoBehaviour
     /// </summary>
     public void DelSelf(bool IsRollBack = false)
     {
-        if (!IsRollBack) DB_M.DB_Docs.NewsManager.Commands_Back.Add(new Tuple<string, int, int>(Text.text, MyInd, 2));
-        DB_M.DB_Docs.NewsManager.RemoveText(Parent.MyInd, Text.text, IsRollBack);
+        if (!IsRollBack) EditingDesktopController.Instance.NewsManager.Commands_Back.Add(new Tuple<string, int, int>(Text.text, MyInd, 2));
+        EditingDesktopController.Instance.NewsManager.RemoveText(Parent.MyInd, Text.text, IsRollBack);
     }
 
     /*
@@ -129,6 +129,6 @@ public class MainText_N : MonoBehaviour
 
     public void CheckMyText()
     {
-        DB_M.DB_Docs.NewsManager.ValidText(true, transform.parent.GetSiblingIndex() - 4, Text.text);
+        EditingDesktopController.Instance.NewsManager.ValidText(true, transform.parent.GetSiblingIndex() - 4, Text.text);
     }
 }
