@@ -26,7 +26,8 @@ public class LocationController : ServiceBase<ILocationService>, ILocationServic
 
     public void Init(DailyData data)
     {
-        for (int i = 0; i < 4; i++)
+        BlockList = new List<WorldVector>[data.dayTimes.Length];
+        for (int i = 0; i < data.dayTimes.Length; i++)
         {
             BlockList[i] = data.dayTimes[i].block;
         }
@@ -49,6 +50,6 @@ public class LocationController : ServiceBase<ILocationService>, ILocationServic
 
     public bool IsBlocked(WorldVector vector)
     {
-        return BlockList[Time].Any(p => p == vector);
+        return Time >= 0 && Time < BlockList.Length && BlockList[Time].Any(p => p == vector);
     }
 }

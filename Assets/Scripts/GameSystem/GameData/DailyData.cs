@@ -111,6 +111,7 @@ public class Work
     public string name;     // 업무 이름
     public string code;     // 업무 코드명
     public int stage;       // 스테이지 번호
+    public int availableFromTime = 0; // 늦은 시간에 시작하는 업무. 기존 데이터는 처음부터 활성화.
 
     public Work(string _code = "TestGame", int _stage = 0)
     {

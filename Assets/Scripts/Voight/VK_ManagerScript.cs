@@ -74,10 +74,14 @@ public class VK_ManagerScript : MonoBehaviour
     // ForQA
     IWorkService workService;
     private int StageInt;
+    private bool resultCommitted;
+    private bool IsStoryExam => GameSystem.SaveService != null &&
+        GameSystem.SaveService.DayIndex == 12 && GameSystem.GetService<IDayService>().Time == 3;
 
     private void Awake()
     {
         TutorialManager = FindObjectOfType<VoightTutorialManager>();
+        workService = GameSystem.GetService<IWorkService>();
         StageInt = workService.GetStage("VoightKampff");
         ApplyAspect(Camera.main, 4f/3f);
         if (StageInt == 0) { startTutorial = true; }
@@ -131,6 +135,8 @@ public class VK_ManagerScript : MonoBehaviour
     {
         if (startTutorial)
             TutorialManager.StartVoightTutorial();
+        else
+            ForQARandom();
         BGMCoroutine = StartCoroutine(BGM());
         StereoCoroutine = StartCoroutine(Stereo());
     }
@@ -360,7 +366,7 @@ public class VK_ManagerScript : MonoBehaviour
     
     private IEnumerator EndTurn(bool success)
     {
-        if(CurrentTurnStatus == TurnStatus.비활성)
+        if(CurrentTurnStatus == TurnStatus.비활성 || resultCommitted)
             yield break;
         
         //활성 상태가 아니면 화살표를 입력할 수 없다
@@ -378,6 +384,7 @@ public class VK_ManagerScript : MonoBehaviour
         {
             StopCoroutine(TurnCoroutine);
             TurnCoroutine = null;
+            TurnCoroutine = null;
         }
         
         //이벤트 발생
@@ -388,6 +395,20 @@ public class VK_ManagerScript : MonoBehaviour
         
         //눈동자 원위치
         LJWConverter.Instance.PositionTransform(false, 0f,  1f, PupilOriginPos, PupilBone.transform, curve);
+
+        if (IsStoryExam)
+        {
+            resultCommitted = true;
+            EyeDisplayResult.text = success ? "FEEDBACK CHECK" : "FOCUS INACCURATE";
+            AnswerScreenResult.text = success ? "FOCUS CHECK" : "FEEDBACK UNCLEAR";
+            if (success) workService.ClearWork("VoightKampff");
+            yield return new WaitForSeconds(2f);
+            GameSystem.GetService<IDayService>().Time = success ? 4 : 5;
+            GameSystem.GetService<ILocationService>().MoveLocation(new WorldVector(World.Interrogate, 0));
+            yield return SceneManager.LoadSceneAsync("MainWorld", LoadSceneMode.Additive);
+            SceneManager.UnloadSceneAsync("VoightKampff");
+            yield break;
+        }
         
         if (success)
         {

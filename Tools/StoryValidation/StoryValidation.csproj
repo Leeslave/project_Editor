@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json"><HintPath>../../Library/PackageCache/com.unity.nuget.newtonsoft-json@3.2.1/Runtime/Newtonsoft.Json.dll</HintPath></Reference>
+    <Compile Include="../../Assets/Scripts/Chat/Dialogue.cs" Link="Runtime/Dialogue.cs" />
+    <Compile Include="../../Assets/Scripts/Chat/Paragraph.cs" Link="Runtime/Paragraph.cs" />
+    <Compile Include="../../Assets/Scripts/MainWorld/WorldObject/ObjectData.cs" Link="Runtime/ObjectData.cs" />
+    <Compile Include="../../Assets/Scripts/GameSystem/GameData/DailyData.cs" Link="Runtime/DailyData.cs" />
+    <Compile Include="../../Assets/Scripts/GameSystem/GameService/Interface/IService.cs" Link="Runtime/IService.cs" />
+    <Compile Include="../../Assets/Scripts/GameSystem/GameService/Interface/IDayService.cs" Link="Runtime/IDayService.cs" />
+    <Compile Include="../../Assets/Scripts/GameSystem/GameService/Interface/IWorkService.cs" Link="Runtime/IWorkService.cs" />
+    <Compile Include="../../Assets/Scripts/GameSystem/GameService/Interface/ILocationService.cs" Link="Runtime/ILocationService.cs" />
+    <Compile Include="../../Assets/Scripts/GameSystem/GameService/Controller/WorkManager.cs" Link="Runtime/WorkManager.cs" />
+    <Compile Include="../../Assets/Scripts/GameSystem/GameService/Controller/DayController.cs" Link="Runtime/DayController.cs" />
+    <Compile Include="../../Assets/Scripts/GameSystem/GameService/Controller/LocationController.cs" Link="Runtime/LocationController.cs" />
+  </ItemGroup>
+</Project>

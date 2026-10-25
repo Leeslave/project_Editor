@@ -30,7 +30,8 @@ public class DayController : ServiceBase<IDayService>, IDayService
     {
         // 데이터 로드 및 시간 초기화
         data = newData;
-        Time = 0;
+        int firstPhase = Array.FindIndex(data.dayTimes, phase => phase.npc.Count > 0 || phase.action.Count > 0);
+        Time = Math.Max(0, firstPhase);
     }
 
 
