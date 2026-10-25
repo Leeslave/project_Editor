@@ -48,6 +48,9 @@ public class WorldSceneManager : Singleton<WorldSceneManager>
         // 서비스 구독
         GameSystem.GetService<ILocationService>().OnPosChanged += MoveLocation;
         GameSystem.GetService<IDayService>().OnTimeChanged += SetTime;
+        var day = GameSystem.GetService<IDayService>();
+        SetTime(day.Time, day.TimeData);
+        MoveLocation(GameSystem.GetService<ILocationService>().CurrentPosition);
     }
     
     private void SetTime(int time, TimeData timeData)

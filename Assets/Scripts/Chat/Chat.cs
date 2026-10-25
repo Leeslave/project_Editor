@@ -55,6 +55,7 @@ public class Chat : Singleton<Chat>
     private Queue<Paragraph> chatList;   // 대화 리스트
     private Queue<Paragraph> logList;   // 대화 기록 리스트
     private bool OnTalkAnimate;
+    private int paragraphCount;
 
     /// 이벤트
     private IGameAction _gameAction = new NotImpletedAction();    // 대사 반응 함수
@@ -87,6 +88,7 @@ public class Chat : Singleton<Chat>
         
         // 대화 리스트 할당
         this.chatList = new Queue<Paragraph>(chats);
+        paragraphCount = chats.Count;
         logList = new Queue<Paragraph>();   
 
         ChatUI.SetActive(true);
@@ -137,6 +139,8 @@ public class Chat : Singleton<Chat>
     /// </summary>
     public void SkipChat()
     {
+        var actions = new List<IGameAction>();
+        if (currentParagraph is TalkParagraph) actions.Add(_gameAction);
         // 모든 대화 이벤트 실행
         foreach (Paragraph paragraph in chatList)
         {
@@ -147,15 +151,25 @@ public class Chat : Singleton<Chat>
 
             if (talk.hasAction())
             {
-                ActionHandler.Create(talk.action, talk.actionParam).Invoke();
+                actions.Add(ActionHandler.Create(talk.action, talk.actionParam));
             }
         }
         FinishChat();
+        foreach (var action in actions) action?.Invoke();
+    }
+
+    public void JumpTo(int paragraphIndex)
+    {
+        while (chatList.Count > 0 && paragraphCount - chatList.Count < paragraphIndex)
+            chatList.Dequeue();
     }
 
     /// 대사 종료
     private void FinishChat()
     {
+        StopAllCoroutines();
+        OnTalkAnimate = false;
+        _gameAction = null;
         background.sprite = null;   // 배경 초기화
         
         bgm.Pause();    // BGM 종료 및 월드 BGM 재개
@@ -304,6 +318,7 @@ public class Chat : Singleton<Chat>
         
         else if(data is ChoiceParagraph choice)         // 일반 선택지
         {
+            _gameAction = null;
             choicePanel.SetActive(true);    // 선택지 패널 활성화
             talkPanel.SetActive(false);
             optionPanel.SetActive(false);   // 옵션 패널 비활성화

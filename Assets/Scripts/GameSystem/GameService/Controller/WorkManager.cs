@@ -26,6 +26,7 @@ public class WorkManager : ServiceBase<IWorkService>, IWorkService
     /// </summary>
     public void Init(DailyData data)
     {
+        _dayService = GameSystem.GetService<IDayService>();
         _workList.Clear();
         foreach (var work in data.workList)
         {
@@ -39,7 +40,8 @@ public class WorkManager : ServiceBase<IWorkService>, IWorkService
     /// <returns>업무 리스트</returns>
     public List<string> GetList()
     {
-        return _workList.Select(x => x.Key.name).ToList();
+        return _workList.Where(x => x.Key.availableFromTime <= _dayService.Time)
+            .Select(x => string.IsNullOrEmpty(x.Key.name) ? x.Key.code : x.Key.name).ToList();
     }
 
     // public WorkData GetWorkData(string code, int stage)
@@ -70,11 +72,12 @@ public class WorkManager : ServiceBase<IWorkService>, IWorkService
         Work target = _workList.FirstOrDefault(
                 work => work.Key.code == workCode)
             .Key;
-        if (target != null) _workList[target] = true;
+        if (target == null || target.availableFromTime > _dayService.Time) return false;
+        _workList[target] = true;
         
         // 모든 업무 완료 확인
         bool onClear = IsWorkClear();
-        if (onClear)
+        if (onClear && _dayService.Time <= 1)
         {
             GameSystem.GetService<IDayService>().Time = 2;
         }
@@ -88,7 +91,8 @@ public class WorkManager : ServiceBase<IWorkService>, IWorkService
     /// <returns>업무 완료 여부</returns>
     public bool IsWorkClear()
     {
-        bool isClear = _workList.Values.All(done => true);
+        bool isClear = _workList.Where(work => work.Key.availableFromTime <= _dayService.Time)
+            .All(work => work.Value);
         if (isClear)
         {
             OnWorkClear?.Invoke();    

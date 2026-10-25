@@ -1,6 +1,8 @@
 using GameService;
 using System;
 using System.Collections.Generic;
+using System.Collections;
+using UnityEngine.SceneManagement;
 using Utility;
 
 namespace GameAction
@@ -81,6 +83,7 @@ namespace GameAction
 
             // EXIT
             Register("EXIT", _ => new ExitGameAction());
+            Register("EXAM", _ => new StartExamAction());
         }
 
         private static void Register(string key, Func<string, IGameAction> factory)
@@ -124,6 +127,23 @@ namespace GameAction
         public bool Invoke() => false;
     }
 
+    public record StartExamAction : IGameAction
+    {
+        public bool Invoke()
+        {
+            GameSystem.Instance.StartCoroutine(LoadExam());
+            return true;
+        }
+
+        private static IEnumerator LoadExam()
+        {
+            yield return null;
+            if (SceneManager.GetSceneByName("VoightKampff").isLoaded) yield break;
+            yield return SceneManager.LoadSceneAsync("VoightKampff", LoadSceneMode.Additive);
+            yield return SceneManager.UnloadSceneAsync("MainWorld");
+        }
+    }
+
 
     /// <summary>
     /// 게임 종료 액션
@@ -132,8 +152,17 @@ namespace GameAction
     {
         public bool Invoke()
         {
-            GameSystem.Instance.EnterScene();
+            GameSystem.Instance.StartCoroutine(ExitStory());
             return true;
+        }
+
+        private static IEnumerator ExitStory()
+        {
+            yield return null;
+            foreach (string scene in new[] { "MainWorld", "Screen", "VoightKampff" })
+                if (SceneManager.GetSceneByName(scene).isLoaded)
+                    yield return SceneManager.UnloadSceneAsync(scene);
+            GameSystem.Instance.EnterScene();
         }
     }
 
@@ -213,10 +242,7 @@ namespace GameAction
         {
             if (Count <= 0) return false;
             
-            for (int i = 0; i < Count; i++)
-            {
-                Chat.Instance.SkipChat();
-            }
+            Chat.Instance.JumpTo(Count);
 
             return true;
         }
