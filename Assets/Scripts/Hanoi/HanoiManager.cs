@@ -195,7 +195,7 @@ public class HanoiManager : MonoBehaviour
     public void ClearEvent()
     {
         workService.ClearWork("Hanoi");
-        GameSystem.Instance.EnterScene("Screen");
+        GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
     }
 
     public void TouchAbleChange()

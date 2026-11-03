@@ -60,11 +60,19 @@ public class Chat : Singleton<Chat>
 
     private Coroutine _talkAnimation;
     private Coroutine _sfxAnimation;
+    private ComicDialogueSkin _comicSkin;
+    private string _dialogueSource;
+
+    public string LastCompletedDialogueSource { get; private set; }
+
+    public bool IsChoosing => _currentParagraph is ChoiceParagraph && choicePanel.activeSelf;
+    public bool IsOpen => ChatUI.activeInHierarchy;
 
     private void Awake()
     {
         // 이벤트 초기화
         _choiceActions = new IGameAction[3];
+        _comicSkin = GetComponent<ComicDialogueSkin>();
     }
 
     #region Chat Control
@@ -74,6 +82,9 @@ public class Chat : Singleton<Chat>
     ///</summary>
     ///<param name="chats">대사 리스트</param>
     public void StartChat(List<Paragraph> chats)
+        => StartChat(chats, null);
+
+    public void StartChat(List<Paragraph> chats, string source)
     {
         // 대화 리스트 오류
         if (chats == null)
@@ -89,8 +100,12 @@ public class Chat : Singleton<Chat>
         }
         
         // 대화 리스트 할당
+        _dialogueSource = source;
         _chatList = new Queue<Paragraph>(chats);
         _logList = new Queue<Paragraph>();   
+
+        choicePanel.SetActive(false);
+        _comicSkin?.ResetPanels();
 
         ChatUI.SetActive(true);
         NextChat();        
@@ -101,10 +116,13 @@ public class Chat : Singleton<Chat>
     ///</summary>
     public void NextChat()
     {      
+        // Both the scene backdrop and the new Continue button use this entry point.
+        if (_chatList == null || IsChoosing) return;
+
         // 대사 진행중이면 종료
         if (_talkAnimation != null)
         {
-            StopCoroutine(_sfxAnimation);
+            if (_sfxAnimation != null) StopCoroutine(_sfxAnimation);
             StopCoroutine(_talkAnimation); 
             _talkAnimation = null;
             _sfxAnimation = null;
@@ -141,6 +159,7 @@ public class Chat : Singleton<Chat>
     /// </summary>
     public void SkipChat()
     {
+        if (_chatList == null || IsChoosing) return;
         // 진행중 대사 즉시 종료
         if (_talkAnimation != null)
         {
@@ -175,6 +194,8 @@ public class Chat : Singleton<Chat>
         
         ClearLog();     //로그 초기화
         ChatUI.SetActive(false);    // UI 종료
+        LastCompletedDialogueSource = _dialogueSource;
+        _dialogueSource = null;
     }
     
     #endregion
@@ -195,6 +216,7 @@ public class Chat : Singleton<Chat>
             case TalkParagraph talk:
                 {
                     GameObject newNode = Instantiate(remindTalkNode, remindContent.transform);
+                    _comicSkin?.StyleHistoryNode(newNode);
 
                     newNode.transform.GetChild(0).GetComponent<TMP_Text>().text = talk.talker;  // 발화자 설정
                     newNode.transform.GetChild(1).GetComponent<TMP_Text>().text = talk.text;    // 대사 내용
@@ -204,6 +226,7 @@ public class Chat : Singleton<Chat>
             case ChoiceParagraph choice:
                 {
                     GameObject newNode = Instantiate(remindChoiceNode, remindContent.transform);
+                    _comicSkin?.StyleHistoryNode(newNode);
                     for(int i = 0; i < CHOICE_COUNT; i++)        // 선택지들 활성화
                     {
                         newNode.transform.GetChild(i).GetComponent<TMP_Text>().text = choice.choiceList[i].text;
@@ -277,8 +300,10 @@ public class Chat : Singleton<Chat>
 
                 talkerName.text = talk.talker; // 발화자 이름
                 talkerInfo.text = talk.talkerInfo; // 발화자 설명
+                _comicSkin?.SetSpeaker(talk);
 
-                text.fontSize = talk.GetFontSize(); // 대사 크기 설정
+                text.fontSize = talk.GetFontSize() * (_comicSkin != null ? _comicSkin.DialogueFontScale : 1f);
+                if (_comicSkin != null) text.fontSizeMax = text.fontSize;
 
                 if (talk.GetFontSize() == TalkParagraph.LARGEFONTSIZE)
                     textSFX.SetClip(1);
@@ -327,8 +352,10 @@ public class Chat : Singleton<Chat>
         else if(data is ChoiceParagraph choice)         // 일반 선택지
         {
             choicePanel.SetActive(true);    // 선택지 패널 활성화
-            talkPanel.SetActive(false);
-            optionPanel.SetActive(false);   // 옵션 패널 비활성화
+            talkPanel.SetActive(_comicSkin != null && !string.IsNullOrEmpty(text.text));
+            optionPanel.SetActive(_comicSkin != null);
+            // The previous talk's action has already executed before this choice was shown.
+            _gameAction = null;
 
             for (int i = 0; i < CHOICE_COUNT; i++)
             {
@@ -339,6 +366,7 @@ public class Chat : Singleton<Chat>
         {
             return;
         }
+        _comicSkin?.RefreshState();
         // 캐릭터 standImages 설정
         for(int i = 0; i < CG_COUNT; i++)
         {
@@ -352,10 +380,16 @@ public class Chat : Singleton<Chat>
             }
                 
             //standImages 설정
-            if (!standImages[i].sprite || character.fileName != standImages[i].sprite.name)
+            Sprite standing = _comicSkin != null ? _comicSkin.GetStandingPortrait(character) : null;
+            if (standing != null)
+            {
+                standImages[i].sprite = standing;
+            }
+            else if (!standImages[i].sprite || character.fileName != standImages[i].sprite.name)
             {
                 standImages[i].sprite = DataLoader.GetSprite(character.index, CharacterPath, character.fileName);
             }
+            _comicSkin?.PositionPortrait(standImages[i], i, standing != null);
             standImages[i].gameObject.SetActive(true);
         }
         
@@ -391,10 +425,14 @@ public class Chat : Singleton<Chat>
     public void OnChoicePressed(int num)
     {   
         // 선택지 번호 오류
-        if ( (num >= choicePanel.transform.childCount) || (num < 0) )
+        if (!IsChoosing || (num >= choicePanel.transform.childCount) || (num < 0))
             return;
 
+        GameObject selected = choicePanel.transform.GetChild(num).gameObject;
+        if (!selected.activeSelf || !selected.GetComponent<Button>().interactable) return;
+
         // 반응 함수 실행
+        choicePanel.SetActive(false);
         _choiceActions[num]?.Invoke();
         NextChat();
     }

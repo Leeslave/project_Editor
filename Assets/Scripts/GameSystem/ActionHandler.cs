@@ -97,6 +97,7 @@ namespace GameAction
 
             // EXIT
             Register("EXIT", _ => new ExitGameAction());
+            Register("EXAM", _ => new StoryExamAction());
         }
 
         private static void Register(string key, Func<string, IGameAction> factory)
@@ -123,6 +124,19 @@ namespace GameAction
 
             EditorLogger.LogError($"Unknown function: {func}");
             return null;
+        }
+    }
+
+    /// <summary>저녁 대사에서 배정된 검사를 실행한다.</summary>
+    public record StoryExamAction : IGameAction
+    {
+        public bool Invoke()
+        {
+            var work = GameSystem.GetService<IWorkService>();
+            if (GameSystem.Instance == null || GameSystem.Instance.IsLoading || work == null ||
+                !work.TryStartWork("VoightKampff", out string scene)) return false;
+            GameSystem.Instance.EnterScene(scene);
+            return true;
         }
     }
 

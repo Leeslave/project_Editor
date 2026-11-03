@@ -17,7 +17,7 @@ public class ScreenButton : MonoBehaviour, IPointerClickHandler
         
         enter = true;
         // 스크린 활성화
-        GameSystem.Instance.EnterScene("Screen", () =>
+        GameSystem.Instance.EnterScene(ScreenSceneRoute.Name, () =>
         {
             enter = false;
         });

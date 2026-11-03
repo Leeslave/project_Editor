@@ -76,6 +76,6 @@ public class ChatTrigger : MonoBehaviour
             return;
         }
         
-        Chat.Instance.StartChat(chatData);
+        Chat.Instance.StartChat(chatData, chatAsset);
     }
 }

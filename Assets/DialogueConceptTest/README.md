@@ -20,4 +20,31 @@ Art generated with the built-in ImageGen tool, using the approved comic-cut mock
 Prompt direction: extract UI only onto true transparent alpha, no backdrop or text; a wide angular
 white dialogue panel with black outline and speech pointer, a white parallelogram choice button,
 a black speaker plate, and six matching ink icons (talk, branch, history, skip, back, continue).
-Text is layered separately in Unity. These are proposal assets rather than changes to the live game UI.
+Text is layered separately in Unity. The original Test scene remains independent.
+
+## In-game use
+
+The Story branch's production `Assets/Prefabs/ChatSystem/ChatCanvas.prefab` now uses these sprites
+through `ComicDialogueSkin`. It styles the existing Chat hierarchy at runtime and retains story
+choice listeners, history and skip confirmation. The six production controls are dialogue visibility,
+choice focus, history, skip, earlier history and continue. Earlier history never rewinds story actions.
+Choice paragraphs keep the last dialogue visible and disable skip/continue until a choice is selected.
+
+Portraits now use a 1120px reference-height close-up layout, retaining authored left/right facing.
+Their size is unchanged; top positions are 335px (left slots) and 340px (right slots) so lanyard
+ID cards sit near the speaker name tab and the dialogue panel crops the lower torso.
+Klayton and Clover now prefer `Resources/Chat/Standing` bust sheets copied from `output/standing`.
+Each 1254px sheet is sliced into 418px cells in row-major order (8 Klayton, 9 Clover expressions).
+Original story filenames and expression indices are retained. Square busts use a 430px display
+rectangle, adjusted to match the existing face size and ID-card height, facing into the conversation.
+Other characters and unavailable expression indices retain their original portrait assets.
+Affiliation appears inside the white dialogue panel on its own 27px row, above dialogue text.
+The speaker name and bubble tail switch sides using the displayed character slots and speaker name;
+a single highlighted character or single visible character supplies a fallback for other names.
+Choice paragraphs keep the preceding speaker direction.
+
+`Art/DialoguePanelRight.png` was created with built-in ImageGen using the left bubble as the edit
+reference. Prompt: matching empty monochrome angular dialogue panel with the tail at the upper right,
+preserving the white body and black ink outline, transparent background, no text or extra objects.
+The right tail now leans up-right, with its tip to the right of its base. Its name tab is offset left
+of the tail so the speaker label cannot obscure the point.

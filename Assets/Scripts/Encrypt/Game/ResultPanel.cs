@@ -153,7 +153,7 @@ public class ResultPanel : MonoBehaviour
             {
                 //Debug.Log("복호화 튜토리얼 종료!");
                 WorkService.ClearWork("ADFGVX_DT");
-                GameSystem.Instance.EnterScene("Screen");
+                GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
             });
         }
         else
@@ -169,7 +169,7 @@ public class ResultPanel : MonoBehaviour
                 CloseButton.OnMouseUpEvent.AddListener(() =>
                 {
                     WorkService.ClearWork("ADFGVX");
-                    GameSystem.Instance.EnterScene("Screen");
+                    GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
                 });
 
             }
@@ -370,7 +370,7 @@ public class ResultPanel : MonoBehaviour
             CloseButton.OnMouseUpEvent.AddListener(() =>
             {
                 WorkService.ClearWork("ADFGVX_ET");
-                GameSystem.Instance.EnterScene("Screen");
+                GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
             });
         }
         else
@@ -385,7 +385,7 @@ public class ResultPanel : MonoBehaviour
                 CloseButton.OnMouseUpEvent.AddListener(() =>
                 {
                     WorkService.ClearWork("ADFGVX");
-                    GameSystem.Instance.EnterScene("Screen");
+                    GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
                 });
             }
 

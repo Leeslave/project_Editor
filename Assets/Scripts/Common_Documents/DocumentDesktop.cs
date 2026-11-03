@@ -13,6 +13,7 @@ namespace EditorGame.Documents
         public event Action<ViewRecord> DocumentOpened;
         public event Action<string, string> PairSelectionChanged;
         public event Action<string, ProfileField, string> ProfileChanged;
+        public event Action<string, ProfileField, string> ProfileEditCommitted;
         public event Action RecordRequested;
         public event Action<string> InvestigationCompletionRequested;
         public event Action SubmissionRequested;
@@ -35,6 +36,10 @@ namespace EditorGame.Documents
         private string _selectedDate;
         private DocumentContentIndex _contentIndex;
         private bool _submissionAllowed = true;
+        private bool _tutorialVisible;
+        private readonly Dictionary<string, RectTransform> _tutorialFiles = new Dictionary<string, RectTransform>();
+        private readonly Dictionary<DocumentKind, RectTransform> _tutorialFolders = new Dictionary<DocumentKind, RectTransform>();
+        private readonly Dictionary<string, RectTransform> _tutorialInputs = new Dictionary<string, RectTransform>();
         private readonly Dictionary<string, DocumentDesktopWindow> _windowsByKey = new Dictionary<string, DocumentDesktopWindow>();
         private readonly Dictionary<string, Button> _taskbarButtonsByKey = new Dictionary<string, Button>();
         private readonly Dictionary<string, Button> _lineButtonsById = new Dictionary<string, Button>();
@@ -185,8 +190,10 @@ namespace EditorGame.Documents
             var parent = (RectTransform)_desktopRoot.parent;
             if (parent.rect.size == _lastParentSize) return;
             _lastParentSize = parent.rect.size;
-            float scale = Mathf.Min(parent.rect.width / 1600f, parent.rect.height / 960f);
+            float availableHeight = parent.rect.height * (_tutorialVisible ? .87f : 1);
+            float scale = Mathf.Min(parent.rect.width / 1600f, availableHeight / 960f);
             _desktopRoot.localScale = Vector3.one * scale;
+            _desktopRoot.anchoredPosition = new Vector2(0, _tutorialVisible ? -parent.rect.height * .065f : 0);
         }
 
         private bool CanRecord => CanSelect && _selectedStatementLineId != null && _selectedActionLineId != null && RecordRequested != null;
@@ -212,6 +219,7 @@ namespace EditorGame.Documents
         private void CreateFolderShortcut(Transform parent, DocumentKind kind, float x)
         {
             var button = _desktopUi.Button(parent, GetKindName(kind), () => OpenFolder(kind));
+            _tutorialFolders[kind] = (RectTransform)button.transform;
             _desktopUi.Icon(button, _desktopUi.WindowIcon, false);
             DocumentDesktopUI.Place((RectTransform)button.transform, x, 22, 154, 74);
         }
@@ -263,6 +271,7 @@ namespace EditorGame.Documents
             {
                 var button = _desktopUi.Button(body, _contentIndex.PeopleById[document.PersonId].Profile.Name + "  /  " + document.DateId,
                     () => OpenDocument(document.Id));
+                _tutorialFiles[document.Id] = (RectTransform)button.transform;
                 DocumentDesktopUI.Row(button, 70);
             }
         }
@@ -330,6 +339,8 @@ namespace EditorGame.Documents
             var rect = _desktopUi.InputPanel(field.ToString(), parent);
             DocumentDesktopUI.Row(rect, 68);
             var input = rect.gameObject.AddComponent<TMP_InputField>();
+            if (document.DateId == _assignment.TargetDateId)
+                _tutorialInputs[DocumentContract.Key(document.PersonId, field.ToString())] = rect;
             var viewport = _desktopUi.Rect("Viewport", rect);
             DocumentDesktopUI.Fill(viewport, 8);
             viewport.gameObject.AddComponent<RectMask2D>();
@@ -352,7 +363,39 @@ namespace EditorGame.Documents
             {
                 if (_playState.Phase != SubmissionPhase.Working) return;
                 _editsByPersonId[document.PersonId].Values.Set(field, value);
+                ProfileEditCommitted?.Invoke(document.PersonId, field, value);
             });
+        }
+
+        public void SetTutorialVisible(bool visible)
+        {
+            _tutorialVisible = visible;
+            _lastParentSize = new Vector2(-1, -1);
+        }
+
+        public DocumentLessonStep GetTutorialStep(DocumentWorkLesson lesson)
+        {
+            var open = new HashSet<string>(_windowsByKey.Where(pair => pair.Key.StartsWith("document:") &&
+                pair.Value.gameObject.activeInHierarchy).Select(pair => pair.Key.Substring(9)));
+            return lesson.Current(_assignment, _playState, open, _selectedPersonId, _selectedStatementLineId, _selectedActionLineId);
+        }
+
+        public RectTransform GetTutorialTarget(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return null;
+            if (key == "record") return (RectTransform)_recordButton.transform;
+            if (key == "submit") return (RectTransform)_submitButton.transform;
+            if (key.StartsWith("complete:") && _investigationButtonsByPersonId.TryGetValue(key.Substring(9), out var complete))
+                return (RectTransform)complete.transform;
+            if (key.StartsWith("profile:") && _tutorialInputs.TryGetValue(key.Substring(8), out var input)) return input;
+            if (key.StartsWith("document:") && _windowsByKey.TryGetValue(key, out var window)) return (RectTransform)window.transform;
+            if (!key.StartsWith("open:")) return null;
+            string documentId = key.Substring(5);
+            if (_windowsByKey.TryGetValue("document:" + documentId, out var existing) && !existing.gameObject.activeInHierarchy)
+                return (RectTransform)_taskbarButtonsByKey["document:" + documentId].transform;
+            if (_tutorialFiles.TryGetValue(documentId, out var file) && file != null && file.gameObject.activeInHierarchy) return file;
+            return _contentIndex.DocumentsById.TryGetValue(documentId, out var document) &&
+                _tutorialFolders.TryGetValue(document.Kind, out var folder) ? folder : null;
         }
 
         private bool CanSelect => _playState.Phase == SubmissionPhase.Working;
@@ -440,6 +483,15 @@ namespace EditorGame.Documents
         {
             _statusMessage = message;
             RefreshStatus();
+        }
+
+        /// <summary>업무 호스트에서 실행할 때만 제출 버튼 아래에 복귀 동작을 제공한다.</summary>
+        public void SetExitAction(Action onExit)
+        {
+            if (onExit == null) return;
+            DocumentDesktopUI.Place((RectTransform)_submitButton.transform, 18, 850, 284, 45);
+            var button = _desktopUi.Button(_submitButton.transform.parent, "업무 목록 · F10", () => onExit());
+            DocumentDesktopUI.Place((RectTransform)button.transform, 18, 905, 284, 35);
         }
 
         /// <summary>제출 잠금 이후 읽기 전용 결과 창을 연다.</summary>

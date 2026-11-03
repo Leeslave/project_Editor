@@ -30,7 +30,7 @@ public class EditingTaskEvaluator : MonoBehaviour
         if (_completed)
         {
             WorkService.ClearWork(EditingDesktopController.Instance.WorkCode);
-            GameSystem.Instance.EnterScene("Screen");
+            GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
             gameObject.SetActive(false);
             return;
         }

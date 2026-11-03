@@ -19,7 +19,6 @@ public class TutorialController : MonoBehaviour
     private TutorialBorder _boxBorder;
     private GameObject _currentTarget;
     private Vector2 _targetPosition;
-    private float _targetRadius;
 
     [Serializable]
     public class TutorialStep
@@ -114,7 +113,14 @@ public class TutorialController : MonoBehaviour
         SetObjectsActive(step.EnabledObjects, true);
         _currentTarget = ResolveTarget(step.TargetObject, step.TargetChildIndices);
         if (_currentTarget != null)
-            _targetPosition = WorldToScreenInCameraRect(Camera.main, _currentTarget.transform.position);
+        {
+            Canvas canvas = _currentTarget.GetComponentInParent<Canvas>();
+            _targetPosition = _currentTarget.transform is RectTransform
+                ? RectTransformUtility.WorldToScreenPoint(canvas != null &&
+                    canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : Camera.main,
+                    _currentTarget.transform.position)
+                : WorldToScreenInCameraRect(Camera.main, _currentTarget.transform.position);
+        }
         GameObject activationTarget = ResolveTarget(step.ActiveTarget, step.ActivationChildIndices);
         if (activationTarget != null) activationTarget.AddComponent<TutorialActivationTrigger>();
         GameObject deactivationTarget = ResolveTarget(step.DeactivationTarget, step.DeactivationChildIndices);
@@ -122,7 +128,7 @@ public class TutorialController : MonoBehaviour
         GameObject highlight = step.IsRect ? _boxHighlight : _circleHighlight;
         TutorialBorder border = step.IsRect ? _boxBorder : _circleBorder;
         highlight.SetActive(true);
-        _targetRadius = border.Init(_currentTarget, step.Text, step.HighlightTarget, step.KeepEvents);
+        border.Init(_currentTarget, step.Text, step.HighlightTarget, step.KeepEvents);
     }
 
     // 원본 단계의 오브젝트 참조를 바꾸지 않고 자식 경로를 따라간다.
@@ -186,7 +192,8 @@ public class TutorialController : MonoBehaviour
         entry.callback.AddListener(eventData =>
         {
             if (!(eventData is PointerEventData pointer) || pointer.clickCount < settings.ClickCount) return;
-            if (!settings.ReactAnywhere && Vector2.Distance(_targetPosition, pointer.position) >= _targetRadius) return;
+            if (!settings.ReactAnywhere &&
+                (CurrentBorder == null || !CurrentBorder.ContainsScreenPoint(pointer.position))) return;
             foreach (EventTrigger.TriggerEvent callback in targetActions) callback.Invoke(eventData);
             settings.Callback?.Invoke(eventData);
             if (settings.CompletesStep) AdvanceTutorial();

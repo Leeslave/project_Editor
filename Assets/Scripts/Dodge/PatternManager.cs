@@ -292,7 +292,7 @@ public class PatternManager : MonoBehaviour
         yield return TwoSec;
         WorkService.ClearWork("Dodge");
 
-        GameSystem.Instance.EnterScene("Screen");
+        GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
     }
 
     // Normal                   N1 -> N2 -> Hard
@@ -431,7 +431,7 @@ public class PatternManager : MonoBehaviour
         player.EndG.SetActive(true);
         player.EndG.GetComponent<RealEnd>().Ending(true);
         WorkService.ClearWork("Dodge");
-        GameSystem.Instance.EnterScene("Screen");
+        GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
     }
 
     IEnumerator CamShake(float time, float intensity = 1)      // ????? ???? ????? ??????.
