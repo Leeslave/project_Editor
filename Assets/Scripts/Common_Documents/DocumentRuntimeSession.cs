@@ -33,7 +33,10 @@ namespace EditorGame.Documents
                 error = "문서 스테이지 데이터가 올바르지 않습니다: " + exception.Message;
                 return false;
             }
-            if (!stageData.IsUnlocked(GameSystem.SaveService))
+            // 호스트가 인증을 관리할 때는 과거 Maze 완료 이력 대신 현재 실행의 접근권을 검사한다.
+            var execution = workService as IWorkExecutionService;
+            if (execution != null ? !execution.IsWorkAuthorized(stageData.WorkCode) :
+                !stageData.IsUnlocked(GameSystem.SaveService))
             {
                 error = "극비 업무의 선행 업무가 완료되지 않았습니다.";
                 return false;
@@ -41,7 +44,7 @@ namespace EditorGame.Documents
 
             DocumentAssignment assignment = stageData.Assignment;
             int saveId = GameSystem.SaveService == null ? -1 : GameSystem.SaveService.CurrentSaveId;
-            string workInstanceId = DocumentContract.Key("document-work", saveId.ToString(),
+            string workInstanceId = DocumentContract.Key("document-work", execution?.CurrentExecutionId ?? saveId.ToString(),
                 assignment.WorkCode, assignment.Stage.ToString(), assignment.Id);
             if (!_sessions.TryGetValue(workInstanceId, out RuntimeState runtime))
             {
@@ -99,8 +102,13 @@ namespace EditorGame.Documents
 
         public static void ReturnToScreen()
         {
+            if (GameSystem.GetService<IWorkService>() is IWorkExecutionService execution)
+            {
+                execution.ReturnToWorkList();
+                return;
+            }
             if (GameSystem.Instance != null && !GameSystem.Instance.IsLoading)
-                GameSystem.Instance.EnterScene("Screen");
+                GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
         }
 
         // 업무 실행 키에 대응하는 세션 상태를 가져오거나 생성한다.

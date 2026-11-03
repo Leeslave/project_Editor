@@ -24,7 +24,16 @@ public class R_ScreenTutorial : TutorialManager
 
     private void OnEnable()
     {
-        if (SaveService.DayIndex != day || DayService.Time != time)
+        // 리메이크 단말기는 FirstDayScreenTutorial이 부팅부터 안내한다.
+        // 기존 팝업을 동시에 띄우거나 재부팅 때 처음부터 반복하지 않는다.
+        if (GetComponentInParent<RetroScreenDesktop>() != null)
+        {
+            if (blocker != null) blocker.SetActive(false);
+            foreach (var popup in tutorials) if (popup != null) popup.SetActive(false);
+            return;
+        }
+        if (SaveService == null || SaveService.CurrentSaveId < 0 || DayService == null ||
+            SaveService.DayIndex != day || DayService.Time != time)
         {
             return;
         }

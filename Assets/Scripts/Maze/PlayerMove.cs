@@ -381,7 +381,7 @@ public class PlayerMove : MonoBehaviour
             else           // 클리어
             {
                 WorkService.ClearWork("Maze");
-                GameSystem.Instance.EnterScene("Screen");
+                GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
             }
         }
     }

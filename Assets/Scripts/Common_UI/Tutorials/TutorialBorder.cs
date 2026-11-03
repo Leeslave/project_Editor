@@ -23,12 +23,18 @@ public class TutorialBorder : MonoBehaviour
     private Vector2 _targetSizePixels;     // Target의 스크린 픽셀 크기 (가로/세로)
     private Vector2 _maskSizePixels;    // 마스크 이미지(SelfRect)의 스크린 픽셀 크기
     private readonly Vector3[] _worldCorners = new Vector3[4];
+    private Vector2? _fixedDescriptionPosition;
+    private TutorialController _controller;
+
+    /// <summary>설명 카드가 이동 대상과 겹치지 않도록 캔버스 내 위치를 지정한다.</summary>
+    public void SetDescriptionPosition(Vector2 normalizedPosition) => _fixedDescriptionPosition = normalizedPosition;
     // 조명 머티리얼과 설명창 및 카메라를 준비한다.
     private void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
         _image = GetComponent<Image>();
         _trigger = GetComponent<EventTrigger>();
+        _controller = GetComponentInParent<TutorialController>();
         _maskMaterial = new Material(_image.material);
         _image.material = _maskMaterial;
         _detailText = _textBox.GetComponentInChildren<TMP_Text>();
@@ -39,7 +45,7 @@ public class TutorialBorder : MonoBehaviour
     public float Init(GameObject target, string text, bool isHighlight, bool keepEvent)
     {
         if (!keepEvent) _trigger.triggers.Clear();
-        TutorialController.Instance.CurrentBorder = this;
+        _controller.CurrentBorder = this;
         _target = target;
         gameObject.SetActive(true);
         if (target == null)
@@ -79,7 +85,9 @@ public class TutorialBorder : MonoBehaviour
         // Destroy된 카메라 참조 복구 (MissingReferenceException 방지)
         if (_worldCamera == null) _worldCamera = Camera.main;
         // Overlay 캔버스면 uiCam은 null이 “정상”
-        if (_uiCamera == null) _uiCamera = _worldCamera;
+        Canvas canvas = _canvasRect.GetComponentInParent<Canvas>();
+        _uiCamera = canvas != null && canvas.renderMode == RenderMode.ScreenSpaceOverlay
+            ? null : canvas != null ? canvas.worldCamera : _worldCamera;
     }
     // UI 또는 월드 대상의 화면 중심을 계산한다.
     private Vector2 GetTargetScreenCenterPx()
@@ -89,7 +97,7 @@ public class TutorialBorder : MonoBehaviour
         {
             rt.GetWorldCorners(_worldCorners);
             Vector3 worldCenter = (_worldCorners[0] + _worldCorners[2]) * 0.5f;
-            return RectTransformUtility.WorldToScreenPoint(_uiCamera, worldCenter);
+            return RectTransformUtility.WorldToScreenPoint(GetUiCamera(rt), worldCenter);
         }
         // 월드 타겟
         return TutorialController.WorldToScreenInCameraRect(_worldCamera, _target.transform.position);
@@ -124,6 +132,14 @@ public class TutorialBorder : MonoBehaviour
         // =========================
         // 2. TextBox 위치 계산
         // =========================
+        if (_fixedDescriptionPosition.HasValue)
+        {
+            Vector2 point = _fixedDescriptionPosition.Value;
+            _textBox.anchoredPosition = new Vector2(
+                (point.x - .5f) * _canvasRect.rect.width,
+                (point.y - .5f) * _canvasRect.rect.height);
+            return;
+        }
         // screenPos(px) → CanvasRect local
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             _canvasRect, _screenPosition, _uiCamera, out Vector2 canvasLocal);
@@ -194,10 +210,18 @@ public class TutorialBorder : MonoBehaviour
     private Vector2 GetRectScreenSizePx(RectTransform rt)
     {
         rt.GetWorldCorners(_worldCorners);
-        Vector2 bl = RectTransformUtility.WorldToScreenPoint(_uiCamera, _worldCorners[0]);
-        Vector2 tr = RectTransformUtility.WorldToScreenPoint(_uiCamera, _worldCorners[2]);
+        Camera camera = GetUiCamera(rt);
+        Vector2 bl = RectTransformUtility.WorldToScreenPoint(camera, _worldCorners[0]);
+        Vector2 tr = RectTransformUtility.WorldToScreenPoint(camera, _worldCorners[2]);
         return new Vector2(Mathf.Abs(tr.x - bl.x), Mathf.Abs(tr.y - bl.y));
     }
+    private Camera GetUiCamera(RectTransform target)
+    {
+        Canvas canvas = target.GetComponentInParent<Canvas>();
+        return canvas != null && canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null :
+            canvas != null && canvas.worldCamera != null ? canvas.worldCamera : _worldCamera;
+    }
+
     // 조명 설명을 표시하고 튜토리얼 입력 이벤트를 연결한다.
     private IEnumerator ShowDescription(string text, bool isHighlight)
     {
@@ -222,7 +246,27 @@ public class TutorialBorder : MonoBehaviour
                 yield return ts;
             }
         }
-        TutorialController.Instance.SetEvent(_trigger);
+        _controller.SetEvent(_trigger);
+    }
+
+    /// <summary>강조 표시와 같은 중심·화면 크기로 현재 대상의 클릭을 판정한다.</summary>
+    public bool ContainsScreenPoint(Vector2 point)
+    {
+        if (_target == null || !_target.activeInHierarchy) return false;
+        EnsureCameras();
+        Vector2 center = GetTargetScreenCenterPx();
+        Vector2 size = GetTargetScreenSizePx();
+        if (_isRect) return ContainsScreenRectangle(point, center, size);
+        float radius = Mathf.Max(size.x, size.y) * .5f;
+        return radius > 0 && (point - center).sqrMagnitude <= radius * radius;
+    }
+
+    // 피벗 위치 대신 화면에 투영된 사각형을 사용해 표시 영역 전체를 누를 수 있게 한다.
+    public static bool ContainsScreenRectangle(Vector2 point, Vector2 center, Vector2 size)
+    {
+        return size.x > 0 && size.y > 0 &&
+            point.x >= center.x - size.x * .5f && point.x <= center.x + size.x * .5f &&
+            point.y >= center.y - size.y * .5f && point.y <= center.y + size.y * .5f;
     }
     public void ChangeTarget(GameObject target)
     {

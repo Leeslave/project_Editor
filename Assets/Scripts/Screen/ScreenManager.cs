@@ -39,6 +39,7 @@ public class ScreenManager : Singleton<ScreenManager>
     }
 
     public static bool IsScreenOn = false;
+    public ScreenMode CurrentMode => currentBootStatus;
 
 
     private void Awake()
@@ -109,6 +110,8 @@ public class ScreenManager : Singleton<ScreenManager>
                 break;
             case ScreenMode.TryOff:
                 SetScreen(ScreenMode.Off);
+                // 위에서 종료 코루틴을 중지했으므로 종료 상태도 여기서 확정한다.
+                IsScreenOn = false;
                 break;
         }
     }

@@ -43,7 +43,7 @@ public class WorkController : ServiceBase<IWorkService>, IWorkService
     /// <returns>업무 리스트</returns>
     public List<(string code, string name)> GetList()
     {
-        return _workList.Keys.Where(IsAvailable).Select(work => (
+        return _workList.Keys.Where(IsScheduledNow).Where(IsAvailable).Select(work => (
             work.code,
             string.IsNullOrWhiteSpace(work.name) ? work.code : work.name.Trim())).ToList();
     }
@@ -59,7 +59,7 @@ public class WorkController : ServiceBase<IWorkService>, IWorkService
         sceneName = null;
         Work target = _workList.Keys.FirstOrDefault(work => work.code == workCode);
         if (target == null || _workList[target]) return false;
-        if (!IsAvailable(target)) return false;
+        if (!IsScheduledNow(target) || !IsAvailable(target)) return false;
 
         string targetScene = workCode == "SecureDocument" ? "Document" : workCode;
         if (!Application.CanStreamedLevelBeLoaded(targetScene))
@@ -112,7 +112,7 @@ public class WorkController : ServiceBase<IWorkService>, IWorkService
         Work target = _workList.FirstOrDefault(
                 work => work.Key.code == workCode)
             .Key;
-        if (target == null)
+        if (target == null || !IsScheduledNow(target))
         {
             EditorLogger.LogWarning($"Work not registered: {workCode}");
             return false;
@@ -139,8 +139,11 @@ public class WorkController : ServiceBase<IWorkService>, IWorkService
     public bool IsWorkClear()
     {
         // 업무가 없는 날도 조회만 수행하며 시간 진행은 스토리 액션에 맡김
-        return _workList.Values.All(done => done);
+        return _workList.Where(entry => IsScheduledNow(entry.Key)).All(entry => entry.Value);
     }
+
+    private static bool IsScheduledNow(Work work) => work != null &&
+        work.availableFromTime <= (GameSystem.GetService<IDayService>()?.Time ?? 0);
 
     private bool IsAvailable(Work work)
     {

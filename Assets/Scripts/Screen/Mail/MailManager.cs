@@ -43,6 +43,11 @@ public class MailManager : Singleton<MailManager>
         {
             mailList.GetComponent<RectTransform>().sizeDelta = Vector2.zero;
         }
+        // 테스트 컨트롤러와 씬을 함께 시작할 때 저장 서비스의 날짜 선택이 먼저 끝나야 한다.
+        while (Application.isPlaying && this != null &&
+            (GameSystem.SaveService == null || GameSystem.SaveService.CurrentSaveId < 0))
+            await Task.Yield();
+        if (!Application.isPlaying || this == null) return;
         await LoadMailAsync();
     }
 

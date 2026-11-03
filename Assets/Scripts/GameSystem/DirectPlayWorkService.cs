@@ -47,7 +47,7 @@ public sealed class DirectPlayWorkService : ServiceBase<IWorkService>, IWorkServ
 
     public List<(string code, string name)> GetList()
     {
-        return works.GroupBy(work => work.code, StringComparer.Ordinal)
+        return works.Where(IsScheduledNow).GroupBy(work => work.code, StringComparer.Ordinal)
             .Select(group => (group.Key,
                 string.IsNullOrWhiteSpace(group.First().name) ? group.Key : group.First().name.Trim()))
             .ToList();
@@ -57,7 +57,7 @@ public sealed class DirectPlayWorkService : ServiceBase<IWorkService>, IWorkServ
     {
         sceneName = null;
         int index = FindNext(workCode);
-        if (index < 0) return false;
+        if (index < 0 || !IsScheduledNow(works[index])) return false;
         string target = workCode == "SecureDocument" ? "Document" : workCode;
         if (!Application.CanStreamedLevelBeLoaded(target)) return false;
         activeIndex = index;
@@ -107,14 +107,18 @@ public sealed class DirectPlayWorkService : ServiceBase<IWorkService>, IWorkServ
 
     public bool CanCompleteEntry(int index)
     {
-        return index >= 0 && index < works.Count && !completed[index] &&
+        return index >= 0 && index < works.Count && IsScheduledNow(works[index]) && !completed[index] &&
                FindNext(works[index].code) == index;
     }
 
     public int EntryCount => works.Count;
     public string GetEntryLabel(int index) => $"{works[index].code} / Stage {works[index].stage}";
     public bool IsEntryComplete(int index) => completed[index];
-    public bool IsWorkClear() => completed.All(value => value);
+    public bool IsWorkClear() => works.Select((work, index) => (work, index))
+        .Where(entry => IsScheduledNow(entry.work)).All(entry => completed[entry.index]);
+
+    private bool IsScheduledNow(Work work) => directMiniGame ||
+        work.availableFromTime <= (GameSystem.GetService<IDayService>()?.Time ?? 0);
 
     private int FindNext(string workCode)
     {

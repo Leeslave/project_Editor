@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using GameService;
 using UnityEngine;
+using TMPro;
 using Utility;
 
 namespace EditorGame.Documents
@@ -13,6 +14,10 @@ namespace EditorGame.Documents
 
         public DocumentSubmission LastSubmission { get; private set; }
         public event Action<DocumentSubmission> Submitted;
+        private TMP_FontAsset tutorialFont;
+        private bool tutorialActive;
+
+        public void ConfigureTutorial(TMP_FontAsset font, bool active = true) { tutorialFont = font; tutorialActive = active; }
 
         protected DocumentAssignment Assignment { get; private set; }
         protected DocumentStageData StageData { get; private set; }
@@ -59,8 +64,10 @@ namespace EditorGame.Documents
             Desktop = _host.Desktop;
             Desktop.DocumentOpened += OnDocumentOpened;
             Desktop.SubmissionRequested += Submit;
+            if (WorkService is IWorkExecutionService execution) Desktop.SetExitAction(execution.ReturnToWorkList);
             AttachModeHandlers();
             Desktop.RefreshControls();
+            if (tutorialFont != null) gameObject.AddComponent<DocumentWorkTutorial>().Initialize(Desktop, tutorialFont, tutorialActive);
         }
 
         // 비지정 문서 열람을 안내하고 진행 상태를 보관한다.

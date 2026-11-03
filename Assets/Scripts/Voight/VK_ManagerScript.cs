@@ -417,7 +417,7 @@ public class VK_ManagerScript : MonoBehaviour
             workService.ClearWork("VoightKampff");
 
             yield return new WaitForSeconds(5f);
-            var loadScene = SceneManager.LoadSceneAsync("Screen", LoadSceneMode.Additive);
+            var loadScene = SceneManager.LoadSceneAsync(ScreenSceneRoute.Name, LoadSceneMode.Additive);
             yield return new WaitUntil(() => loadScene.isDone);
             SceneManager.UnloadSceneAsync("VoightKampff");
         }

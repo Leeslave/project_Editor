@@ -9,11 +9,11 @@ public class ReturnToScreenButton : PointerButton
     private void OnEnable()
     {
         if (!_returnOnEnable) return;
-        SceneManager.LoadScene("Screen");
+        SceneManager.LoadScene(ScreenSceneRoute.Name);
     }
 
     protected override void Click(PointerEventData data)
     {
-        SceneManager.LoadScene("Screen");
+        SceneManager.LoadScene(ScreenSceneRoute.Name);
     }
 }

@@ -28,6 +28,7 @@ public class DayController : ServiceBase<IDayService>, IDayService
     
     public void Init(DailyData newData)
     {
+        FirstDayOnboarding.Reset();
         // 데이터 로드 및 시간 초기화
         data = newData;
         int firstPhase = Array.FindIndex(data.dayTimes, phase => phase.npc.Count > 0 || phase.action.Count > 0);
