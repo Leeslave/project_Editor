@@ -18,6 +18,7 @@ public sealed class FirstDayCommuteTutorial : MonoBehaviour
 
     private IEnumerator Start()
     {
+        FirstDayScreenTutorial.PrepareOverlay(spotlight.gameObject);
         spotlight.gameObject.SetActive(false);
         foreach (var border in spotlight.GetComponentsInChildren<TutorialBorder>(true))
             border.SetDescriptionPosition(new Vector2(.32f, .22f));

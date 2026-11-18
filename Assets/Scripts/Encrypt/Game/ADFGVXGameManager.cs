@@ -115,10 +115,12 @@ public class ADFGVXGameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha7))
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.Alpha7) && !string.IsNullOrEmpty(encryptTransposeTable) && !string.IsNullOrEmpty(encryptTransposeKey))
             EncryptCheck();
-        if (Input.GetKeyDown(KeyCode.Alpha8))
+        if (Input.GetKeyDown(KeyCode.Alpha8) && !string.IsNullOrEmpty(decryptTransposeTable) && !string.IsNullOrEmpty(decryptTransposeKey))
             DecryptCheck();
+#endif
     }
     private void TryGetStageData()
     {
@@ -261,11 +263,9 @@ public class ADFGVXGameManager : MonoBehaviour
             }
 
         //치환 테이블 로드
-        string filePath = Application.dataPath + "/Resources/GameData/Encrypt/Tables/Table_" + encryptTransposeTable + ".txt";
-        FileInfo txtFile = new(filePath);
-        StreamReader reader = new(filePath);
-        string substitutionTable = reader.ReadToEnd();
-        reader.Close();
+        var table = Resources.Load<TextAsset>("GameData/Encrypt/Tables/Table_" + encryptTransposeTable);
+        if (table == null) { Debug.LogError("ADFGVX substitution table is missing."); return; }
+        string substitutionTable = table.text;
 
         //이중 문자 치환
         string transposeText = "";
@@ -322,11 +322,9 @@ public class ADFGVXGameManager : MonoBehaviour
                 transposedText += orderedText[j][i];
 
         //치환 테이블 로드
-        string filePath = Application.dataPath + "/Resources/GameData/Encrypt/Tables/Table_" + decryptTransposeTable + ".txt";
-        FileInfo txtFile = new(filePath);
-        StreamReader reader = new(filePath);
-        string substitutionTable = reader.ReadToEnd();
-        reader.Close();
+        var table = Resources.Load<TextAsset>("GameData/Encrypt/Tables/Table_" + decryptTransposeTable);
+        if (table == null) { Debug.LogError("ADFGVX substitution table is missing."); return; }
+        string substitutionTable = table.text;
 
         //이중 문자 치환
         Dictionary<char, int> dic = BilateralSubstitute.LineRowDecode;

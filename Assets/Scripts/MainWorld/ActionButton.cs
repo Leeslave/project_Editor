@@ -30,7 +30,7 @@ public class ActionButton : WorldObject, IPointerClickHandler
     {
         if (_action?.Invoke() ?? false)
         {
-            if (!loop)
+            if (!loop && _action is not MovePositionAction)
             {
                 Destroy(gameObject);
             }

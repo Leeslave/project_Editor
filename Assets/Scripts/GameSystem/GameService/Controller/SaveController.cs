@@ -76,6 +76,7 @@ public class SaveController : SaveService
             return;
         }
         
+        Chat.Instance?.CloseForTransition();
         int newID = Save.dayID + 100;
         DaySave newSave = Save.Clone(newID);
         _playerData.Save(newSave);

@@ -79,17 +79,36 @@ public sealed class FirstDayScreenTutorial : MonoBehaviour
         Spotlight.Steps.Add(FirstDayOnboarding.Click(target, text, _ => completed?.Invoke(), true));
     }
 
-    private static void PrepareOverlay(GameObject overlay)
+    private void OnDestroy()
+    {
+        if (Spotlight != null) Destroy(Spotlight.gameObject);
+    }
+
+    public static void PrepareOverlay(GameObject overlay)
     {
         var canvas = overlay.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 100;
+        var rootRect = (RectTransform)overlay.transform;
+        rootRect.localScale = Vector3.one;
+        foreach (var border in overlay.GetComponentsInChildren<TutorialBorder>(true))
+        {
+            var rect = (RectTransform)border.transform;
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = rect.offsetMax = Vector2.zero;
+            rect.localScale = Vector3.one;
+        }
         var scaler = overlay.GetComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1200, 900);
         scaler.matchWidthOrHeight = .5f;
         var label = overlay.GetComponentInChildren<TMP_Text>(true);
         label.fontSize = 25;
+        if (Chat.Instance != null) label.font = Chat.Instance.text.font;
+        label.color = new Color(.08f, .08f, .08f);
+        label.enableWordWrapping = true;
+        label.lineSpacing = 8;
         label.enableAutoSizing = false;
         label.alignment = TextAlignmentOptions.TopLeft;
         label.raycastTarget = false;
@@ -98,10 +117,18 @@ public sealed class FirstDayScreenTutorial : MonoBehaviour
         foreach (var layout in card.GetComponentsInChildren<LayoutGroup>(true)) Destroy(layout);
         card.anchorMin = card.anchorMax = card.pivot = new Vector2(.5f, .5f);
         card.sizeDelta = new Vector2(640, 240);
+        card.localScale = Vector3.one;
+        var cardImage = card.GetComponent<Image>();
+        if (cardImage != null)
+        {
+            cardImage.sprite = Resources.Load<Sprite>("Tutorial/GuideCard");
+            cardImage.color = Color.white;
+            cardImage.type = Image.Type.Simple;
+        }
         label.rectTransform.anchorMin = Vector2.zero;
         label.rectTransform.anchorMax = Vector2.one;
-        label.rectTransform.offsetMin = new Vector2(22, 20);
-        label.rectTransform.offsetMax = new Vector2(-22, -20);
+        label.rectTransform.offsetMin = new Vector2(42, 24);
+        label.rectTransform.offsetMax = new Vector2(-42, -24);
         foreach (var image in card.GetComponentsInChildren<Image>(true)) image.raycastTarget = false;
         foreach (var border in overlay.GetComponentsInChildren<TutorialBorder>(true))
             border.SetDescriptionPosition(new Vector2(.6f, .22f));

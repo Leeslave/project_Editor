@@ -24,6 +24,16 @@ public class GameOption : Singleton<GameOption>
     
     public Button optionButton;
 
+    private void Start()
+    {
+        if (gameObject.scene.name != "MainWorld" || optionButton == null) return;
+        var rect = optionButton.GetComponent<RectTransform>();
+        rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0, 1);
+        rect.localScale = Vector3.one;
+        rect.sizeDelta = new Vector2(78, 66);
+        rect.anchoredPosition = new Vector2(140, -110);
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))

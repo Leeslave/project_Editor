@@ -9,11 +9,17 @@ public class ReturnToScreenButton : PointerButton
     private void OnEnable()
     {
         if (!_returnOnEnable) return;
-        SceneManager.LoadScene(ScreenSceneRoute.Name);
+        Return();
+    }
+
+    private void Return()
+    {
+        if (GameSystem.Instance == null || GameSystem.Instance.IsLoading) return;
+        GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
     }
 
     protected override void Click(PointerEventData data)
     {
-        SceneManager.LoadScene(ScreenSceneRoute.Name);
+        Return();
     }
 }

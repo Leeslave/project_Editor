@@ -6,6 +6,20 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour
 {
     // 배경음악 스택
+    public bool CanPlay => isActiveAndEnabled && audioSource != null && audioSource.isActiveAndEnabled;
+
+    private void OnDisable()
+    {
+        bool top = bgmChannel.Count > 0 && bgmChannel.Last() == this;
+        bgmChannel.RemoveAll(c => c == null || c == this);
+        if (top) ResumeBGM();
+    }
+
+    private static void PruneChannels()
+    {
+        bgmChannel.RemoveAll(c => c == null || !c.isActiveAndEnabled || !c.CanPlay);
+    }
+
     private static readonly List<SoundManager> bgmChannel = new();
     [SerializeField] private bool onBGMChannel;
     
@@ -30,8 +44,11 @@ public class SoundManager : MonoBehaviour
     // 일반 재생
     public void Play()
     {
+        if (!CanPlay) return;
         if (onBGMChannel)
         {
+            PruneChannels();
+            bgmChannel.Remove(this);
             if (bgmChannel.Count > 0)
             {
                 bgmChannel.Last().Pause();
@@ -44,36 +61,37 @@ public class SoundManager : MonoBehaviour
     // 샷 재생
     public void PlayShot()
     {
+        if (!CanPlay) return;
         audioSource.PlayOneShot(audioSource.clip);
     }
 
     // 일반 정지
     public void Stop()
     {
-        audioSource.Stop();
-        if (onBGMChannel)
-        {
-            bgmChannel.Remove(this);
-            ResumeBGM();
-        }
+        if (audioSource != null) audioSource.Stop();
+        bool wasTop = bgmChannel.Count > 0 && bgmChannel.Last() == this;
+        bgmChannel.Remove(this);
+        PruneChannels();
+        if (wasTop) ResumeBGM();
     }
 
-    // 일시 정지
     public void Pause()
     {
-        audioSource.Pause();
+        if (audioSource != null) audioSource.Pause();
     }
 
     // 재개
     public void Resume()
     {
+        if (!CanPlay) return;
         if (onBGMChannel)
         {
+            PruneChannels();
+            bgmChannel.Remove(this);
             if (bgmChannel.Count > 0)
             {
                 bgmChannel.Last().Pause();
             }
-            bgmChannel.Remove(this);
             bgmChannel.Add(this);
         }
         audioSource.UnPause();
@@ -91,6 +109,7 @@ public class SoundManager : MonoBehaviour
 
     public static void ResumeBGM()
     {
+        PruneChannels();
         if (bgmChannel.Count > 0)
         {
             bgmChannel.Last().Resume();
@@ -99,6 +118,7 @@ public class SoundManager : MonoBehaviour
 
     public static void PauseBGM()
     {
+        PruneChannels();
         if (bgmChannel.Count > 0)
         {
             bgmChannel.Last().Pause();
@@ -110,6 +130,7 @@ public class SoundManager : MonoBehaviour
 
     public void  SetClip(int idx, bool swap = false)
     {
+        if (audioSource == null) return;
         bool playing = OnPlay == AudioState.Playing;
         if (idx < 0 || idx >= clips.Count)
         {

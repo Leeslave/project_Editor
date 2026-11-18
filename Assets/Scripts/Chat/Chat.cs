@@ -58,6 +58,7 @@ public class Chat : Singleton<Chat>
     private IGameAction _gameAction = new NotImpletedAction();    // 대사 반응 함수
     private IGameAction[] _choiceActions = new IGameAction[3];    // 선택지 이벤트
 
+    private int _dialogueVersion;
     private Coroutine _talkAnimation;
     private Coroutine _sfxAnimation;
     private ComicDialogueSkin _comicSkin;
@@ -74,6 +75,17 @@ public class Chat : Singleton<Chat>
         _choiceActions = new IGameAction[3];
         _comicSkin = GetComponent<ComicDialogueSkin>();
     }
+
+    private void StopTextAnimation()
+    {
+        if (_talkAnimation != null) StopCoroutine(_talkAnimation);
+        if (_sfxAnimation != null) StopCoroutine(_sfxAnimation);
+        _talkAnimation = null;
+        _sfxAnimation = null;
+        if (textSFX != null) textSFX.Stop();
+    }
+
+    private void OnDisable() => StopTextAnimation();
 
     #region Chat Control
     
@@ -100,6 +112,10 @@ public class Chat : Singleton<Chat>
         }
         
         // 대화 리스트 할당
+        StopTextAnimation();
+        _dialogueVersion++;
+        _gameAction = null;
+        _currentParagraph = null;
         _dialogueSource = source;
         _chatList = new Queue<Paragraph>(chats);
         _logList = new Queue<Paragraph>();   
@@ -138,7 +154,11 @@ public class Chat : Singleton<Chat>
         // 이전 대사 반응 함수 실행
         if (_logList.Count != 0)
         {
-            _gameAction?.Invoke();
+            int version = _dialogueVersion;
+            var action = _gameAction;
+            _gameAction = null;
+            action?.Invoke();
+            if (version != _dialogueVersion || _chatList == null) return;
         }        
 
         // 마지막 대사 이후 or index 오류
@@ -168,7 +188,8 @@ public class Chat : Singleton<Chat>
         }
         
         // 모든 대화 이벤트 실행
-        foreach (Paragraph paragraph in _chatList)
+        int version = _dialogueVersion;
+        foreach (Paragraph paragraph in _chatList.ToArray())
         {
             if (paragraph is not TalkParagraph talk)
             {
@@ -178,19 +199,30 @@ public class Chat : Singleton<Chat>
             if (talk.hasAction())
             {
                 ActionHandler.Create(talk.action, talk.actionParam).Invoke();
+                if (version != _dialogueVersion || _chatList == null) return;
             }
         }
         FinishChat();
     }
 
     /// 대사 종료
+    public void CloseForTransition()
+    {
+        if (_chatList != null || IsOpen) FinishChat();
+    }
+
     private void FinishChat()
     {
+        _dialogueVersion++;
+        _gameAction = null;
+        _currentParagraph = null;
+        StopTextAnimation();
+        _chatList = null;
         background.sprite = null;   // 배경 초기화
         
         // BGM 종료 및 월드 BGM 재개
         bgm.Stop();
-        SoundManager.ResumeBGM();
+
         
         ClearLog();     //로그 초기화
         ChatUI.SetActive(false);    // UI 종료
@@ -310,7 +342,7 @@ public class Chat : Singleton<Chat>
                 else if (talk.GetFontSize() == TalkParagraph.NORMALFONTSIZE)
                     textSFX.SetClip(0);
                 else
-                    textSFX = new();
+                    textSFX.SetClip(0);
                 
                 _talkAnimation = StartCoroutine(TextAnimation(talk));
             }
@@ -433,8 +465,11 @@ public class Chat : Singleton<Chat>
 
         // 반응 함수 실행
         choicePanel.SetActive(false);
-        _choiceActions[num]?.Invoke();
-        NextChat();
+        int version = _dialogueVersion;
+        var action = _choiceActions[num];
+        _choiceActions[num] = null;
+        action?.Invoke();
+        if (version == _dialogueVersion && _chatList != null) NextChat();
     }
 
     #endregion
@@ -472,6 +507,7 @@ public class Chat : Singleton<Chat>
             if (_sfxAnimation != null)
             {
                 StopCoroutine(_sfxAnimation);
+                _sfxAnimation = null;
             }
             _talkAnimation = null;
         }
@@ -479,7 +515,7 @@ public class Chat : Singleton<Chat>
     
     private IEnumerator TextSFX(float delay)
     {
-        while (true)
+        while (IsOpen && textSFX != null && textSFX.CanPlay)
         {
             textSFX.Play();
             yield return new WaitForSeconds(delay);

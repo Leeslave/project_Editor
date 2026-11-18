@@ -104,7 +104,8 @@ public class WorldSceneManager : MonoBehaviour
         
         // 위치 이동
         int x = (int)vector.location * 1000 + vector.position * 100;
-        mainCamera.transform.position = new Vector3(x, 0, 0);
+        var position = mainCamera.transform.position;
+        mainCamera.transform.position = new Vector3(x, position.y, position.z);
     
         // BGM 설정
         worldBGM.SetClip(_bgmCode[(int)vector.location], true);

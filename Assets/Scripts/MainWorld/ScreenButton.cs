@@ -9,17 +9,9 @@ public class ScreenButton : MonoBehaviour, IPointerClickHandler
     *   - down 버튼을 눌러 스크린 비활성화
     */
     
-    private bool enter = false;
-
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (enter) return;
-        
-        enter = true;
-        // 스크린 활성화
-        GameSystem.Instance.EnterScene(ScreenSceneRoute.Name, () =>
-        {
-            enter = false;
-        });
+        if (GameSystem.Instance == null || GameSystem.Instance.IsLoading) return;
+        GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
     }
 }

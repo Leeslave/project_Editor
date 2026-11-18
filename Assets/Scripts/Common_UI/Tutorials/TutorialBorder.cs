@@ -238,11 +238,13 @@ public class TutorialBorder : MonoBehaviour
             _detailText.text = text;
             _textBox.gameObject.SetActive(true);
             LayoutRebuilder.ForceRebuildLayoutImmediate(_textBox);
-            _detailText.color = new Color(1, 1, 1, 0);
+            Color targetColor = _detailText.color;
+            targetColor.a = 1;
+            _detailText.color = new Color(targetColor.r, targetColor.g, targetColor.b, 0);
             Color colorCnt = new Color(0, 0, 0, 0.1f);
             for (int i = 0; i < 10; i++)
             {
-                _detailText.color += colorCnt;
+                _detailText.color = Color.Lerp(new Color(targetColor.r, targetColor.g, targetColor.b, 0), targetColor, (i + 1) / 10f);
                 yield return ts;
             }
         }

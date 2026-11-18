@@ -1,19 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class ExitADFGVX : MonoBehaviour
 {
     public void Exit()
     {
-        StartCoroutine(ExitCoroutine());
-    }
-
-    private IEnumerator ExitCoroutine()
-    {
-        var loadScene = SceneManager.LoadSceneAsync(ScreenSceneRoute.Name, LoadSceneMode.Additive);
-        yield return new WaitUntil(() => loadScene.isDone);
-        SceneManager.UnloadSceneAsync("ADFGVX");
+        if (GameSystem.Instance == null || GameSystem.Instance.IsLoading) return;
+        GameSystem.Instance.EnterScene(ScreenSceneRoute.Name);
     }
 }

@@ -301,7 +301,7 @@ public static class RetroSaveSceneBuilder
         RectTransform viewport = U.Rect("Viewport", frame, 3, 3, w - 23, h - (horizontal ? 23 : 6));
         Image maskImage = viewport.gameObject.AddComponent<Image>();
         maskImage.color = Color.white;
-        viewport.gameObject.AddComponent<Mask>().showMaskGraphic = true;
+        viewport.gameObject.AddComponent<RectMask2D>();
         RectTransform content = U.Rect("Content", viewport, 0, 0, contentW, contentH);
         ScrollRect scroll = frame.gameObject.AddComponent<ScrollRect>();
         scroll.viewport = viewport;
@@ -331,6 +331,29 @@ public static class RetroSaveSceneBuilder
         U.Stretch(sliding);
         RectTransform handle = U.Frame("Handle", sliding, 0, 0, w, h);
         U.Stretch(handle);
+        // Scrollbar resizes its handle; the bevel must follow the current handle rect.
+        foreach (RectTransform edge in handle)
+        {
+            bool horizontalEdge = edge.name.EndsWith("Horizontal");
+            bool leading = edge.name.StartsWith("Light");
+            float inset = edge.name.Contains("Inner") ? 1 : 0;
+            if (horizontalEdge)
+            {
+                edge.anchorMin = new Vector2(0, leading ? 1 : 0);
+                edge.anchorMax = new Vector2(1, leading ? 1 : 0);
+                edge.pivot = new Vector2(0, leading ? 1 : 0);
+                edge.anchoredPosition = new Vector2(inset, leading ? -inset : inset);
+                edge.sizeDelta = new Vector2(-2 * inset, 1);
+            }
+            else
+            {
+                edge.anchorMin = new Vector2(leading ? 0 : 1, 0);
+                edge.anchorMax = new Vector2(leading ? 0 : 1, 1);
+                edge.pivot = new Vector2(leading ? 0 : 1, 1);
+                edge.anchoredPosition = new Vector2(leading ? inset : -inset, -inset);
+                edge.sizeDelta = new Vector2(1, -2 * inset);
+            }
+        }
         bar.handleRect = handle;
         bar.targetGraphic = handle.GetComponent<Image>();
         bar.direction = vertical ? UnityEngine.UI.Scrollbar.Direction.BottomToTop : UnityEngine.UI.Scrollbar.Direction.LeftToRight;

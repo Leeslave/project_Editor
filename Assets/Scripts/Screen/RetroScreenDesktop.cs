@@ -129,5 +129,5 @@ public sealed class RetroScreenDesktop : MonoBehaviour
     public void OpenMail() { Focus(mailWindow); }
     public void OpenMessages() { Focus(messageWindow); }
     public void OpenNews() { newsManager.ActivateWindow(); newsWindow.transform.SetAsLastSibling(); }
-    public void OpenMenu() { menuManager.ActivateWindow(); if (menuWindow.activeSelf) menuWindow.transform.SetAsLastSibling(); }
+    public void OpenMenu() { Focus(menuWindow); }
 }

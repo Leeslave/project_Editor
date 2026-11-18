@@ -17,25 +17,25 @@ public sealed class ComicDialogueSkin : MonoBehaviour
     [SerializeField] private TMP_FontAsset font;
 
     private Chat chat;
-    private Transform ui;
-    private GameObject speech;
-    private GameObject choices;
-    private GameObject options;
-    private GameObject history;
-    private GameObject skipModal;
-    private Button nextButton;
-    private Button skipButton;
-    private Button branchButton;
-    private Button speechButton;
-    private RectTransform layout;
+    [SerializeField, HideInInspector] private Transform ui;
+    [SerializeField, HideInInspector] private GameObject speech;
+    [SerializeField, HideInInspector] private GameObject choices;
+    [SerializeField, HideInInspector] private GameObject options;
+    [SerializeField, HideInInspector] private GameObject history;
+    [SerializeField, HideInInspector] private GameObject skipModal;
+    [SerializeField, HideInInspector] private Button nextButton;
+    [SerializeField, HideInInspector] private Button skipButton;
+    [SerializeField, HideInInspector] private Button branchButton;
+    [SerializeField, HideInInspector] private Button speechButton;
+    [SerializeField, HideInInspector] private RectTransform layout;
     private Vector2 lastCanvasSize;
-    private GameObject rolePlate;
-    private TMP_Text roleInfo;
-    private RectTransform speakerPlate;
-    private RectTransform continueMarker;
+    [SerializeField, HideInInspector] private GameObject rolePlate;
+    [SerializeField, HideInInspector] private TMP_Text roleInfo;
+    [SerializeField, HideInInspector] private RectTransform speakerPlate;
+    [SerializeField, HideInInspector] private RectTransform continueMarker;
     public bool SpeakerOnRight { get; private set; }
     private readonly Dictionary<string, Sprite[]> standingPortraits = new Dictionary<string, Sprite[]>();
-    private readonly Quaternion[] portraitFacings = new Quaternion[4];
+    [SerializeField, HideInInspector] private Quaternion[] portraitFacings = new Quaternion[4];
 
     public float DialogueFontScale => 38f / TalkParagraph.NORMALFONTSIZE;
 
@@ -46,8 +46,13 @@ public sealed class ComicDialogueSkin : MonoBehaviour
 
     public void Apply()
     {
-        if (ui != null) return;
         chat = GetComponent<Chat>();
+        if (ui != null)
+        {
+            WireGeneratedControls();
+            RefreshState();
+            return;
+        }
         ui = transform.Find("ChatUI");
         speech = ui.Find("Speech").gameObject;
         choices = ui.Find("ChoicePanel").gameObject;
@@ -137,8 +142,23 @@ public sealed class ComicDialogueSkin : MonoBehaviour
         }
 
         Place((RectTransform)options.transform, 1620, 720, 260, 330);
-        options.GetComponent<Image>().sprite = null;
-        options.GetComponent<Image>().color = new Color(0, 0, 0, .75f);
+        // A horizontal speaker plate cannot frame this tall control grid without distortion.
+        var optionImage = options.GetComponent<Image>();
+        optionImage.sprite = null;
+        optionImage.color = Color.clear;
+        var optionFrame = Node("Control Frame", options.transform);
+        Stretch(optionFrame);
+        optionFrame.offsetMin = new Vector2(-12, -12);
+        optionFrame.offsetMax = new Vector2(12, 12);
+        optionFrame.gameObject.AddComponent<Image>().raycastTarget = false;
+        optionFrame.SetAsFirstSibling();
+        var optionFill = Node("Fill", optionFrame);
+        Stretch(optionFill);
+        optionFill.offsetMin = new Vector2(3, 3);
+        optionFill.offsetMax = new Vector2(-3, -3);
+        var fillImage = optionFill.gameObject.AddComponent<Image>();
+        fillImage.color = new Color(.025f, .025f, .025f, .95f);
+        fillImage.raycastTarget = false;
         options.GetComponent<Image>().raycastTarget = false;
         var remind = options.transform.Find("Remind").GetComponent<Button>();
         skipButton = options.transform.Find("Skip").GetComponent<Button>();
@@ -190,13 +210,36 @@ public sealed class ComicDialogueSkin : MonoBehaviour
 
         // Preserve the existing modal events while keeping their text readable at 1080p.
         var confirmPanel = skipModal.transform.Find("InfoPanel");
-        Style(confirmPanel.GetComponent<Image>(), dialogueSprite);
+        Style(confirmPanel.GetComponent<Image>(), choiceSprite);
+        confirmPanel.GetComponent<Image>().preserveAspect = false;
+        var modalRect = (RectTransform)confirmPanel;
+        modalRect.anchorMin = modalRect.anchorMax = modalRect.pivot = new Vector2(.5f, .5f);
+        modalRect.anchoredPosition = Vector2.zero;
+        modalRect.sizeDelta = new Vector2(1120, 480);
+        modalRect.localScale = Vector3.one;
+        Place((RectTransform)confirmPanel.Find("SkipInfo"), 100, 65, 920, 110);
+        Place((RectTransform)confirmPanel.Find("SkipAddInfo"), 100, 190, 920, 60);
+        Place((RectTransform)confirmPanel.Find("BackButton"), 160, 300, 340, 90);
+        Place((RectTransform)confirmPanel.Find("SkipButton"), 620, 300, 340, 90);
         foreach (var label in confirmPanel.GetComponentsInChildren<TMP_Text>(true))
-            TextStyle(label, label.name == "SkipInfo" ? 44 : label.name == "SkipAddInfo" ? 26 : 32, Color.black);
+        {
+            TextStyle(label, label.name == "SkipInfo" ? 40 : label.name == "SkipAddInfo" ? 26 : 30, Color.black);
+            label.alignment = TextAlignmentOptions.Center;
+            label.enableAutoSizing = true;
+            label.fontSizeMin = 22;
+            label.fontSizeMax = label.name == "SkipInfo" ? 40 : label.name == "SkipAddInfo" ? 26 : 30;
+            if (label.name == "Label")
+            {
+                Stretch(label.rectTransform);
+                label.rectTransform.offsetMin = new Vector2(24, 10);
+                label.rectTransform.offsetMax = new Vector2(-24, -10);
+            }
+        }
         foreach (var button in confirmPanel.GetComponentsInChildren<Button>(true))
         {
             Style(button.GetComponent<Image>(), choiceSprite);
             Colors(button);
+            button.transform.localScale = Vector3.one;
         }
         var close = history.transform.Find("Return");
         var closeRect = (RectTransform)close;
@@ -212,6 +255,21 @@ public sealed class ComicDialogueSkin : MonoBehaviour
         skipModal.transform.SetAsLastSibling();
         RefreshState();
     }
+
+    private void WireGeneratedControls()
+    {
+        speechButton.onClick.RemoveListener(ToggleSpeech);
+        speechButton.onClick.AddListener(ToggleSpeech);
+        branchButton.onClick.RemoveListener(FocusChoice);
+        branchButton.onClick.AddListener(FocusChoice);
+        var earlier = options.transform.Find("Earlier History").GetComponent<Button>();
+        earlier.onClick.RemoveListener(ShowEarlierHistory);
+        earlier.onClick.AddListener(ShowEarlierHistory);
+        nextButton.onClick.RemoveListener(chat.NextChat);
+        nextButton.onClick.AddListener(chat.NextChat);
+    }
+
+    private void ToggleSpeech() => speech.SetActive(!speech.activeSelf);
 
     private void LateUpdate()
     {
@@ -336,9 +394,38 @@ public sealed class ComicDialogueSkin : MonoBehaviour
         bool flip = klayton ? slot >= 2 : slot < 2;
         rect.localRotation = standing ? Quaternion.Euler(0, flip ? 180 : 0, 0) : portraitFacings[slot];
         var position = rect.anchoredPosition;
-        position.y = -(standing ? (klayton ? 410 : 455) : (slot < 2 ? 335 : 340));
+        position.y = -(standing ? 410 : 335);
+        position.x = new float[] { 330, 640, 1100, standing ? 1370 : 1280 }[slot];
+        if (standing && portrait.sprite != null)
+        {
+            var offset = PortraitOffset(portrait.sprite.name);
+            position += new Vector2(flip ? -offset.x : offset.x, offset.y);
+        }
         rect.anchoredPosition = position;
     }
+
+    // Align visible silhouette center and baseline to expression 00; do not accumulate offsets.
+    private static Vector2 PortraitOffset(string name) => name switch
+    {
+            "Klayton_00" => new Vector2(0.0000f, 0.0000f),
+            "Klayton_01" => new Vector2(24.6890f, 0.0000f),
+            "Klayton_02" => new Vector2(42.6914f, 0.0000f),
+            "Klayton_03" => new Vector2(0.0000f, 0.0000f),
+            "Klayton_04" => new Vector2(25.2033f, 0.0000f),
+            "Klayton_05" => new Vector2(42.6914f, 0.0000f),
+            "Klayton_06" => new Vector2(0.0000f, -3.0861f),
+            "Klayton_07" => new Vector2(25.2033f, -4.1148f),
+            "Clover_00" => new Vector2(0.0000f, 0.0000f),
+            "Clover_01" => new Vector2(26.7464f, 0.0000f),
+            "Clover_02" => new Vector2(54.0072f, 0.0000f),
+            "Clover_03" => new Vector2(0.0000f, 0.0000f),
+            "Clover_04" => new Vector2(26.7464f, 0.0000f),
+            "Clover_05" => new Vector2(53.4928f, 0.0000f),
+            "Clover_06" => new Vector2(0.5144f, 0.0000f),
+            "Clover_07" => new Vector2(27.2608f, 0.0000f),
+            "Clover_08" => new Vector2(54.0072f, 0.0000f),
+        _ => Vector2.zero
+    };
 
     private void FocusChoice()
     {

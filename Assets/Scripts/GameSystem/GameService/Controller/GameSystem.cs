@@ -23,7 +23,7 @@ public sealed class GameSystem : Singleton<GameSystem>
             EnterScene("GameStart");
             return;
         }
-        
+
         // 현재 켜져있는 씬 불러오기
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
@@ -33,13 +33,13 @@ public sealed class GameSystem : Singleton<GameSystem>
                 continue;
             }
 
-            _currentScene = scene;
-            break;
+            if (scene == SceneManager.GetActiveScene() || !_currentScene.IsValid())
+                _currentScene = scene;
         }
     }
-    
+
     # region ServiceManage
-    
+
     /// Service 목록
     public static SaveService SaveService;
     private static Dictionary<Type, IService> services = new();
@@ -91,11 +91,11 @@ public sealed class GameSystem : Singleton<GameSystem>
     {
         services.Remove(typeof(T));
     }
-    
+
     #endregion
-    
+
     #region SceneManage
-    
+
     // 현재 활성씬
     private Scene _currentScene;
     [SerializeField] private bool _isLoading = false;
@@ -104,7 +104,7 @@ public sealed class GameSystem : Singleton<GameSystem>
     /// 현재 씬 전환 중인지 여부
     /// </summary>
     public bool IsLoading => _isLoading;
-    
+
     public FadeCurtain loadUI;
 
     /// <summary>
@@ -119,43 +119,70 @@ public sealed class GameSystem : Singleton<GameSystem>
             EditorLogger.LogWarning($"Scene already on Loading...");
             return;
         }
-        
+
         StartCoroutine(LoadScene(sceneName, callback));
     }
-    
+
     private IEnumerator LoadScene(string sceneName, Action callback)
     {
         // 로딩 시작
         _isLoading = true;
-        
-        // 로딩씬 화면 페이드아웃
-        if (loadUI)
+
+        try
         {
-            loadUI.gameObject.SetActive(true);
-            loadUI.Fade(FadeMode.Out);
+            // 로딩씬 화면 페이드아웃
+            if (loadUI)
+            {
+                loadUI.gameObject.SetActive(true);
+                loadUI.Fade(FadeMode.Out);
+            }
+            if (loadUI) yield return new WaitUntil(() => !loadUI.isLoading);
+
+            // 기존 씬 언로드
+            if (!Application.CanStreamedLevelBeLoaded(sceneName))
+            {
+                EditorLogger.LogError($"Scene is not available: {sceneName}");
+                if (loadUI) loadUI.gameObject.SetActive(false);
+                _isLoading = false;
+                yield break;
+            }
+            Scene previous = SceneManager.GetActiveScene();
+            if (!previous.IsValid() || previous == gameObject.scene) previous = _currentScene;
+            var loading = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            if (loading == null)
+            {
+                if (loadUI) loadUI.gameObject.SetActive(false);
+                _isLoading = false;
+                yield break;
+            }
+            yield return loading;
+            Scene next = default;
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                Scene candidate = SceneManager.GetSceneAt(i);
+                if (candidate.name == sceneName && candidate != previous) next = candidate;
+            }
+            if (!next.IsValid() || !next.isLoaded) yield break;
+            SceneManager.SetActiveScene(next);
+            if (previous.IsValid() && previous.isLoaded && previous != next && previous != gameObject.scene)
+                yield return SceneManager.UnloadSceneAsync(previous);
+
+            _currentScene = next;
+            SceneManager.SetActiveScene(_currentScene);
+
+            // 로딩 종료
+            if (loadUI) loadUI.gameObject.SetActive(false);
+            _isLoading = false;
+
+            // 콜백 실행
         }
-        yield return new WaitUntil(() => !loadUI.isLoading);
-        
-        // 기존 씬 언로드
-        if (_currentScene.isLoaded)
+        finally
         {
-            yield return SceneManager.UnloadSceneAsync(_currentScene);
+            if (loadUI) loadUI.gameObject.SetActive(false);
+            _isLoading = false;
         }
-        
-        // 메인 씬 로드 시작
-        yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-        
-        // 씬 로드 완료 및 정리
-        _currentScene = SceneManager.GetSceneByName(sceneName);
-        SceneManager.SetActiveScene(_currentScene);
-        
-        // 로딩 종료
-        loadUI.gameObject.SetActive(false);
-        _isLoading = false;
-        
-        // 콜백 실행
         callback?.Invoke();
     }
-    
+
     #endregion
 }

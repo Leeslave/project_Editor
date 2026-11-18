@@ -238,13 +238,13 @@ public class BilateralSubstitute : MonoBehaviour
     /// </summary>
     private void UpdateTable()
     {
-        string filePath = Application.dataPath + "/Resources/GameData/Encrypt/Tables/Table_" + CurrentTableNum + ".txt";
-        FileInfo txtFile = new(filePath);
-        
-            
-        StreamReader reader = new(filePath);
-        string value = reader.ReadToEnd();
-        reader.Close();
+        var table = Resources.Load<TextAsset>("GameData/Encrypt/Tables/Table_" + CurrentTableNum);
+        if (table == null || table.text.Length < 36)
+        {
+            Debug.LogError("ADFGVX table is missing or incomplete: " + CurrentTableNum);
+            return;
+        }
+        string value = table.text;
 
         for(var i = 0; i < 36; i++)
             TableElements[i].TextTMP.text = value[i].ToString();
